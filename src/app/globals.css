@@ -140,3 +140,16 @@ body {
 /* Section spacing */
 .section { padding-block: 96px; }
 .section-sm { padding-block: 64px; }
+
+/* Responsive grid helpers — used by StatsSection, HowItWorks, HeroSection */
+@media (max-width: 768px) {
+  .hero-cards {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track  { animation: none; }
+  .pulse-dot      { animation: none; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

@@ -1,28 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-
-function RevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } }, { threshold: 0.15 })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-  return (
-    <div ref={ref} style={{
-      opacity: visible ? 1 : 0,
-      transform: visible ? 'translateY(0)' : 'translateY(24px)',
-      transition: `opacity 0.6s ease ${delay}ms, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
-    }}>
-      {children}
-    </div>
-  )
-}
 
 const steps = [
   {
@@ -47,38 +25,43 @@ export default function HowItWorks() {
     <section id="how-it-works" className="section" style={{ backgroundColor: 'var(--portal-surface)' }}>
       <div className="container">
         {/* Heading */}
-        <RevealCard>
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}>
-              How it works
-            </p>
-            <h2 style={{ fontSize: 'clamp(28px, 3.2vw, 46px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', maxWidth: '560px', margin: '0 auto', lineHeight: 1.15 }}>
-              Three sides. One seamless platform.
-            </h2>
-          </div>
-        </RevealCard>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, amount: 0.15 }}
+          style={{ textAlign: 'center', marginBottom: '64px' }}
+        >
+          <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}>
+            How it works
+          </p>
+          <h2 style={{ fontSize: 'clamp(28px, 3.2vw, 46px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', maxWidth: '560px', margin: '0 auto', lineHeight: 1.15 }}>
+            Three sides. One seamless platform.
+          </h2>
+        </motion.div>
 
         {/* Steps */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps.map((s, i) => (
-            <RevealCard key={s.step} delay={i * 120}>
-              <motion.div
-                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.10)' }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  padding: '32px', borderRadius: '20px',
-                  background: s.bg, border: `1.5px solid ${s.border}`,
-                  height: '100%',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', color: s.color }}>{s.step}</span>
-                  <span style={{ fontSize: '32px' }}>{s.emoji}</span>
-                </div>
-                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#061b31', marginBottom: '12px', lineHeight: 1.3 }}>{s.title}</h3>
-                <p style={{ fontSize: '15px', color: '#425466', lineHeight: 1.65 }}>{s.desc}</p>
-              </motion.div>
-            </RevealCard>
+            <motion.div
+              key={s.step}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true, amount: 0.15 }}
+              whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.10)' }}
+              style={{
+                padding: '32px', borderRadius: '20px',
+                background: s.bg, border: `1.5px solid ${s.border}`,
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', color: s.color }}>{s.step}</span>
+                <span style={{ fontSize: '32px' }}>{s.emoji}</span>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#061b31', marginBottom: '12px', lineHeight: 1.3 }}>{s.title}</h3>
+              <p style={{ fontSize: '15px', color: '#425466', lineHeight: 1.65 }}>{s.desc}</p>
+            </motion.div>
           ))}
         </div>
       </div>

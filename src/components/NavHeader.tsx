@@ -50,7 +50,10 @@ export default function NavHeader() {
           <li style={{ position: 'relative' }}
               onMouseEnter={() => setPortalsOpen(true)}
               onMouseLeave={() => setPortalsOpen(false)}>
-            <button style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px 16px', fontSize: '15px', color: portalsOpen ? '#061b31' : '#425466', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button
+              aria-expanded={portalsOpen}
+              aria-haspopup="true"
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px 16px', fontSize: '15px', color: portalsOpen ? '#061b31' : '#425466', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
               Portals
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: portalsOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }}>
                 <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -126,15 +129,13 @@ export default function NavHeader() {
             className="md:hidden"
           >
             <div className="container" style={{ paddingBlock: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {[
-                { label: 'Cafe Portal',     href: 'http://localhost:5174' },
-                { label: 'Supplier Portal', href: 'http://localhost:5175' },
-                { label: 'Brand Portal',    href: 'http://localhost:5176' },
-                { label: 'Features',        href: '#how-it-works' },
-                { label: 'Pricing',         href: '#pricing' },
-                { label: 'About',           href: '#about' },
-              ].map(l => (
-                <a key={l.label} href={l.href} style={{ padding: '12px 0', fontSize: '15px', color: '#425466', textDecoration: 'none', borderBottom: '1px solid #f0f4f8' }} onClick={() => setMobileOpen(false)}>{l.label}</a>
+              {/* Portal links */}
+              {portalLinks.map(p => (
+                <a key={p.label} href={p.href} style={{ padding: '12px 0', fontSize: '15px', color: '#425466', textDecoration: 'none', borderBottom: '1px solid #f0f4f8', display: 'block' }} onClick={() => setMobileOpen(false)}>{p.label}</a>
+              ))}
+              {/* Other nav links */}
+              {mainNavLinks.map(l => (
+                <a key={l.label} href={l.href} style={{ padding: '12px 0', fontSize: '15px', color: '#425466', textDecoration: 'none', borderBottom: '1px solid #f0f4f8', display: 'block' }} onClick={() => setMobileOpen(false)}>{l.label}</a>
               ))}
               <div style={{ display: 'flex', gap: '12px', paddingTop: '16px' }}>
                 <a href="/login" className="btn-secondary" style={{ flex: 1, textAlign: 'center' }}>Sign in</a>

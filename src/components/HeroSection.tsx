@@ -67,15 +67,16 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Portal gateway cards — 3 inline cards */}
-        <motion.div variants={fadeUp} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', maxWidth: '780px' }}>
+        <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-4" style={{ maxWidth: '780px' }}>
           {[
-            { role: 'Cafe', desc: 'Order from verified suppliers', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', emoji: '☕', href: 'http://localhost:5174' },
-            { role: 'Supplier', desc: 'Manage catalogue & fulfill orders', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', emoji: '🏭', href: 'http://localhost:5175' },
-            { role: 'Brand', desc: 'Run trials & track consumption', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', emoji: '🏷️', href: 'http://localhost:5176' },
+            { role: 'Cafe', desc: 'Order from verified suppliers', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', emoji: '☕', href: 'http://localhost:5174', ariaLabel: 'Open Cafe Portal — Order from verified suppliers' },
+            { role: 'Supplier', desc: 'Manage catalogue & fulfill orders', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', emoji: '🏭', href: 'http://localhost:5175', ariaLabel: 'Open Supplier Portal — Manage catalogue & fulfill orders' },
+            { role: 'Brand', desc: 'Run trials & track consumption', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', emoji: '🏷️', href: 'http://localhost:5176', ariaLabel: 'Open Brand Portal — Run trials & track consumption' },
           ].map(card => (
             <motion.a
               key={card.role}
               href={card.href}
+              aria-label={card.ariaLabel}
               whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.12)' }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               style={{
@@ -105,7 +106,7 @@ export default function HeroSection() {
         <div className="marquee-wrapper">
           <div className="marquee-track">
             {marqueeBrands.map((brand, i) => (
-              <span key={i} style={{ padding: '0 32px', fontSize: '15px', fontWeight: 500, color: '#64748b', whiteSpace: 'nowrap', opacity: 0.7 }}>
+              <span key={`${brand}-${i}`} style={{ padding: '0 32px', fontSize: '15px', fontWeight: 500, color: '#64748b', whiteSpace: 'nowrap', opacity: 0.7 }}>
                 {brand}
               </span>
             ))}

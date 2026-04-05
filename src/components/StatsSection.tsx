@@ -17,15 +17,17 @@ function Counter({ to, suffix = '', prefix = '', decimals = 0, started }: { to: 
   useEffect(() => {
     if (!started || hasRun.current) return
     hasRun.current = true
+    let rafId: number
     const duration = 1800
     const start = performance.now()
     const tick = (now: number) => {
       const p = Math.min((now - start) / duration, 1)
       const eased = 1 - Math.pow(1 - p, 3)
       setVal(eased * to)
-      if (p < 1) requestAnimationFrame(tick)
+      if (p < 1) rafId = requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
   }, [started, to])
 
   return <>{prefix}{val.toFixed(decimals)}{suffix}</>
@@ -70,13 +72,13 @@ export default function StatsSection() {
 
         {/* Stats grid */}
         <motion.div
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px' }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10"
           variants={containerVariants}
           initial="hidden"
           animate={started ? 'visible' : 'hidden'}
         >
           {stats.map((stat, i) => (
-            <motion.div key={i} variants={itemVariants} style={{ display: 'flex', flexDirection: 'column' }}>
+            <motion.div key={stat.label} variants={itemVariants} style={{ display: 'flex', flexDirection: 'column' }}>
               {/* Animated line */}
               <motion.div style={{ height: '2px', background: '#e6ebf1', marginBottom: '24px', transformOrigin: 'left' }}
                 variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: { duration: 0.5 } } }}

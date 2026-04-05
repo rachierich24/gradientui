@@ -1,9 +1,11 @@
+'use client'
+
 export default function Footer() {
   const year = new Date().getFullYear()
   return (
     <footer style={{ background: '#061b31', color: '#8898aa', paddingBlock: '64px' }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '48px', marginBottom: '48px' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12" style={{ marginBottom: '48px' }}>
           {/* Brand col */}
           <div>
             <p style={{ fontSize: '20px', fontWeight: 800, backgroundImage: 'var(--portal-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', marginBottom: '16px' }}>
