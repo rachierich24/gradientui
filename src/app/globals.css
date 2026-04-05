@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --portal-primary:    #6B21A8;
+  --portal-secondary:  #4338CA;
+  --portal-gradient:   linear-gradient(135deg, #6B21A8, #4338CA);
+  --portal-surface:    #faf5ff;
+  --portal-border:     #e9d5ff;
+  --portal-mesh-color: 107, 33, 168;
+
+  --stripe-purple: #533afd;
+  --stripe-navy:   #061b31;
+  --stripe-slate:  #425466;
+  --stripe-border: #e6ebf1;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --container-max: 1240px;
+}
+
+body {
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
