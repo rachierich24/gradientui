@@ -1,14 +1,21 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
 
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-inter',
+})
+
 export const metadata: Metadata = {
-  title: 'Gradient 365',
-  description: 'B2B cafe ordering platform',
+  title: 'Gradient 365 — B2B Cafe Ordering Platform',
+  description: 'The three-sided marketplace connecting cafes, suppliers, and brands. Order smarter, grow faster.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   )
