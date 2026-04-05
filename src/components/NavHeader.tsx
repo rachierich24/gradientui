@@ -101,8 +101,8 @@ export default function NavHeader() {
         <button
           onClick={() => setMobileOpen(m => !m)}
           aria-label="Toggle menu"
-          style={{ display: 'none', flexDirection: 'column', gap: '5px', padding: '8px', background: 'none', border: 'none', cursor: 'pointer' }}
-          className="md:hidden flex"
+          style={{ flexDirection: 'column', gap: '5px', padding: '8px', background: 'none', border: 'none', cursor: 'pointer' }}
+          className="flex md:hidden"
         >
           {[0, 1, 2].map(i => (
             <span key={i} style={{
@@ -126,8 +126,15 @@ export default function NavHeader() {
             className="md:hidden"
           >
             <div className="container" style={{ paddingBlock: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {['Cafe Portal', 'Supplier Portal', 'Brand Portal', 'Features', 'Pricing', 'About'].map(l => (
-                <a key={l} href="#" style={{ padding: '12px 0', fontSize: '15px', color: '#425466', textDecoration: 'none', borderBottom: '1px solid #f0f4f8' }} onClick={() => setMobileOpen(false)}>{l}</a>
+              {[
+                { label: 'Cafe Portal',     href: 'http://localhost:5174' },
+                { label: 'Supplier Portal', href: 'http://localhost:5175' },
+                { label: 'Brand Portal',    href: 'http://localhost:5176' },
+                { label: 'Features',        href: '#how-it-works' },
+                { label: 'Pricing',         href: '#pricing' },
+                { label: 'About',           href: '#about' },
+              ].map(l => (
+                <a key={l.label} href={l.href} style={{ padding: '12px 0', fontSize: '15px', color: '#425466', textDecoration: 'none', borderBottom: '1px solid #f0f4f8' }} onClick={() => setMobileOpen(false)}>{l.label}</a>
               ))}
               <div style={{ display: 'flex', gap: '12px', paddingTop: '16px' }}>
                 <a href="/login" className="btn-secondary" style={{ flex: 1, textAlign: 'center' }}>Sign in</a>
