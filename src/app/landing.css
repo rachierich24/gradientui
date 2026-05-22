@@ -37,7 +37,7 @@
   --status-info-bg: #DBEAFE; --status-info: #2563EB;
 
   /* type */
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-plus-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-serif: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 

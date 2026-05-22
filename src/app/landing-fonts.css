@@ -1,5 +1,5 @@
-/* Plus Jakarta Sans — Google Fonts (must precede @font-face per CSS spec) */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+/* Plus Jakarta Sans is loaded via next/font/google in app/layout.tsx
+   (self-hosted at build time, no runtime Google Fonts dependency). */
 
 /* Self-hosted woff2 fonts — copied from Figma Make export */
 @font-face {
