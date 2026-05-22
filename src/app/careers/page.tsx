@@ -31,7 +31,7 @@ const roles = [
     desc: 'Own end-to-end features across our Next.js frontend and Node.js backend. Experience with PostgreSQL and real-time systems preferred.',
   },
   {
-    title: 'Product Manager — Cafe Portal',
+    title: 'Product Manager Cafe Portal',
     dept: 'Product',
     location: 'Bengaluru',
     type: 'Full-time',
@@ -41,7 +41,7 @@ const roles = [
     desc: 'Define the roadmap for our cafe-side product. You\'ll spend time in the field talking to cafe owners and translating insights into features.',
   },
   {
-    title: 'Business Development — Supplier Partnerships',
+    title: 'Business Development Supplier Partnerships',
     dept: 'Sales',
     location: 'Remote / Mumbai / Bengaluru',
     type: 'Full-time',

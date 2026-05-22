@@ -14,15 +14,15 @@ const stagger = {
 }
 
 const features = [
-  { emoji: '🛒', title: 'Digital Ordering', desc: 'Place structured orders with your suppliers instantly. Full order history, status tracking, and delivery confirmations — no more WhatsApp voice notes.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe & Supplier' },
+  { emoji: '🛒', title: 'Digital Ordering', desc: 'Place structured orders with your suppliers instantly. Full order history, status tracking, and delivery confirmations no more WhatsApp voice notes.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe & Supplier' },
   { emoji: '💬', title: 'In-app Negotiation', desc: 'Negotiate prices in encrypted order threads with a full audit trail. Agree on terms digitally before any goods change hands.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Cafe & Supplier' },
-  { emoji: '📊', title: 'Consumption Analytics', desc: 'FMCG brands see real-time data on which cafes are using their products, at what volumes, and in which cities — updated with every fulfilled order.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Brand' },
-  { emoji: '🔄', title: 'Pre-scheduled Orders', desc: 'Set up recurring orders for weekly or monthly deliveries. Suppliers get advance notice and can plan stock accordingly — reducing shortages and waste.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe & Supplier' },
+  { emoji: '📊', title: 'Consumption Analytics', desc: 'FMCG brands see real-time data on which cafes are using their products, at what volumes, and in which cities updated with every fulfilled order.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Brand' },
+  { emoji: '🔄', title: 'Pre-scheduled Orders', desc: 'Set up recurring orders for weekly or monthly deliveries. Suppliers get advance notice and can plan stock accordingly reducing shortages and waste.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe & Supplier' },
   { emoji: '📦', title: 'Supplier Catalogue', desc: 'Suppliers build a verified product catalogue with pricing, MOQ, lead times, and stock levels. Cafes browse and filter by city, category, and rating.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Supplier' },
-  { emoji: '🏷️', title: 'Brand Trial Management', desc: 'Brands run structured product trials — identify target cafes, distribute samples, collect feedback, and track adoption — all in one workflow.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Brand' },
+  { emoji: '🏷️', title: 'Brand Trial Management', desc: 'Brands run structured product trials identify target cafes, distribute samples, collect feedback, and track adoption all in one workflow.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Brand' },
   { emoji: '💳', title: 'Digital Billing', desc: 'View invoices, outstanding amounts, and payment history in one place. Generate GST-compliant receipts and track credit limits with your suppliers.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe' },
-  { emoji: '🚨', title: 'Urgent Sourcing', desc: 'Need stock fast? Post urgent sourcing requests and get responses from verified suppliers in your city within hours — not days.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Cafe' },
-  { emoji: '📈', title: 'Demand Intelligence', desc: 'Suppliers get aggregated insights into product demand trends across their cafe network — helping them stock the right products at the right time.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Supplier' },
+  { emoji: '🚨', title: 'Urgent Sourcing', desc: 'Need stock fast? Post urgent sourcing requests and get responses from verified suppliers in your city within hours not days.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Cafe' },
+  { emoji: '📈', title: 'Demand Intelligence', desc: 'Suppliers get aggregated insights into product demand trends across their cafe network helping them stock the right products at the right time.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Supplier' },
 ]
 
 export default function FeaturesPage() {
@@ -51,7 +51,7 @@ export default function FeaturesPage() {
               variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] } } }}
               style={{ fontSize: '17px', color: '#425466', lineHeight: 1.65 }}
             >
-              Gradient 365 ships tools built specifically for each side of the supply chain — not generic software awkwardly retrofitted.
+              Gradient 365 ships tools built specifically for each side of the supply chain not generic software awkwardly retrofitted.
             </motion.p>
           </div>
         </section>

@@ -671,16 +671,99 @@ section.l-sec.tight { padding: 80px 0; }
    of pinned scroll = 300vh. Tabs cycle at progress < 0.22 / < 0.44 / else. */
 .l-sec-pin {
   position: relative;
-  height: 250vh;
+  height: 340vh;
 }
 .showcase-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow: hidden;        /* clip the fading content so it never escapes section bounds */
+  padding-top: 96px;       /* clear the floating nav: 16 top + ~56 pill + 24 breathing room */
+  padding-bottom: 24px;
+}
+.showcase-sticky > .l-wrap { width: 100%; }
+.showcase-sticky .showcase { margin-top: 0; padding: 32px 36px; }
+
+/* Two-column grid inside the black product card */
+.showcase-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.6fr);
+  gap: 48px;
+  align-items: center;
+}
+.showcase-text { display: flex; flex-direction: column; gap: 14px; }
+.showcase-text .sec-h { max-width: 16ch; font-size: clamp(22px, 2.2vw, 34px); line-height: 1.05; }
+.showcase-text .sec-lead { font-size: clamp(12.5px, 0.9vw, 14.5px); max-width: 40ch; margin: 0; line-height: 1.5; }
+
+/* Vertical tab list */
+.tab-col {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tab-col > li { margin: 0; }
+.tab-col .tab-pill {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  color: rgba(255,255,255,.62);
+  text-align: left;
+  transition: background .25s cubic-bezier(.23,1,.32,1),
+              color .25s cubic-bezier(.23,1,.32,1),
+              border-color .25s cubic-bezier(.23,1,.32,1),
+              transform .25s cubic-bezier(.23,1,.32,1);
+}
+.tab-col .tab-pill:hover { color: #fff; background: rgba(255,255,255,.06); transform: translateX(2px); }
+.tab-col .tab-pill.on {
+  background: #fff;
+  color: var(--ink);
+  border-color: transparent;
+  transform: translateX(4px);
+  box-shadow: 0 18px 40px -22px rgba(0,0,0,.6);
+}
+.tab-pill-ic {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  display: grid; place-items: center;
+  transition: background .25s cubic-bezier(.23,1,.32,1), color .25s cubic-bezier(.23,1,.32,1);
+}
+.tab-col .tab-pill.on .tab-pill-ic { background: rgba(10,10,11,.08); color: var(--ink); }
+.tab-pill-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tab-pill-lab { font-size: 14px; font-weight: 600; letter-spacing: -.005em; }
+.tab-pill-hint { font-size: 12px; font-weight: 500; opacity: .68; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tab-pill-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  opacity: .45;
+}
+.tab-col .tab-pill.on .tab-pill-num { opacity: .35; }
+
+/* Preview column — clamps stage to the available viewport */
+.showcase-preview { display: flex; }
+.showcase-preview .showcase-stage {
+  flex: 1;
+  min-height: 0;
+  height: clamp(340px, 46vh, 460px);
+}
+
+@media (max-width: 960px) {
+  .showcase-grid { grid-template-columns: 1fr; gap: 32px; }
+  .showcase-preview .showcase-stage { height: clamp(320px, 48vh, 440px); }
+  .showcase-sticky .showcase { padding: 32px 28px; }
 }
 @media (max-width: 768px) {
   .l-sec-pin { height: 200vh; }
@@ -690,9 +773,9 @@ section.l-sec.tight { padding: 80px 0; }
 .showcase {
   background: var(--ink);
   color: #fff;
-  border-radius: 36px;
-  padding: 80px 60px;
-  margin-top: 60px;
+  border-radius: 28px;
+  padding: 56px 44px;
+  margin-top: 40px;
   position: relative;
   overflow: hidden;
 }
@@ -716,7 +799,7 @@ section.l-sec.tight { padding: 80px 0; }
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 999px;
-  margin: 40px 0 32px;
+  margin: 28px 0 22px;
 }
 .tab-pill {
   padding: 9px 16px;
@@ -738,17 +821,28 @@ section.l-sec.tight { padding: 80px 0; }
   border: 1px solid rgba(255,255,255,.06);
   box-shadow: 0 40px 80px -20px rgba(0,0,0,.4);
   overflow: hidden;
-  min-height: 540px;
+  min-height: 360px;
   color: var(--ink);
 }
 .showcase-stage > .stage-pane {
   position: absolute; inset: 0;
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .35s ease, transform .35s ease;
+  transform: translateY(14px) scale(.985);
+  transition: opacity .55s cubic-bezier(.23,1,.32,1),
+              transform .55s cubic-bezier(.23,1,.32,1);
   pointer-events: none;
 }
 .showcase-stage > .stage-pane.on { opacity: 1; transform: none; pointer-events: auto; }
+
+/* Insights chart left-to-right reveal when its tab lands */
+.insights-chart {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 2200ms cubic-bezier(.23,1,.32,1) 150ms;
+}
+.stage-pane.on .insights-chart { clip-path: inset(0 0 0 0); }
+@media (prefers-reduced-motion: reduce) {
+  .insights-chart { transition: none; clip-path: inset(0 0 0 0); }
+}
 
 /* ─── Bento ─────────────────────────────────────────────────────────── */
 .bento {

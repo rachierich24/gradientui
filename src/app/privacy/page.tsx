@@ -1,7 +1,7 @@
 import { LNav, LFooter } from "@/components/landing/sections"
 
 export const metadata = {
-  title: 'Privacy Policy — Gradient 365',
+  title: 'Privacy Policy Gradient 365',
   description: 'Privacy Policy for Gradient 365. Learn how we collect, use, and protect your data.',
 }
 
@@ -16,11 +16,11 @@ const sections = [
   },
   {
     title: '3. Data Sharing',
-    body: 'We share your information with other parties on the platform as necessary to facilitate transactions — for example, sharing your delivery address with a supplier when you place an order. We do not sell your personal data to third parties. We may share data with service providers who help us operate the platform (payment processors, cloud hosting, email services) under strict confidentiality agreements.',
+    body: 'We share your information with other parties on the platform as necessary to facilitate transactions for example, sharing your delivery address with a supplier when you place an order. We do not sell your personal data to third parties. We may share data with service providers who help us operate the platform (payment processors, cloud hosting, email services) under strict confidentiality agreements.',
   },
   {
     title: '4. Cookies',
-    body: 'We use cookies and similar tracking technologies to maintain your session, remember your preferences, and understand how you use our platform. You can control cookie settings through your browser preferences. Disabling certain cookies may affect platform functionality. We use analytics cookies (e.g. Mixpanel, PostHog) to understand aggregate usage patterns — these do not identify you personally.',
+    body: 'We use cookies and similar tracking technologies to maintain your session, remember your preferences, and understand how you use our platform. You can control cookie settings through your browser preferences. Disabling certain cookies may affect platform functionality. We use analytics cookies (e.g. Mixpanel, PostHog) to understand aggregate usage patterns these do not identify you personally.',
   },
   {
     title: '5. Data Retention',

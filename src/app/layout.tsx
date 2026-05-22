@@ -15,8 +15,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Gradient — One portal for café supply.',
-  description: 'Gradient connects independent cafés with the suppliers, roasters, and brands they buy from — and gives both sides one place to source, order, fulfil, invoice, and grow.',
+  title: 'Gradient One portal for café supply.',
+  description: 'Gradient connects independent cafés with the suppliers, roasters, and brands they buy from and gives both sides one place to source, order, fulfil, invoice, and grow.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

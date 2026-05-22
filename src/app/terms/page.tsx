@@ -1,7 +1,7 @@
 import { LNav, LFooter } from "@/components/landing/sections"
 
 export const metadata = {
-  title: 'Terms of Service — Gradient 365',
+  title: 'Terms of Service Gradient 365',
   description: 'Terms of Service for Gradient 365, India\'s B2B cafe supply chain marketplace.',
 }
 
@@ -20,7 +20,7 @@ const sections = [
   },
   {
     title: '4. Intellectual Property',
-    body: 'All content, features, and functionality of the Gradient 365 platform — including but not limited to software, text, graphics, logos, icons, and design — are the exclusive property of Gradient 365 and are protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written consent.',
+    body: 'All content, features, and functionality of the Gradient 365 platform including but not limited to software, text, graphics, logos, icons, and design are the exclusive property of Gradient 365 and are protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written consent.',
   },
   {
     title: '5. Limitation of Liability',

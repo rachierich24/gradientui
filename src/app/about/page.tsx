@@ -16,7 +16,7 @@ const stagger = {
 const values = [
   { emoji: '🏗️', title: 'Builder mentality', desc: 'We ship fast, learn from cafes and suppliers in the field, and iterate relentlessly. No feature survives first contact with reality unchanged.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa' },
   { emoji: '🔒', title: 'Trust by default', desc: 'Every transaction on our platform is structured and traceable. We replace verbal agreements with digital records that protect everyone.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0' },
-  { emoji: '🇮🇳', title: 'India-first', desc: 'We build for the reality of Indian F&B supply chains — cash-heavy, relationship-driven, and deeply regional. No copy-paste from Silicon Valley playbooks.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc' },
+  { emoji: '🇮🇳', title: 'India-first', desc: 'We build for the reality of Indian F&B supply chains cash-heavy, relationship-driven, and deeply regional. No copy-paste from Silicon Valley playbooks.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc' },
 ]
 
 const team = [
@@ -69,13 +69,13 @@ export default function AboutPage() {
                   Our mission
                 </p>
                 <h2 style={{ fontSize: 'clamp(24px, 3vw, 40px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', lineHeight: 1.15, marginBottom: '20px' }}>
-                  Replace chaos with clarity — for every cafe in India.
+                  Replace chaos with clarity for every cafe in India.
                 </h2>
                 <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '16px' }}>
                   The average Indian cafe owner manages procurement across 12+ WhatsApp groups, juggles verbal price agreements, and has zero visibility into actual consumption data. We think that&apos;s a solvable problem.
                 </p>
                 <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75 }}>
-                  Our platform gives every side of the supply chain — cafes, suppliers, and FMCG brands — the tools they need to work together efficiently, at scale.
+                  Our platform gives every side of the supply chain cafes, suppliers, and FMCG brands the tools they need to work together efficiently, at scale.
                 </p>
               </motion.div>
               <motion.div

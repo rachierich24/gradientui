@@ -78,7 +78,7 @@ const plans = [
 ]
 
 const faqs = [
-  { q: 'Is there a free trial for paid plans?', a: 'Yes — Growth comes with a 14-day free trial. No credit card required to start. You\'ll only be charged after the trial ends if you choose to continue.' },
+  { q: 'Is there a free trial for paid plans?', a: 'Yes Growth comes with a 14-day free trial. No credit card required to start. You\'ll only be charged after the trial ends if you choose to continue.' },
   { q: 'Can I change my plan later?', a: 'Absolutely. You can upgrade or downgrade at any time from your account settings. Changes take effect at the start of your next billing cycle.' },
   { q: 'How does pricing work for multi-location businesses?', a: 'Enterprise pricing is customized based on your number of locations, order volume, and specific feature requirements. Contact our team to get a quote tailored to your business.' },
   { q: 'What payment methods do you accept?', a: 'We accept all major credit/debit cards, UPI, net banking, and NEFT transfers. GST invoices are issued for all paid plans.' },

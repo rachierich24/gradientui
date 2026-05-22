@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     body: JSON.stringify({
       from: FROM,
       to: [TO],
-      subject: `🔔 New callback request — ${phone}`,
+      subject: `🔔 New callback request ${phone}`,
       html,
       reply_to: TO,
     }),

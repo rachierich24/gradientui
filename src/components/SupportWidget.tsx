@@ -74,7 +74,7 @@ export function SupportWidget() {
 
     const phone = extractPhone(text);
     const reply: ReactNode = phone ? (
-      <>Got it — someone from the Gradient team will reach you at <strong>{phone}</strong> shortly. Expect a call within the next business day.</>
+      <>Got it someone from the Gradient team will reach you at <strong>{phone}</strong> shortly. Expect a call within the next business day.</>
     ) : (
       <>
         Please share your phone number and a team member will call you back.

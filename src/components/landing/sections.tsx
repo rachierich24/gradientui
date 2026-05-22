@@ -1,6 +1,7 @@
 'use client';
-// Landing page sections — ported from Figma Make export 0006.js
+// Landing page sections ported from Figma Make export 0006.js
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { Icon } from './icons';
 import { HeroDashboard, ShowcaseSourcing, ShowcaseInventory, ShowcaseInsights } from './mocks';
 
@@ -135,7 +136,7 @@ export function LHero() {
         </h1>
         <p className="hero-sub">
           Gradient connects independent cafés with the suppliers, roasters, and brands they
-          buy from — and gives both sides one place to source, order, fulfil, invoice, and grow.
+          buy from and gives both sides one place to source, order, fulfil, invoice, and grow.
         </p>
         <div className="hero-ctas">
           <button className="btn-l dark">Start free <Icon.Arrow size={15}/></button>
@@ -343,37 +344,76 @@ export function LDual() {
 export function LShowcase() {
   const [tab, setTab] = useState(0);
   const tabs = [
-    { lab: 'Sourcing', ic: <Icon.Search size={14}/> },
-    { lab: 'Inventory', ic: <Icon.Box size={14}/> },
-    { lab: 'Insights', ic: <Icon.Chart size={14}/> },
+    { lab: 'Sourcing',  hint: 'One cart across every supplier you trust.',          ic: <Icon.Search size={14}/> },
+    { lab: 'Inventory', hint: 'Stock, par, and auto-replenish on one shelf.',       ic: <Icon.Box size={14}/> },
+    { lab: 'Insights',  hint: 'GMV trend with a benchmark, not a vibe.',           ic: <Icon.Chart size={14}/> },
   ];
 
-  useEffect(() => {
-    const id = setInterval(() => setTab(t => (t + 1) % tabs.length), 5200);
-    return () => clearInterval(id);
-  }, []);
+  const outerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: outerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  // Outer = 340vh, sticky = 100vh → pinned phase ends at progress ≈ 0.706.
+  // Split that pinned window into 3 equal tab segments (~0.235 each).
+  useMotionValueEvent(scrollYProgress, 'change', (p) => {
+    const next = p < 0.235 ? 0 : p < 0.47 ? 1 : 2;
+    setTab((cur) => (cur === next ? cur : next));
+  });
+
+  const scrollToTab = (i: number) => {
+    const el = outerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const top = window.scrollY + rect.top;
+    // Anchor each tab at the middle of its 0.235-progress slice.
+    const targetProgress = 0.118 + i * 0.235;
+    const totalScroll = rect.height - window.innerHeight;
+    window.scrollTo({ top: top + targetProgress * totalScroll, behavior: 'smooth' });
+  };
 
   return (
-    <section className="l-sec" id="product">
-      <div className="l-wrap">
-        <div className="showcase">
-          <div className="sec-eyebrow">The product</div>
-          <h2 className="sec-h">Made for the way coffee actually <em>moves</em>.</h2>
-          <p className="sec-lead">From the first PO to the last invoice — every workflow lives in one place,
-            tuned for the operational rhythm of cafés and the dispatch rhythm of suppliers.</p>
+    <section ref={outerRef} className="l-sec-pin" id="product">
+      <div className="showcase-sticky">
+        <div className="l-wrap">
+          <div className="showcase">
+            <div className="showcase-grid">
+              <div className="showcase-text">
+                <div className="sec-eyebrow">The product</div>
+                <h2 className="sec-h">Made for the way coffee actually <em>moves</em>.</h2>
+                <p className="sec-lead">From the first PO to the last invoice every workflow lives in one place, tuned for the rhythm of cafés and the dispatch rhythm of suppliers.</p>
 
-          <div className="tab-row">
-            {tabs.map((t, i) => (
-              <button key={i} className={`tab-pill ${tab === i ? 'on' : ''}`} onClick={() => setTab(i)}>
-                {t.ic}{t.lab}
-              </button>
-            ))}
-          </div>
+                <ol className="tab-col" role="tablist" aria-label="Product workflows">
+                  {tabs.map((t, i) => (
+                    <li key={i}>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={tab === i}
+                        className={`tab-pill ${tab === i ? 'on' : ''}`}
+                        onClick={() => scrollToTab(i)}
+                      >
+                        <span className="tab-pill-ic">{t.ic}</span>
+                        <span className="tab-pill-body">
+                          <span className="tab-pill-lab">{t.lab}</span>
+                          <span className="tab-pill-hint">{t.hint}</span>
+                        </span>
+                        <span className="tab-pill-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </div>
 
-          <div className="showcase-stage">
-            <div className={`stage-pane ${tab === 0 ? 'on' : ''}`}><ShowcaseSourcing/></div>
-            <div className={`stage-pane ${tab === 1 ? 'on' : ''}`}><ShowcaseInventory/></div>
-            <div className={`stage-pane ${tab === 2 ? 'on' : ''}`}><ShowcaseInsights/></div>
+              <div className="showcase-preview">
+                <div className="showcase-stage">
+                  <div className={`stage-pane ${tab === 0 ? 'on' : ''}`}><ShowcaseSourcing/></div>
+                  <div className={`stage-pane ${tab === 1 ? 'on' : ''}`}><ShowcaseInventory/></div>
+                  <div className={`stage-pane ${tab === 2 ? 'on' : ''}`}><ShowcaseInsights/></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -630,9 +670,9 @@ export function LInlineCTA() {
 
 export function LSteps() {
   const steps = [
-    { t: 'Onboard', d: 'Sign up as a café or supplier. Verification in under an hour. KYC, GST, FSSAI — all digital.' },
+    { t: 'Onboard', d: 'Sign up as a café or supplier. Verification in under an hour. KYC, GST, FSSAI all digital.' },
     { t: 'Connect', d: 'Pair your POS (Petpooja, urbanPiper), accounting (Tally, Zoho), and WhatsApp. Zero re-keying.' },
-    { t: 'Operate', d: 'Sourcing, fulfilment, inventory, and dispatch — all from one portal, on every device.' },
+    { t: 'Operate', d: 'Sourcing, fulfilment, inventory, and dispatch all from one portal, on every device.' },
     { t: 'Grow', d: 'Insights tell you what to stock, when to reorder, and which café or SKU to double down on.' },
   ];
   return (
@@ -785,7 +825,7 @@ export function LStats() {
         <h2 className="stats-intro">
           <span className="lead">Built for the pace of cafe supply.</span>{' '}
           <span className="rest">
-            Gradient connects every café, supplier, and brand on one live network —
+            Gradient connects every café, supplier, and brand on one live network
             daily procurement, real-time stock, and trial conversion you can actually trace.
           </span>
         </h2>
@@ -822,7 +862,7 @@ export function LQuotes() {
             <p className="mark">&quot;</p>
             <p className="q">
               We replaced six WhatsApp groups, two Excel sheets and a printed PO book with Gradient.
-              On day three our supplier called to ask what changed — orders had doubled.
+              On day three our supplier called to ask what changed orders had doubled.
             </p>
             <div className="who">
               <Avatar initials="AK" bg="#F57515" size={40}/>
