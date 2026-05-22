@@ -137,6 +137,16 @@ body {
   background: linear-gradient(to left, white, transparent);
 }
 
+/* Stripe-style ribbon animations — each ribbon sways independently */
+@keyframes r1-sway { 0%,100% { transform: rotate(-32deg); } 50% { transform: rotate(-24deg); } }
+@keyframes r2-sway { 0%,100% { transform: rotate(-17deg); } 50% { transform: rotate(-9deg);  } }
+@keyframes r3-sway { 0%,100% { transform: rotate(-4deg);  } 50% { transform: rotate(4deg);   } }
+@keyframes r4-sway { 0%,100% { transform: rotate(8deg);   } 50% { transform: rotate(16deg);  } }
+.ribbon-1 { animation: r1-sway 20s ease-in-out infinite; }
+.ribbon-2 { animation: r2-sway 22s ease-in-out infinite; }
+.ribbon-3 { animation: r3-sway 24s ease-in-out infinite; }
+.ribbon-4 { animation: r4-sway 26s ease-in-out infinite; }
+
 /* Section spacing */
 .section { padding-block: 96px; }
 .section-sm { padding-block: 64px; }

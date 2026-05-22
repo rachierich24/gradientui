@@ -1,19 +1,29 @@
-import NavHeader    from '@/components/NavHeader'
-import HeroSection  from '@/components/HeroSection'
-import StatsSection from '@/components/StatsSection'
-import HowItWorks   from '@/components/HowItWorks'
-import Footer       from '@/components/Footer'
+import {
+  LNav, LHero, LLogos, LDual, LShowcase, LBento, LSteps,
+  LInteg, LStats, LQuotes, LPricing, LFinalCTA, LFooter,
+  LProofStrip, LInlineCTA,
+} from '@/components/landing/sections'
+import { LScrollQuote } from '@/components/landing/ScrollQuote'
 
 export default function HomePage() {
   return (
-    <>
-      <NavHeader />
-      <main>
-        <HeroSection />
-        <StatsSection />
-        <HowItWorks />
-      </main>
-      <Footer />
-    </>
+    <div className="l-page">
+      <LNav />
+      <LHero />
+      <LProofStrip />
+      <LLogos />
+      <LDual />
+      <LShowcase />
+      <LBento />
+      <LInlineCTA />
+      <LSteps />
+      <LInteg />
+      <LStats />
+      <LScrollQuote />
+      <LQuotes />
+      <LPricing />
+      <LFinalCTA />
+      <LFooter />
+    </div>
   )
 }

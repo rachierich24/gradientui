@@ -1,0 +1,203 @@
+'use client'
+
+import { useState } from 'react'
+import { LNav, LFooter } from "@/components/landing/sections"
+import { motion } from 'framer-motion'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
+
+const inputStyle = {
+  width: '100%',
+  padding: '12px 16px',
+  fontSize: '15px',
+  border: '1.5px solid #e6ebf1',
+  borderRadius: '8px',
+  outline: 'none',
+  fontFamily: 'inherit',
+  color: '#061b31',
+  background: '#fff',
+  transition: 'border-color 0.15s',
+}
+
+export default function ContactPage() {
+  const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
+  const [submitted, setSubmitted] = useState(false)
+  const [focused, setFocused] = useState<string | null>(null)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitted(true)
+  }
+
+  const fieldStyle = (field: string) => ({
+    ...inputStyle,
+    borderColor: focused === field ? 'var(--portal-primary)' : '#e6ebf1',
+  })
+
+  return (
+    <>
+      <LNav />
+      <main>
+        {/* Page hero */}
+        <section style={{ backgroundColor: '#fafbfc', borderBottom: '1px solid #e6ebf1', paddingBlock: '64px' }}>
+          <div className="container" style={{ textAlign: 'center', maxWidth: '600px' }}>
+            <motion.p
+              initial="hidden" animate="visible" variants={fadeUp}
+              style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}
+            >
+              Contact
+            </motion.p>
+            <motion.h1
+              initial="hidden" animate="visible" variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] } } }}
+              style={{ fontSize: 'clamp(28px, 3.5vw, 48px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', marginBottom: '16px' }}
+            >
+              Get in touch
+            </motion.h1>
+            <motion.p
+              initial="hidden" animate="visible" variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] } } }}
+              style={{ fontSize: '17px', color: '#425466', lineHeight: 1.65 }}
+            >
+              Have a question, want to partner with us, or need help? We&apos;d love to hear from you.
+            </motion.p>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="section">
+          <div className="container">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12" style={{ maxWidth: '900px', margin: '0 auto' }}>
+
+              {/* Form */}
+              <motion.div
+                initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}
+              >
+                {submitted ? (
+                  <div style={{ padding: '40px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '16px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '40px', marginBottom: '16px' }}>✅</div>
+                    <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#061b31', marginBottom: '8px' }}>Message received!</h2>
+                    <p style={{ fontSize: '15px', color: '#425466', lineHeight: 1.65 }}>
+                      Thanks for reaching out. We&apos;ll get back to you within 1–2 business days.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#061b31', marginBottom: '6px' }}>Full name *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Rohan Mehta"
+                        value={form.name}
+                        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                        onFocus={() => setFocused('name')}
+                        onBlur={() => setFocused(null)}
+                        style={fieldStyle('name')}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#061b31', marginBottom: '6px' }}>Work email *</label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="rohan@mycafe.com"
+                        value={form.email}
+                        onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                        onFocus={() => setFocused('email')}
+                        onBlur={() => setFocused(null)}
+                        style={fieldStyle('email')}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#061b31', marginBottom: '6px' }}>Company</label>
+                      <input
+                        type="text"
+                        placeholder="My Cafe Pvt. Ltd."
+                        value={form.company}
+                        onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
+                        onFocus={() => setFocused('company')}
+                        onBlur={() => setFocused(null)}
+                        style={fieldStyle('company')}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#061b31', marginBottom: '6px' }}>Message *</label>
+                      <textarea
+                        required
+                        rows={4}
+                        placeholder="Tell us about your business and how we can help..."
+                        value={form.message}
+                        onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                        onFocus={() => setFocused('message')}
+                        onBlur={() => setFocused(null)}
+                        style={{ ...fieldStyle('message'), resize: 'vertical', lineHeight: 1.6 }}
+                      />
+                    </div>
+                    <button type="submit" className="btn-primary" style={{ fontSize: '15px', padding: '14px 28px', justifyContent: 'center' }}>
+                      Send message →
+                    </button>
+                  </form>
+                )}
+              </motion.div>
+
+              {/* Contact info */}
+              <motion.div
+                initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}
+                variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] } } }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
+              >
+                <div>
+                  <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#061b31', marginBottom: '16px' }}>Contact info</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {[
+                      { icon: '📧', label: 'General enquiries', value: 'hello@gradient365.com', href: 'mailto:hello@gradient365.com' },
+                      { icon: '🤝', label: 'Partnerships', value: 'partners@gradient365.com', href: 'mailto:partners@gradient365.com' },
+                      { icon: '📍', label: 'Office', value: 'Bengaluru, Karnataka, India', href: null },
+                    ].map(item => (
+                      <div key={item.label} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '18px', marginTop: '1px' }}>{item.icon}</span>
+                        <div>
+                          <p style={{ fontSize: '12px', fontWeight: 600, color: '#425466', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>{item.label}</p>
+                          {item.href ? (
+                            <a href={item.href} style={{ fontSize: '15px', color: 'var(--portal-primary)', textDecoration: 'none' }}>{item.value}</a>
+                          ) : (
+                            <p style={{ fontSize: '15px', color: '#061b31' }}>{item.value}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ padding: '24px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '16px' }}>
+                  <p style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--portal-primary)', marginBottom: '12px' }}>
+                    Access a portal directly
+                  </p>
+                  {[
+                    { label: '☕ Cafe Portal', href: 'http://localhost:3001', color: '#EA580C' },
+                    { label: '🏭 Supplier Portal', href: 'http://localhost:3002', color: '#0891B2' },
+                    { label: '🏷️ Brand Portal', href: 'http://localhost:3003', color: '#7C3AED' },
+                  ].map(p => (
+                    <a
+                      key={p.label}
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'block', padding: '10px 0', fontSize: '14px', fontWeight: 500, color: p.color, textDecoration: 'none', borderBottom: '1px solid #e9d5ff' }}
+                    >
+                      {p.label} →
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
+        </section>
+      </main>
+      <LFooter />
+    </>
+  )
+}

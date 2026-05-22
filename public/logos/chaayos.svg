@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 44" fill="none">
+  <!-- Tea cup mark -->
+  <path d="M8 16 L26 16 L23 34 Q17 37 11 34 Z" fill="#555"/>
+  <path d="M26 20 Q34 20 34 26 Q34 32 26 30" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <line x1="11" y1="13" x2="13" y2="9" stroke="#555" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="17" y1="13" x2="17" y2="8" stroke="#555" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="23" y1="13" x2="21" y2="9" stroke="#555" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Wordmark -->
+  <text x="42" y="29" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="20" font-weight="700" fill="#444" letter-spacing="-0.3">Chaayos</text>
+</svg>

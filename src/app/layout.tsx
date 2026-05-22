@@ -1,22 +1,24 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-inter',
-})
+import 'lenis/dist/lenis.css'
+import './landing-fonts.css'
+import './landing.css'
+import { LenisProvider } from '@/components/LenisProvider'
+import { CookieConsent } from '@/components/CookieConsent'
+import { SupportWidget } from '@/components/SupportWidget'
 
 export const metadata: Metadata = {
-  title: 'Gradient 365 — B2B Cafe Ordering Platform',
-  description: 'The three-sided marketplace connecting cafes, suppliers, and brands. Order smarter, grow faster.',
+  title: 'Gradient — One portal for café supply.',
+  description: 'Gradient connects independent cafés with the suppliers, roasters, and brands they buy from — and gives both sides one place to source, order, fulfil, invoice, and grow.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+    <html lang="en">
+      <body>
+        <LenisProvider>{children}</LenisProvider>
+        <CookieConsent />
+        <SupportWidget />
+      </body>
     </html>
   )
 }

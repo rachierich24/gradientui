@@ -4,3 +4,9 @@ dist/
 .env.local
 .env
 *.tsbuildinfo
+
+# Local dev artifacts
+dev.log
+npm-install.log
+design-unpacked/
+package-lock.json

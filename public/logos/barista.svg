@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 44" fill="none">
+  <!-- Espresso shot / B mark -->
+  <rect x="6" y="10" width="10" height="24" rx="2" fill="#555"/>
+  <path d="M16 10 Q28 10 28 18 Q28 22 22 22 Q28 22 28 30 Q28 34 16 34" fill="#555"/>
+  <rect x="16" y="21" width="6" height="2" fill="#fff"/>
+  <!-- Wordmark -->
+  <text x="36" y="29" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="20" font-weight="700" fill="#444" letter-spacing="-0.3">Barista</text>
+</svg>
