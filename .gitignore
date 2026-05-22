@@ -10,3 +10,4 @@ dev.log
 npm-install.log
 design-unpacked/
 package-lock.json
+.vercel

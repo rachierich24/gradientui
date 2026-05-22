@@ -155,7 +155,7 @@ export function LHero() {
         </div>
       </div>
 
-      <div className="l-wrap">
+      <div className="l-wrap hero-peek-wrap">
         <div className="hero-peek">
           <div className="float-chip a">
             <div className="ic" style={{ background: 'var(--c-green-bg)', color: 'var(--c-green)' }}><Icon.Check size={16}/></div>
