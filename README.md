@@ -1,4 +1,4 @@
-# @kinetictech/main
+# @gradient365/gradientui-landing
 
 gradient365.com — Next.js 15 App Router marketing landing page
 
