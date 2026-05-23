@@ -1,1 +1,1 @@
-export * from '@gradient365/ui'
+export * from '@gradient365/gradientui-commons'

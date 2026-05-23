@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
-import type { AuthResponse } from '@gradient365/types'
+import type { AuthResponse } from '@gradient365/gradient-commons'
 
 export default function LoginPage() {
   const router = useRouter()
