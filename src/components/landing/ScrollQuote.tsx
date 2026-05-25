@@ -1,5 +1,5 @@
 'use client';
-// Attio-style scroll-pinned word-by-word color reveal.
+// Scroll-pinned word-by-word color reveal.
 // Section pins to viewport, words transition from --ink-faint to --ink as scroll progresses.
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';

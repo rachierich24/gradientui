@@ -26,10 +26,35 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [focused, setFocused] = useState<string | null>(null)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    if (sending) return
+    setSending(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const data = await res.json().catch(() => ({ ok: false, reason: 'bad-response' }))
+      if (!res.ok || !data.ok) {
+        setError(
+          data?.reason === 'email-not-configured'
+            ? 'Email is temporarily unavailable. Please reach us at hello@gradient365.com.'
+            : 'Could not send your message. Please try again or email hello@gradient365.com.'
+        )
+        return
+      }
+      setSubmitted(true)
+    } catch {
+      setError('Network error. Please try again or email hello@gradient365.com.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const fieldStyle = (field: string) => ({
@@ -135,8 +160,18 @@ export default function ContactPage() {
                         style={{ ...fieldStyle('message'), resize: 'vertical', lineHeight: 1.6 }}
                       />
                     </div>
-                    <button type="submit" className="btn-primary" style={{ fontSize: '15px', padding: '14px 28px', justifyContent: 'center' }}>
-                      Send message →
+                    {error && (
+                      <div role="alert" style={{ padding: '12px 14px', background: '#fef2f2', border: '1.5px solid #fecaca', borderRadius: '8px', fontSize: '13px', color: '#991b1b' }}>
+                        {error}
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      disabled={sending}
+                      style={{ fontSize: '15px', padding: '14px 28px', justifyContent: 'center', opacity: sending ? 0.6 : 1, cursor: sending ? 'wait' : 'pointer' }}
+                    >
+                      {sending ? 'Sending…' : 'Send message →'}
                     </button>
                   </form>
                 )}

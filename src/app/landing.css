@@ -1585,7 +1585,7 @@ section.l-sec.stats-sec {
 }
 .cc-reject:hover { background: var(--surface-2); color: var(--ink); }
 
-/* ─── Scroll-pinned word-color quote (Attio-style) ──────────────────── */
+/* ─── Scroll-pinned word-color quote ───────────────────────────────── */
 .sq-outer {
   /* outer 280vh + sticky inner 100vh = 180vh of pinned scroll.
      useScroll progress maps 0→1 across 280vh, so pinned phase ends at
@@ -1607,12 +1607,12 @@ section.l-sec.stats-sec {
   justify-content: center;
   padding: 120px var(--pad-x) 80px;   /* clear floating nav + bottom breathing room */
   text-align: center;
-  gap: 90px;                          /* Attio-proportion gap between quote and attribution */
+  gap: 90px;                          /* gap between quote and attribution */
   max-width: var(--max-w);
   margin: 0 auto;
 }
 .sq-quote {
-  font-size: clamp(28px, 3.4vw, 52px);   /* smaller than Attio's hero but matches proportion at our viewport */
+  font-size: clamp(28px, 3.4vw, 52px);
   line-height: 1.1;
   letter-spacing: -.028em;
   font-weight: 700;

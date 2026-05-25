@@ -42,10 +42,10 @@ export function LNav() {
       </a>
       <div className="nav-sep"></div>
       <div className="nav-links">
-        <button className={`nav-link ${open === 'product' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('product')} onFocus={() => setOpen('product')}>
+        <button type="button" className={`nav-link ${open === 'product' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('product')} onFocus={() => setOpen('product')} onClick={() => setOpen(open === 'product' ? null : 'product')} aria-expanded={open === 'product'}>
           Product <Icon.ChevronDown size={12} className="chev"/>
         </button>
-        <button className={`nav-link ${open === 'resources' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('resources')} onFocus={() => setOpen('resources')}>
+        <button type="button" className={`nav-link ${open === 'resources' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('resources')} onFocus={() => setOpen('resources')} onClick={() => setOpen(open === 'resources' ? null : 'resources')} aria-expanded={open === 'resources'}>
           Resources <Icon.ChevronDown size={12} className="chev"/>
         </button>
         <a className="nav-link" href="#pricing">Pricing</a>
@@ -139,8 +139,8 @@ export function LHero() {
           buy from and gives both sides one place to source, order, fulfil, invoice, and grow.
         </p>
         <div className="hero-ctas">
-          <button className="btn-l dark">Start free <Icon.Arrow size={15}/></button>
-          <button className="btn-l ghost">Book a walkthrough</button>
+          <a className="btn-l dark" href="/contact">Start free <Icon.Arrow size={15}/></a>
+          <a className="btn-l ghost" href="/contact">Book a walkthrough</a>
         </div>
         <div className="hero-trust">
           <span className="av-stack">
@@ -317,7 +317,7 @@ export function LDual() {
               <li>Auto-replenish with AI demand sensing</li>
               <li>Net-15 credit, fully digital invoicing</li>
             </ul>
-            <a className="link">Explore the café portal <Icon.Arrow size={14}/></a>
+            <a className="link" href="/features#cafe">Explore the café portal <Icon.Arrow size={14}/></a>
             <div className="visual"><DualCafeVisual /></div>
           </div>
 
@@ -332,7 +332,7 @@ export function LDual() {
               <li>WhatsApp orders auto-parsed into POs</li>
               <li>T+7 settlements, GST-ready invoicing</li>
             </ul>
-            <a className="link">Explore the supplier portal <Icon.Arrow size={14}/></a>
+            <a className="link" href="/features#supplier">Explore the supplier portal <Icon.Arrow size={14}/></a>
             <div className="visual"><DualSupVisual /></div>
           </div>
         </div>
@@ -626,7 +626,7 @@ export function LBento() {
             <div className="sec-eyebrow">Product chapters</div>
             <h2 className="sec-h">A supply network, explained through the product.</h2>
           </div>
-          <p className="sec-lead">Attio makes CRM objects feel tangible. Gradient does the same for cafe procurement: every actor gets the interface they need, and privacy walls hold the network together.</p>
+          <p className="sec-lead">Gradient makes cafe procurement tangible: every actor gets the interface they need, and privacy walls hold the network together.</p>
         </div>
 
         <div className="chapter-stack">
@@ -941,7 +941,7 @@ export function LPricing() {
               <div className="nm">{t.nm}</div>
               <div className="pr">{t.pr}{t.sub && <small>{t.sub}</small>}</div>
               <p className="dsc">{t.dsc}</p>
-              <button className="pick">{t.cta} <Icon.Arrow size={13}/></button>
+              <a className="pick" href="/contact">{t.cta} <Icon.Arrow size={13}/></a>
               <ul className="feat-list">
                 {t.feats.map((f, j) => (
                   <li key={j}>
@@ -1006,41 +1006,41 @@ export function LFooter() {
           <div className="footer-col">
             <h6>Product</h6>
             <ul>
-              <li><a>Café Portal</a></li>
-              <li><a>Supplier Portal</a></li>
-              <li><a>Insights</a></li>
-              <li><a>Integrations</a></li>
-              <li><a>Changelog</a></li>
+              <li><a href="/features#cafe">Café Portal</a></li>
+              <li><a href="/features#supplier">Supplier Portal</a></li>
+              <li><a href="/features#insights">Insights</a></li>
+              <li><a href="/features#integrations">Integrations</a></li>
+              <li><a href="/features">Changelog</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h6>Company</h6>
             <ul>
-              <li><a>About</a></li>
-              <li><a>Customers</a></li>
-              <li><a>Careers <span style={{ color: 'var(--c-orange)', fontWeight: 600 }}>· 6</span></a></li>
-              <li><a>Press</a></li>
-              <li><a>Contact</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/#proof">Customers</a></li>
+              <li><a href="/careers">Careers <span style={{ color: 'var(--c-orange)', fontWeight: 600 }}>· 6</span></a></li>
+              <li><a href="/about">Press</a></li>
+              <li><a href="/contact">Contact</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h6>Resources</h6>
             <ul>
-              <li><a>Documentation</a></li>
-              <li><a>API reference</a></li>
-              <li><a>Café guide</a></li>
-              <li><a>Supplier guide</a></li>
-              <li><a>Community</a></li>
+              <li><a href="/features">Documentation</a></li>
+              <li><a href="/features">API reference</a></li>
+              <li><a href="/features#cafe">Café guide</a></li>
+              <li><a href="/features#supplier">Supplier guide</a></li>
+              <li><a href="/contact">Community</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h6>Legal</h6>
             <ul>
-              <li><a>Terms</a></li>
-              <li><a>Privacy</a></li>
-              <li><a>Security</a></li>
-              <li><a>SOC-2</a></li>
-              <li><a>DPA</a></li>
+              <li><a href="/terms">Terms</a></li>
+              <li><a href="/privacy">Privacy</a></li>
+              <li><a href="/privacy#security">Security</a></li>
+              <li><a href="/privacy#soc2">SOC-2</a></li>
+              <li><a href="/privacy#dpa">DPA</a></li>
             </ul>
           </div>
         </div>
@@ -1048,7 +1048,7 @@ export function LFooter() {
         <div className="wordmark-huge">gradient</div>
 
         <div className="footer-bot">
-          <span>© 2026 Gradient Commerce Pvt Ltd · Bengaluru</span>
+          <span>© 2026 Unified Nexgrade Pvt Ltd · Delhi NCR</span>
           <span className="mono">v 4.12.0 · all systems normal ●</span>
         </div>
       </div>
