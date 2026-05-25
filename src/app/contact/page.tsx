@@ -67,8 +67,8 @@ export default function ContactPage() {
       <LNav />
       <main>
         {/* Page hero */}
-        <section style={{ backgroundColor: '#fafbfc', borderBottom: '1px solid #e6ebf1', paddingBlock: '64px' }}>
-          <div className="container" style={{ textAlign: 'center', maxWidth: '600px', marginInline: 'auto' }}>
+        <section style={{ paddingTop: '140px', paddingBottom: '48px' }}>
+          <div className="container" style={{ textAlign: 'center', maxWidth: '640px', marginInline: 'auto' }}>
             <motion.p
               initial="hidden" animate="visible" variants={fadeUp}
               style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}
