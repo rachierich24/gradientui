@@ -32,8 +32,8 @@ export default function AboutPage() {
       <LNav />
       <main>
         {/* Hero */}
-        <section style={{ backgroundColor: '#fafbfc', borderBottom: '1px solid #e6ebf1', paddingBlock: '80px', textAlign: 'center' }}>
-          <div className="container" style={{ maxWidth: '700px' }}>
+        <section style={{ paddingTop: '140px', paddingBottom: '64px', textAlign: 'center' }}>
+          <div className="container" style={{ maxWidth: '700px', marginInline: 'auto' }}>
             <motion.p
               initial="hidden" animate="visible" variants={fadeUp}
               style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}

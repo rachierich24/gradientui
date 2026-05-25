@@ -42,8 +42,8 @@ export default function TermsPage() {
       <LNav />
       <main>
         {/* Page hero */}
-        <section style={{ backgroundColor: '#fafbfc', borderBottom: '1px solid #e6ebf1', paddingBlock: '64px' }}>
-          <div className="container" style={{ maxWidth: '760px' }}>
+        <section style={{ paddingTop: '140px', paddingBottom: '48px' }}>
+          <div className="container" style={{ maxWidth: '760px', marginInline: 'auto' }}>
             <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}>
               Legal
             </p>
