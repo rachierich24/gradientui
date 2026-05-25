@@ -44,14 +44,14 @@ export default function ContactPage() {
       if (!res.ok || !data.ok) {
         setError(
           data?.reason === 'email-not-configured'
-            ? 'Email is temporarily unavailable. Please reach us at hello@gradient365.com.'
-            : 'Could not send your message. Please try again or email hello@gradient365.com.'
+            ? 'Email is temporarily unavailable. Please reach us at gradient365.team@gmail.com.'
+            : 'Could not send your message. Please try again or email gradient365.team@gmail.com.'
         )
         return
       }
       setSubmitted(true)
     } catch {
-      setError('Network error. Please try again or email hello@gradient365.com.')
+      setError('Network error. Please try again or email gradient365.team@gmail.com.')
     } finally {
       setSending(false)
     }
@@ -68,7 +68,7 @@ export default function ContactPage() {
       <main>
         {/* Page hero */}
         <section style={{ backgroundColor: '#fafbfc', borderBottom: '1px solid #e6ebf1', paddingBlock: '64px' }}>
-          <div className="container" style={{ textAlign: 'center', maxWidth: '600px' }}>
+          <div className="container" style={{ textAlign: 'center', maxWidth: '600px', marginInline: 'auto' }}>
             <motion.p
               initial="hidden" animate="visible" variants={fadeUp}
               style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}
@@ -187,9 +187,8 @@ export default function ContactPage() {
                   <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#061b31', marginBottom: '16px' }}>Contact info</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {[
-                      { icon: '📧', label: 'General enquiries', value: 'hello@gradient365.com', href: 'mailto:hello@gradient365.com' },
-                      { icon: '🤝', label: 'Partnerships', value: 'partners@gradient365.com', href: 'mailto:partners@gradient365.com' },
-                      { icon: '📍', label: 'Office', value: 'Bengaluru, Karnataka, India', href: null },
+                      { icon: '📧', label: 'General enquiries', value: 'gradient365.team@gmail.com', href: 'mailto:gradient365.team@gmail.com' },
+                      { icon: '📍', label: 'Office', value: 'Delhi, India', href: null },
                     ].map(item => (
                       <div key={item.label} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                         <span style={{ fontSize: '18px', marginTop: '1px' }}>{item.icon}</span>
@@ -206,26 +205,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div style={{ padding: '24px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '16px' }}>
-                  <p style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--portal-primary)', marginBottom: '12px' }}>
-                    Access a portal directly
-                  </p>
-                  {[
-                    { label: '☕ Cafe Portal', href: 'http://localhost:3001', color: '#EA580C' },
-                    { label: '🏭 Supplier Portal', href: 'http://localhost:3002', color: '#0891B2' },
-                    { label: '🏷️ Brand Portal', href: 'http://localhost:3003', color: '#7C3AED' },
-                  ].map(p => (
-                    <a
-                      key={p.label}
-                      href={p.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ display: 'block', padding: '10px 0', fontSize: '14px', fontWeight: 500, color: p.color, textDecoration: 'none', borderBottom: '1px solid #e9d5ff' }}
-                    >
-                      {p.label} →
-                    </a>
-                  ))}
-                </div>
               </motion.div>
 
             </div>
