@@ -28,11 +28,11 @@ const sections = [
   },
   {
     title: '6. Your Rights',
-    body: 'Under the Digital Personal Data Protection Act (DPDP Act), you have the right to: (a) access the personal data we hold about you; (b) correct inaccurate data; (c) request erasure of your data (subject to legal obligations); (d) withdraw consent where processing is based on consent; and (e) nominate a person to exercise your rights in the event of death or incapacity. To exercise these rights, contact us at privacy@gradient365.com.',
+    body: 'Under the Digital Personal Data Protection Act (DPDP Act), you have the right to: (a) access the personal data we hold about you; (b) correct inaccurate data; (c) request erasure of your data (subject to legal obligations); (d) withdraw consent where processing is based on consent; and (e) nominate a person to exercise your rights in the event of death or incapacity. To exercise these rights, contact us at gradient365.team@gmail.com.',
   },
   {
     title: '7. Contact',
-    body: 'For any privacy-related questions or to exercise your rights, contact our Data Protection Officer at privacy@gradient365.com. We will respond to all requests within 30 days. Our registered office is in Bengaluru, Karnataka, India.',
+    body: 'For any privacy-related questions or to exercise your rights, contact our Data Protection Officer at gradient365.team@gmail.com. We will respond to all requests within 30 days. Our registered office is in Delhi, India.',
   },
 ]
 
@@ -50,15 +50,15 @@ export default function PrivacyPage() {
             <h1 style={{ fontSize: 'clamp(28px, 3.5vw, 48px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', marginBottom: '16px' }}>
               Privacy Policy
             </h1>
-            <p style={{ fontSize: '15px', color: '#425466' }}>Last updated: April 2025</p>
+            <p style={{ fontSize: '15px', color: '#425466' }}>Last updated: May 2026</p>
           </div>
         </section>
 
         {/* Content */}
-        <section style={{ paddingBlock: '64px' }}>
-          <div className="container" style={{ maxWidth: '760px' }}>
-            <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '48px' }}>
-              This Privacy Policy describes how Gradient 365 Technologies Pvt. Ltd. ("Gradient 365", "we", "us") collects, uses, and protects your personal data when you use our platform. We are committed to protecting your privacy and complying with the Digital Personal Data Protection Act (DPDP Act, 2023).
+        <section style={{ paddingTop: '0', paddingBottom: '96px' }}>
+          <div className="container" style={{ maxWidth: '760px', marginInline: 'auto' }}>
+            <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '40px' }}>
+              This Privacy Policy describes how Unified Nexgrade Pvt Ltd ("Gradient 365", "we", "us") collects, uses, and protects your personal data when you use our platform. We are committed to protecting your privacy and complying with the Digital Personal Data Protection Act (DPDP Act, 2023).
             </p>
             {sections.map((s) => (
               <div key={s.title} style={{ marginBottom: '40px' }}>
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
             <div style={{ marginTop: '48px', padding: '24px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '12px' }}>
               <p style={{ fontSize: '14px', color: '#425466', lineHeight: 1.65 }}>
                 <strong style={{ color: '#061b31' }}>Privacy questions?</strong>{' '}
-                Email us at <a href="mailto:privacy@gradient365.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>privacy@gradient365.com</a> or read our{' '}
+                Email us at <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>gradient365.team@gmail.com</a> or read our{' '}
                 <a href="/terms" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>Terms of Service</a>.
               </p>
             </div>

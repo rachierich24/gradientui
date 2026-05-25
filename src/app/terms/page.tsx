@@ -28,7 +28,7 @@ const sections = [
   },
   {
     title: '6. Governing Law',
-    body: 'These Terms of Service are governed by and construed in accordance with the laws of India. Any disputes arising under or related to these terms shall be subject to the exclusive jurisdiction of the courts of Bengaluru, Karnataka, India. The United Nations Convention on Contracts for the International Sale of Goods does not apply.',
+    body: 'These Terms of Service are governed by and construed in accordance with the laws of India. Any disputes arising under or related to these terms shall be subject to the exclusive jurisdiction of the courts of Delhi, India. The United Nations Convention on Contracts for the International Sale of Goods does not apply.',
   },
   {
     title: '7. Changes to Terms',
@@ -50,15 +50,15 @@ export default function TermsPage() {
             <h1 style={{ fontSize: 'clamp(28px, 3.5vw, 48px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', marginBottom: '16px' }}>
               Terms of Service
             </h1>
-            <p style={{ fontSize: '15px', color: '#425466' }}>Last updated: April 2025</p>
+            <p style={{ fontSize: '15px', color: '#425466' }}>Last updated: May 2026</p>
           </div>
         </section>
 
         {/* Content */}
-        <section style={{ paddingBlock: '64px' }}>
-          <div className="container" style={{ maxWidth: '760px' }}>
-            <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '48px' }}>
-              Please read these Terms of Service carefully before using the Gradient 365 platform. These terms constitute a legally binding agreement between you and Gradient 365 Technologies Pvt. Ltd.
+        <section style={{ paddingTop: '0', paddingBottom: '96px' }}>
+          <div className="container" style={{ maxWidth: '760px', marginInline: 'auto' }}>
+            <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '40px' }}>
+              Please read these Terms of Service carefully before using the Gradient 365 platform. These terms constitute a legally binding agreement between you and Unified Nexgrade Pvt Ltd.
             </p>
             {sections.map((s) => (
               <div key={s.title} style={{ marginBottom: '40px' }}>
@@ -69,7 +69,7 @@ export default function TermsPage() {
             <div style={{ marginTop: '48px', padding: '24px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '12px' }}>
               <p style={{ fontSize: '14px', color: '#425466', lineHeight: 1.65 }}>
                 <strong style={{ color: '#061b31' }}>Questions about these terms?</strong>{' '}
-                Contact us at <a href="mailto:legal@gradient365.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>legal@gradient365.com</a> or visit our{' '}
+                Contact us at <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>gradient365.team@gmail.com</a> or visit our{' '}
                 <a href="/contact" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>Contact page</a>.
               </p>
             </div>

@@ -4,105 +4,172 @@ import { LNav, LFooter } from "@/components/landing/sections"
 import { motion } from 'framer-motion'
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 }
 
 const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
 }
 
-const features = [
-  { emoji: '🛒', title: 'Digital Ordering', desc: 'Place structured orders with your suppliers instantly. Full order history, status tracking, and delivery confirmations no more WhatsApp voice notes.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe & Supplier' },
-  { emoji: '💬', title: 'In-app Negotiation', desc: 'Negotiate prices in encrypted order threads with a full audit trail. Agree on terms digitally before any goods change hands.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Cafe & Supplier' },
-  { emoji: '📊', title: 'Consumption Analytics', desc: 'FMCG brands see real-time data on which cafes are using their products, at what volumes, and in which cities updated with every fulfilled order.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Brand' },
-  { emoji: '🔄', title: 'Pre-scheduled Orders', desc: 'Set up recurring orders for weekly or monthly deliveries. Suppliers get advance notice and can plan stock accordingly reducing shortages and waste.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe & Supplier' },
-  { emoji: '📦', title: 'Supplier Catalogue', desc: 'Suppliers build a verified product catalogue with pricing, MOQ, lead times, and stock levels. Cafes browse and filter by city, category, and rating.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Supplier' },
-  { emoji: '🏷️', title: 'Brand Trial Management', desc: 'Brands run structured product trials identify target cafes, distribute samples, collect feedback, and track adoption all in one workflow.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Brand' },
-  { emoji: '💳', title: 'Digital Billing', desc: 'View invoices, outstanding amounts, and payment history in one place. Generate GST-compliant receipts and track credit limits with your suppliers.', color: '#EA580C', bg: '#fff7ed', border: '#fed7aa', portal: 'Cafe' },
-  { emoji: '🚨', title: 'Urgent Sourcing', desc: 'Need stock fast? Post urgent sourcing requests and get responses from verified suppliers in your city within hours not days.', color: '#0891B2', bg: '#f0fdfa', border: '#a7f3d0', portal: 'Cafe' },
-  { emoji: '📈', title: 'Demand Intelligence', desc: 'Suppliers get aggregated insights into product demand trends across their cafe network helping them stock the right products at the right time.', color: '#7C3AED', bg: '#fdf4ff', border: '#f0abfc', portal: 'Supplier' },
+type Item = { title: string; desc: string; shared?: string }
+type Group = { audience: string; accent: string; surface: string; lead: string; items: Item[] }
+
+const groups: Group[] = [
+  {
+    audience: 'For cafés',
+    accent: '#EA580C',
+    surface: '#FBEFE6',
+    lead: 'Daily ordering, billing, and sourcing for café owners who buy from three to five suppliers every morning.',
+    items: [
+      { title: 'Digital ordering', desc: 'Structured orders sent to suppliers in seconds. Full history, live status, and delivery confirmations replace WhatsApp voice notes.', shared: 'Supplier' },
+      { title: 'In-app negotiation', desc: 'Negotiate price in an encrypted thread tied to each order. Full audit trail before any goods change hands.', shared: 'Supplier' },
+      { title: 'Pre-scheduled orders', desc: 'Set weekly or monthly recurring orders. Suppliers get advance notice and plan stock accordingly.', shared: 'Supplier' },
+      { title: 'Digital billing', desc: 'Invoices, outstanding amounts, and payment history in one place. GST-compliant receipts and credit-limit tracking per supplier.' },
+      { title: 'Urgent sourcing', desc: 'Broadcast a stock request across every verified supplier in your city. Responses arrive in hours, not days.' },
+    ],
+  },
+  {
+    audience: 'For suppliers',
+    accent: '#0891B2',
+    surface: '#E6F3F4',
+    lead: 'Fulfilment, catalogue, and demand insight for city distributors carrying multi-brand inventory.',
+    items: [
+      { title: 'Supplier catalogue', desc: 'Verified product catalogue with pricing, MOQ, lead times, and live stock. Cafés filter by city, category, and rating.' },
+      { title: 'Demand intelligence', desc: 'Aggregated demand trends across your café network. Stock the right products at the right time, by neighbourhood.' },
+    ],
+  },
+  {
+    audience: 'For brands',
+    accent: '#7C3AED',
+    surface: '#EFE9F7',
+    lead: 'Consumption and trial workflows for FMCG brands measuring real B2B reach through the supplier network.',
+    items: [
+      { title: 'Consumption analytics', desc: 'Real-time data on which cafés use your products, at what volumes, in which cities. Updated with every fulfilled order.' },
+      { title: 'Brand trial management', desc: 'Run structured product trials: target cafés, distribute samples, collect feedback, track adoption — one workflow.' },
+    ],
+  },
 ]
 
 export default function FeaturesPage() {
+  let counter = 0
   return (
     <>
       <LNav />
       <main>
         {/* Hero */}
-        <section style={{ paddingTop: '140px', paddingBottom: '64px', textAlign: 'center' }}>
-          <div className="container" style={{ maxWidth: '680px', marginInline: 'auto' }}>
+        <section style={{ paddingTop: '160px', paddingBottom: '40px' }}>
+          <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
             <motion.p
               initial="hidden" animate="visible" variants={fadeUp}
-              style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--portal-primary)', marginBottom: '12px' }}
+              style={{ fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9AA0A6', marginBottom: '24px' }}
             >
-              Platform features
+              Platform · 09 modules
             </motion.p>
             <motion.h1
               initial="hidden" animate="visible"
-              variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] } } }}
-              style={{ fontSize: 'clamp(30px, 4vw, 54px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', lineHeight: 1.1, marginBottom: '20px' }}
+              variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] } } }}
+              style={{ fontSize: 'clamp(36px, 5.2vw, 72px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#0A0A0B', lineHeight: 0.98, marginBottom: '28px', textWrap: 'balance' }}
             >
-              Everything your cafe supply chain needs
+              Built for three sides<br />of the supply chain.
             </motion.h1>
             <motion.p
               initial="hidden" animate="visible"
-              variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] } } }}
-              style={{ fontSize: '17px', color: '#425466', lineHeight: 1.65 }}
+              variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.16, ease: [0.22, 1, 0.36, 1] } } }}
+              style={{ fontSize: '18px', color: '#5B6471', lineHeight: 1.55, maxWidth: '52ch', textWrap: 'pretty' }}
             >
-              Gradient 365 ships tools built specifically for each side of the supply chain not generic software awkwardly retrofitted.
+              Each portal ships only the tools its user needs. Cafés, suppliers, and brands work in the same network without seeing each other&apos;s data.
             </motion.p>
           </div>
         </section>
 
-        {/* Feature grid */}
-        <section className="section">
-          <div className="container">
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} variants={stagger}
-            >
-              {features.map(f => (
-                <motion.div
-                  key={f.title}
-                  variants={fadeUp}
-                  whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.10)' }}
-                  style={{ padding: '32px', borderRadius: '20px', background: f.bg, border: `1.5px solid ${f.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '32px' }}>{f.emoji}</span>
-                    <span style={{ fontSize: '11px', fontWeight: 600, color: f.color, background: f.color + '15', padding: '3px 8px', borderRadius: '99px', whiteSpace: 'nowrap' }}>
-                      {f.portal}
-                    </span>
+        {/* Editorial groups */}
+        <section style={{ paddingTop: '40px', paddingBottom: '120px' }}>
+          <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
+            {groups.map((g, gi) => (
+              <section
+                key={g.audience}
+                style={{ marginTop: gi === 0 ? 0 : '88px' }}
+              >
+                {/* Group header */}
+                <div style={{ display: 'grid', gridTemplateColumns: '64px 1fr', columnGap: '24px', alignItems: 'baseline', marginBottom: '32px' }}>
+                  <div aria-hidden style={{ height: '1px', background: g.accent, alignSelf: 'center', marginTop: '6px' }} />
+                  <div>
+                    <p style={{ fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: g.accent, marginBottom: '12px' }}>
+                      {g.audience}
+                    </p>
+                    <p style={{ fontSize: '20px', color: '#1F2A37', lineHeight: 1.5, maxWidth: '56ch', textWrap: 'pretty' }}>{g.lead}</p>
                   </div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#061b31', lineHeight: 1.3 }}>{f.title}</h3>
-                  <p style={{ fontSize: '14px', color: '#425466', lineHeight: 1.65 }}>{f.desc}</p>
-                </motion.div>
-              ))}
-            </motion.div>
+                </div>
+
+                {/* Items */}
+                <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                  {g.items.map((it) => {
+                    counter += 1
+                    const num = String(counter).padStart(2, '0')
+                    return (
+                      <li
+                        key={it.title}
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: '64px 1fr 140px',
+                          columnGap: '24px',
+                          alignItems: 'start',
+                          padding: '24px 0',
+                          borderTop: '1px solid rgba(10,10,11,0.08)',
+                        }}
+                        className="feat-row"
+                      >
+                        <span style={{ fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)', fontSize: '13px', fontWeight: 500, color: '#9AA0A6', letterSpacing: '0.02em', fontVariantNumeric: 'tabular-nums', paddingTop: '3px' }}>
+                          {num}
+                        </span>
+                        <div>
+                          <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0A0A0B', letterSpacing: '-0.01em', marginBottom: '6px', lineHeight: 1.3 }}>{it.title}</h3>
+                          <p style={{ fontSize: '14.5px', color: '#5B6471', lineHeight: 1.6, maxWidth: '58ch', textWrap: 'pretty' }}>{it.desc}</p>
+                        </div>
+                        <div style={{ paddingTop: '4px', textAlign: 'right' }}>
+                          {it.shared && (
+                            <span style={{ fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)', fontSize: '10.5px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9AA0A6' }}>
+                              ↔ {it.shared}
+                            </span>
+                          )}
+                        </div>
+                      </li>
+                    )
+                  })}
+                  {/* Bottom rule */}
+                  <li aria-hidden style={{ borderTop: '1px solid rgba(10,10,11,0.08)', height: 0, padding: 0, margin: 0 }} />
+                </ul>
+              </section>
+            ))}
           </div>
         </section>
 
         {/* CTA */}
-        <section className="section-sm" style={{ backgroundColor: 'var(--portal-surface)', textAlign: 'center', borderTop: '1px solid var(--portal-border)' }}>
-          <div className="container" style={{ maxWidth: '480px' }}>
+        <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
+          <div className="container" style={{ maxWidth: '720px', marginInline: 'auto', textAlign: 'center' }}>
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeUp}>
-              <h2 style={{ fontSize: 'clamp(22px, 2.5vw, 34px)', fontWeight: 300, color: '#061b31', marginBottom: '16px', letterSpacing: '-0.02em' }}>
-                Ready to replace the chaos?
+              <h2 style={{ fontSize: 'clamp(26px, 3.2vw, 42px)', fontWeight: 400, color: '#0A0A0B', marginBottom: '14px', letterSpacing: '-0.025em', textWrap: 'balance' }}>
+                Replace the chaos.
               </h2>
-              <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.65, marginBottom: '28px' }}>
-                Get started free. No credit card required.
+              <p style={{ fontSize: '16px', color: '#5B6471', lineHeight: 1.6, marginBottom: '28px' }}>
+                Free to start. No credit card.
               </p>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <a href="/login" className="btn-primary">Start for free →</a>
-                <a href="/pricing" className="btn-secondary">See pricing</a>
+                <a href="/login" className="btn-l dark">Start free</a>
+                <a href="/pricing" className="btn-l ghost">See pricing</a>
               </div>
             </motion.div>
           </div>
         </section>
       </main>
       <LFooter />
+
+      <style jsx>{`
+        :global(.feat-row) { transition: background 200ms ease, padding-left 200ms ease; }
+        :global(.feat-row:hover) { background: rgba(10,10,11,0.025); padding-left: 12px; }
+      `}</style>
     </>
   )
 }

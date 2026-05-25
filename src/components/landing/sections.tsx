@@ -1,7 +1,7 @@
 'use client';
 // Landing page sections ported from Figma Make export 0006.js
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { useScroll, useMotionValueEvent } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 import { Icon } from './icons';
 import { HeroDashboard, ShowcaseSourcing, ShowcaseInventory, ShowcaseInsights } from './mocks';
 
@@ -746,103 +746,148 @@ export function LStats() {
     { v: '₹84', sub: 'Cr', l: 'monthly GMV moving through the platform' },
     { v: '94', sub: '%', l: 'on-time fulfilment, week over week' },
   ];
-  const ref = useRef<HTMLElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
+  // Layout scaffold kept identical to the prior scroll-pin version (outer 100vh + sticky inner 100vh).
+  // Animation is now time-driven on first viewport entry. Body scroll is locked while it plays,
+  // then released so the user can scroll past normally.
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
-  const [len, setLen] = useState(0);
-  useLayoutEffect(() => {
-    if (pathRef.current) setLen(pathRef.current.getTotalLength());
-  }, []);
+  const hasPlayedRef = useRef(false);
+  const pathLength = useMotionValue(0);
+  const areaOpacity = useMotionValue(0);
+  const gridOpacity = useMotionValue(0);
+
   useEffect(() => {
-    const el = ref.current;
+    const el = innerRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => { setInView(entry.isIntersecting); },
-      { threshold: 0.25 }
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.35 }
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!inView || hasPlayedRef.current) return;
+    hasPlayedRef.current = true;
+
+    const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      pathLength.set(1); areaOpacity.set(1); gridOpacity.set(1);
+      return;
+    }
+
+    // Lock body + html scroll while the graph plays.
+    // Intentionally no cleanup return: in React 18 strict mode dev double-invoke,
+    // cleanup would release the lock immediately after the first invoke. Lock auto-releases
+    // via setTimeout below.
+    const prevBody = document.body.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    const prevent = (e: Event) => { e.preventDefault(); };
+    const blockKeys = (e: KeyboardEvent) => {
+      const keys = ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', ' ', 'Home', 'End'];
+      if (keys.includes(e.key)) e.preventDefault();
+    };
+    window.addEventListener('wheel', prevent, { passive: false });
+    window.addEventListener('touchmove', prevent, { passive: false });
+    window.addEventListener('keydown', blockKeys);
+
+    animate(pathLength, 1, { duration: 1.8, ease: [0.22, 0.61, 0.36, 1] });
+    animate(areaOpacity, 1, { duration: 0.9, delay: 1.4, ease: 'easeOut' });
+    animate(gridOpacity, 1, { duration: 0.7, delay: 1.6, ease: 'easeOut' });
+
+    const LOCK_MS = 2500;
+    window.setTimeout(() => {
+      document.body.style.overflow = prevBody;
+      document.documentElement.style.overflow = prevHtml;
+      window.removeEventListener('wheel', prevent);
+      window.removeEventListener('touchmove', prevent);
+      window.removeEventListener('keydown', blockKeys);
+    }, LOCK_MS);
+  }, [inView, pathLength, areaOpacity, gridOpacity]);
   return (
-    <section
-      ref={ref}
-      className={`l-sec stats-sec ${inView ? 'is-in' : ''}`}
-      style={{ ['--curve-len' as string]: len } as React.CSSProperties}
-    >
-      <svg
-        className="stats-curve"
-        viewBox="0 0 1200 600"
-        preserveAspectRatio="none"
-        overflow="visible"
-        aria-hidden="true"
+    <div ref={outerRef} className="stats-pin-outer">
+      <section
+        ref={innerRef}
+        className={`l-sec stats-sec stats-pin-inner ${inView ? 'is-in' : ''}`}
       >
-        <defs>
-          <linearGradient id="statsAreaFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(220 25% 70%)" stopOpacity="0" />
-            <stop offset="100%" stopColor="hsl(220 22% 55%)" stopOpacity="0.14" />
-          </linearGradient>
-          <clipPath id="statsUnderCurve" clipPathUnits="userSpaceOnUse">
-            <path d="M 0 590 C 500 590, 1000 380, 1200 0 L 1200 600 L 0 600 Z" />
-          </clipPath>
-        </defs>
+        <svg
+          className="stats-curve"
+          viewBox="0 0 1200 600"
+          preserveAspectRatio="none"
+          overflow="visible"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="statsAreaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(220 25% 70%)" stopOpacity="0" />
+              <stop offset="100%" stopColor="hsl(220 22% 55%)" stopOpacity="0.14" />
+            </linearGradient>
+            <clipPath id="statsUnderCurve" clipPathUnits="userSpaceOnUse">
+              <path d="M 0 590 C 500 590, 1000 380, 1200 0 L 1200 600 L 0 600 Z" />
+            </clipPath>
+          </defs>
 
-        <path
-          className="stats-area"
-          d="M 0 590 C 500 590, 1000 380, 1200 0 L 1200 600 L 0 600 Z"
-          fill="url(#statsAreaFill)"
-          stroke="none"
-        />
+          <motion.path
+            className="stats-area-scroll"
+            d="M 0 590 C 500 590, 1000 380, 1200 0 L 1200 600 L 0 600 Z"
+            fill="url(#statsAreaFill)"
+            stroke="none"
+            style={{ opacity: areaOpacity }}
+          />
 
-        <g className="stats-grid-lines" clipPath="url(#statsUnderCurve)">
-          {Array.from({ length: 16 }).map((_, i) => {
-            const x = ((i + 1) * 1200) / 17;
-            return (
-              <line
-                key={i}
-                x1={x} y1={0} x2={x} y2={600}
-                stroke="rgba(10,10,11,0.12)"
-                strokeWidth="1"
-                strokeDasharray="3 5"
-                vectorEffect="non-scaling-stroke"
-                style={{ ['--gd' as string]: `${1800 + i * 40}ms` } as React.CSSProperties}
-              />
-            );
-          })}
-        </g>
+          <motion.g className="stats-grid-lines-scroll" clipPath="url(#statsUnderCurve)" style={{ opacity: gridOpacity }}>
+            {Array.from({ length: 16 }).map((_, i) => {
+              const x = ((i + 1) * 1200) / 17;
+              return (
+                <line
+                  key={i}
+                  x1={x} y1={0} x2={x} y2={600}
+                  stroke="rgba(10,10,11,0.12)"
+                  strokeWidth="1"
+                  strokeDasharray="3 5"
+                  vectorEffect="non-scaling-stroke"
+                />
+              );
+            })}
+          </motion.g>
 
-        <path
-          ref={pathRef}
-          className="curve-line"
-          d="M 0 590 C 500 590, 1000 380, 1200 0"
-          fill="none"
-          stroke="#3B82F6"
-          strokeWidth="1"
-          pathLength={1}
-          strokeLinecap="round"
-        />
-      </svg>
-      <div className="l-wrap stats-wrap">
-        <h2 className="stats-intro">
-          <span className="lead">Built for the pace of cafe supply.</span>{' '}
-          <span className="rest">
-            Gradient connects every café, supplier, and brand on one live network
-            daily procurement, real-time stock, and trial conversion you can actually trace.
-          </span>
-        </h2>
-        <div className="stats-grid">
-          {items.map((it, i) => (
-            <div className="it" key={i} style={{ '--d': `${i * 110}ms` } as React.CSSProperties}>
-              <div className="v">
-                <span className="v-inner">
-                  {it.v}{it.sub && <sub>{it.sub}</sub>}
-                </span>
+          <motion.path
+            className="curve-line-scroll"
+            d="M 0 590 C 500 590, 1000 380, 1200 0"
+            fill="none"
+            stroke="#3B82F6"
+            strokeWidth="1"
+            strokeLinecap="round"
+            style={{ pathLength }}
+          />
+        </svg>
+        <div className="l-wrap stats-wrap">
+          <h2 className="stats-intro">
+            <span className="lead">Built for the pace of cafe supply.</span>{' '}
+            <span className="rest">
+              Gradient connects every café, supplier, and brand on one live network
+              daily procurement, real-time stock, and trial conversion you can actually trace.
+            </span>
+          </h2>
+          <div className="stats-grid">
+            {items.map((it, i) => (
+              <div className="it" key={i} style={{ '--d': `${i * 110}ms` } as React.CSSProperties}>
+                <div className="v">
+                  <span className="v-inner">
+                    {it.v}{it.sub && <sub>{it.sub}</sub>}
+                  </span>
+                </div>
+                <div className="l" dangerouslySetInnerHTML={{ __html: it.l }} />
               </div>
-              <div className="l" dangerouslySetInnerHTML={{ __html: it.l }} />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
 

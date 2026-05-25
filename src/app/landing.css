@@ -981,6 +981,40 @@ section.l-sec.tight { padding: 80px 0; }
 .integ .ig .ct { font-size: 11px; color: var(--ink-soft); }
 
 /* ─── Stats ─────────────────────────────────────────────────────────── */
+/* Scroll-pin scaffold: outer 220vh gives 120vh of pinned scroll inside the sticky inner. */
+.stats-pin-outer {
+  position: relative;
+  height: 100vh;
+}
+section.l-sec.stats-sec.stats-pin-inner {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  max-width: none;
+  padding: 0;
+}
+section.l-sec.stats-sec.stats-pin-inner > .l-wrap {
+  max-width: 1120px;
+  padding: 84px var(--pad-x);
+  width: 100%;
+}
+/* Anchor pinned-stats content to left half so the rising curve on the right doesn't intersect it. */
+section.l-sec.stats-sec.stats-pin-inner .stats-intro {
+  max-width: 620px;
+}
+section.l-sec.stats-sec.stats-pin-inner .stats-grid {
+  max-width: 560px;
+}
+@media (min-width: 900px) {
+  section.l-sec.stats-sec.stats-pin-inner .stats-intro,
+  section.l-sec.stats-sec.stats-pin-inner .stats-grid {
+    margin-right: auto;
+    margin-left: 0;
+  }
+}
 section.l-sec.stats-sec {
   position: relative;
   overflow: hidden;
@@ -990,6 +1024,7 @@ section.l-sec.stats-sec {
   margin: 0 auto;
   border: 0;
   border-radius: 0;
+  width: 100%;
 }
 .stats-curve {
   position: absolute; inset: 0;
@@ -1008,7 +1043,7 @@ section.l-sec.stats-sec {
   animation: none;
 }
 .stats-sec.is-in .stats-curve .curve-line {
-  animation: statsDrawCurve 2.6s cubic-bezier(.22,.61,.36,1) .7s forwards;
+  animation: statsDrawCurve 2.0s cubic-bezier(.22,.61,.36,1) .1s forwards;
 }
 .stats-curve .stats-area {
   opacity: 0;
@@ -1016,7 +1051,7 @@ section.l-sec.stats-sec {
 }
 .stats-sec.is-in .stats-curve .stats-area {
   opacity: 1;
-  transition: opacity 1.2s ease 1.4s;
+  transition: opacity 1.0s ease 1.2s;
 }
 .stats-curve .stats-grid-lines line {
   opacity: 0;
