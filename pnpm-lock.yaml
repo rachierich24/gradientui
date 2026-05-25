@@ -8,10 +8,10 @@ importers:
 
   .:
     dependencies:
-      '@gradient365/types':
+      '@gradient365/gradient-commons':
         specifier: file:../types
         version: file:../types
-      '@gradient365/ui':
+      '@gradient365/gradientui-commons':
         specifier: file:../ui
         version: file:../ui(framer-motion@11.18.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)
       framer-motion:
@@ -58,10 +58,10 @@ packages:
   '@emnapi/runtime@1.10.0':
     resolution: {integrity: sha512-ewvYlk86xUoGI0zQRNq/mC+16R1QeDlKQy21Ki3oSYXNgLb45GV1P6A0M+/s6nyCuNDqe5VpaY84BzXGwVbwFA==}
 
-  '@gradient365/types@file:../types':
+  '@gradient365/gradient-commons@file:../types':
     resolution: {directory: ../types, type: directory}
 
-  '@gradient365/ui@file:../ui':
+  '@gradient365/gradientui-commons@file:../ui':
     resolution: {directory: ../ui, type: directory}
     peerDependencies:
       framer-motion: ^11.0.0
@@ -634,9 +634,9 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@gradient365/types@file:../types': {}
+  '@gradient365/gradient-commons@file:../types': {}
 
-  '@gradient365/ui@file:../ui(framer-motion@11.18.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)':
+  '@gradient365/gradientui-commons@file:../ui(framer-motion@11.18.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)':
     dependencies:
       framer-motion: 11.18.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react: 19.2.6
