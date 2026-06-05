@@ -7,6 +7,9 @@ dist/
 
 # Local dev artifacts
 dev.log
+dev-mobile.log
+dev-verify.log
+dev-verify.err.log
 npm-install.log
 design-unpacked/
 package-lock.json

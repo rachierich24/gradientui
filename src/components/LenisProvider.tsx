@@ -4,13 +4,14 @@ import Lenis from 'lenis';
 
 export function LenisProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    // lerp and duration are mutually exclusive in Lenis — use lerp alone for a
+    // smooth-but-responsive follow. Higher wheelMultiplier = more travel per
+    // wheel notch, so less hand-scrolling to move down the page.
     const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.6,
       lerp: 0.1,
+      smoothWheel: true,
+      wheelMultiplier: 1.3,
+      touchMultiplier: 1.5,
     });
 
     let rafId: number;

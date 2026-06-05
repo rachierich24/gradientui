@@ -23,14 +23,14 @@ export function LScrollQuote() {
     offset: ['start start', 'end start'],
   });
 
-  // Outer 280vh, sticky 100vh → pinned phase ends at progress 0.643.
-  // Reveal must finish before that, with attribution + breathing room inside the pinned range.
-  const attribOpacity = useTransform(scrollYProgress, [0.50, 0.58], [0, 1]);
-  const attribY = useTransform(scrollYProgress, [0.50, 0.58], [12, 0]);
+  // Outer 190vh, sticky 100vh → pinned phase ends at progress ~0.47.
+  // Reveal + attribution finish before that so nothing pops after it unpins.
+  const attribOpacity = useTransform(scrollYProgress, [0.33, 0.41], [0, 1]);
+  const attribY = useTransform(scrollYProgress, [0.33, 0.41], [12, 0]);
 
   const words = QUOTE.split(' ');
-  const PACK_START = 0.05;
-  const PACK_END = 0.48;            // last word fully inked by progress 0.48
+  const PACK_START = 0.04;
+  const PACK_END = 0.30;            // last word fully inked by progress 0.30
   const slice = (PACK_END - PACK_START) / words.length;
 
   return (

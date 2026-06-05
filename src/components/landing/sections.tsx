@@ -1,6 +1,6 @@
 'use client';
 // Landing page sections ported from Figma Make export 0006.js
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, type CSSProperties } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 import { Icon } from './icons';
 import { HeroDashboard, ShowcaseSourcing, ShowcaseInventory, ShowcaseInsights } from './mocks';
@@ -90,6 +90,37 @@ export function LHero() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  // Fluidly scale the desktop product dashboard to fit narrow screens, instead
+  // of letting it bleed off-screen / horizontal-scroll. Renders as a true-to-life
+  // miniature of the real product. transform can't read parent width in CSS, so JS.
+  const peekRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const peek = peekRef.current;
+    const frame = frameRef.current;
+    if (!peek || !frame) return;
+    const DESIGN_W = 980; // width at which the 2-column dashboard looks right
+    const fit = () => {
+      const avail = peek.clientWidth;
+      if (avail >= DESIGN_W) {
+        frame.style.width = '';
+        frame.style.transform = '';
+        peek.style.height = '';
+        return;
+      }
+      const scale = avail / DESIGN_W;
+      frame.style.width = `${DESIGN_W}px`;
+      frame.style.transformOrigin = 'top left';
+      frame.style.transform = `scale(${scale})`;
+      peek.style.height = `${frame.offsetHeight * scale}px`;
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(peek);
+    return () => ro.disconnect();
+  }, []);
+
   const sw = 1.2;
   const rx = eyeDim.h ? eyeDim.h / 2 : 14;
   return (
@@ -157,7 +188,7 @@ export function LHero() {
       </div>
 
       <div className="l-wrap hero-peek-wrap">
-        <div className="hero-peek">
+        <div className="hero-peek" ref={peekRef}>
           <div className="float-chip a">
             <div className="ic" style={{ background: 'var(--c-green-bg)', color: 'var(--c-green)' }}><Icon.Check size={16}/></div>
             <div>
@@ -180,7 +211,7 @@ export function LHero() {
             </div>
           </div>
 
-          <div className="hero-peek-frame">
+          <div className="hero-peek-frame" ref={frameRef}>
             <HeroDashboard />
           </div>
           <div className="hero-peek-fade"></div>
@@ -196,15 +227,26 @@ export function LProofStrip() {
     { k: 'Trial ROI', v: '47 live kits', d: 'Brands see only their own conversion signals.' },
     { k: 'Fulfilment', v: '94.2% on-time', d: 'Supplier dispatch risk updates every 12 minutes.' },
   ];
+  const gridRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } },
+      { threshold: 0.2 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   return (
     <section className="proof-strip" id="proof">
-      <div className="l-wrap proof-grid">
-        <div className="proof-kicker">
+      <div className="l-wrap proof-grid" ref={gridRef}>
+        <div className="proof-kicker" style={{ '--i': 0 } as CSSProperties}>
           <span>Built around the actual trade</span>
           <strong>No direct brand-to-cafe leakage. No spreadsheet reconciliation.</strong>
         </div>
-        {proof.map((item) => (
-          <div className="proof-item" key={item.k}>
+        {proof.map((item, i) => (
+          <div className="proof-item" key={item.k} style={{ '--i': i + 1 } as CSSProperties}>
             <span>{item.k}</span>
             <strong>{item.v}</strong>
             <p>{item.d}</p>
@@ -215,27 +257,52 @@ export function LProofStrip() {
   );
 }
 
+function LogoMark({ nm, img, co }: { nm: string; img?: string; co: string }) {
+  // Real logo images already contain the wordmark, so show the image alone.
+  // Brands without an asset yet fall back to the lettermark badge + name.
+  // Grayscale by default, colour on hover (CSS on .lg).
+  const [err, setErr] = useState(false);
+  return (
+    <span className="lg">
+      {img && !err ? (
+        <img className="lg-img" src={img} alt={nm} loading="lazy" onError={() => setErr(true)} />
+      ) : (
+        <>
+          <span className="mk" style={{ background: co }}>{nm[0]}</span>
+          <span className="lg-nm">{nm}</span>
+        </>
+      )}
+    </span>
+  );
+}
+
 export function LLogos() {
   const logos = [
-    { nm: 'Blue Tokai', co: 'var(--ink)' },
-    { nm: 'Subko', co: 'var(--c-orange)' },
-    { nm: 'Araku', co: 'var(--c-green)' },
-    { nm: 'Third Wave', co: 'var(--c-purple)' },
-    { nm: 'Roastery', co: 'var(--c-blue)' },
-    { nm: 'KCR', co: 'var(--c-pink)' },
-    { nm: 'Devans', co: 'var(--ink-2)' },
+    { nm: 'Blue Tokai', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
+    { nm: 'Subko', img: '/logos/subko.png', co: 'var(--c-orange)' },
+    { nm: 'Araku', img: '/logos/araku.png', co: 'var(--c-green)' },
+    { nm: 'Third Wave', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
+    { nm: 'Sleepy Owl', img: '/logos/sleepy-owl.png', co: 'var(--c-blue)' },
+    { nm: 'Rage Coffee', img: '/logos/rage-coffee.jpeg', co: 'var(--c-pink)' },
+    { nm: 'Country Bean', img: '/logos/country-bean.png', co: 'var(--ink-2)' },
+    { nm: "Narasu's", img: '/logos/narasus.png', co: 'var(--c-blue)' },
+    { nm: 'Cothas', img: '/logos/cothas.png', co: 'var(--c-pink)' },
   ];
   return (
-    <section className="l-sec tight">
-      <div className="l-wrap logos">
+    <section className="l-sec tight logos">
+      <div className="l-wrap">
         <div className="label">Powering supply for the cafés you already love</div>
-        <div className="logos-row">
-          {logos.map((l, i) => (
-            <span key={i} className="lg">
-              <span className="mk" style={{ background: l.co }}>{l.nm[0]}</span>
-              {l.nm}
-            </span>
+      </div>
+      <div className="logos-row">
+        <div className="logos-track">
+          {logos.map((l) => (
+            <LogoMark key={l.nm} nm={l.nm} img={l.img} co={l.co} />
           ))}
+          <span aria-hidden="true" style={{ display: 'contents' }}>
+            {logos.map((l) => (
+              <LogoMark key={`dup-${l.nm}`} nm={l.nm} img={l.img} co={l.co} />
+            ))}
+          </span>
         </div>
       </div>
     </section>
@@ -294,10 +361,10 @@ function DualSupVisual() {
 
 export function LDual() {
   return (
-    <section className="l-sec">
+    <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div className="sec-eyebrow" style={{ justifyContent: 'center' }}>Built for both sides</div>
+          <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Built for both sides</div>
           <h2 className="sec-h" style={{ margin: '0 auto' }}>Two sides. <em>One</em> portal.</h2>
           <p className="sec-lead" style={{ margin: '18px auto 0' }}>
             Cafés get a sourcing layer they never had. Suppliers get a sales channel that runs
@@ -355,20 +422,56 @@ export function LShowcase() {
     offset: ['start start', 'end end'],
   });
 
-  // Outer = 340vh, sticky = 100vh → pinned phase ends at progress ≈ 0.706.
-  // Split that pinned window into 3 equal tab segments (~0.235 each).
+  // Outer = 200vh, sticky = 100vh → pinned phase ends at progress 0.5.
+  // Split that pinned window into 3 equal tab segments (~0.167 each).
   useMotionValueEvent(scrollYProgress, 'change', (p) => {
-    const next = p < 0.235 ? 0 : p < 0.47 ? 1 : 2;
+    const next = p < 0.167 ? 0 : p < 0.333 ? 1 : 2;
     setTab((cur) => (cur === next ? cur : next));
   });
+
+  // Scale the desktop-width product mocks to fit narrow stages, instead of
+  // cramming/clipping them. Same technique as the hero peek: render at a fixed
+  // design width and scale to the available width, collapsing the card height
+  // to match. transform can't read parent width in CSS, so JS.
+  const stageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const DESIGN_W = 620;
+    const fits = Array.from(stage.querySelectorAll<HTMLElement>('.stage-fit'));
+    const fit = () => {
+      const avail = stage.clientWidth;
+      if (avail >= DESIGN_W) {
+        stage.style.height = '';
+        fits.forEach((f) => { f.style.width = ''; f.style.height = ''; f.style.transform = ''; });
+        return;
+      }
+      const scale = avail / DESIGN_W;
+      // Measure each pane's natural height at the design width, fit the card to the tallest.
+      let maxH = 0;
+      fits.forEach((f) => {
+        f.style.width = `${DESIGN_W}px`;
+        f.style.height = 'auto';
+        f.style.transform = 'none';
+        maxH = Math.max(maxH, f.scrollHeight);
+      });
+      maxH += 24; // headroom: flex children settle a touch taller than scrollHeight reports
+      fits.forEach((f) => { f.style.height = `${maxH}px`; f.style.transform = `scale(${scale})`; });
+      stage.style.height = `${maxH * scale}px`;
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(stage);
+    return () => ro.disconnect();
+  }, []);
 
   const scrollToTab = (i: number) => {
     const el = outerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const top = window.scrollY + rect.top;
-    // Anchor each tab at the middle of its 0.235-progress slice.
-    const targetProgress = 0.118 + i * 0.235;
+    // Anchor each tab at the middle of its 0.167-progress slice.
+    const targetProgress = 0.083 + i * 0.167;
     const totalScroll = rect.height - window.innerHeight;
     window.scrollTo({ top: top + targetProgress * totalScroll, behavior: 'smooth' });
   };
@@ -407,10 +510,10 @@ export function LShowcase() {
               </div>
 
               <div className="showcase-preview">
-                <div className="showcase-stage">
-                  <div className={`stage-pane ${tab === 0 ? 'on' : ''}`}><ShowcaseSourcing/></div>
-                  <div className={`stage-pane ${tab === 1 ? 'on' : ''}`}><ShowcaseInventory/></div>
-                  <div className={`stage-pane ${tab === 2 ? 'on' : ''}`}><ShowcaseInsights/></div>
+                <div className="showcase-stage" ref={stageRef}>
+                  <div className={`stage-pane ${tab === 0 ? 'on' : ''}`}><div className="stage-fit"><ShowcaseSourcing/></div></div>
+                  <div className={`stage-pane ${tab === 1 ? 'on' : ''}`}><div className="stage-fit"><ShowcaseInventory/></div></div>
+                  <div className={`stage-pane ${tab === 2 ? 'on' : ''}`}><div className="stage-fit"><ShowcaseInsights/></div></div>
                 </div>
               </div>
             </div>
@@ -429,7 +532,7 @@ function BentoMultiCart() {
     { nm: 'Third Wave · Kelagur', q: '15 kg', pr: '₹10,200', co: 'blue' },
   ];
   return (
-    <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+    <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
       {cards.map((c, i) => (
         <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--border-soft)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 32, height: 32, borderRadius: 8, background: `var(--c-${c.co}-bg)`, display: 'grid', placeItems: 'center' }}>
@@ -442,7 +545,7 @@ function BentoMultiCart() {
           <div style={{ fontSize: 12.5, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{c.pr}</div>
         </div>
       ))}
-      <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--ink)', color: '#fff', borderRadius: 12 }}>
+      <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--ink)', color: '#fff', borderRadius: 12 }}>
         <div style={{ fontSize: 11.5, fontWeight: 600, opacity: .7 }}>Total · 4 suppliers · 1 invoice</div>
         <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums' }}>₹26,500</div>
       </div>
@@ -623,7 +726,7 @@ export function LBento() {
       <div className="l-wrap">
         <div className="chapters-head">
           <div>
-            <div className="sec-eyebrow">Product chapters</div>
+            <div className="sec-eyebrow sec-eyebrow--plain">Product chapters</div>
             <h2 className="sec-h">A supply network, explained through the product.</h2>
           </div>
           <p className="sec-lead">Gradient makes cafe procurement tangible: every actor gets the interface they need, and privacy walls hold the network together.</p>
@@ -680,7 +783,7 @@ export function LSteps() {
       <div className="l-wrap">
         <div className="sec-head-row">
           <div>
-            <div className="sec-eyebrow">How it works</div>
+            <div className="sec-eyebrow sec-eyebrow--plain">How it works</div>
             <h2 className="sec-h">Live in a <em>week</em>. Not a quarter.</h2>
           </div>
           <p className="sec-lead">No implementation team. No annual contract. Connect what you already use and Gradient takes it from there.</p>
@@ -698,35 +801,58 @@ export function LSteps() {
   );
 }
 
-export function LInteg() {
-  const integ = [
-    { nm: 'Petpooja', ct: 'POS', co: 'var(--c-orange)' },
-    { nm: 'urbanPiper', ct: 'POS', co: 'var(--c-blue)' },
-    { nm: 'Tally', ct: 'Accounting', co: 'var(--c-green)' },
-    { nm: 'Zoho Books', ct: 'Accounting', co: 'var(--c-purple)' },
-    { nm: 'WhatsApp', ct: 'Messaging', co: '#25D366' },
-    { nm: 'Shopify', ct: 'Storefront', co: '#7AB55C' },
-    { nm: 'Razorpay', ct: 'Payments', co: 'var(--c-blue)' },
-    { nm: 'GST Portal', ct: 'Compliance', co: 'var(--ink)' },
-    { nm: 'Slack', ct: 'Comms', co: '#611f69' },
-    { nm: 'Google Sheets', ct: 'Reports', co: '#0F9D58' },
-    { nm: 'Stripe', ct: 'Payments', co: '#635BFF' },
-    { nm: 'FSSAI', ct: 'Compliance', co: 'var(--c-cyan)' },
-  ];
+function IntegLogo({ nm, img, box, co }: { nm: string; img?: string; box?: string; co: string }) {
+  const [err, setErr] = useState(false);
+  if (!img || err) return <div className="logo" style={{ background: co }}>{nm[0]}</div>;
   return (
-    <section className="l-sec">
+    <div className={`logo logo-img logo-${box}`}>
+      <img src={img} alt={nm} loading="lazy" onError={() => setErr(true)} />
+    </div>
+  );
+}
+
+export function LInteg() {
+  // box: 'cover' = square app-icon fills the tile; 'pad' = transparent mark on light;
+  // 'dark' = light/white mark on a dark tile so it stays visible.
+  const integ = [
+    { nm: 'Petpooja', ct: 'POS', img: '/logos/integrations/petpooja.jpeg', box: 'cover', co: 'var(--c-orange)' },
+    { nm: 'urbanPiper', ct: 'POS', img: '/logos/integrations/urbanpiper.jpeg', box: 'cover', co: 'var(--c-blue)' },
+    { nm: 'Tally', ct: 'Accounting', img: '/logos/integrations/tally.jpeg', box: 'cover', co: 'var(--c-green)' },
+    { nm: 'Zoho Books', ct: 'Accounting', img: '/logos/integrations/zoho-books.jpeg', box: 'cover', co: 'var(--c-purple)' },
+    { nm: 'WhatsApp', ct: 'Messaging', img: '/logos/integrations/whatsapp.svg', box: 'pad', co: '#25D366' },
+    { nm: 'Shopify', ct: 'Storefront', img: '/logos/integrations/shopify.svg', box: 'pad', co: '#7AB55C' },
+    { nm: 'Razorpay', ct: 'Payments', img: '/logos/integrations/razorpay.jpeg', box: 'cover', co: 'var(--c-blue)' },
+    { nm: 'GST Portal', ct: 'Compliance', img: '/logos/integrations/gst.svg', box: 'dark', co: 'var(--ink)' },
+    { nm: 'Slack', ct: 'Comms', img: '/logos/integrations/slack.svg', box: 'pad', co: '#611f69' },
+    { nm: 'Google Sheets', ct: 'Reports', img: '/logos/integrations/google-sheets.png', box: 'pad', co: '#0F9D58' },
+    { nm: 'Stripe', ct: 'Payments', img: '/logos/integrations/stripe.jpeg', box: 'cover', co: '#635BFF' },
+    { nm: 'FSSAI', ct: 'Compliance', img: '/logos/integrations/fssai.jpeg', box: 'cover', co: 'var(--c-cyan)' },
+  ];
+  const gridRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } },
+      { threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
         <div className="sec-head-row">
           <div>
-            <div className="sec-eyebrow">Integrations</div>
+            <div className="sec-eyebrow sec-eyebrow--plain">Integrations</div>
             <h2 className="sec-h">Plays nicely with the stack you <em>already</em> run.</h2>
           </div>
           <p className="sec-lead">Two-way sync with the tools cafés and suppliers actually use. Set it once, forget it forever.</p>
         </div>
-        <div className="integ">
+        <div className="integ" ref={gridRef}>
           {integ.map((g, i) => (
-            <div className="ig" key={i}>
-              <div className="logo" style={{ background: g.co }}>{g.nm[0]}</div>
+            <div className="ig" key={i} style={{ '--i': i } as CSSProperties}>
+              <IntegLogo nm={g.nm} img={g.img} box={g.box} co={g.co} />
               <div>
                 <div className="nm">{g.nm}</div>
                 <div className="ct">{g.ct}</div>
@@ -739,12 +865,27 @@ export function LInteg() {
   );
 }
 
+function CountUp({ to, inView, prefix = '', format = false }: { to: number; inView: boolean; prefix?: string; format?: boolean }) {
+  const mv = useMotionValue(0);
+  const [display, setDisplay] = useState('0');
+  useEffect(() => {
+    if (!inView) return;
+    const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const render = (n: number) => setDisplay(format ? n.toLocaleString('en-IN') : String(n));
+    if (reduced) { render(to); return; }
+    const controls = animate(mv, to, { duration: 1.7, ease: [0.22, 0.61, 0.36, 1] });
+    const unsub = mv.on('change', (v) => render(Math.round(v)));
+    return () => { controls.stop(); unsub(); };
+  }, [inView, to, format, mv]);
+  return <>{prefix}{display}</>;
+}
+
 export function LStats() {
   const items = [
-    { v: '1,240', l: 'cafés actively running on Gradient' },
-    { v: '340', sub: '+', l: 'suppliers, roasters &amp; brands' },
-    { v: '₹84', sub: 'Cr', l: 'monthly GMV moving through the platform' },
-    { v: '94', sub: '%', l: 'on-time fulfilment, week over week' },
+    { pre: '', num: 1240, fmt: true, sub: '', l: 'cafés actively running on Gradient' },
+    { pre: '', num: 340, fmt: false, sub: '+', l: 'suppliers, roasters &amp; brands' },
+    { pre: '₹', num: 84, fmt: false, sub: 'Cr', l: 'monthly GMV moving through the platform' },
+    { pre: '', num: 94, fmt: false, sub: '%', l: 'on-time fulfilment, week over week' },
   ];
   // Layout scaffold kept identical to the prior scroll-pin version (outer 100vh + sticky inner 100vh).
   // Animation is now time-driven on first viewport entry. Body scroll is locked while it plays,
@@ -814,6 +955,7 @@ export function LStats() {
         ref={innerRef}
         className={`l-sec stats-sec stats-pin-inner ${inView ? 'is-in' : ''}`}
       >
+        <div className="stats-frame" aria-hidden="true">
         <svg
           className="stats-curve"
           viewBox="0 0 1200 600"
@@ -827,13 +969,13 @@ export function LStats() {
               <stop offset="100%" stopColor="hsl(220 22% 55%)" stopOpacity="0.14" />
             </linearGradient>
             <clipPath id="statsUnderCurve" clipPathUnits="userSpaceOnUse">
-              <path d="M 0 590 C 500 590, 1000 380, 1200 0 L 1200 600 L 0 600 Z" />
+              <path d="M 0 510 C 470 500, 900 300, 1200 0 L 1200 600 L 0 600 Z" />
             </clipPath>
           </defs>
 
           <motion.path
             className="stats-area-scroll"
-            d="M 0 590 C 500 590, 1000 380, 1200 0 L 1200 600 L 0 600 Z"
+            d="M 0 510 C 470 500, 900 300, 1200 0 L 1200 600 L 0 600 Z"
             fill="url(#statsAreaFill)"
             stroke="none"
             style={{ opacity: areaOpacity }}
@@ -857,14 +999,16 @@ export function LStats() {
 
           <motion.path
             className="curve-line-scroll"
-            d="M 0 590 C 500 590, 1000 380, 1200 0"
+            d="M 0 510 C 470 500, 900 300, 1200 0"
             fill="none"
             stroke="#3B82F6"
-            strokeWidth="1"
+            strokeWidth="1.5"
             strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
             style={{ pathLength }}
           />
         </svg>
+        </div>
         <div className="l-wrap stats-wrap">
           <h2 className="stats-intro">
             <span className="lead">Built for the pace of cafe supply.</span>{' '}
@@ -878,7 +1022,7 @@ export function LStats() {
               <div className="it" key={i} style={{ '--d': `${i * 110}ms` } as React.CSSProperties}>
                 <div className="v">
                   <span className="v-inner">
-                    {it.v}{it.sub && <sub>{it.sub}</sub>}
+                    <CountUp to={it.num} inView={inView} prefix={it.pre} format={it.fmt} />{it.sub && <sub>{it.sub}</sub>}
                   </span>
                 </div>
                 <div className="l" dangerouslySetInnerHTML={{ __html: it.l }} />
