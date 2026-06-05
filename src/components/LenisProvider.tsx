@@ -13,6 +13,10 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       wheelMultiplier: 1.3,
       touchMultiplier: 1.5,
     });
+    // Expose so sections can freeze/resume smooth scroll (e.g. the stats graph
+    // locks scroll while its count-up + curve draw plays). body{overflow:hidden}
+    // alone does NOT stop Lenis — its virtual scroll keeps running.
+    (window as unknown as { lenis?: Lenis }).lenis = lenis;
 
     let rafId: number;
     function raf(time: number) {
@@ -24,6 +28,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      delete (window as unknown as { lenis?: Lenis }).lenis;
     };
   }, []);
 

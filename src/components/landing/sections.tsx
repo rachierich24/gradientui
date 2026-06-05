@@ -257,7 +257,7 @@ export function LProofStrip() {
   );
 }
 
-function LogoMark({ nm, img, co }: { nm: string; img?: string; co: string }) {
+function LogoMark({ nm, img, co, imgClass }: { nm: string; img?: string; co: string; imgClass?: string }) {
   // Real logo images already contain the wordmark, so show the image alone.
   // Brands without an asset yet fall back to the lettermark badge + name.
   // Grayscale by default, colour on hover (CSS on .lg).
@@ -265,7 +265,7 @@ function LogoMark({ nm, img, co }: { nm: string; img?: string; co: string }) {
   return (
     <span className="lg">
       {img && !err ? (
-        <img className="lg-img" src={img} alt={nm} loading="lazy" onError={() => setErr(true)} />
+        <img className={`lg-img ${imgClass ?? ''}`} src={img} alt={nm} loading="lazy" onError={() => setErr(true)} />
       ) : (
         <>
           <span className="mk" style={{ background: co }}>{nm[0]}</span>
@@ -277,7 +277,8 @@ function LogoMark({ nm, img, co }: { nm: string; img?: string; co: string }) {
 }
 
 export function LLogos() {
-  const logos = [
+  const logos: { nm: string; img?: string; co: string; imgClass?: string }[] = [
+    { nm: 'The Raydee Cafe', img: '/logos/raydee.jpeg', co: 'var(--ink)', imgClass: 'lg-img--round' },
     { nm: 'Blue Tokai', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
     { nm: 'Subko', img: '/logos/subko.png', co: 'var(--c-orange)' },
     { nm: 'Araku', img: '/logos/araku.png', co: 'var(--c-green)' },
@@ -296,11 +297,11 @@ export function LLogos() {
       <div className="logos-row">
         <div className="logos-track">
           {logos.map((l) => (
-            <LogoMark key={l.nm} nm={l.nm} img={l.img} co={l.co} />
+            <LogoMark key={l.nm} nm={l.nm} img={l.img} co={l.co} imgClass={l.imgClass} />
           ))}
           <span aria-hidden="true" style={{ display: 'contents' }}>
             {logos.map((l) => (
-              <LogoMark key={`dup-${l.nm}`} nm={l.nm} img={l.img} co={l.co} />
+              <LogoMark key={`dup-${l.nm}`} nm={l.nm} img={l.img} co={l.co} imgClass={l.imgClass} />
             ))}
           </span>
         </div>
@@ -903,7 +904,7 @@ export function LStats() {
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.35 }
+      { threshold: 0.6 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -919,10 +920,14 @@ export function LStats() {
       return;
     }
 
-    // Lock body + html scroll while the graph plays.
-    // Intentionally no cleanup return: in React 18 strict mode dev double-invoke,
-    // cleanup would release the lock immediately after the first invoke. Lock auto-releases
-    // via setTimeout below.
+    // Freeze scroll while the graph plays (count-up + curve draw reaching top-right),
+    // then release. Lenis runs a virtual scroll loop, so body{overflow:hidden} alone
+    // does NOT stop it — must call lenis.stop()/start(). Keep the native blockers as a
+    // fallback for when Lenis isn't present.
+    // No cleanup return: React 18 strict-mode double-invoke would release immediately;
+    // the timeout below auto-releases.
+    const lenis = (window as unknown as { lenis?: { stop: () => void; start: () => void } }).lenis;
+    lenis?.stop();
     const prevBody = document.body.style.overflow;
     const prevHtml = document.documentElement.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -940,8 +945,9 @@ export function LStats() {
     animate(areaOpacity, 1, { duration: 0.9, delay: 1.4, ease: 'easeOut' });
     animate(gridOpacity, 1, { duration: 0.7, delay: 1.6, ease: 'easeOut' });
 
-    const LOCK_MS = 2500;
+    const LOCK_MS = 2400;
     window.setTimeout(() => {
+      lenis?.start();
       document.body.style.overflow = prevBody;
       document.documentElement.style.overflow = prevHtml;
       window.removeEventListener('wheel', prevent);
@@ -1037,11 +1043,11 @@ export function LStats() {
 
 export function LQuotes() {
   return (
-    <section className="l-sec">
+    <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
         <div className="sec-head-row">
           <div>
-            <div className="sec-eyebrow">Word on the floor</div>
+            <div className="sec-eyebrow sec-eyebrow--plain">Word on the floor</div>
             <h2 className="sec-h">Loved by both <em>sides</em> of the counter.</h2>
           </div>
         </div>
@@ -1114,10 +1120,10 @@ export function LPricing() {
     },
   ];
   return (
-    <section className="l-sec" id="pricing">
+    <section className="l-sec l-sec--pull-up" id="pricing">
       <div className="l-wrap">
         <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <div className="sec-eyebrow" style={{ justifyContent: 'center' }}>Pricing</div>
+          <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Pricing</div>
           <h2 className="sec-h" style={{ margin: '0 auto' }}>Priced for the way you <em>actually</em> trade.</h2>
           <p className="sec-lead" style={{ margin: '18px auto 0' }}>
             Flat platform fee. No per-order cuts on Starter and Growth. Cancel anytime.
@@ -1142,7 +1148,11 @@ export function LPricing() {
             </div>
           ))}
         </div>
-        <p className="pricing-hr">All plans include GST-ready invoicing · 99.9% uptime · SOC-2 Type II compliance.</p>
+        <p className="pricing-hr">
+          <span>GST-ready invoicing</span>
+          <span>99.9% uptime</span>
+          <span>SOC-2 Type II compliance</span>
+        </p>
       </div>
     </section>
   );
@@ -1150,18 +1160,22 @@ export function LPricing() {
 
 export function LFinalCTA() {
   return (
-    <section className="l-sec">
+    <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
         <div className="cta-final">
           <div className="cta-final-grid">
             <div>
-              <div className="sec-eyebrow" style={{ color: 'rgba(255,255,255,.62)' }}>Ready when you are</div>
+              <div className="sec-eyebrow sec-eyebrow--plain" style={{ color: 'rgba(255,255,255,.62)' }}>Ready when you are</div>
               <h2>Bring the daily cafe buying loop online.</h2>
               <p>Launch with cafe ordering, supplier fulfilment, and brand trial tracking in one network. Start narrow, then let the graph compound.</p>
             </div>
             <div className="cta-final-card">
               <span>Suggested pilot</span>
-              <strong>25 cafes / 6 suppliers / 3 trial brands</strong>
+              <div className="cta-pilot-stats">
+                <div><strong>25</strong><em>cafés</em></div>
+                <div><strong>6</strong><em>suppliers</em></div>
+                <div><strong>3</strong><em>trial brands</em></div>
+              </div>
               <p>Enough density to prove repeat orders, delivery reliability, and trial-to-order conversion without boiling the ocean.</p>
               <div className="hero-ctas">
                 <a className="btn-l dark" href="/contact">Start the pilot <span><Icon.Arrow size={13}/></span></a>

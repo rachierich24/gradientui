@@ -115,78 +115,36 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* Pricing cards */}
-        <section className="section">
-          <div className="container">
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
-              initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} variants={stagger}
-              style={{ maxWidth: '960px', margin: '0 auto', alignItems: 'stretch' }}
-            >
-              {plans.map(plan => (
-                <motion.div
-                  key={plan.name}
-                  variants={fadeUp}
-                  style={{
-                    position: 'relative',
-                    padding: '32px',
-                    borderRadius: '20px',
-                    background: plan.bg,
-                    border: `1.5px solid ${plan.border}`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    ...(plan.badge ? { boxShadow: `0 0 0 3px ${plan.color}22, 0 20px 40px rgba(0,0,0,0.08)` } : {}),
-                  }}
-                >
-                  {plan.badge && (
-                    <div style={{
-                      position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)',
-                      background: plan.color, color: 'white',
-                      fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em',
-                      padding: '4px 12px', borderRadius: '99px', whiteSpace: 'nowrap',
-                    }}>
-                      {plan.badge.toUpperCase()}
-                    </div>
-                  )}
-
-                  <div style={{ marginBottom: '24px' }}>
-                    <p style={{ fontSize: '13px', fontWeight: 700, color: plan.color, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>{plan.name}</p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '40px', fontWeight: 800, color: '#061b31', letterSpacing: '-0.02em' }}>{plan.price}</span>
-                      {plan.period && <span style={{ fontSize: '15px', color: '#425466' }}>{plan.period}</span>}
-                    </div>
-                    <p style={{ fontSize: '14px', color: '#425466', lineHeight: 1.5 }}>{plan.desc}</p>
-                  </div>
-
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '32px', flexGrow: 1 }}>
-                    {plan.features.map(feature => (
-                      <li key={feature} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '14px', color: '#425466' }}>
-                        <span style={{ color: plan.color, fontWeight: 700, flexShrink: 0, marginTop: '1px' }}>✓</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    href={plan.ctaHref}
-                    className={plan.badge ? 'btn-primary' : 'btn-secondary'}
-                    style={{
-                      textAlign: 'center',
-                      justifyContent: 'center',
-                      ...(plan.badge ? {} : { borderColor: plan.border, color: plan.color }),
-                    }}
-                  >
-                    {plan.cta} →
-                  </a>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+        {/* Pricing cards — same design as the home page tiers */}
+        <section style={{ paddingBottom: '96px' }}>
+          <motion.div
+            className="l-wrap pricing"
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} variants={stagger}
+            style={{ alignItems: 'stretch' }}
+          >
+            {plans.map(plan => (
+              <motion.div key={plan.name} variants={fadeUp} className={`tier ${plan.badge ? 'feat' : ''}`}>
+                {plan.badge && <span className="badge">{plan.badge}</span>}
+                <div className="nm">{plan.name}</div>
+                <div className="pr">{plan.price}{plan.period && <small>{plan.period}</small>}</div>
+                <p className="dsc">{plan.desc}</p>
+                <a className="pick" href={plan.ctaHref}>{plan.cta} →</a>
+                <ul className="feat-list">
+                  {plan.features.map(feature => (
+                    <li key={feature}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={plan.badge ? '#fff' : 'var(--ink)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </motion.div>
         </section>
 
         {/* FAQ */}
         <section className="section" style={{ backgroundColor: 'var(--portal-surface)', borderTop: '1px solid var(--portal-border)' }}>
-          <div className="container" style={{ maxWidth: '720px' }}>
+          <div className="container" style={{ maxWidth: '960px', paddingInline: 'clamp(28px, 6vw, 40px)' }}>
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }} variants={fadeUp}
               style={{ textAlign: 'center', marginBottom: '48px' }}
@@ -200,16 +158,16 @@ export default function PricingPage() {
             </motion.div>
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={stagger}
-              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px', alignItems: 'start' }}
             >
               {faqs.map(faq => (
                 <motion.div
                   key={faq.q}
                   variants={fadeUp}
-                  style={{ padding: '24px', background: 'white', borderRadius: '12px', border: '1.5px solid #e6ebf1' }}
+                  style={{ padding: '30px 32px', background: 'white', borderRadius: '16px', border: '1.5px solid #e6ebf1' }}
                 >
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#061b31', marginBottom: '8px' }}>{faq.q}</h3>
-                  <p style={{ fontSize: '15px', color: '#425466', lineHeight: 1.65 }}>{faq.a}</p>
+                  <h3 style={{ fontSize: '16.5px', fontWeight: 700, color: '#061b31', marginBottom: '12px', lineHeight: 1.4 }}>{faq.q}</h3>
+                  <p style={{ fontSize: '15px', color: '#425466', lineHeight: 1.7 }}>{faq.a}</p>
                 </motion.div>
               ))}
             </motion.div>

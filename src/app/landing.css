@@ -645,11 +645,19 @@ section.l-sec.l-sec--pull-up { padding-top: 32px; padding-bottom: 48px; }
   width: max-content;
   align-items: center;
   animation: logosScroll 42s linear infinite;
+  will-change: transform;            /* GPU compositing → no stutter on the loop */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .logos-row:hover .logos-track { animation-play-state: paused; }
 @keyframes logosScroll {
-  from { transform: translateX(-50%); }   /* duplicated set → seamless rightward loop */
-  to   { transform: translateX(0); }
+  /* duplicated set; translate exactly one set width → seamless, jump-free loop */
+  from { transform: translate3d(-50%, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+/* Faster on mobile — fewer logos on screen, so the same duration reads as crawling */
+@media (max-width: 640px) {
+  .logos-track { animation-duration: 20s; }
 }
 @media (prefers-reduced-motion: reduce) {
   .logos-track { animation: none; }
@@ -665,6 +673,8 @@ section.l-sec.l-sec--pull-up { padding-top: 32px; padding-bottom: 48px; }
 }
 .logos-row .lg .mk { width: 22px; height: 22px; border-radius: 5px; display: inline-grid; place-items: center; font-size: 12px; color: #fff; font-weight: 800; }
 .logos-row .lg-img { height: 40px; width: auto; max-width: 150px; object-fit: contain; display: block; }
+/* Circular badge for square white-bg logos (e.g. Raydee) so corners don't read as a sticker */
+.logos-row .lg-img.lg-img--round { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
 .logos-row .lg .lg-nm { white-space: nowrap; }
 
 /* ─── Dual audience ─────────────────────────────────────────────────── */
@@ -1045,12 +1055,14 @@ section.l-sec.chapters { padding-top: 48px; }
   transition: opacity .3s ease;
   pointer-events: none;
 }
-.step:hover {
+.step:hover,
+.step:active {
   transform: translateY(-6px);
   box-shadow: 0 26px 56px -32px rgba(15,23,42,.28);
   border-color: rgba(10,10,11,.14);
 }
-.step:hover::after { opacity: 1; }
+.step:hover::after,
+.step:active::after { opacity: 1; }
 .step::before {
   counter-increment: step;
   content: counter(step, decimal-leading-zero);
@@ -1062,7 +1074,8 @@ section.l-sec.chapters { padding-top: 48px; }
   z-index: 1;
   transition: color .28s ease, transform .28s cubic-bezier(.23,1,.32,1);
 }
-.step:hover::before { color: var(--c-orange); transform: translateY(-2px) scale(1.06); }
+.step:hover::before,
+.step:active::before { color: var(--c-orange); transform: translateY(-2px) scale(1.06); }
 .step > * { position: relative; z-index: 1; }
 .step h5 { margin: 90px 0 8px; font-size: 20px; font-weight: 700; letter-spacing: -.015em; }
 .step p { margin: 0; color: var(--ink-soft); font-size: 13.5px; line-height: 1.5; }
@@ -1135,7 +1148,7 @@ section.l-sec.stats-sec.stats-pin-inner {
   height: 90vh;
   min-height: 90vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;   /* top-align so bottom stats clear the rising curve */
   max-width: none;
   padding: 0;
 }
@@ -1220,12 +1233,12 @@ section.l-sec.stats-sec {
 }
 .stats-wrap { position: relative; z-index: 1; }
 .stats-intro {
-  max-width: 750px;
-  font-size: 26px;
-  line-height: 1.3;
+  max-width: 620px;
+  font-size: 21px;
+  line-height: 1.32;
   letter-spacing: -.02em;
   font-weight: 600;
-  margin: 0 0 24px;
+  margin: 0 0 22px;
 }
 .stats-intro .lead { color: var(--ink); }
 .stats-intro .rest { color: var(--ink-soft); font-weight: 500; }
@@ -1235,8 +1248,8 @@ section.l-sec.stats-sec {
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 38px 12px;
-  max-width: 560px;
+  gap: 30px 12px;
+  max-width: 520px;
 }
 .stats-grid .it {
   display: flex; flex-direction: column; gap: 8px;
@@ -1244,7 +1257,7 @@ section.l-sec.stats-sec {
   border-left: 2px solid rgba(10,10,11,.85);
 }
 .stats-grid .it .v {
-  font-size: 44px; font-weight: 700;
+  font-size: 36px; font-weight: 700;
   letter-spacing: -.035em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -1253,7 +1266,7 @@ section.l-sec.stats-sec {
 }
 .stats-grid .it .v em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 .stats-grid .it .v sub {
-  font-size: 22px; vertical-align: baseline;
+  font-size: 18px; vertical-align: baseline;
   color: var(--ink-soft); font-weight: 600; margin-left: 4px;
 }
 .stats-grid .it .v .v-inner {
@@ -1270,8 +1283,8 @@ section.l-sec.stats-sec {
   opacity: 1;
 }
 .stats-grid .it .l {
-  font-size: 14px; color: var(--ink-soft);
-  margin-top: 4px; max-width: 26ch; line-height: 1.45;
+  font-size: 12.5px; color: var(--ink-soft);
+  margin-top: 4px; max-width: 26ch; line-height: 1.4;
   opacity: 0;
   transform: translateY(8px);
   transition:
@@ -1281,8 +1294,16 @@ section.l-sec.stats-sec {
 .stats-sec.is-in .stats-grid .it .l { opacity: 1; transform: translateY(0); }
 @media (max-width: 860px) {
   section.l-sec.stats-sec { min-height: 0; padding: 64px 0 80px; }
-  .stats-grid { grid-template-columns: 1fr; gap: 36px; max-width: 100%; }
-  .stats-curve { opacity: .35; }
+  /* Top-align the block so the last stat sits above the bottom-anchored curve.
+     Pad enough to sit INSIDE the frame border (frame is inset top + sides). */
+  section.l-sec.stats-sec.stats-pin-inner { align-items: flex-start; }
+  section.l-sec.stats-sec.stats-pin-inner > .l-wrap { padding: 64px 32px; }
+  .stats-grid { grid-template-columns: 1fr; gap: 26px; max-width: 100%; }
+  /* Wrap labels to ~2 lines so they stay left, clear of the rising curve */
+  .stats-grid .it .l { max-width: 17ch; }
+  /* Anchor the curve to the lower portion of the frame so it rises behind the
+     bottom stats instead of slicing diagonally through all of them (Attio style). */
+  .stats-curve { top: auto; bottom: 0; height: 58%; opacity: .9; }
 }
 @media (prefers-reduced-motion: reduce) {
   .stats-curve .curve-line { animation: none !important; stroke-dashoffset: 0 !important; }
@@ -1364,7 +1385,27 @@ section.l-sec.stats-sec {
 .tier.feat .pick { background: #fff; color: var(--ink); border: 0; }
 .tier.feat .pick:hover { background: rgba(255,255,255,.9); }
 
-.pricing-hr { font-size: 12.5px; color: var(--ink-soft); margin-top: 18px; text-align: center; }
+.pricing-hr {
+  font-size: 12.5px; color: var(--ink-soft); margin-top: 18px;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 12px;
+}
+.pricing-hr span:not(:last-child)::after { content: "·"; margin-left: 12px; color: var(--ink-faint); }
+@media (max-width: 640px) {
+  .pricing-hr { flex-direction: column; gap: 6px; }
+  .pricing-hr span:not(:last-child)::after { content: none; }
+}
+
+/* Mobile: compact tiers + move the CTA below the feature list (less mid-card whitespace) */
+@media (max-width: 640px) {
+  .pricing .tier { padding: 24px 22px 22px; border-radius: 22px; }
+  .pricing .tier .pr { font-size: 46px; margin: 8px 0 4px; }
+  .pricing .tier .pr small { font-size: 14px; }
+  .pricing .tier .dsc { font-size: 13.5px; margin-bottom: 16px; }
+  .pricing .tier .feat-list { order: 1; margin: 0; gap: 9px; }
+  .pricing .tier .feat-list li { font-size: 13px; }
+  .pricing .tier .pick { order: 2; margin-top: 18px; padding: 12px 16px; }
+  .pricing .tier .badge { top: 18px; right: 18px; }
+}
 
 /* ─── Final CTA + Footer ────────────────────────────────────────────── */
 .cta-final {
@@ -1380,9 +1421,10 @@ section.l-sec.stats-sec {
   content: "";
   position: absolute; inset: 0;
   background:
-    radial-gradient(700px 360px at 20% 80%, color-mix(in oklch, var(--c-orange) 35%, transparent), transparent 70%),
-    radial-gradient(700px 360px at 80% 20%, color-mix(in oklch, var(--c-purple) 35%, transparent), transparent 70%);
-  opacity: .4;
+    radial-gradient(620px 340px at 12% 88%, color-mix(in oklch, var(--c-orange) 42%, transparent), transparent 66%),
+    radial-gradient(680px 380px at 88% 12%, color-mix(in oklch, var(--c-purple) 44%, transparent), transparent 66%),
+    radial-gradient(500px 300px at 60% 50%, color-mix(in oklch, var(--c-blue) 22%, transparent), transparent 70%);
+  opacity: .5;
   pointer-events: none;
 }
 .cta-final > * { position: relative; z-index: 1; }
@@ -1410,15 +1452,17 @@ section.l-sec.stats-sec {
 .cta-final h2 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 .cta-final p { font-size: 17px; color: rgba(255,255,255,.7); margin: 22px 0 0; max-width: 50ch; line-height: 1.5; }
 .cta-final-card {
-  min-height: 390px;
   padding: 28px;
   border-radius: 24px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 24px 50px -36px rgba(0,0,0,.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 22px;
 }
 .cta-final-card span {
   color: rgba(255,255,255,.62);
@@ -1427,14 +1471,27 @@ section.l-sec.stats-sec {
   letter-spacing: .14em;
   font-weight: 800;
 }
-.cta-final-card strong {
+/* Pilot composition: 3 stats with hairline dividers */
+.cta-pilot-stats { display: flex; align-items: stretch; }
+.cta-pilot-stats > div { flex: 1; padding: 0 18px; }
+.cta-pilot-stats > div:first-child { padding-left: 0; }
+.cta-pilot-stats > div + div { border-left: 1px solid rgba(255,255,255,.14); }
+.cta-pilot-stats strong {
   display: block;
-  margin-top: 54px;
-  font-size: clamp(28px, 3.2vw, 44px);
+  font-size: clamp(32px, 3.4vw, 46px);
   line-height: 1;
-  letter-spacing: -.035em;
+  letter-spacing: -.04em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
-.cta-final-card p { margin: 18px 0 0; font-size: 14px; }
+.cta-pilot-stats em {
+  display: block;
+  font-style: normal;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: rgba(255,255,255,.6);
+}
+.cta-final-card p { margin: 0; font-size: 14px; line-height: 1.5; }
 .cta-final .hero-ctas .btn-l.ghost { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.16); }
 .cta-final .hero-ctas .btn-l.ghost:hover { background: rgba(255,255,255,.16); }
 .cta-final .hero-ctas .btn-l.dark { background: #fff; color: var(--ink); }
@@ -1783,7 +1840,7 @@ section.l-sec.stats-sec {
      useScroll progress maps 0→1 across 280vh, so pinned phase ends at
      progress = 180/280 = 0.643. Reveal must complete before that. */
   position: relative;
-  height: 190vh;
+  height: 140vh;
   background: var(--hero-bg);
   background-image:
     radial-gradient(circle at 1px 1px, rgba(10,10,11,.05) 1px, transparent 0);
@@ -1792,14 +1849,14 @@ section.l-sec.stats-sec {
 .sq-sticky {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 84vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120px var(--pad-x) 80px;   /* clear floating nav + bottom breathing room */
+  padding: 96px var(--pad-x) 48px;    /* clear floating nav, tighter bottom */
   text-align: center;
-  gap: 90px;                          /* gap between quote and attribution */
+  gap: 64px;                          /* gap between quote and attribution */
   max-width: var(--max-w);
   margin: 0 auto;
 }
@@ -1824,7 +1881,7 @@ section.l-sec.stats-sec {
 .sq-attrib .sq-role { color: var(--ink-soft); font-size: 13.5px; margin-top: 4px; opacity: .85; }
 
 @media (max-width: 768px) {
-  .sq-outer { height: 185vh; }
+  .sq-outer { height: 150vh; }
   .sq-quote { font-size: clamp(26px, 6.5vw, 38px); max-width: 18ch; line-height: 1.12; }
   .sq-sticky { gap: 70px; }
 }
