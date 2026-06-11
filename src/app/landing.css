@@ -75,6 +75,8 @@ button { font-family: inherit; cursor: pointer; }
 
 .l-page { overflow-x: clip; }  /* clip not hidden — preserves position: sticky in children */
 .l-wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+/* sub-pages (about, careers, etc.) wrap content in .container — give it the same gutter */
+.container { padding-inline: var(--pad-x); }
 
 /* ─── Pill Nav ──────────────────────────────────────────────────────── */
 .nav {

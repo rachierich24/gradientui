@@ -31,9 +31,7 @@ const principles = [
 const facts = [
   { k: 'Founded', v: '2026' },
   { k: 'Headquarters', v: 'Delhi, India' },
-  { k: 'Parent', v: 'Unified Nexgrade' },
-  { k: 'Team size', v: '2 cofounders, hiring' },
-  { k: 'Stage', v: 'Pre-seed' },
+  { k: 'Parent', v: 'Unified Nexgrade Private Limited' },
   { k: 'Status', v: 'Live, single tenant' },
 ]
 
@@ -86,7 +84,7 @@ export default function AboutPage() {
         {/* Mission long-form */}
         <section style={{ paddingTop: '64px', paddingBottom: '80px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
           <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline' }}>
+            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
                 Mission
               </p>
@@ -108,7 +106,7 @@ export default function AboutPage() {
         {/* Facts */}
         <section style={{ paddingTop: '64px', paddingBottom: '80px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
           <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline' }}>
+            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
                 The company
               </p>
@@ -127,7 +125,7 @@ export default function AboutPage() {
         {/* Principles */}
         <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
           <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
+            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
                 Principles
               </p>
@@ -171,7 +169,7 @@ export default function AboutPage() {
         {/* Founders */}
         <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
           <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
+            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
                 Founders
               </p>
@@ -225,6 +223,7 @@ export default function AboutPage() {
 
       <style jsx>{`
         @media (max-width: 720px) {
+          :global(.g2) { grid-template-columns: 1fr !important; row-gap: 10px; }
           :global(.principles-list),
           :global(.founders-grid),
           :global(.founders-footnote) { margin-left: 0 !important; }

@@ -158,7 +158,7 @@ export default function FeaturesPage() {
               </p>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
                 <a href="/login" className="btn-l dark">Start free</a>
-                <a href="/pricing" className="btn-l ghost">See pricing</a>
+                <a href="/pricing" className="btn-l ghost">Contact sales</a>
               </div>
             </motion.div>
           </div>
@@ -169,6 +169,10 @@ export default function FeaturesPage() {
       <style jsx>{`
         :global(.feat-row) { transition: background 200ms ease, padding-left 200ms ease; }
         :global(.feat-row:hover) { background: rgba(10,10,11,0.025); padding-left: 12px; }
+        @media (max-width: 720px) {
+          :global(.feat-row) { grid-template-columns: 32px 1fr !important; }
+          :global(.feat-row > div:last-child) { grid-column: 2; text-align: left !important; padding-top: 8px !important; }
+        }
       `}</style>
     </>
   )

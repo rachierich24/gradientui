@@ -98,7 +98,7 @@ export default function CareersPage() {
         {/* How we work */}
         <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
           <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
+            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
                 How we work
               </p>
@@ -136,7 +136,7 @@ export default function CareersPage() {
         {/* Open roles */}
         <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
           <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
+            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
                 Open roles
               </p>
@@ -215,6 +215,7 @@ export default function CareersPage() {
         :global(.role-row) { transition: background 200ms ease; }
         :global(.role-row:hover) { background: rgba(10,10,11,0.02); }
         @media (max-width: 720px) {
+          :global(.g2) { grid-template-columns: 1fr !important; row-gap: 10px; }
           :global(.perks-list),
           :global(.roles-list),
           :global(.open-pitch) { margin-left: 0 !important; }

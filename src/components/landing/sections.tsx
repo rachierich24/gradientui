@@ -29,7 +29,7 @@ export function LNav() {
     { t: 'Brand trial engine', d: 'Verified cafe adoption', href: '#chapters' },
   ];
   const resourceLinks = [
-    { t: 'Pricing', d: 'Plans for cafes and suppliers', href: '#pricing' },
+    { t: 'Contact sales', d: 'Get a plan that fits your operation', href: '#pricing' },
     { t: 'Customers', d: 'Proof from the floor', href: '#proof' },
     { t: 'Security', d: 'Privacy walls by design', href: '#chapters' },
   ];
@@ -48,7 +48,7 @@ export function LNav() {
         <button type="button" className={`nav-link ${open === 'resources' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('resources')} onFocus={() => setOpen('resources')} onClick={() => setOpen(open === 'resources' ? null : 'resources')} aria-expanded={open === 'resources'}>
           Resources <Icon.ChevronDown size={12} className="chev"/>
         </button>
-        <a className="nav-link" href="#pricing">Pricing</a>
+        <a className="nav-link" href="#pricing">Contact sales</a>
         <a className="nav-link" href="/contact">Contact</a>
       </div>
       <div className="nav-spacer"></div>
@@ -765,7 +765,7 @@ export function LInlineCTA() {
         </div>
         <div className="inline-cta-actions">
           <a className="btn-l dark" href="/contact">Book a founder walkthrough <span><Icon.Arrow size={13}/></span></a>
-          <a className="inline-link" href="#pricing">View pricing</a>
+          <a className="inline-link" href="#pricing">Contact sales</a>
         </div>
       </div>
     </section>
@@ -1102,57 +1102,24 @@ export function LQuotes() {
 }
 
 export function LPricing() {
-  const tiers = [
-    {
-      nm: 'Starter', pr: '₹0', dsc: 'For new cafés and small roasters finding their feet.',
-      feats: ['Up to 30 orders / month', 'Single outlet or warehouse', 'Marketplace storefront', 'WhatsApp parser', 'Standard support'],
-      cta: 'Start free',
-    },
-    {
-      nm: 'Growth', pr: '₹4,990', sub: '/mo', dsc: 'For café chains and suppliers scaling regional ops.', feat: true, badge: 'Most popular',
-      feats: ['Unlimited orders', 'Up to 12 outlets / warehouses', 'Auto-replenish & demand sensing', 'T+7 settlements', 'POS + accounting sync', 'Priority support'],
-      cta: 'Start 14-day trial',
-    },
-    {
-      nm: 'Scale', pr: 'Custom', dsc: 'For multi-city operators and national distributors.',
-      feats: ['Everything in Growth', 'Custom integrations & API', 'Dedicated success manager', 'SLA-backed uptime', 'Procurement consulting', 'On-site onboarding'],
-      cta: 'Talk to sales',
-    },
-  ];
   return (
     <section className="l-sec l-sec--pull-up" id="pricing">
       <div className="l-wrap">
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+        <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto' }}>
           <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Pricing</div>
-          <h2 className="sec-h" style={{ margin: '0 auto' }}>Priced for the way you <em>actually</em> trade.</h2>
-          <p className="sec-lead" style={{ margin: '18px auto 0' }}>
-            Flat platform fee. No per-order cuts on Starter and Growth. Cancel anytime.
+          <h2 className="sec-h" style={{ margin: '0 auto' }}>Pricing built around the way you <em>actually</em> trade.</h2>
+          <p className="sec-lead" style={{ margin: '18px auto 32px' }}>
+            Every café and supply chain runs differently. Tell us your order volume and outlets, and our team will put together a plan that fits.
+          </p>
+          <div className="hero-ctas" style={{ justifyContent: 'center' }}>
+            <a className="btn-l dark" href="mailto:gradient365.team@gmail.com">Contact sales <span><Icon.Arrow size={13}/></span></a>
+            <a className="btn-l ghost" href="/contact">Contact form</a>
+          </div>
+          <p className="sec-lead" style={{ margin: '20px auto 0', fontSize: 15 }}>
+            Or email us at{' '}
+            <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--ink)', fontWeight: 600, textUnderlineOffset: 3 }}>gradient365.team@gmail.com</a>
           </p>
         </div>
-        <div className="pricing">
-          {tiers.map((t, i) => (
-            <div key={i} className={`tier ${t.feat ? 'feat' : ''}`}>
-              {t.badge && <span className="badge">{t.badge}</span>}
-              <div className="nm">{t.nm}</div>
-              <div className="pr">{t.pr}{t.sub && <small>{t.sub}</small>}</div>
-              <p className="dsc">{t.dsc}</p>
-              <a className="pick" href="/contact">{t.cta} <Icon.Arrow size={13}/></a>
-              <ul className="feat-list">
-                {t.feats.map((f, j) => (
-                  <li key={j}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.feat ? '#fff' : 'var(--ink)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <p className="pricing-hr">
-          <span>GST-ready invoicing</span>
-          <span>99.9% uptime</span>
-          <span>SOC-2 Type II compliance</span>
-        </p>
       </div>
     </section>
   );
@@ -1179,7 +1146,7 @@ export function LFinalCTA() {
               <p>Enough density to prove repeat orders, delivery reliability, and trial-to-order conversion without boiling the ocean.</p>
               <div className="hero-ctas">
                 <a className="btn-l dark" href="/contact">Start the pilot <span><Icon.Arrow size={13}/></span></a>
-                <a className="btn-l ghost" href="/pricing">See plans</a>
+                <a className="btn-l ghost" href="/pricing">Contact sales</a>
               </div>
             </div>
           </div>
