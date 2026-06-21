@@ -1,8 +1,9 @@
 import { LNav, LFooter } from "@/components/landing/sections"
 
 export const metadata = {
-  title: 'Privacy Policy Gradient 365',
-  description: 'Privacy Policy for Gradient 365. Learn how we collect, use, and protect your data.',
+  title: 'Privacy Policy',
+  description: 'Privacy Policy for Gradient. Learn how we collect, use, and protect your data.',
+  alternates: { canonical: '/privacy' },
 }
 
 const sections = [

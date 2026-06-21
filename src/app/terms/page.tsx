@@ -1,8 +1,9 @@
 import { LNav, LFooter } from "@/components/landing/sections"
 
 export const metadata = {
-  title: 'Terms of Service Gradient 365',
-  description: 'Terms of Service for Gradient 365, India\'s B2B cafe supply chain marketplace.',
+  title: 'Terms of Service',
+  description: 'Terms of Service for Gradient, India\'s B2B cafe supply chain marketplace.',
+  alternates: { canonical: '/terms' },
 }
 
 const sections = [
