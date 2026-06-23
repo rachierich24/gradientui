@@ -5,6 +5,10 @@ import { motion, useScroll, useTransform, useMotionValue, animate, useMotionValu
 import { Icon } from './icons';
 import { HeroDashboard, ShowcaseSourcing, ShowcaseInventory, ShowcaseInsights } from './mocks';
 
+// Logos/static assets served from CloudFront (S3) in prod via NEXT_PUBLIC_ASSET_BASE_URL.
+// Unset (local dev) -> falls back to /public.
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ?? '';
+
 function Avatar({ initials, bg, size = 24 }: { initials: string; bg: string; size?: number }) {
   return (
     <span style={{
@@ -124,7 +128,7 @@ export function LHero() {
   const sw = 1.2;
   const rx = eyeDim.h ? eyeDim.h / 2 : 14;
   return (
-    <section className="hero-l">
+    <section className="hero-l" data-snap>
       <div className="l-wrap">
         <div className="eyebrow" ref={eyebrowRef}>
           {eyeDim.w > 0 && (
@@ -265,7 +269,7 @@ function LogoMark({ nm, img, co, imgClass }: { nm: string; img?: string; co: str
   return (
     <span className="lg">
       {img && !err ? (
-        <img className={`lg-img ${imgClass ?? ''}`} src={img} alt={nm} loading="lazy" onError={() => setErr(true)} />
+        <img className={`lg-img ${imgClass ?? ''}`} src={`${ASSET_BASE}${img}`} alt={nm} loading="lazy" onError={() => setErr(true)} />
       ) : (
         <>
           <span className="mk" style={{ background: co }}>{nm[0]}</span>
@@ -723,7 +727,7 @@ export function LBento() {
   ];
 
   return (
-    <section className="l-sec chapters" id="chapters">
+    <section className="l-sec chapters" id="chapters" data-snap>
       <div className="l-wrap">
         <div className="chapters-head">
           <div>
@@ -807,7 +811,7 @@ function IntegLogo({ nm, img, box, co }: { nm: string; img?: string; box?: strin
   if (!img || err) return <div className="logo" style={{ background: co }}>{nm[0]}</div>;
   return (
     <div className={`logo logo-img logo-${box}`}>
-      <img src={img} alt={nm} loading="lazy" onError={() => setErr(true)} />
+      <img src={`${ASSET_BASE}${img}`} alt={nm} loading="lazy" onError={() => setErr(true)} />
     </div>
   );
 }
@@ -1103,7 +1107,7 @@ export function LQuotes() {
 
 export function LPricing() {
   return (
-    <section className="l-sec l-sec--pull-up" id="pricing">
+    <section className="l-sec l-sec--pull-up" id="pricing" data-snap>
       <div className="l-wrap">
         <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto' }}>
           <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Pricing</div>
@@ -1127,7 +1131,7 @@ export function LPricing() {
 
 export function LFinalCTA() {
   return (
-    <section className="l-sec l-sec--pull-up">
+    <section className="l-sec l-sec--pull-up" data-snap>
       <div className="l-wrap">
         <div className="cta-final">
           <div className="cta-final-grid">
