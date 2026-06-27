@@ -56,7 +56,6 @@ export function LNav() {
         <a className="nav-link" href="/contact">Contact</a>
       </div>
       <div className="nav-spacer"></div>
-      <a className="nav-signin" href="/login">Sign in</a>
       <a className="nav-cta" href="/contact">Start free <span><Icon.Arrow size={12}/></span></a>
 
       {open && (
