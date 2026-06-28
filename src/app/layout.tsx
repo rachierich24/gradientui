@@ -3,9 +3,13 @@ import { Plus_Jakarta_Sans } from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import './landing-fonts.css'
 import './landing.css'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { LenisProvider } from '@/components/LenisProvider'
 import { CookieConsent } from '@/components/CookieConsent'
 import { SupportWidget } from '@/components/SupportWidget'
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -34,6 +38,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'Gradient' }],
   applicationName: 'Gradient',
   alternates: { canonical: '/' },
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
+    : undefined,
   robots: {
     index: true,
     follow: true,
@@ -81,10 +88,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         publisher: { '@id': 'https://www.gradient365.com/#organization' },
         inLanguage: 'en-IN',
       },
+      {
+        '@type': 'SoftwareApplication',
+        '@id': 'https://www.gradient365.com/#app',
+        name: 'Gradient',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web, iOS, Android',
+        url: 'https://www.gradient365.com/',
+        publisher: { '@id': 'https://www.gradient365.com/#organization' },
+        description:
+          'B2B café supply platform: source, order, fulfil, invoice, and grow across cafés, suppliers, roasters, and brands.',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
+      },
     ],
   }
   return (
     <html lang="en" className={plusJakarta.variable}>
+      {GTM_ID && <GoogleTagManager gtmId={GTM_ID} />}
       <body>
         <script
           type="application/ld+json"
@@ -94,6 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CookieConsent />
         <SupportWidget />
       </body>
+      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   )
 }

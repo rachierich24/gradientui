@@ -14,3 +14,5 @@ npm-install.log
 design-unpacked/
 package-lock.json
 .vercel
+.env*
+.DS_Store

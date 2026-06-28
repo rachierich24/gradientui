@@ -1,0 +1,19 @@
+# Gradient
+
+> Gradient connects independent cafés with the suppliers, roasters, and brands they buy from, giving both sides one place to source, order, fulfil, invoice, and grow. B2B café supply platform operating in India (HoReCa procurement).
+
+Gradient (gradient365.com) is operated by Unified Nexgrade. The platform serves four sides of the café supply chain: cafés, suppliers, roasters, and brands. Apps are available on web, iOS, and Android.
+
+## Pages
+
+- [Home](https://www.gradient365.com/): What Gradient is and who it serves.
+- [Features](https://www.gradient365.com/features): Sourcing, ordering, fulfilment, invoicing, and growth tools.
+- [Pricing](https://www.gradient365.com/pricing): Plans and pricing.
+- [About](https://www.gradient365.com/about): Company and mission.
+- [Careers](https://www.gradient365.com/careers): Open roles.
+- [Contact](https://www.gradient365.com/contact): Get in touch.
+
+## Legal
+
+- [Privacy Policy](https://www.gradient365.com/privacy)
+- [Terms of Service](https://www.gradient365.com/terms)
