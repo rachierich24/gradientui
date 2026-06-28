@@ -16,3 +16,4 @@ package-lock.json
 .vercel
 .env*
 .DS_Store
+pnpm-workspace.yaml

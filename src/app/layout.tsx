@@ -104,8 +104,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }
   return (
     <html lang="en" className={plusJakarta.variable}>
-      {GTM_ID && <GoogleTagManager gtmId={GTM_ID} />}
       <body>
+        {GTM_ID && <GoogleTagManager gtmId={GTM_ID} />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -113,8 +113,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LenisProvider>{children}</LenisProvider>
         <CookieConsent />
         <SupportWidget />
+        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
       </body>
-      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   )
 }
