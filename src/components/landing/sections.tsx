@@ -1222,7 +1222,7 @@ export function LFooter() {
         <div className="wordmark-huge">gradient</div>
 
         <div className="footer-bot">
-          <span>© 2026 Unified Nexgrade Pvt Ltd · Delhi NCR</span>
+          <span>© 2026 Unified Nexgrade Private Limited · Delhi NCR</span>
           <span className="mono">v 4.12.0 · all systems normal ●</span>
         </div>
       </div>

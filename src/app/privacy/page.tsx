@@ -59,7 +59,7 @@ export default function PrivacyPage() {
         <section style={{ paddingTop: '0', paddingBottom: '96px' }}>
           <div className="container" style={{ maxWidth: '760px', marginInline: 'auto' }}>
             <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '40px' }}>
-              This Privacy Policy describes how Unified Nexgrade Pvt Ltd ("Gradient 365", "we", "us") collects, uses, and protects your personal data when you use our platform. We are committed to protecting your privacy and complying with the Digital Personal Data Protection Act (DPDP Act, 2023).
+              This Privacy Policy describes how Unified Nexgrade Private Limited ("Gradient 365", "we", "us") collects, uses, and protects your personal data when you use our platform. We are committed to protecting your privacy and complying with the Digital Personal Data Protection Act (DPDP Act, 2023).
             </p>
             {sections.map((s) => (
               <div key={s.title} style={{ marginBottom: '40px' }}>

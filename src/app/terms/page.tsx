@@ -59,7 +59,7 @@ export default function TermsPage() {
         <section style={{ paddingTop: '0', paddingBottom: '96px' }}>
           <div className="container" style={{ maxWidth: '760px', marginInline: 'auto' }}>
             <p style={{ fontSize: '16px', color: '#425466', lineHeight: 1.75, marginBottom: '40px' }}>
-              Please read these Terms of Service carefully before using the Gradient 365 platform. These terms constitute a legally binding agreement between you and Unified Nexgrade Pvt Ltd.
+              Please read these Terms of Service carefully before using the Gradient 365 platform. These terms constitute a legally binding agreement between you and Unified Nexgrade Private Limited.
             </p>
             {sections.map((s) => (
               <div key={s.title} style={{ marginBottom: '40px' }}>
