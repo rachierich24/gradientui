@@ -1170,6 +1170,7 @@ export function LFooter() {
               <span>Gradient</span>
             </div>
             <p>The operating system for the café supply chain. Built in Delhi, shipping nationwide.</p>
+            <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Gradient 365 is a product of <strong>Unified Nexgrade Private Limited</strong>.</p>
             <div style={{ display: 'flex', gap: 12 }}>
               {['G2', 'TW', 'IN', 'YT'].map(s => (
                 <span key={s} style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border-soft)', display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--ink-2)' }}>{s}</span>
