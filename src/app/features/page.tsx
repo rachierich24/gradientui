@@ -47,7 +47,7 @@ const groups: Group[] = [
     lead: 'Consumption and trial workflows for FMCG brands measuring real B2B reach through the supplier network.',
     items: [
       { title: 'Consumption analytics', desc: 'Real-time data on which cafés use your products, at what volumes, in which cities. Updated with every fulfilled order.' },
-      { title: 'Brand trial management', desc: 'Run structured product trials: target cafés, distribute samples, collect feedback, track adoption — one workflow.' },
+      { title: 'Brand trial management', desc: 'Run structured product trials: target cafés, distribute samples, collect feedback, track adoption, one workflow.' },
     ],
   },
 ]

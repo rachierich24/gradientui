@@ -7,6 +7,7 @@ import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { LenisProvider } from '@/components/LenisProvider'
 import { CookieConsent } from '@/components/CookieConsent'
 import { SupportWidget } from '@/components/SupportWidget'
+import { ContactSalesModal } from '@/components/ContactSalesModal'
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
@@ -113,6 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LenisProvider>{children}</LenisProvider>
         <CookieConsent />
         <SupportWidget />
+        <ContactSalesModal />
         {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
       </body>
     </html>

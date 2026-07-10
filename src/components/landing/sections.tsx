@@ -1,9 +1,10 @@
 'use client';
 // Landing page sections ported from Figma Make export 0006.js
 import { useState, useEffect, useLayoutEffect, useRef, type CSSProperties } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
+import { motion, MotionConfig, useScroll, useTransform, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 import { Icon } from './icons';
 import { HeroDashboard, ShowcaseSourcing, ShowcaseInventory, ShowcaseInsights } from './mocks';
+import { openContactSalesModal } from '@/components/ContactSalesModal';
 
 // Logos/static assets served from CloudFront (S3) in prod via NEXT_PUBLIC_ASSET_BASE_URL.
 // Unset (local dev) -> falls back to /public.
@@ -53,7 +54,7 @@ export function LNav() {
     { t: 'For brands', d: 'Verified café adoption & trials', href: 'https://brand.gradient365.com' },
   ];
   const resourceLinks = [
-    { t: 'Contact sales', d: 'Get a plan that fits your operation', href: '#pricing' },
+    { t: 'Contact sales', d: 'Get a plan that fits your operation', href: '#contact-sales' },
     { t: 'Customers', d: 'Proof from the floor', href: '#proof' },
     { t: 'Security', d: 'Privacy walls by design', href: '#chapters' },
   ];
@@ -73,22 +74,25 @@ export function LNav() {
           Resources <Icon.ChevronDown size={12} className="chev"/>
         </button>
         <a className="nav-link" href="/team">Team</a>
-        <a className="nav-link" href="#pricing">Contact sales</a>
       </div>
       <div className="nav-spacer"></div>
-      <a className="nav-cta" href="/contact">Start free <span><Icon.Arrow size={12}/></span></a>
+      <a className="nav-cta" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>Start free <span><Icon.Arrow size={12}/></span></a>
 
       {open && (
         <div className="nav-mega" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
           <div className="nav-mega-grid">
             {(open === 'product' ? productLinks : resourceLinks).map((item) => {
               const ext = item.href.startsWith('http');
+              const isContactSales = item.href === '#contact-sales';
               return (
                 <a
                   href={item.href}
                   className="nav-mega-item"
                   key={item.t}
-                  onClick={(e) => handleNav(e, item.href)}
+                  onClick={(e) => {
+                    if (isContactSales) { e.preventDefault(); setOpen(null); openContactSalesModal(); return; }
+                    handleNav(e, item.href);
+                  }}
                   {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   <span className="nav-mega-ic"><Icon.Arrow size={12}/></span>
@@ -220,34 +224,40 @@ export function LHero() {
       </div>
 
       <div className="l-wrap hero-peek-wrap">
+        <MotionConfig reducedMotion="user">
         <div className="hero-peek" ref={peekRef}>
-          <div className="float-chip a">
-            <div className="ic" style={{ background: 'var(--c-green-bg)', color: 'var(--c-green)' }}><Icon.Check size={16}/></div>
-            <div>
-              <div className="t1">PO #2841 confirmed</div>
-              <div className="t2">Blue Tokai · ₹38,400 · 12 SKUs</div>
-            </div>
-          </div>
-          <div className="float-chip b">
-            <div className="ic" style={{ background: 'var(--c-orange-bg)', color: 'var(--c-orange)' }}><Icon.Sparkle size={16}/></div>
-            <div>
-              <div className="t1">Oat milk running low</div>
-              <div className="t2">Auto-reorder scheduled · 2 cafés</div>
-            </div>
-          </div>
-          <div className="float-chip c">
-            <div className="ic" style={{ background: 'var(--c-purple-bg)', color: 'var(--c-purple)' }}><Icon.Truck size={16}/></div>
-            <div>
-              <div className="t1">3 trucks dispatched</div>
-              <div className="t2">ETA 4:20pm · live tracking on</div>
-            </div>
-          </div>
+          {[
+            { pos: 'a', delay: 0.15, floatDur: 5.5, icBg: 'var(--c-green-bg)', icCo: 'var(--c-green)', ic: <Icon.Check size={16}/>, t1: 'PO #2841 confirmed', t2: 'Blue Tokai · ₹38,400 · 12 SKUs' },
+            { pos: 'b', delay: 0.32, floatDur: 6.2, icBg: 'var(--c-orange-bg)', icCo: 'var(--c-orange)', ic: <Icon.Sparkle size={16}/>, t1: 'Oat milk running low', t2: 'Auto-reorder scheduled · 2 cafés' },
+            { pos: 'c', delay: 0.5, floatDur: 5.8, icBg: 'var(--c-purple-bg)', icCo: 'var(--c-purple)', ic: <Icon.Truck size={16}/>, t1: '3 trucks dispatched', t2: 'ETA 4:20pm · live tracking on' },
+          ].map((c) => (
+            <motion.div
+              key={c.pos}
+              className={`float-chip-drop ${c.pos}`}
+              initial={{ y: -280, opacity: 0, rotate: -8 }}
+              animate={{ y: 0, opacity: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 170, damping: 17, mass: 1.1, delay: 0.5 + c.delay }}
+            >
+              <motion.div
+                className="float-chip"
+                animate={{ y: [0, -7, 0] }}
+                transition={{ duration: c.floatDur, repeat: Infinity, ease: 'easeInOut', delay: c.delay + 1 }}
+              >
+                <div className="ic" style={{ background: c.icBg, color: c.icCo }}>{c.ic}</div>
+                <div>
+                  <div className="t1">{c.t1}</div>
+                  <div className="t2">{c.t2}</div>
+                </div>
+              </motion.div>
+            </motion.div>
+          ))}
 
           <div className="hero-peek-frame" ref={frameRef}>
             <HeroDashboard />
           </div>
           <div className="hero-peek-fade"></div>
         </div>
+        </MotionConfig>
       </div>
     </section>
   );
@@ -413,7 +423,7 @@ function DualBrandVisual() {
 
 export function LDual() {
   return (
-    <section className="l-sec l-sec--pull-up">
+    <section className="l-sec l-sec--pull-up dual-sec">
       <div className="l-wrap">
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
           <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Built for all three</div>
@@ -835,7 +845,7 @@ export function LInlineCTA() {
         </div>
         <div className="inline-cta-actions">
           <a className="btn-l dark" href="/contact">Book a founder walkthrough <span><Icon.Arrow size={13}/></span></a>
-          <a className="inline-link" href="#pricing">Contact sales</a>
+          <a className="inline-link" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>Contact sales</a>
         </div>
       </div>
     </section>
@@ -992,7 +1002,7 @@ export function LStats() {
 
     // Freeze scroll while the graph plays (count-up + curve draw reaching top-right),
     // then release. Lenis runs a virtual scroll loop, so body{overflow:hidden} alone
-    // does NOT stop it — must call lenis.stop()/start(). Keep the native blockers as a
+    // does NOT stop it - must call lenis.stop()/start(). Keep the native blockers as a
     // fallback for when Lenis isn't present.
     // No cleanup return: React 18 strict-mode double-invoke would release immediately;
     // the timeout below auto-releases.
@@ -1182,7 +1192,7 @@ export function LPricing() {
             Every café and supply chain runs differently. Tell us your order volume and outlets, and our team will put together a plan that fits.
           </p>
           <div className="hero-ctas" style={{ justifyContent: 'center' }}>
-            <a className="btn-l dark" href="mailto:gradient365.team@gmail.com">Contact sales <span><Icon.Arrow size={13}/></span></a>
+            <a className="btn-l dark" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>Contact sales <span><Icon.Arrow size={13}/></span></a>
             <a className="btn-l ghost" href="/contact">Contact form</a>
           </div>
           <p className="sec-lead" style={{ margin: '20px auto 0', fontSize: 15 }}>
@@ -1195,31 +1205,88 @@ export function LPricing() {
   );
 }
 
-export function LFinalCTA() {
+type FaqCategory = 'General' | 'Cafés' | 'Suppliers & brands' | 'Pricing & security';
+const FAQ_CATEGORIES: FaqCategory[] = ['General', 'Cafés', 'Suppliers & brands', 'Pricing & security'];
+
+// Questions are written the way café owners and suppliers actually type them into
+// Google and ask AI assistants (long-tail, conversational). Each answer is a
+// self-contained, brand-anchored passage so it can be quoted directly by search
+// snippets and LLM answers. This same array feeds the FAQPage JSON-LD below.
+const FAQS: { category: FaqCategory; q: string; a: string }[] = [
+  { category: 'General', q: 'What is Gradient?', a: 'Gradient is a B2B café supply chain platform that connects independent cafés with the suppliers, roasters, and brands they buy from. Cafés source from every supplier in one cart, and suppliers run orders, stock, and dispatch from a single dashboard.' },
+  { category: 'General', q: 'How does a café supply platform like Gradient work?', a: 'A café supply platform puts ordering, fulfilment, invoicing, and inventory in one place. On Gradient, cafés browse a combined catalogue, place one order across multiple suppliers, and track delivery, while suppliers receive, pack, and dispatch those orders from their own portal.' },
+  { category: 'General', q: 'Who is Gradient built for?', a: 'Gradient is built for independent café owners, coffee roasters and food or packaging suppliers, and brands running product trials with cafés. Each side gets a dedicated portal designed around how it actually orders, fulfils, or sells.' },
+  { category: 'General', q: 'Is Gradient available across India?', a: 'Gradient is built in Delhi NCR and is expanding across India. It is designed for the way Indian cafés and suppliers trade, with INR invoicing, local delivery routing, and region-aware supplier matching.' },
+  { category: 'General', q: 'Do I need to switch suppliers to start using Gradient?', a: 'No. Gradient connects you with the suppliers you already order from and makes it easy to add new ones, without changing how you pay or receive stock. You keep your existing relationships and gain a single place to manage them.' },
+
+  { category: 'Cafés', q: 'How can a café order supplies from multiple suppliers in one place?', a: 'On Gradient, a café browses every connected supplier catalogue in one cart, places a single consolidated order, and tracks fulfilment and delivery ETAs from the café portal, instead of calling or messaging each supplier separately.' },
+  { category: 'Cafés', q: 'How do cafés reduce stockouts and avoid running out of ingredients?', a: 'Gradient surfaces stock risk before you order and flags items likely to run low based on your ordering pattern. Smart reorder suggests quantities, and if a supplier is out of stock it recommends comparable suppliers so a stockout never blocks a delivery day.' },
+  { category: 'Cafés', q: 'Can I manage ordering for multiple café outlets from one account?', a: 'Yes. Multi-location ordering lets you split one order across outlets or manage each location separately from the same login, so a café group can run procurement for every branch in one view.' },
+  { category: 'Cafés', q: 'How much does it cost a café to join Gradient?', a: 'Cafés can start free. Gradient prices around your order volume and number of outlets rather than a fixed subscription, so small independents and multi-outlet groups both get a plan that fits.' },
+
+  { category: 'Suppliers & brands', q: 'How do suppliers receive and fulfil café orders on Gradient?', a: 'Orders land in the supplier portal with route and dispatch details, so your team can pick, pack, and mark fulfilment status in one place. Suppliers manage catalogue, stock, and delivery without maintaining separate spreadsheets or chat threads per café.' },
+  { category: 'Suppliers & brands', q: 'Can suppliers forecast demand before it happens?', a: 'Yes. Gradient Insights surfaces reorder signals and trial intent across your connected café network, so suppliers can plan stock and dispatch ahead of demand instead of reacting to it.' },
+  { category: 'Suppliers & brands', q: 'How do brands run product trials with cafés on Gradient?', a: 'Brands use the Gradient brand portal to place products with verified cafés, track trial adoption, and see which cafés convert trials into repeat orders, turning café sampling into measurable, trackable demand.' },
+  { category: 'Suppliers & brands', q: 'What makes Gradient different from ordering directly or over WhatsApp?', a: 'Direct calls and WhatsApp leave no structured record of catalogue, stock, invoices, or delivery status. Gradient replaces that with one system where cafés, suppliers, and brands share live order data, so nothing is lost between a message and a delivery.' },
+
+  { category: 'Pricing & security', q: 'How does pricing work on Gradient?', a: 'Gradient builds a plan around how you actually trade. Tell the team your order volume and number of outlets, and they put together pricing that fits, rather than forcing every café or supplier onto the same fixed tier.' },
+  { category: 'Pricing & security', q: 'How is billing and invoicing handled?', a: 'Every order on Gradient generates an invoice automatically, with totals reconciled between café and supplier so there is no manual matching, and payments and records stay consistent on both sides.' },
+  { category: 'Pricing & security', q: 'Is my café and supplier data secure on Gradient?', a: 'Yes. Café, supplier, and brand data is walled off by design so no side sees another’s private information. Data is handled and stored per our privacy policy, and privacy separation is built into the platform rather than added on.' },
+];
+
+export function LFaq() {
+  const [category, setCategory] = useState<FaqCategory>('General');
+  const [openQ, setOpenQ] = useState<string | null>(null);
+  const items = FAQS.filter(f => f.category === category);
+
+  // FAQPage structured data: makes every Q&A machine-readable for Google rich
+  // results / "People also ask" and citable by LLM search answers.
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQS.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+
   return (
-    <section className="l-sec l-sec--pull-up" data-snap>
+    <section className="l-sec l-sec--pull-up" id="faq" data-snap>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="l-wrap">
-        <div className="cta-final">
-          <div className="cta-final-grid">
-            <div>
-              <div className="sec-eyebrow sec-eyebrow--plain" style={{ color: 'rgba(255,255,255,.62)' }}>Ready when you are</div>
-              <h2>Bring the daily cafe buying loop online.</h2>
-              <p>Launch with cafe ordering, supplier fulfilment, and brand trial tracking in one network. Start narrow, then let the graph compound.</p>
-            </div>
-            <div className="cta-final-card">
-              <span>Suggested pilot</span>
-              <div className="cta-pilot-stats">
-                <div><strong>25</strong><em>cafés</em></div>
-                <div><strong>6</strong><em>suppliers</em></div>
-                <div><strong>3</strong><em>trial brands</em></div>
+        <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto' }}>
+          <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>FAQ</div>
+          <h2 className="sec-h" style={{ margin: '0 auto' }}>Frequently asked questions.</h2>
+        </div>
+        <div className="faq-tabs">
+          {FAQ_CATEGORIES.map(c => (
+            <button
+              key={c}
+              type="button"
+              className={`faq-tab ${category === c ? 'is-active' : ''}`}
+              onClick={() => { setCategory(c); setOpenQ(null); }}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <div className="faq-list">
+          {items.map(item => {
+            const isOpen = openQ === item.q;
+            return (
+              <div className={`faq-item ${isOpen ? 'is-open' : ''}`} key={item.q}>
+                <button type="button" className="faq-q" onClick={() => setOpenQ(isOpen ? null : item.q)}>
+                  {item.q}
+                  <Icon.ChevronDown size={16} className="faq-chev" />
+                </button>
+                {isOpen && <p className="faq-a">{item.a}</p>}
               </div>
-              <p>Enough density to prove repeat orders, delivery reliability, and trial-to-order conversion without boiling the ocean.</p>
-              <div className="hero-ctas">
-                <a className="btn-l dark" href="/contact">Start the pilot <span><Icon.Arrow size={13}/></span></a>
-                <a className="btn-l ghost" href="/pricing">Contact sales</a>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1249,29 +1316,16 @@ export function LFooter() {
             <ul>
               <li><a href="/features#cafe">Café Portal</a></li>
               <li><a href="/features#supplier">Supplier Portal</a></li>
+              <li><a href="https://brand.gradient365.com" target="_blank" rel="noopener noreferrer">Brand Portal</a></li>
               <li><a href="/features#insights">Insights</a></li>
-              <li><a href="/features#integrations">Integrations</a></li>
-              <li><a href="/features">Changelog</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h6>Company</h6>
             <ul>
               <li><a href="/about">About</a></li>
-              <li><a href="/#proof">Customers</a></li>
               <li><a href="/careers">Careers <span style={{ color: 'var(--c-orange)', fontWeight: 600 }}>· 6</span></a></li>
-              <li><a href="/about">Press</a></li>
               <li><a href="/contact">Contact</a></li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h6>Resources</h6>
-            <ul>
-              <li><a href="/features">Documentation</a></li>
-              <li><a href="/features">API reference</a></li>
-              <li><a href="/features#cafe">Café guide</a></li>
-              <li><a href="/features#supplier">Supplier guide</a></li>
-              <li><a href="/contact">Community</a></li>
             </ul>
           </div>
           <div className="footer-col">
@@ -1279,9 +1333,6 @@ export function LFooter() {
             <ul>
               <li><a href="/terms">Terms</a></li>
               <li><a href="/privacy">Privacy</a></li>
-              <li><a href="/privacy#security">Security</a></li>
-              <li><a href="/privacy#soc2">SOC-2</a></li>
-              <li><a href="/privacy#dpa">DPA</a></li>
             </ul>
           </div>
         </div>
@@ -1290,7 +1341,6 @@ export function LFooter() {
 
         <div className="footer-bot">
           <span>© 2026 Unified Nexgrade Private Limited · Delhi NCR</span>
-          <span className="mono">v 4.12.0 · all systems normal ●</span>
         </div>
       </div>
     </footer>

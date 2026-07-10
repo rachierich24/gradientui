@@ -1,6 +1,6 @@
 import {
   LNav, LHero, LLogos, LDual, LShowcase, LBento, LSteps,
-  LInteg, LStats, LQuotes, LPricing, LFinalCTA, LFooter,
+  LInteg, LStats, LQuotes, LPricing, LFaq, LFooter,
   LProofStrip, LInlineCTA,
 } from '@/components/landing/sections'
 import { LScrollQuote } from '@/components/landing/ScrollQuote'
@@ -24,7 +24,7 @@ export default function HomePage() {
       <LScrollQuote />
       <LQuotes />
       <LPricing />
-      <LFinalCTA />
+      <LFaq />
       <LFooter />
     </div>
   )

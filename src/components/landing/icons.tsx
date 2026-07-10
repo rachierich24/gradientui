@@ -1,4 +1,4 @@
-// Minimal lucide-style icon set — ported from Figma Make export 0003.js
+// Minimal lucide-style icon set - ported from Figma Make export 0003.js
 import type { CSSProperties, ReactNode, SVGProps } from 'react';
 
 type IProps = Omit<SVGProps<SVGSVGElement>, 'd'> & {

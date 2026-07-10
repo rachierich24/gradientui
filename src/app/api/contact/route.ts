@@ -13,7 +13,7 @@ export const runtime = 'edge';
 export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn('[contact] RESEND_API_KEY missing — email not sent.');
+    console.warn('[contact] RESEND_API_KEY missing - email not sent.');
     return NextResponse.json({ ok: false, reason: 'email-not-configured' }, { status: 500 });
   }
 

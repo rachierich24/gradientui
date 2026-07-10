@@ -137,7 +137,7 @@ body {
   background: linear-gradient(to left, white, transparent);
 }
 
-/* Stripe-style ribbon animations — each ribbon sways independently */
+/* Stripe-style ribbon animations - each ribbon sways independently */
 @keyframes r1-sway { 0%,100% { transform: rotate(-32deg); } 50% { transform: rotate(-24deg); } }
 @keyframes r2-sway { 0%,100% { transform: rotate(-17deg); } 50% { transform: rotate(-9deg);  } }
 @keyframes r3-sway { 0%,100% { transform: rotate(-4deg);  } 50% { transform: rotate(4deg);   } }
@@ -151,7 +151,7 @@ body {
 .section { padding-block: 96px; }
 .section-sm { padding-block: 64px; }
 
-/* Responsive grid helpers — used by StatsSection, HowItWorks, HeroSection */
+/* Responsive grid helpers - used by StatsSection, HowItWorks, HeroSection */
 @media (max-width: 768px) {
   .hero-cards {
     grid-template-columns: 1fr !important;

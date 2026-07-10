@@ -1,116 +1,268 @@
 'use client';
-// Mock UI fragments used inside hero/showcase — ported from Figma Make export 0005.js
+// Mock UI fragments used inside hero/showcase - ported from Figma Make export 0005.js
 import { useEffect, useRef, useState } from 'react';
+import {
+  motion, MotionConfig, useInView, useReducedMotion,
+  animate, useMotionValue, useMotionValueEvent,
+} from 'framer-motion';
 import { Icon } from './icons';
+
+// Shared entrance choreography - panels/metrics/rows rise + fade in a stagger,
+// the way a live SaaS dashboard (Attio) populates as it loads.
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.08 } } };
+const rise = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 0.61, 0.36, 1] } },
+};
+// Sidebar rows drop in from the top one after another, then settle into place.
+const sideContainer = { hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } } };
+const drop = {
+  hidden: { opacity: 0, y: -22 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 520, damping: 30, mass: 0.6 } },
+};
+
+// Number that counts up when scrolled into view.
+function CountNum({ value, prefix = '', suffix = '', decimals = 0 }:
+  { value: number; prefix?: string; suffix?: string; decimals?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '0px 0px -10% 0px' });
+  const reduce = useReducedMotion();
+  const mv = useMotionValue(0);
+  const fmt = (v: number) => prefix + v.toFixed(decimals) + suffix;
+  const [txt, setTxt] = useState(fmt(reduce ? value : 0));
+  useMotionValueEvent(mv, 'change', (v) => setTxt(fmt(v)));
+  useEffect(() => {
+    if (reduce || !inView) return;
+    const c = animate(mv, value, { duration: 1.1, ease: [0.22, 0.61, 0.36, 1] });
+    return () => c.stop();
+  }, [inView, reduce, value, mv]);
+  return <span ref={ref}>{txt}</span>;
+}
+
+// Cycling typewriter for the "Ask:" bar - types a query, holds, deletes, next.
+const ASK_QUERIES = [
+  'which cafes need oat milk before 4pm?',
+  'top suppliers by on-time delivery this week',
+  'which brand trials are ready to convert?',
+];
+function AskTyper() {
+  const reduce = useReducedMotion();
+  const [txt, setTxt] = useState(reduce ? ASK_QUERIES[0] : '');
+  useEffect(() => {
+    if (reduce) return;
+    let qi = 0, ci = 0, dir = 1;
+    let timer = 0;
+    const tick = () => {
+      const q = ASK_QUERIES[qi];
+      ci += dir;
+      setTxt(q.slice(0, ci));
+      let delay = dir > 0 ? 45 : 22;
+      if (ci >= q.length) { dir = -1; delay = 1700; }
+      else if (ci <= 0) { dir = 1; qi = (qi + 1) % ASK_QUERIES.length; delay = 360; }
+      timer = window.setTimeout(tick, delay);
+    };
+    timer = window.setTimeout(tick, 700);
+    return () => clearTimeout(timer);
+  }, [reduce]);
+  return <span className="cmd-ask">Ask: &ldquo;{txt}<span className="cmd-caret" />&rdquo;</span>;
+}
+
+// Sidebar mirrors the real café-portal nav (src/app/(dashboard)/layout.tsx).
+const SIDE_NAV = [
+  { lab: 'Overview', ic: <Icon.Dashboard size={14}/>, active: true },
+  { lab: 'Orders', ic: <Icon.Cart size={14}/>, ct: '9' },
+  { lab: 'Catalogue', ic: <Icon.Menu size={14}/> },
+  { lab: 'Inventory', ic: <Icon.Box size={14}/> },
+  { lab: 'Suppliers', ic: <Icon.Truck size={14}/> },
+  { lab: 'Payments', ic: <Icon.Card size={14}/> },
+  { lab: 'Reports', ic: <Icon.Chart size={14}/> },
+  { lab: 'Reviews', ic: <Icon.Star size={14}/> },
+  { lab: 'Brand Requests', ic: <Icon.Sparkle size={14}/> },
+];
+// KPIs mirror the portal's "Supply Overview" tiles. `spark` is a 6-point trend.
+const METRICS = [
+  { lab: "Today's deliveries", value: 8, suffix: ' arriving', d: 'across 12 carriers', spark: [4, 6, 5, 7, 6, 8] },
+  { lab: 'Low stock items', value: 4, suffix: ' SKUs', d: 'auto-reorder ready', spark: [7, 6, 6, 5, 5, 4] },
+  { lab: 'Pending orders', value: 6, suffix: ' orders', d: 'awaiting dispatch', spark: [9, 7, 8, 6, 7, 6] },
+  { lab: 'On-time suppliers', value: 92, suffix: '%', d: 'on-time this week', spark: [86, 89, 88, 90, 91, 92] },
+];
+// Static assets served from CloudFront (S3) in prod; falls back to /public in dev.
+const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ?? '';
+// Two-letter initials fallback (used if a logo image fails to load).
+function initials(name: string) {
+  const words = name.split('/')[0].trim().split(/\s+/).filter(w => /[a-z]/i.test(w[0]));
+  const ini = words.length >= 2 ? words[0][0] + words[1][0] : (words[0]?.slice(0, 2) ?? '');
+  return ini.toUpperCase();
+}
+// Real café/brand logos (same assets as the landing logo strip).
+const ORDERS = [
+  { cafe: 'Blue Tokai / Indiranagar', supplier: 'Dairycraft', value: 'Rs 38,400', status: 'Packing', cls: 'active', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
+  { cafe: 'Subko / Bandra', supplier: 'Urban Platter', value: 'Rs 71,920', status: 'Dispatch', cls: 'info', img: '/logos/subko.png', co: 'var(--c-orange)' },
+  { cafe: 'Third Wave / Koramangala', supplier: 'Araku Estates', value: 'Rs 22,180', status: 'Counter', cls: 'pending', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
+  { cafe: 'Sleepy Owl / Powai', supplier: 'KC Roasters', value: 'Rs 54,600', status: 'Packing', cls: 'active', img: '/logos/sleepy-owl.png', co: 'var(--c-blue)' },
+  { cafe: 'Araku / Aundh', supplier: 'Corridor Seven', value: 'Rs 41,750', status: 'Dispatch', cls: 'info', img: '/logos/araku.png', co: 'var(--c-green)' },
+  { cafe: 'Rage Coffee / HSR', supplier: 'Country Bean', value: 'Rs 18,240', status: 'Counter', cls: 'pending', img: '/logos/rage-coffee.jpeg', co: 'var(--c-pink)' },
+];
+
+// Café logo tile with initials fallback if the image fails.
+function RowAvatar({ name, img, co }: { name: string; img?: string; co: string }) {
+  const [err, setErr] = useState(false);
+  if (img && !err) {
+    return (
+      <span className="cmd-av cmd-av--logo">
+        <img src={`${ASSET_BASE}${img}`} alt={name} loading="lazy" onError={() => setErr(true)} />
+      </span>
+    );
+  }
+  return <span className="cmd-av" style={{ background: co }}>{initials(name)}</span>;
+}
+const FUNNEL = [
+  { step: 'Sent', n: 124, h: 112 },
+  { step: 'Tried', n: 92, h: 94 },
+  { step: 'Liked', n: 66, h: 76 },
+  { step: 'Ordered', n: 31, h: 58 },
+];
 
 export function HeroDashboard() {
   return (
-    <div className="cmd">
-      <aside className="cmd-side">
-        <div className="cmd-workspace">
-          <div className="cmd-mark">G</div>
-          <div>
-            <strong>Gradient</strong>
-            <span>Network control</span>
-          </div>
-        </div>
-        {[
-          { lab: 'Command', ic: <Icon.Dashboard size={14}/>, active: true },
-          { lab: 'Cafe orders', ic: <Icon.Receipt size={14}/>, ct: '38' },
-          { lab: 'Supplier routes', ic: <Icon.Truck size={14}/>, ct: '12' },
-          { lab: 'Brand trials', ic: <Icon.Sparkle size={14}/>, ct: '47' },
-          { lab: 'Privacy walls', ic: <Icon.Box size={14}/> },
-          { lab: 'Intelligence', ic: <Icon.Chart size={14}/> },
-        ].map((it) => (
-          <div className={`cmd-nav ${it.active ? 'on' : ''}`} key={it.lab}>
-            {it.ic}
-            <span>{it.lab}</span>
-            {it.ct && <b>{it.ct}</b>}
-          </div>
-        ))}
-        <div className="cmd-side-note">
-          <span>Data boundary</span>
-          <strong>Brands only see their own SKUs and conversion.</strong>
-        </div>
-      </aside>
-
-      <main className="cmd-main">
-        <div className="cmd-top">
-          <div>
-            <span className="cmd-kicker">Today / Bengaluru network</span>
-            <h2>Supply command center</h2>
-            <p>38 open cafe orders, 12 supplier routes, 47 brand trial kits.</p>
-          </div>
-          <div className="cmd-search"><Icon.Search size={14}/> Ask: "which cafes need oat milk before 4pm?"</div>
-        </div>
-
-        <div className="cmd-metrics">
-          {[
-            { lab: 'GMV in motion', n: 'Rs 14.2L', d: '+18.4% vs last week' },
-            { lab: 'Stock risk', n: '11 SKUs', d: '4 will auto-reorder' },
-            { lab: 'Trial intent', n: '72%', d: 'liked + ready to buy' },
-            { lab: 'ETA health', n: '94.2%', d: 'on-time fulfilment' },
-          ].map((s) => (
-            <div className="cmd-metric" key={s.lab}>
-              <span>{s.lab}</span>
-              <strong>{s.n}</strong>
-              <small>{s.d}</small>
+    <MotionConfig reducedMotion="user">
+      <div className="cmd">
+        <motion.aside
+          className="cmd-side"
+          variants={sideContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-8%' }}
+        >
+          <motion.div className="cmd-workspace" variants={drop}>
+            <div className="cmd-mark">G</div>
+            <div>
+              <strong>Gradient</strong>
+              <span>Café portal</span>
             </div>
+          </motion.div>
+          {SIDE_NAV.map((it) => (
+            <motion.div className={`cmd-nav ${it.active ? 'on' : ''}`} key={it.lab} variants={drop}>
+              {it.ic}
+              <span>{it.lab}</span>
+              {it.ct && <b>{it.ct}</b>}
+            </motion.div>
           ))}
-        </div>
+          <motion.div className="cmd-side-note" variants={drop}>
+            <span>Data boundary</span>
+            <strong>Brands only see their own SKUs and conversion.</strong>
+          </motion.div>
+        </motion.aside>
 
-        <div className="cmd-grid">
-          <section className="cmd-panel wide">
-            <div className="cmd-panel-head">
-              <strong>Orders routed by supplier</strong>
-              <span>Live split PO</span>
+        <main className="cmd-main">
+          <div className="cmd-top">
+            <div>
+              <span className="cmd-kicker">Today / Bengaluru network</span>
+              <h2>Orders overview</h2>
+              <p>Managing 1,284 active shipments across 12 carriers.</p>
             </div>
-            {[
-              { cafe: 'Third Wave / Indiranagar', supplier: 'Blue Tokai', value: 'Rs 38,400', status: 'Packing', cls: 'active' },
-              { cafe: 'Subko / Bandra', supplier: 'Dairycraft', value: 'Rs 71,920', status: 'Dispatch', cls: 'info' },
-              { cafe: 'Paper & Pie / Whitefield', supplier: 'Araku', value: 'Rs 22,180', status: 'Counter', cls: 'pending' },
-            ].map((row) => (
-              <div className="cmd-row" key={row.cafe}>
-                <div>
-                  <strong>{row.cafe}</strong>
-                  <span>{row.supplier}</span>
+            <div className="cmd-search"><Icon.Search size={14}/> <AskTyper /></div>
+          </div>
+
+          <motion.div
+            className="cmd-metrics"
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-8%' }}
+          >
+            {METRICS.map((s) => (
+              <motion.div className="cmd-metric" key={s.lab} variants={rise}>
+                <span>{s.lab}</span>
+                <strong><CountNum value={s.value} suffix={s.suffix} /></strong>
+                <div className="cmd-spark">
+                  {s.spark.map((v, i) => (
+                    <motion.i
+                      key={i}
+                      style={{ height: `${(v / Math.max(...s.spark)) * 100}%`, transformOrigin: 'bottom' }}
+                      initial={{ scaleY: 0, opacity: 0 }}
+                      whileInView={{ scaleY: 1, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: 0.35 + i * 0.07, ease: [0.22, 0.61, 0.36, 1] }}
+                    />
+                  ))}
                 </div>
-                <b>{row.value}</b>
-                <em className={`pill ${row.cls}`}>{row.status}</em>
-              </div>
+                <small>{s.d}</small>
+              </motion.div>
             ))}
-          </section>
+          </motion.div>
 
-          <section className="cmd-panel">
-            <div className="cmd-panel-head">
-              <strong>Brand trial funnel</strong>
-              <span>Own products only</span>
-            </div>
-            <div className="cmd-funnel">
-              {['Sent', 'Tried', 'Liked', 'Ordered'].map((step, i) => (
-                <div key={step} style={{ height: `${112 - i * 18}px` }}>
-                  <span>{step}</span>
-                  <strong>{[124, 92, 66, 31][i]}</strong>
-                </div>
+          <motion.div
+            className="cmd-grid"
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-8%' }}
+          >
+            <motion.section className="cmd-panel wide" variants={rise}>
+              <div className="cmd-panel-head">
+                <strong>Orders routed by supplier</strong>
+                <span className="cmd-live"><span className="cmd-live-dot" />Live split PO</span>
+              </div>
+              {ORDERS.map((row, i) => (
+                <motion.div
+                  className="cmd-row"
+                  key={row.cafe}
+                  initial={{ opacity: 0, x: -8 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.45, delay: 0.25 + i * 0.12, ease: [0.22, 0.61, 0.36, 1] }}
+                >
+                  <div className="cmd-row-name">
+                    <RowAvatar name={row.cafe} img={row.img} co={row.co} />
+                    <div>
+                      <strong>{row.cafe}</strong>
+                      <span>{row.supplier}</span>
+                    </div>
+                  </div>
+                  <b>{row.value}</b>
+                  <em className={`pill ${row.cls}`}>{row.status}</em>
+                </motion.div>
               ))}
-            </div>
-          </section>
+            </motion.section>
 
-          <section className="cmd-panel dark">
-            <div className="cmd-panel-head">
-              <strong>Privacy wall</strong>
-              <span>Enforced</span>
-            </div>
-            <p>Competitor pricing, negotiated cafe deals, and other brands' sales never enter the brand workspace.</p>
-            <div className="cmd-locks">
-              <span>SKU scope</span>
-              <span>Cafe identity</span>
-              <span>Supplier inventory</span>
-            </div>
-          </section>
-        </div>
-      </main>
-    </div>
+            <motion.section className="cmd-panel" variants={rise}>
+              <div className="cmd-panel-head">
+                <strong>Brand trial funnel</strong>
+                <span>Own products only</span>
+              </div>
+              <div className="cmd-funnel">
+                {FUNNEL.map((f, i) => (
+                  <motion.div
+                    key={f.step}
+                    initial={{ height: 40, opacity: 0 }}
+                    whileInView={{ height: f.h, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.3 + i * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
+                  >
+                    <span>{f.step}</span>
+                    <strong><CountNum value={f.n} /></strong>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+
+            <motion.section className="cmd-panel dark" variants={rise}>
+              <div className="cmd-panel-head">
+                <strong>Privacy wall</strong>
+                <span>Enforced</span>
+              </div>
+              <p>Competitor pricing, negotiated cafe deals, and other brands' sales never enter the brand workspace.</p>
+              <div className="cmd-locks">
+                <span>SKU scope</span>
+                <span>Cafe identity</span>
+                <span>Supplier inventory</span>
+              </div>
+            </motion.section>
+          </motion.div>
+        </main>
+      </div>
+    </MotionConfig>
   );
 }
 
@@ -225,7 +377,7 @@ export function ShowcaseInventory() {
                   <td style={{ padding: '8px 10px', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{r.on}</td>
                   <td style={{ padding: '8px 10px', color: 'var(--ink-soft)' }}>{r.par}</td>
                   <td style={{ padding: '8px 10px' }}>
-                    {r.re === '' ? <span style={{ color: 'var(--ink-soft)' }}>—</span> : <span className={`pill ${r.low ? 'pending' : 'info'}`} style={{ fontSize: 10, padding: '2px 7px', whiteSpace: 'nowrap' }}>{r.re}</span>}
+                    {r.re === '' ? <span style={{ color: 'var(--ink-soft)' }}>–</span> : <span className={`pill ${r.low ? 'pending' : 'info'}`} style={{ fontSize: 10, padding: '2px 7px', whiteSpace: 'nowrap' }}>{r.re}</span>}
                   </td>
                   <td style={{ padding: '8px 10px' }}>
                     <div style={{ width: '100%', height: 5, borderRadius: 99, background: 'var(--surface-2)', overflow: 'hidden' }}>
@@ -240,7 +392,7 @@ export function ShowcaseInventory() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
           <div style={{ padding: 14, background: 'var(--c-purple-bg)', borderRadius: 12, color: 'var(--c-purple)' }}>
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', opacity: .85 }}>AI suggestion</div>
-            <div style={{ fontSize: 12.5, fontWeight: 600, marginTop: 6, lineHeight: 1.35, color: 'var(--ink)' }}>Raise par on Oat milk by 30% — weekend demand up 22%.</div>
+            <div style={{ fontSize: 12.5, fontWeight: 600, marginTop: 6, lineHeight: 1.35, color: 'var(--ink)' }}>Raise par on Oat milk by 30%, weekend demand up 22%.</div>
             <button style={{ marginTop: 10, padding: '5px 11px', background: 'var(--c-purple)', color: '#fff', border: 0, borderRadius: 7, fontSize: 11, fontWeight: 600 }}>Apply</button>
           </div>
           <div style={{ padding: 14, background: 'var(--surface-2)', borderRadius: 12, border: '1px solid var(--border-soft)', flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>

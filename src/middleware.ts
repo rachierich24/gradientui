@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Protected paths — anything under /(dashboard) is protected
+// Protected paths - anything under /(dashboard) is protected
 const PROTECTED = ['/dashboard', '/orders', '/catalogue', '/stock', '/billing', '/preorders', '/brand-orders', '/consumption', '/supplier-orders', '/supply-chain', '/trials', '/intelligence', '/ads', '/enquiries', '/profile', '/settings']
 
 export function middleware(request: NextRequest) {
