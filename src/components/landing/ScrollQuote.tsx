@@ -8,7 +8,7 @@ const QUOTE = `“We replaced six WhatsApp groups with Gradient. On day three ou
 const ATTRIB = { name: 'Ananya Kapoor', role: 'Founder · Third Wave Coffee Roasters' };
 
 function Word({ word, progress, range }: { word: string; progress: MotionValue<number>; range: [number, number] }) {
-  const color = useTransform(progress, range, ['#D1D5DB', '#0A0A0B']);
+  const color = useTransform(progress, range, ['#CDC6BB', '#221F1B']);
   return (
     <motion.span style={{ color, marginRight: '0.22em', display: 'inline-block', transition: 'color 60ms linear' }}>
       {word}

@@ -5,29 +5,33 @@
 
 /* ─── Design tokens ───────────────────────────────────────────────────── */
 :root {
-  /* ink / surface */
-  --ink: #0A0A0B;
-  --ink-2: #1F2024;
-  --ink-soft: #6B7280;
-  --ink-faint: #9CA3AF;
-  --bg: #F4F4F5;
-  --surface: #FFFFFF;
-  --surface-2: #FAFAFA;
-  --border: #E5E7EB;
-  --border-soft: #EFEFF0;
+  /* ink / surface — warm neutrals tinted toward the brand spectrum */
+  --ink: #221F1B;
+  --ink-2: #2A2723;
+  --ink-soft: #7C7368;
+  --ink-faint: #A9A093;
+  --bg: #FAF8F4;
+  --surface: #FFFDFA;
+  --surface-2: #F6F3EE;
+  --border: #E4DFD6;
+  --border-soft: #EDE9E1;
 
-  /* pastel stat-card palette */
-  --c-blue-bg: #E2ECFE;   --c-blue: #2563EB;
-  --c-purple-bg: #EADCFE; --c-purple: #7B3DFA;
-  --c-orange-bg: #FEE6D1; --c-orange: #F57515;
-  --c-cyan-bg: #D8F0FE;   --c-cyan: #0EA5E9;
+  /* Brand spectrum — the three portals as one palette.
+     Chip slots remapped: purple→Brand plum, blue/cyan→Supplier teal, orange→Cafe amber. */
+  --brand: #6E5091;    --supplier: #2F7D80;   --cafe: #BC5A2C;
+  --spectrum: linear-gradient(100deg, var(--brand) 0%, var(--supplier) 52%, var(--cafe) 100%);
+
+  --c-blue-bg: #DCEAEA;   --c-blue: #2F7D80;
+  --c-purple-bg: #E7E0EF; --c-purple: #6E5091;
+  --c-orange-bg: #F5E2D5; --c-orange: #BC5A2C;
+  --c-cyan-bg: #DCEEEE;   --c-cyan: #3E8E92;
   --c-green-bg: #DCFCE7;  --c-green: #16A34A;
   --c-pink-bg: #FCE7F3;   --c-pink: #EC4899;
   --c-yellow-bg: #FEF3C7; --c-yellow: #D97706;
 
-  /* accent */
-  --accent: #0A0A0B;
-  --accent-ink: #FFFFFF;
+  /* accent — warm ink; primary actions use the spectrum where a gradient fits */
+  --accent: #221F1B;
+  --accent-ink: #FFFDFA;
 
   /* status */
   --status-active-bg: #DCFCE7; --status-active: #16A34A;
@@ -49,9 +53,9 @@
   --r-2xl: 28px;
 
   /* shadow */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .04), 0 1px 3px rgba(15, 23, 42, .06);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, .06), 0 2px 4px rgba(15, 23, 42, .04);
-  --shadow-lg: 0 14px 40px rgba(15, 23, 42, .08), 0 4px 12px rgba(15, 23, 42, .04);
+  --shadow-sm: 0 1px 2px rgba(52, 38, 22, .05), 0 1px 3px rgba(52, 38, 22, .07);
+  --shadow-md: 0 4px 12px rgba(52, 38, 22, .07), 0 2px 4px rgba(52, 38, 22, .05);
+  --shadow-lg: 0 14px 40px rgba(52, 38, 22, .09), 0 4px 12px rgba(52, 38, 22, .05);
 
   /* landing-specific */
   --max-w: 1240px;
@@ -153,6 +157,14 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid rgba(10,10,11,.08);
   box-shadow: 0 1px 0 rgba(255,255,255,.75) inset, 0 28px 80px -42px rgba(15,23,42,.36);
   animation: navMegaIn .18s cubic-bezier(.23,1,.32,1);
+}
+/* Invisible hover bridge: fills the gap between nav and panel so the pointer
+   never crosses a dead zone that would drop the hover. */
+.nav-mega::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: -16px; height: 16px;
 }
 @keyframes navMegaIn {
   from { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(.98); }
@@ -394,8 +406,30 @@ button { font-family: inherit; cursor: pointer; }
   gap: 10px;
   box-shadow: 0 16px 38px -30px rgba(15,23,42,.4);
 }
-.proof-grid > .proof-item:nth-child(3) { --pa: var(--c-purple); }
-.proof-grid > .proof-item:nth-child(4) { --pa: var(--c-green); }
+/* Spectrum scroll rail — brand gradient fills as the page scrolls */
+.spectrum-rail {
+  position: fixed;
+  left: 22px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  z-index: 40;
+  background: var(--border-soft);
+  border-radius: 3px;
+  pointer-events: none;
+}
+.spectrum-rail-fill {
+  width: 100%;
+  height: 100%;
+  transform-origin: top center;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--brand) 0%, var(--supplier) 50%, var(--cafe) 100%);
+}
+@media (max-width: 640px) { .spectrum-rail { display: none; } }
+
+.proof-grid > .proof-item:nth-child(2) { --pa: var(--cafe); }
+.proof-grid > .proof-item:nth-child(3) { --pa: var(--brand); }
+.proof-grid > .proof-item:nth-child(4) { --pa: var(--supplier); }
 .proof-kicker span {
   color: rgba(255,255,255,.5);
   font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700;
@@ -681,7 +715,7 @@ section.l-sec.l-sec--pull-up { padding-top: 32px; padding-bottom: 48px; }
 
 /* ─── Dual audience ─────────────────────────────────────────────────── */
 .dual {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
 }
 .dual-card {
   position: relative;
@@ -702,10 +736,11 @@ section.l-sec.l-sec--pull-up { padding-top: 32px; padding-bottom: 48px; }
   padding: 5px 10px; border-radius: 999px;
 }
 .dual-card.cafe .role { background: var(--c-orange-bg); color: var(--c-orange); }
-.dual-card.sup .role { background: var(--c-purple-bg); color: var(--c-purple); }
+.dual-card.sup .role { background: var(--c-blue-bg); color: var(--c-blue); }
+.dual-card.brand .role { background: var(--c-purple-bg); color: var(--c-purple); }
 .dual-card h3 {
   margin: 14px 0 10px;
-  font-size: 32px;
+  font-size: 27px;
   letter-spacing: -.025em;
   line-height: 1.02;
   font-weight: 700;
@@ -983,21 +1018,106 @@ section.l-sec.l-sec--pull-up { padding-top: 32px; padding-bottom: 48px; }
 .bento .b.dark .b-tag { color: rgba(255,255,255,.6); }
 
 /* element-qualified to beat section.l-sec; trims the gap above the chapters header */
-section.l-sec.chapters { padding-top: 48px; }
-.chapters-head { display: grid; grid-template-columns: 1.2fr .8fr; gap: 64px; align-items: end; margin-bottom: 56px; }
-.chapters-head .sec-lead { margin: 0; max-width: 46ch; }
+/* ─── Product chapters (labelled, spectrum-coloured per role) ─────────── */
+/* extra top pad so the fixed nav doesn't overlap the header when this snaps to top */
+section.l-sec.chapters { padding-top: 108px; scroll-margin-top: 96px; }
+.chapters-head { display: grid; grid-template-columns: 1.2fr .8fr; gap: 64px; align-items: end; margin-bottom: 48px; }
+.chapters-head .sec-lead { margin: 0; max-width: 48ch; }
 .chapter-stack { display: grid; gap: 18px; }
-.chapter-card { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); gap: 20px; align-items: stretch; min-height: 320px; padding: 10px; border-radius: 30px; background: rgba(255,255,255,.62); border: 1px solid rgba(10,10,11,.07); box-shadow: 0 24px 80px -70px rgba(15,23,42,.55); }
+
+.chapter-card {
+  --ra: var(--cafe);
+  display: grid; grid-template-columns: minmax(0,.92fr) minmax(0,1.08fr);
+  gap: 12px; align-items: stretch; min-height: 300px;
+  padding: 10px; border-radius: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+.chapter-card[data-role="cafe"]     { --ra: var(--cafe); }
+.chapter-card[data-role="supplier"] { --ra: var(--supplier); }
+.chapter-card[data-role="brand"]    { --ra: var(--brand); }
 .chapter-card:nth-child(even) .chapter-copy { order: 2; }
-.chapter-copy { padding: clamp(24px, 3vw, 40px); border-radius: 22px; background: var(--ink); color: #fff; display: flex; flex-direction: column; justify-content: space-between; }
-.chapter-card:nth-child(2) .chapter-copy { background: #3b2f26; }
-.chapter-card:nth-child(3) .chapter-copy { background: #202327; }
-.chapter-num { color: rgba(255,255,255,.58); font-size: 12px; text-transform: uppercase; letter-spacing: .16em; font-weight: 700; }
-.chapter-copy h3 { margin: 24px 0 0; font-size: clamp(28px, 3.1vw, 44px); line-height: 1.02; letter-spacing: -.035em; text-wrap: balance; }
-.chapter-copy p { margin: 16px 0 0; color: rgba(255,255,255,.66); font-size: 15px; line-height: 1.5; max-width: 46ch; }
-.chapter-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-.chapter-meta span { padding: 7px 10px; border-radius: 999px; color: rgba(255,255,255,.82); background: rgba(255,255,255,.1); font-size: 11.5px; font-weight: 650; }
-.chapter-visual { min-height: 100%; border-radius: 22px; background: radial-gradient(420px 180px at 20% 0%, rgba(245,117,21,.18), transparent 62%), var(--surface); border: 1px solid var(--border-soft); display: grid; place-items: center; padding: clamp(18px, 4vw, 46px); overflow: hidden; }
+
+/* light, role-tinted copy panel — keeps the exact agreed amber / teal / plum, consistent with the rest of the page */
+.chapter-copy {
+  padding: clamp(24px,3vw,40px); border-radius: 22px;
+  background: linear-gradient(155deg, color-mix(in oklch, var(--ra) 13%, var(--surface)), color-mix(in oklch, var(--ra) 5%, var(--surface)));
+  border: 1px solid color-mix(in oklch, var(--ra) 16%, var(--border-soft));
+  color: var(--ink); display: flex; flex-direction: column; justify-content: center;
+}
+.chapter-label { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: auto; }
+.chapter-role {
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; background: var(--ra); padding: 6px 12px; border-radius: 999px;
+}
+.chapter-values {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700;
+  color: var(--ra);
+}
+.chapter-copy h3 {
+  margin: 26px 0 0; font-size: clamp(26px,2.6vw,38px);
+  line-height: 1.04; letter-spacing: -.03em; text-wrap: balance; max-width: 18ch; color: var(--ink);
+}
+.chapter-copy p { margin: 14px 0 0; color: var(--ink-soft); font-size: 15px; line-height: 1.5; max-width: 44ch; }
+.chapter-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.chapter-meta span {
+  padding: 7px 11px; border-radius: 999px; color: var(--ink-2);
+  background: color-mix(in oklch, var(--ra) 8%, var(--surface));
+  border: 1px solid color-mix(in oklch, var(--ra) 18%, var(--border-soft));
+  font-size: 11.5px; font-weight: 600;
+}
+
+.chapter-visual {
+  min-height: 100%; border-radius: 22px;
+  background:
+    radial-gradient(420px 200px at 22% 0%, color-mix(in oklch, var(--ra) 16%, transparent), transparent 64%),
+    var(--surface);
+  border: 1px solid var(--border-soft);
+  display: grid; place-items: center; padding: clamp(18px,3vw,44px); overflow: hidden;
+}
+@media (max-width: 760px) {
+  .chapters-head { grid-template-columns: 1fr; gap: 20px; margin-bottom: 32px; }
+  .chapter-card { grid-template-columns: 1fr; }
+  .chapter-card:nth-child(even) .chapter-copy { order: 0; }
+}
+
+/* ─── Team page ──────────────────────────────────────────────────────── */
+.team-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
+  padding: 28px 26px; box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; align-items: flex-start;
+  transition: transform .28s cubic-bezier(.23,1,.32,1), box-shadow .28s cubic-bezier(.23,1,.32,1);
+}
+.team-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.team-photo {
+  width: 74px; height: 74px; border-radius: 50%; overflow: hidden;
+  border: 1px solid var(--border); margin-bottom: 18px; background: var(--surface-2);
+}
+.team-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.team-name { font-family: var(--font-serif); font-size: 23px; font-weight: 600; letter-spacing: -.01em; margin: 0; color: var(--ink); }
+.team-role { font-size: 11.5px; text-transform: uppercase; letter-spacing: .14em; color: var(--ink-soft); font-weight: 700; margin-top: 6px; }
+.team-bio { margin: 14px 0 0; font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+.team-link { margin-top: 16px; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13.5px; color: var(--ink); text-decoration: none; }
+.team-link span { transition: transform .2s ease; }
+.team-link:hover span { transform: translateX(4px); }
+
+.team-hiring {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 28px;
+  padding: clamp(24px,3vw,36px) clamp(26px,3vw,42px); border-radius: 24px;
+  background: var(--ink); color: var(--surface); text-decoration: none;
+  box-shadow: var(--shadow-lg);
+  transition: transform .28s cubic-bezier(.23,1,.32,1);
+}
+.team-hiring:hover { transform: translateY(-2px); }
+.team-hiring-label { font-size: 11px; text-transform: uppercase; letter-spacing: .16em; font-weight: 700; color: color-mix(in oklch, var(--surface) 55%, transparent); }
+.team-hiring-title { font-family: var(--font-serif); font-size: 26px; font-weight: 600; margin-top: 4px; }
+.team-hiring-text { margin: 0; max-width: 46ch; font-size: 14.5px; line-height: 1.5; color: color-mix(in oklch, var(--surface) 72%, transparent); }
+.team-hiring-arrow { font-size: 22px; justify-self: end; }
+@media (max-width: 680px) {
+  .team-hiring { grid-template-columns: 1fr; gap: 14px; }
+  .team-hiring-arrow { display: none; }
+}
 
 .inline-cta { padding: 12px 0 20px; }
 .inline-cta-grid {

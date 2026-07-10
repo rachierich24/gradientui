@@ -4,10 +4,12 @@ import {
   LProofStrip, LInlineCTA,
 } from '@/components/landing/sections'
 import { LScrollQuote } from '@/components/landing/ScrollQuote'
+import { LSpectrumRail } from '@/components/landing/SpectrumRail'
 
 export default function HomePage() {
   return (
     <div className="l-page">
+      <LSpectrumRail />
       <LNav />
       <LHero />
       <LProofStrip />

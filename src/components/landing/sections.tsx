@@ -27,10 +27,30 @@ function Avatar({ initials, bg, size = 24 }: { initials: string; bg: string; siz
 
 export function LNav() {
   const [open, setOpen] = useState<'product' | 'resources' | null>(null);
+  // Mega-menu open/close intent: a short grace delay keeps the panel open while
+  // the pointer crosses the gap between trigger and panel, so it doesn't flicker shut.
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelClose = () => { if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; } };
+  const openMenu = (m: 'product' | 'resources') => { cancelClose(); setOpen(m); };
+  const scheduleClose = () => { cancelClose(); closeTimer.current = setTimeout(() => setOpen(null), 140); };
+  useEffect(() => cancelClose, []);
+  // In-page anchors scroll smoothly (via Lenis if present); external links navigate normally.
+  const handleNav = (e: { preventDefault: () => void }, href: string) => {
+    setOpen(null);
+    if (href.startsWith('#')) {
+      const el = document.querySelector(href);
+      if (el) {
+        e.preventDefault();
+        const lenis = (window as unknown as { lenis?: { scrollTo: (t: Element, o?: object) => void } }).lenis;
+        if (lenis?.scrollTo) lenis.scrollTo(el, { offset: -90 });
+        else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
   const productLinks = [
-    { t: 'Cafe portal', d: 'One cart across suppliers', href: '#product' },
-    { t: 'Supplier command center', d: 'Orders, stock, dispatch', href: '#product' },
-    { t: 'Brand trial engine', d: 'Verified cafe adoption', href: '#chapters' },
+    { t: 'For cafés', d: 'Source from every supplier in one cart', href: '#for-cafes' },
+    { t: 'For suppliers', d: 'Orders, stock, dispatch in one place', href: '#for-suppliers' },
+    { t: 'For brands', d: 'Verified café adoption & trials', href: 'https://brand.gradient365.com' },
   ];
   const resourceLinks = [
     { t: 'Contact sales', d: 'Get a plan that fits your operation', href: '#pricing' },
@@ -39,37 +59,46 @@ export function LNav() {
   ];
 
   return (
-    <nav className="nav" onMouseLeave={() => setOpen(null)}>
+    <nav className="nav" onMouseLeave={scheduleClose} onMouseEnter={cancelClose}>
       <a className="nav-brand" href="/">
         <div className="mark">G</div>
         <span>Gradient</span>
       </a>
       <div className="nav-sep"></div>
       <div className="nav-links">
-        <button type="button" className={`nav-link ${open === 'product' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('product')} onFocus={() => setOpen('product')} onClick={() => setOpen(open === 'product' ? null : 'product')} aria-expanded={open === 'product'}>
+        <button type="button" className={`nav-link ${open === 'product' ? 'is-open' : ''}`} onMouseEnter={() => openMenu('product')} onFocus={() => openMenu('product')} onClick={() => setOpen(open === 'product' ? null : 'product')} aria-expanded={open === 'product'}>
           Product <Icon.ChevronDown size={12} className="chev"/>
         </button>
-        <button type="button" className={`nav-link ${open === 'resources' ? 'is-open' : ''}`} onMouseEnter={() => setOpen('resources')} onFocus={() => setOpen('resources')} onClick={() => setOpen(open === 'resources' ? null : 'resources')} aria-expanded={open === 'resources'}>
+        <button type="button" className={`nav-link ${open === 'resources' ? 'is-open' : ''}`} onMouseEnter={() => openMenu('resources')} onFocus={() => openMenu('resources')} onClick={() => setOpen(open === 'resources' ? null : 'resources')} aria-expanded={open === 'resources'}>
           Resources <Icon.ChevronDown size={12} className="chev"/>
         </button>
+        <a className="nav-link" href="/team">Team</a>
         <a className="nav-link" href="#pricing">Contact sales</a>
-        <a className="nav-link" href="/contact">Contact</a>
       </div>
       <div className="nav-spacer"></div>
       <a className="nav-cta" href="/contact">Start free <span><Icon.Arrow size={12}/></span></a>
 
       {open && (
-        <div className="nav-mega" onMouseEnter={() => setOpen(open)}>
+        <div className="nav-mega" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
           <div className="nav-mega-grid">
-            {(open === 'product' ? productLinks : resourceLinks).map((item) => (
-              <a href={item.href} className="nav-mega-item" key={item.t}>
-                <span className="nav-mega-ic"><Icon.Arrow size={12}/></span>
-                <span>
-                  <strong>{item.t}</strong>
-                  <small>{item.d}</small>
-                </span>
-              </a>
-            ))}
+            {(open === 'product' ? productLinks : resourceLinks).map((item) => {
+              const ext = item.href.startsWith('http');
+              return (
+                <a
+                  href={item.href}
+                  className="nav-mega-item"
+                  key={item.t}
+                  onClick={(e) => handleNav(e, item.href)}
+                  {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  <span className="nav-mega-ic"><Icon.Arrow size={12}/></span>
+                  <span>
+                    <strong>{item.t}</strong>
+                    <small>{item.d}</small>
+                  </span>
+                </a>
+              );
+            })}
           </div>
           <div className="nav-mega-proof">
             <span>Live network</span>
@@ -140,9 +169,9 @@ export function LHero() {
             >
               <defs>
                 <linearGradient id="eyebrowRayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="hsl(285 95% 65%)" />
-                  <stop offset="50%" stopColor="hsl(220 95% 65%)" />
-                  <stop offset="100%" stopColor="hsl(190 95% 70%)" />
+                  <stop offset="0%" stopColor="#6E5091" />
+                  <stop offset="50%" stopColor="#2F7D80" />
+                  <stop offset="100%" stopColor="#BC5A2C" />
                 </linearGradient>
               </defs>
               <rect
@@ -363,21 +392,40 @@ function DualSupVisual() {
   );
 }
 
+function DualBrandVisual() {
+  return (
+    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+      <div className="mini-ui" style={{ width: '92%', padding: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: 12, fontWeight: 700 }}>Trial · Monsoon Blend</div>
+          <span className="mini-pill" style={{ background: 'var(--c-purple-bg)', color: 'var(--c-purple)' }}>34% converted</span>
+        </div>
+        <div className="mini-bars" style={{ marginTop: 10, height: 56 }}>
+          {[42, 68, 30, 84, 55, 72, 48].map((h, i) => (
+            <div key={i} className="b" style={{ height: `${h}%`, background: i === 3 ? 'var(--c-purple)' : 'var(--c-purple-bg)' }} />
+          ))}
+        </div>
+        <div className="t2" style={{ marginTop: 6 }}>City penetration · 7 metros</div>
+      </div>
+    </div>
+  );
+}
+
 export function LDual() {
   return (
     <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Built for both sides</div>
-          <h2 className="sec-h" style={{ margin: '0 auto' }}>Two sides. <em>One</em> portal.</h2>
+          <div className="sec-eyebrow sec-eyebrow--plain" style={{ justifyContent: 'center' }}>Built for all three</div>
+          <h2 className="sec-h" style={{ margin: '0 auto' }}>Three roles. <em>One</em> portal.</h2>
           <p className="sec-lead" style={{ margin: '18px auto 0' }}>
             Cafés get a sourcing layer they never had. Suppliers get a sales channel that runs
-            itself. Everything moves through Gradient.
+            itself. Brands get a measurable line to verified buyers. Everything moves through Gradient.
           </p>
         </div>
 
         <div className="dual">
-          <div className="dual-card cafe">
+          <div className="dual-card cafe" id="for-cafes">
             <span className="role">For cafés</span>
             <h3>Source from <em>every</em> supplier in one cart.</h3>
             <p>Browse a catalog of 12,000+ SKUs, place orders across multiple suppliers,
@@ -392,7 +440,7 @@ export function LDual() {
             <div className="visual"><DualCafeVisual /></div>
           </div>
 
-          <div className="dual-card sup">
+          <div className="dual-card sup" id="for-suppliers">
             <span className="role">For suppliers</span>
             <h3>A sales channel that <em>runs</em> itself.</h3>
             <p>Publish your catalog once, take orders from cafés across the country,
@@ -405,6 +453,21 @@ export function LDual() {
             </ul>
             <a className="link" href="/features#supplier">Explore the supplier portal <Icon.Arrow size={14}/></a>
             <div className="visual"><DualSupVisual /></div>
+          </div>
+
+          <div className="dual-card brand">
+            <span className="role">For brands</span>
+            <h3>Reach verified cafés, <em>measure</em> every rupee.</h3>
+            <p>Launch trial campaigns to targeted cafés, watch real conversions, and track
+              city-level demand. Every liked trial is a named, located, ready-to-buy lead.</p>
+            <ul>
+              <li>Targeted trial campaigns by city &amp; type</li>
+              <li>Live consumption &amp; conversion funnel</li>
+              <li>City-wise demand intelligence</li>
+              <li>Competitor-blind privacy walls</li>
+            </ul>
+            <a className="link" href="/features#brand">Explore the brand portal <Icon.Arrow size={14}/></a>
+            <div className="visual"><DualBrandVisual /></div>
           </div>
         </div>
       </div>
@@ -536,22 +599,22 @@ function BentoMultiCart() {
     { nm: 'Third Wave · Kelagur', q: '15 kg', pr: '₹10,200', co: 'blue' },
   ];
   return (
-    <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+    <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 8 }}>
       {cards.map((c, i) => (
-        <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--border-soft)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: `var(--c-${c.co}-bg)`, display: 'grid', placeItems: 'center' }}>
-            <div style={{ width: 14, height: 14, borderRadius: 99, background: `var(--c-${c.co})`, opacity: .5 }}/>
+        <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--border-soft)', borderRadius: 11, padding: '7px 10px', display: 'flex', alignItems: 'center', gap: 9 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 7, background: `var(--c-${c.co}-bg)`, display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+            <div style={{ width: 12, height: 12, borderRadius: 99, background: `var(--c-${c.co})`, opacity: .5 }}/>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.nm}</div>
-            <div style={{ fontSize: 11, color: 'var(--ink-soft)', marginTop: 1 }}>{c.q}</div>
+            <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.nm}</div>
+            <div style={{ fontSize: 10.5, color: 'var(--ink-soft)', marginTop: 1 }}>{c.q}</div>
           </div>
-          <div style={{ fontSize: 12.5, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{c.pr}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{c.pr}</div>
         </div>
       ))}
-      <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--ink)', color: '#fff', borderRadius: 12 }}>
-        <div style={{ fontSize: 11.5, fontWeight: 600, opacity: .7 }}>Total · 4 suppliers · 1 invoice</div>
-        <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums' }}>₹26,500</div>
+      <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--ink)', color: '#fff', borderRadius: 11 }}>
+        <div style={{ fontSize: 11, fontWeight: 600, opacity: .7 }}>Total · 4 suppliers · 1 invoice</div>
+        <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums' }}>₹26,500</div>
       </div>
     </div>
   );
@@ -697,34 +760,37 @@ function BentoLogistics() {
   );
 }
 
-export function LBento() {
-  const chapters = [
-    {
-      n: '01',
-      label: 'Procurement graph',
-      title: 'Cafes order by ingredient. Gradient routes by supplier.',
-      body: 'Every basket can contain products from multiple distributors. Gradient splits the PO, preserves negotiated pricing, and keeps one cafe-side invoice.',
-      meta: ['Multi-supplier checkout', 'Negotiated prices stay private', 'One monthly bill'],
-      visual: <BentoMultiCart />,
-    },
-    {
-      n: '02',
-      label: 'Supplier operating layer',
-      title: 'Suppliers see the work queue, not a pile of messages.',
-      body: 'Incoming orders, stock risk, dispatch timing, counter-offers, and brand restocking all converge into one control surface.',
-      meta: ['Auto-replenish signals', 'WhatsApp parsing', 'T+7 settlements'],
-      visual: <BentoAutoReplenish />,
-    },
-    {
-      n: '03',
-      label: 'Brand trial engine',
-      title: 'Brands buy verified adoption, not impressions.',
-      body: 'Trial kits move through supplier relationships. Brands see their own product funnel, cafe feedback, and ready-to-buy intent without competitor leakage.',
-      meta: ['Supplier-routed trials', 'Own-product analytics', 'No competitor data'],
-      visual: <BentoInsights />,
-    },
-  ];
+const CHAPTERS = [
+  {
+    key: 'cafe',
+    role: 'For cafés',
+    values: 'Nourish · Support · Reliability',
+    title: 'Order by ingredient. Gradient routes by supplier.',
+    body: 'Every basket splits across distributors. One checkout, negotiated prices kept private, one monthly invoice.',
+    meta: ['Multi-supplier checkout', 'Prices stay private', 'Net-15 credit'],
+    visual: <BentoMultiCart />,
+  },
+  {
+    key: 'supplier',
+    role: 'For suppliers',
+    values: 'Flow · Efficiency · Control',
+    title: 'The work queue, not a pile of messages.',
+    body: 'Orders, stock risk, dispatch and settlements converge into one control surface you can actually run.',
+    meta: ['Auto-replenish', 'WhatsApp parsing', 'T+7 settlements'],
+    visual: <BentoAutoReplenish />,
+  },
+  {
+    key: 'brand',
+    role: 'For brands',
+    values: 'Reach · Intelligence · Growth',
+    title: 'Verified adoption, not impressions.',
+    body: 'Trial kits move through your suppliers to named, ready-to-buy cafés. Your funnel, your city demand, never a competitor’s.',
+    meta: ['Own-product analytics', 'City demand', 'No competitor data'],
+    visual: <BentoInsights />,
+  },
+];
 
+export function LBento() {
   return (
     <section className="l-sec chapters" id="chapters" data-snap>
       <div className="l-wrap">
@@ -733,23 +799,24 @@ export function LBento() {
             <div className="sec-eyebrow sec-eyebrow--plain">Product chapters</div>
             <h2 className="sec-h">A supply network, explained through the product.</h2>
           </div>
-          <p className="sec-lead">Gradient makes cafe procurement tangible: every actor gets the interface they need, and privacy walls hold the network together.</p>
+          <p className="sec-lead">Cafés source, suppliers fulfil, brands measure. Each side gets the interface it needs, and privacy walls hold the network together.</p>
         </div>
 
         <div className="chapter-stack">
-          {chapters.map((chapter) => (
-            <article className="chapter-card" key={chapter.n}>
+          {CHAPTERS.map((c) => (
+            <article className="chapter-card" data-role={c.key} key={c.key}>
               <div className="chapter-copy">
-                <span className="chapter-num">[{chapter.n}] {chapter.label}</span>
-                <h3>{chapter.title}</h3>
-                <p>{chapter.body}</p>
+                <div className="chapter-label">
+                  <span className="chapter-role">{c.role}</span>
+                  <span className="chapter-values">{c.values}</span>
+                </div>
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
                 <div className="chapter-meta">
-                  {chapter.meta.map((m) => <span key={m}>{m}</span>)}
+                  {c.meta.map((m) => <span key={m}>{m}</span>)}
                 </div>
               </div>
-              <div className="chapter-visual">
-                {chapter.visual}
-              </div>
+              <div className="chapter-visual">{c.visual}</div>
             </article>
           ))}
         </div>
