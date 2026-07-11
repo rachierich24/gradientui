@@ -5,7 +5,8 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 
 const QUOTE = `“We replaced six WhatsApp groups with Gradient. On day three our supplier called to ask what changed. Orders had doubled.”`;
-const ATTRIB = { name: 'Ananya Kapoor', role: 'Founder · Third Wave Coffee Roasters' };
+// Illustrative, not a real customer quote.
+const ATTRIB = { name: 'Ananya K.', role: 'Founder · Ember Roastery (illustrative)' };
 
 function Word({ word, progress, range }: { word: string; progress: MotionValue<number>; range: [number, number] }) {
   const color = useTransform(progress, range, ['#CDC6BB', '#221F1B']);

@@ -41,7 +41,7 @@ export default function PricingPage() {
               variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] } } }}
               style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}
             >
-              <a className="btn-l dark" href="mailto:gradient365.team@gmail.com">Contact sales</a>
+              <a className="btn-l dark" href="mailto:hello@unifiednexgrade.com">Contact sales</a>
               <a className="btn-l ghost" href="/contact">Contact form</a>
             </motion.div>
             <motion.p
@@ -50,7 +50,7 @@ export default function PricingPage() {
               style={{ fontSize: '15px', color: '#425466', marginTop: '24px' }}
             >
               Or email us directly at{' '}
-              <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--portal-primary)', fontWeight: 600, textDecoration: 'none' }}>gradient365.team@gmail.com</a>
+              <a href="mailto:hello@unifiednexgrade.com" style={{ color: 'var(--portal-primary)', fontWeight: 600, textDecoration: 'none' }}>hello@unifiednexgrade.com</a>
             </motion.p>
           </div>
         </section>

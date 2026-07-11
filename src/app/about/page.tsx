@@ -195,7 +195,7 @@ export default function AboutPage() {
             <div style={{ marginLeft: '200px', marginTop: '32px', paddingTop: '24px', borderTop: '1px solid rgba(10,10,11,0.08)' }} className="founders-footnote">
               <p style={{ fontSize: '14.5px', color: '#5B6471', lineHeight: 1.6, maxWidth: '60ch' }}>
                 Hiring engineering, ops, and design. Reach{' '}
-                <a href="mailto:gradient365.team@gmail.com" style={{ color: '#0A0A0B', textDecoration: 'underline', textUnderlineOffset: '3px' }}>gradient365.team@gmail.com</a>.
+                <a href="mailto:hello@unifiednexgrade.com" style={{ color: '#0A0A0B', textDecoration: 'underline', textUnderlineOffset: '3px' }}>hello@unifiednexgrade.com</a>.
               </p>
             </div>
           </div>

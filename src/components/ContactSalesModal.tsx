@@ -114,12 +114,12 @@ export function ContactSalesModal() {
       });
       const data = await res.json().catch(() => ({ ok: false }));
       if (!res.ok || !data.ok) {
-        setError('Could not send your request. Please try again or email gradient365.team@gmail.com.');
+        setError('Could not send your request. Please try again or email hello@unifiednexgrade.com.');
         return;
       }
       setSubmitted(true);
     } catch {
-      setError('Network error. Please try again or email gradient365.team@gmail.com.');
+      setError('Network error. Please try again or email hello@unifiednexgrade.com.');
     } finally {
       setSending(false);
     }

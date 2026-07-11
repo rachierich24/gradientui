@@ -1,204 +1,121 @@
 'use client'
 
-import { LNav, LFooter } from "@/components/landing/sections"
-import { motion } from 'framer-motion'
+import { LNav, LFooter } from '@/components/landing/sections'
+import { Icon } from '@/components/landing/icons'
+import { openContactSalesModal } from '@/components/ContactSalesModal'
+import { motion, type Variants } from 'framer-motion'
+import type { CSSProperties, ReactNode } from 'react'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-}
+const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }
+const rise: Variants = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 0.61, 0.36, 1] } } }
 
-const mono = 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace)'
-
-type Perk = { title: string; desc: string }
+type Perk = { title: string; desc: string; ic: ReactNode; c: string }
 const perks: Perk[] = [
-  {
-    title: 'Remote-first, Delhi NCR base',
-    desc: 'Work from anywhere in India. Our home base is Delhi NCR, where the founders sit. Most of the team is distributed.',
-  },
-  {
-    title: 'Move fast',
-    desc: 'No bureaucracy. Ship in days, not months. Your work hits real cafés, suppliers, and brands within the same week.',
-  },
-  {
-    title: 'Direct to founders',
-    desc: 'Two cofounders, one product, one chat. Decisions land same-day. No layers of approval, no committees.',
-  },
+  { title: 'Remote-first, Delhi NCR base', desc: 'Work from anywhere in India. Our home base is Delhi NCR, where the founders sit. Most of the team is distributed.', ic: <Icon.Sparkle size={18} />, c: 'var(--c-orange)' },
+  { title: 'Move fast', desc: 'No bureaucracy. Ship in days, not months. Your work hits real cafés, suppliers, and brands within the same week.', ic: <Icon.ArrowUp size={18} />, c: 'var(--c-blue)' },
+  { title: 'Direct to founders', desc: 'Two cofounders, one product, one chat. Decisions land same-day. No layers of approval, no committees.', ic: <Icon.Users size={18} />, c: 'var(--c-purple)' },
 ]
 
-type Role = {
-  title: string
-  dept: string
-  location: string
-  type: string
-  desc: string
-}
+type Role = { title: string; dept: string; location: string; type: string; desc: string }
 const roles: Role[] = [
-  {
-    title: 'Senior full-stack engineer',
-    dept: 'Engineering',
-    location: 'Remote / Delhi NCR',
-    type: 'Full-time',
-    desc: 'Own end-to-end features across the Next.js portals and Node.js backend. PostgreSQL and real-time systems experience preferred. You will ship the supplier-side privacy walls.',
-  },
-  {
-    title: 'Product manager, café portal',
-    dept: 'Product',
-    location: 'Delhi NCR',
-    type: 'Full-time',
-    desc: 'Define the roadmap for the café-side product. You will spend half your week in the field with café owners, the other half translating what you heard into shipped features.',
-  },
-  {
-    title: 'Business development, supplier partnerships',
-    dept: 'Sales',
-    location: 'Remote / Delhi NCR / Mumbai',
-    type: 'Full-time',
-    desc: 'Sign and onboard F&B distributors and wholesalers onto the supplier network. Strong existing network in Indian F&B supply chain required.',
-  },
-  {
-    title: 'Brand partnerships manager',
-    dept: 'Growth',
-    location: 'Remote',
-    type: 'Full-time',
-    desc: 'Work with FMCG brands to structure trial campaigns and consumption-analytics partnerships. Existing brand relationships a plus.',
-  },
+  { title: 'Senior full-stack engineer', dept: 'Engineering', location: 'Remote / Delhi NCR', type: 'Full-time', desc: 'Own end-to-end features across the Next.js portals and Spring Boot (Java) backend. PostgreSQL and real-time systems experience preferred. You will ship the supplier-side privacy walls.' },
+  { title: 'Product manager, café portal', dept: 'Product', location: 'Delhi NCR', type: 'Full-time', desc: 'Define the roadmap for the café-side product. Half your week in the field with café owners, the other half translating what you heard into shipped features.' },
+  { title: 'Business development, supplier partnerships', dept: 'Sales', location: 'Remote / Delhi NCR / Mumbai', type: 'Full-time', desc: 'Sign and onboard F&B distributors and wholesalers onto the supplier network. Strong existing network in Indian F&B supply chain required.' },
+  { title: 'Brand partnerships manager', dept: 'Growth', location: 'Remote', type: 'Full-time', desc: 'Work with FMCG brands to structure trial campaigns and consumption-analytics partnerships. Existing brand relationships a plus.' },
 ]
+
+const deptMeta: Record<string, { c: string; ic: ReactNode }> = {
+  Engineering: { c: 'var(--c-blue)', ic: <Icon.Dashboard size={16} /> },
+  Product: { c: 'var(--c-purple)', ic: <Icon.Sparkle size={16} /> },
+  Sales: { c: 'var(--c-orange)', ic: <Icon.Truck size={16} /> },
+  Growth: { c: 'var(--c-green)', ic: <Icon.Chart size={16} /> },
+}
 
 export default function CareersPage() {
   return (
-    <>
+    <div className="l-page">
       <LNav />
       <main>
         {/* Hero */}
-        <section style={{ paddingTop: '160px', paddingBottom: '48px' }}>
-          <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <motion.p
-              initial="hidden" animate="visible" variants={fadeUp}
-              style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9AA0A6', marginBottom: '24px' }}
-            >
-              Careers · {roles.length} open
-            </motion.p>
-            <motion.h1
-              initial="hidden" animate="visible"
-              variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] } } }}
-              style={{ fontSize: 'clamp(36px, 5.2vw, 72px)', fontWeight: 400, letterSpacing: '-0.035em', color: '#0A0A0B', lineHeight: 0.98, marginBottom: '28px', textWrap: 'balance' }}
-            >
-              Build the operating system<br />for India&apos;s café supply chain.
-            </motion.h1>
-            <motion.p
-              initial="hidden" animate="visible"
-              variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.16, ease: [0.22, 1, 0.36, 1] } } }}
-              style={{ fontSize: '18px', color: '#5B6471', lineHeight: 1.55, maxWidth: '56ch', textWrap: 'pretty' }}
-            >
-              Small team, big problem. If you want your work to ship and matter the same week, you&apos;re in the right place.
-            </motion.p>
+        <section className="l-sec" style={{ paddingTop: 150, paddingBottom: 40 }}>
+          <div className="l-wrap">
+            <motion.div variants={container} initial="hidden" animate="show">
+              <motion.div className="sec-eyebrow sec-eyebrow--plain" variants={rise}>Careers · {roles.length} open</motion.div>
+              <motion.h1 className="sec-h" variants={rise} style={{ maxWidth: '18ch' }}>
+                Build the operating system for India&apos;s <em>café supply</em> chain.
+              </motion.h1>
+              <motion.p className="sec-lead" variants={rise} style={{ marginTop: 20, maxWidth: '54ch' }}>
+                Small team, big problem. If you want your work to ship and matter the same week, you&apos;re in the right place.
+              </motion.p>
+              <motion.div variants={rise} className="hero-ctas" style={{ marginTop: 28 }}>
+                <a className="btn-l dark" href="#roles">See open roles <span><Icon.Arrow size={13} /></span></a>
+                <a className="btn-l ghost" href="#roles" onClick={(e) => { e.preventDefault(); openContactSalesModal() }}>Send a note</a>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
         {/* How we work */}
-        <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
-          <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
-              <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
-                How we work
-              </p>
-              <h2 style={{ fontSize: 'clamp(22px, 2.4vw, 32px)', fontWeight: 400, letterSpacing: '-0.025em', color: '#0A0A0B', maxWidth: '28ch', textWrap: 'balance' }}>
-                Two cofounders, distributed team, zero theatre.
-              </h2>
+        <section className="l-sec tight">
+          <div className="l-wrap">
+            <div className="sec-head-row">
+              <div>
+                <div className="sec-eyebrow sec-eyebrow--plain">How we work</div>
+                <h2 className="sec-h">Two cofounders, distributed team, <em>zero</em> theatre.</h2>
+              </div>
+              <p className="sec-lead">The whole company fits in one chat. What you build this week is in front of real cafés and suppliers by the next.</p>
             </div>
-            <ul style={{ listStyle: 'none', margin: '0 0 0 200px', padding: 0 }} className="perks-list">
-              {perks.map((p, i) => (
-                <li
-                  key={p.title}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '64px 1fr',
-                    columnGap: '24px',
-                    alignItems: 'start',
-                    padding: '24px 0',
-                    borderTop: '1px solid rgba(10,10,11,0.08)',
-                    borderBottom: i === perks.length - 1 ? '1px solid rgba(10,10,11,0.08)' : 'none',
-                  }}
-                >
-                  <span style={{ fontFamily: mono, fontSize: '13px', fontWeight: 500, color: '#9AA0A6', fontVariantNumeric: 'tabular-nums', paddingTop: '3px' }}>
-                    0{i + 1}
-                  </span>
-                  <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0A0A0B', letterSpacing: '-0.01em', marginBottom: '6px' }}>{p.title}</h3>
-                    <p style={{ fontSize: '14.5px', color: '#5B6471', lineHeight: 1.6, maxWidth: '58ch', textWrap: 'pretty' }}>{p.desc}</p>
-                  </div>
-                </li>
+            <motion.div className="cperks" variants={container} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-10%' }}>
+              {perks.map((p) => (
+                <motion.div className="cperk" key={p.title} variants={rise} style={{ '--pc': p.c } as CSSProperties}>
+                  <span className="cperk-ic">{p.ic}</span>
+                  <h3>{p.title}</h3>
+                  <p>{p.desc}</p>
+                </motion.div>
               ))}
-            </ul>
+            </motion.div>
           </div>
         </section>
 
         {/* Open roles */}
-        <section style={{ paddingTop: '64px', paddingBottom: '96px', borderTop: '1px solid rgba(10,10,11,0.08)' }}>
-          <div className="container" style={{ maxWidth: '960px', marginInline: 'auto' }}>
-            <div className="g2" style={{ display: 'grid', gridTemplateColumns: '160px 1fr', columnGap: '40px', alignItems: 'baseline', marginBottom: '32px' }}>
-              <p style={{ fontFamily: mono, fontSize: '11px', fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9AA0A6' }}>
-                Open roles
-              </p>
-              <h2 style={{ fontSize: 'clamp(22px, 2.4vw, 32px)', fontWeight: 400, letterSpacing: '-0.025em', color: '#0A0A0B', maxWidth: '28ch', textWrap: 'balance' }}>
-                We&apos;re hiring across engineering, product, sales, and growth.
-              </h2>
+        <section className="l-sec tight" id="roles">
+          <div className="l-wrap">
+            <div className="sec-head-row">
+              <div>
+                <div className="sec-eyebrow sec-eyebrow--plain">Open roles</div>
+                <h2 className="sec-h">Hiring across engineering, product, <em>sales</em> &amp; growth.</h2>
+              </div>
+              <p className="sec-lead">Every role ships to production. No maker-vs-manager split, no roadmap you never touch.</p>
             </div>
-            <ul style={{ listStyle: 'none', margin: '0 0 0 200px', padding: 0 }} className="roles-list">
-              {roles.map((role, i) => (
-                <li
-                  key={role.title}
-                  className="role-row"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '64px 1fr 120px',
-                    columnGap: '24px',
-                    alignItems: 'start',
-                    padding: '28px 0',
-                    borderTop: '1px solid rgba(10,10,11,0.08)',
-                    borderBottom: i === roles.length - 1 ? '1px solid rgba(10,10,11,0.08)' : 'none',
-                  }}
-                >
-                  <span style={{ fontFamily: mono, fontSize: '13px', fontWeight: 500, color: '#9AA0A6', fontVariantNumeric: 'tabular-nums', paddingTop: '4px' }}>
-                    0{i + 1}
-                  </span>
-                  <div>
-                    <h3 style={{ fontSize: '20px', fontWeight: 500, color: '#0A0A0B', letterSpacing: '-0.015em', marginBottom: '8px', lineHeight: 1.25 }}>{role.title}</h3>
-                    <p style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9AA0A6', marginBottom: '12px' }}>
-                      {role.dept} · {role.location} · {role.type}
-                    </p>
-                    <p style={{ fontSize: '14.5px', color: '#5B6471', lineHeight: 1.6, maxWidth: '60ch', textWrap: 'pretty' }}>{role.desc}</p>
-                  </div>
-                  <div style={{ paddingTop: '4px', textAlign: 'right' }}>
-                    <a
-                      href="/contact"
-                      style={{
-                        display: 'inline-block',
-                        fontFamily: mono,
-                        fontSize: '12px',
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                        color: '#0A0A0B',
-                        textDecoration: 'none',
-                        padding: '8px 14px',
-                        border: '1px solid rgba(10,10,11,0.2)',
-                        borderRadius: '999px',
-                        transition: 'background 180ms ease, color 180ms ease, border-color 180ms ease',
-                      }}
-                      className="apply-btn"
-                    >
-                      Apply ↗
-                    </a>
-                  </div>
-                </li>
-              ))}
-            </ul>
 
-            <div style={{ marginLeft: '200px', marginTop: '32px' }} className="open-pitch">
-              <p style={{ fontSize: '14.5px', color: '#5B6471', lineHeight: 1.6, maxWidth: '60ch' }}>
+            <motion.div className="croles" variants={container} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-8%' }}>
+              {roles.map((role) => {
+                const dm = deptMeta[role.dept]
+                return (
+                  <motion.a
+                    key={role.title}
+                    href="/contact"
+                    className="crole"
+                    variants={rise}
+                    style={{ '--rc': dm.c } as CSSProperties}
+                  >
+                    <span className="crole-bar" />
+                    <div className="crole-main">
+                      <span className="crole-dept"><span className="crole-dept-ic">{dm.ic}</span>{role.dept}</span>
+                      <h3>{role.title}</h3>
+                      <div className="crole-meta">{role.location} · {role.type}</div>
+                      <p>{role.desc}</p>
+                    </div>
+                    <span className="crole-apply">Apply <Icon.Arrow size={14} /></span>
+                  </motion.a>
+                )
+              })}
+            </motion.div>
+
+            <div className="crole-pitch">
+              <p>
                 Don&apos;t see a role that fits?{' '}
-                <a href="/contact" style={{ color: '#0A0A0B', textDecoration: 'underline', textUnderlineOffset: '3px' }}>Send us a note</a>{' '}
-                anyway. We&apos;re always reading.
+                <a href="/contact">Send us a note</a> anyway. We&apos;re always reading.
               </p>
             </div>
           </div>
@@ -206,23 +123,81 @@ export default function CareersPage() {
       </main>
       <LFooter />
 
-      <style jsx>{`
-        :global(.apply-btn:hover) {
-          background: #0A0A0B;
-          color: #fff;
-          border-color: #0A0A0B;
+      <style jsx global>{`
+        .cperks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; }
+        .cperk {
+          --pc: var(--c-orange);
+          border-radius: 20px;
+          background:
+            radial-gradient(150% 90% at 100% 0%, color-mix(in oklch, var(--pc) 7%, transparent) 0%, transparent 58%),
+            var(--surface);
+          border: 1px solid color-mix(in oklch, var(--pc) 12%, var(--border-soft));
+          box-shadow: 0 2px 4px -2px rgba(15,23,42,.06), 0 12px 26px -20px rgba(15,23,42,.22);
+          padding: 24px 24px 26px;
         }
-        :global(.role-row) { transition: background 200ms ease; }
-        :global(.role-row:hover) { background: rgba(10,10,11,0.02); }
-        @media (max-width: 720px) {
-          :global(.g2) { grid-template-columns: 1fr !important; row-gap: 10px; }
-          :global(.perks-list),
-          :global(.roles-list),
-          :global(.open-pitch) { margin-left: 0 !important; }
-          :global(.role-row) { grid-template-columns: 48px 1fr !important; }
-          :global(.role-row > div:last-child) { grid-column: 2; text-align: left !important; padding-top: 16px !important; }
+        .cperk-ic {
+          width: 42px; height: 42px; border-radius: 12px;
+          display: grid; place-items: center;
+          color: var(--pc);
+          background: color-mix(in oklch, var(--pc) 13%, transparent);
+          border: 1px solid color-mix(in oklch, var(--pc) 18%, transparent);
+        }
+        .cperk h3 { margin: 18px 0 8px; font-size: 18px; font-weight: 700; letter-spacing: -.015em; color: var(--ink); }
+        .cperk p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+
+        .croles { display: flex; flex-direction: column; gap: 14px; margin-top: 44px; }
+        .crole {
+          --rc: var(--c-blue);
+          position: relative;
+          display: flex; align-items: center; gap: 20px;
+          padding: 24px 26px 24px 30px;
+          border-radius: 18px;
+          background: var(--surface);
+          border: 1px solid var(--border-soft);
+          box-shadow: 0 1px 2px rgba(15,23,42,.03);
+          text-decoration: none;
+          overflow: hidden;
+          transition: transform .28s cubic-bezier(.22,.61,.36,1), box-shadow .28s, border-color .28s;
+        }
+        .crole-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--rc); opacity: .85; }
+        .crole:hover {
+          transform: translateY(-3px);
+          border-color: color-mix(in oklch, var(--rc) 40%, transparent);
+          box-shadow: 0 22px 48px -28px color-mix(in oklch, var(--rc) 55%, rgba(15,23,42,.4));
+        }
+        .crole-main { flex: 1; min-width: 0; }
+        .crole-dept {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+          letter-spacing: .08em; text-transform: uppercase;
+          color: var(--rc);
+          background: color-mix(in oklch, var(--rc) 12%, transparent);
+          padding: 4px 10px 4px 7px; border-radius: 999px;
+        }
+        .crole-dept-ic { display: grid; place-items: center; }
+        .crole h3 { margin: 12px 0 6px; font-size: 20px; font-weight: 700; letter-spacing: -.02em; color: var(--ink); line-height: 1.2; }
+        .crole-meta { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); margin-bottom: 10px; }
+        .crole-main p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-soft); max-width: 68ch; }
+        .crole-apply {
+          flex-shrink: 0; align-self: flex-start; margin-top: 2px;
+          display: inline-flex; align-items: center; gap: 6px;
+          font-weight: 600; font-size: 13.5px; color: var(--rc);
+          transition: gap .2s ease;
+        }
+        .crole:hover .crole-apply { gap: 10px; }
+
+        .crole-pitch { margin-top: 26px; }
+        .crole-pitch p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+        .crole-pitch a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+
+        @media (max-width: 860px) {
+          .cperks { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+          .crole { flex-direction: column; align-items: flex-start; gap: 14px; }
+          .crole-apply { align-self: flex-start; }
         }
       `}</style>
-    </>
+    </div>
   )
 }

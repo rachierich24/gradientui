@@ -70,7 +70,7 @@ export default function TermsPage() {
             <div style={{ marginTop: '48px', padding: '24px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '12px' }}>
               <p style={{ fontSize: '14px', color: '#425466', lineHeight: 1.65 }}>
                 <strong style={{ color: '#061b31' }}>Questions about these terms?</strong>{' '}
-                Contact us at <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>gradient365.team@gmail.com</a> or visit our{' '}
+                Contact us at <a href="mailto:hello@unifiednexgrade.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>hello@unifiednexgrade.com</a> or visit our{' '}
                 <a href="/contact" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>Contact page</a>.
               </p>
             </div>

@@ -216,10 +216,9 @@ export function LHero() {
             <Avatar initials="PR" bg="#16A34A"/>
             <Avatar initials="SN" bg="#2563EB"/>
           </span>
-          <span>Trusted by 1,240 cafés &amp; 340 suppliers</span>
+          <span>One live network for cafés, suppliers &amp; brands</span>
           <span style={{ opacity: .4 }}>·</span>
-          <span className="stars">★★★★★</span>
-          <span>4.9 on G2</span>
+          <span>Built in Delhi NCR</span>
         </div>
       </div>
 
@@ -334,7 +333,7 @@ export function LLogos() {
   return (
     <section className="l-sec tight logos">
       <div className="l-wrap">
-        <div className="label">Powering supply for the cafés you already love</div>
+        <div className="label">Names you&apos;ll recognise across India&apos;s café scene</div>
       </div>
       <div className="logos-row">
         <div className="logos-track">
@@ -432,6 +431,11 @@ export function LDual() {
             Cafés get a sourcing layer they never had. Suppliers get a sales channel that runs
             itself. Brands get a measurable line to verified buyers. Everything moves through Gradient.
           </p>
+          <div className="dual-legend">
+            <span style={{ '--k': 'var(--c-orange)' } as CSSProperties}>Cafés</span>
+            <span style={{ '--k': 'var(--c-blue)' } as CSSProperties}>Suppliers</span>
+            <span style={{ '--k': 'var(--c-purple)' } as CSSProperties}>Brands</span>
+          </div>
         </div>
 
         <div className="dual">
@@ -854,10 +858,10 @@ export function LInlineCTA() {
 
 export function LSteps() {
   const steps = [
-    { t: 'Onboard', d: 'Sign up as a café or supplier. Verification in under an hour. KYC, GST, FSSAI all digital.' },
-    { t: 'Connect', d: 'Pair your POS (Petpooja, urbanPiper), accounting (Tally, Zoho), and WhatsApp. Zero re-keying.' },
-    { t: 'Operate', d: 'Sourcing, fulfilment, inventory, and dispatch all from one portal, on every device.' },
-    { t: 'Grow', d: 'Insights tell you what to stock, when to reorder, and which café or SKU to double down on.' },
+    { t: 'Onboard', d: 'Sign up as a café or supplier. Verification in under an hour. KYC, GST, FSSAI all digital.', ic: <Icon.Users size={18}/>, c: 'orange' },
+    { t: 'Connect', d: 'Pair your POS, accounting, and WhatsApp. Zero re-keying.', ic: <Icon.Card size={18}/>, c: 'blue' },
+    { t: 'Operate', d: 'Sourcing, fulfilment, inventory, and dispatch all from one portal, on every device.', ic: <Icon.Dashboard size={18}/>, c: 'purple' },
+    { t: 'Grow', d: 'Insights tell you what to stock, when to reorder, and which café or SKU to double down on.', ic: <Icon.Chart size={18}/>, c: 'green' },
   ];
   return (
     <section className="l-sec tight">
@@ -865,13 +869,14 @@ export function LSteps() {
         <div className="sec-head-row">
           <div>
             <div className="sec-eyebrow sec-eyebrow--plain">How it works</div>
-            <h2 className="sec-h">Live in a <em>week</em>. Not a quarter.</h2>
+            <h2 className="sec-h">Live in <em>days</em>. Not weeks.</h2>
           </div>
           <p className="sec-lead">No implementation team. No annual contract. Connect what you already use and Gradient takes it from there.</p>
         </div>
         <div className="steps">
           {steps.map((s, i) => (
-            <div className="step" key={i}>
+            <div className="step" key={i} style={{ '--step-c': `var(--c-${s.c})` } as CSSProperties}>
+              <span className="step-ic">{s.ic}</span>
               <h5>{s.t}</h5>
               <p>{s.d}</p>
             </div>
@@ -982,9 +987,14 @@ export function LStats() {
   useEffect(() => {
     const el = innerRef.current;
     if (!el) return;
+    // The pinned inner is 90vh, so it fully fits a 100vh viewport (ratio can reach 1).
+    // Fire only once it is essentially fully in view (not mid-scroll), then disconnect
+    // so the count-up + curve play exactly once and never re-trigger on scroll up/down.
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.6 }
+      ([entry]) => {
+        if (entry.intersectionRatio >= 0.95) { setInView(true); io.disconnect(); }
+      },
+      { threshold: [0.9, 0.95, 1] }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1122,59 +1132,42 @@ export function LStats() {
 }
 
 export function LQuotes() {
+  const quotes = [
+    { q: 'We replaced six WhatsApp groups, two Excel sheets and a printed PO book with Gradient. On day three our supplier called to ask what changed orders had doubled.', nm: 'Ananya K.', ro: 'Founder, Ember Roastery', in: 'AK', bg: '#F57515' },
+    { q: "The auto-replenish is uncanny. We haven't 86'd oat milk in four months.", nm: 'Rohan M.', ro: 'Operations, Slow Pour · 14 outlets', in: 'RM', bg: '#7B3DFA' },
+    { q: 'T+7 settlements changed how we run the roastery. Cash flow is finally a plan, not a prayer.', nm: 'Priya R.', ro: 'Head Roaster, Highland Coffee Co.', in: 'PR', bg: '#16A34A' },
+  ];
+  const [active, setActive] = useState(0);
   return (
     <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
         <div className="sec-head-row">
           <div>
-            <div className="sec-eyebrow sec-eyebrow--plain">Word on the floor</div>
-            <h2 className="sec-h">Loved by both <em>sides</em> of the counter.</h2>
+            <div className="sec-eyebrow sec-eyebrow--plain">Word on the floor · illustrative</div>
+            <h2 className="sec-h">Made for both <em>sides</em> of the counter.</h2>
           </div>
         </div>
 
         <div className="quotes">
-          <div className="quote feat">
-            <p className="mark">&quot;</p>
-            <p className="q">
-              We replaced six WhatsApp groups, two Excel sheets and a printed PO book with Gradient.
-              On day three our supplier called to ask what changed orders had doubled.
-            </p>
-            <div className="who">
-              <Avatar initials="AK" bg="#F57515" size={40}/>
-              <div>
-                <div className="nm">Ananya Kapoor</div>
-                <div className="ro">Founder, Third Wave Coffee Roasters</div>
+          {quotes.map((c, i) => (
+            <button
+              type="button"
+              key={i}
+              className={`quote ${active === i ? 'feat' : ''}`}
+              aria-pressed={active === i}
+              onClick={() => setActive(i)}
+            >
+              <p className="mark">&quot;</p>
+              <p className="q">{c.q}</p>
+              <div className="who">
+                <Avatar initials={c.in} bg={c.bg} size={40}/>
+                <div>
+                  <div className="nm">{c.nm}</div>
+                  <div className="ro">{c.ro}</div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className="quote">
-            <p className="mark">&quot;</p>
-            <p className="q">
-              The auto-replenish is uncanny. We haven&apos;t 86&apos;d oat milk in four months.
-            </p>
-            <div className="who">
-              <Avatar initials="RM" bg="#7B3DFA" size={40}/>
-              <div>
-                <div className="nm">Rohan Mehta</div>
-                <div className="ro">Operations, Subko · 14 outlets</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="quote">
-            <p className="mark">&quot;</p>
-            <p className="q">
-              T+7 settlements changed how we run the roastery. Cash flow is finally a plan, not a prayer.
-            </p>
-            <div className="who">
-              <Avatar initials="PR" bg="#16A34A" size={40}/>
-              <div>
-                <div className="nm">Priya Rangan</div>
-                <div className="ro">Head Roaster, Araku Coffee</div>
-              </div>
-            </div>
-          </div>
+            </button>
+          ))}
         </div>
       </div>
     </section>
@@ -1193,11 +1186,10 @@ export function LPricing() {
           </p>
           <div className="hero-ctas" style={{ justifyContent: 'center' }}>
             <a className="btn-l dark" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>Contact sales <span><Icon.Arrow size={13}/></span></a>
-            <a className="btn-l ghost" href="/contact">Contact form</a>
           </div>
           <p className="sec-lead" style={{ margin: '20px auto 0', fontSize: 15 }}>
             Or email us at{' '}
-            <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--ink)', fontWeight: 600, textUnderlineOffset: 3 }}>gradient365.team@gmail.com</a>
+            <a href="mailto:hello@unifiednexgrade.com" style={{ color: 'var(--ink)', fontWeight: 600, textUnderlineOffset: 3 }}>hello@unifiednexgrade.com</a>
           </p>
         </div>
       </div>
@@ -1306,7 +1298,7 @@ export function LFooter() {
             <p>The operating system for the café supply chain. Built in Delhi, shipping nationwide.</p>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Gradient 365 is a product of <strong>Unified Nexgrade Private Limited</strong>.</p>
             <div style={{ display: 'flex', gap: 12 }}>
-              {['G2', 'TW', 'IN', 'YT'].map(s => (
+              {['TW', 'IN', 'YT'].map(s => (
                 <span key={s} style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border-soft)', display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--ink-2)' }}>{s}</span>
               ))}
             </div>
@@ -1336,6 +1328,8 @@ export function LFooter() {
             </ul>
           </div>
         </div>
+
+        <p style={{ fontSize: 11.5, color: 'var(--ink-faint)', lineHeight: 1.5, maxWidth: '72ch', margin: '8px 0 0' }}>Product screens, dashboards, figures and any names shown on this site are illustrative and for demonstration only, and do not represent live data or actual customers. Third-party names, logos and marks are the property of their respective owners; their use here indicates supported or planned integrations only and does not imply partnership, sponsorship or endorsement.</p>
 
         <div className="wordmark-huge">gradient</div>
 

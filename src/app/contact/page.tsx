@@ -44,14 +44,14 @@ export default function ContactPage() {
       if (!res.ok || !data.ok) {
         setError(
           data?.reason === 'email-not-configured'
-            ? 'Email is temporarily unavailable. Please reach us at gradient365.team@gmail.com.'
-            : 'Could not send your message. Please try again or email gradient365.team@gmail.com.'
+            ? 'Email is temporarily unavailable. Please reach us at hello@unifiednexgrade.com.'
+            : 'Could not send your message. Please try again or email hello@unifiednexgrade.com.'
         )
         return
       }
       setSubmitted(true)
     } catch {
-      setError('Network error. Please try again or email gradient365.team@gmail.com.')
+      setError('Network error. Please try again or email hello@unifiednexgrade.com.')
     } finally {
       setSending(false)
     }
@@ -187,7 +187,7 @@ export default function ContactPage() {
                   <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#061b31', marginBottom: '16px' }}>Contact info</h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {[
-                      { icon: '📧', label: 'General enquiries', value: 'gradient365.team@gmail.com', href: 'mailto:gradient365.team@gmail.com' },
+                      { icon: '📧', label: 'General enquiries', value: 'hello@unifiednexgrade.com', href: 'mailto:hello@unifiednexgrade.com' },
                       { icon: '📍', label: 'Office', value: 'Delhi, India', href: null },
                     ].map(item => (
                       <div key={item.label} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>

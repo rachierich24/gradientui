@@ -29,11 +29,11 @@ const sections = [
   },
   {
     title: '6. Your Rights',
-    body: 'Under the Digital Personal Data Protection Act (DPDP Act), you have the right to: (a) access the personal data we hold about you; (b) correct inaccurate data; (c) request erasure of your data (subject to legal obligations); (d) withdraw consent where processing is based on consent; and (e) nominate a person to exercise your rights in the event of death or incapacity. To exercise these rights, contact us at gradient365.team@gmail.com.',
+    body: 'Under the Digital Personal Data Protection Act (DPDP Act), you have the right to: (a) access the personal data we hold about you; (b) correct inaccurate data; (c) request erasure of your data (subject to legal obligations); (d) withdraw consent where processing is based on consent; and (e) nominate a person to exercise your rights in the event of death or incapacity. To exercise these rights, contact us at hello@unifiednexgrade.com.',
   },
   {
     title: '7. Contact',
-    body: 'For any privacy-related questions or to exercise your rights, contact our Data Protection Officer at gradient365.team@gmail.com. We will respond to all requests within 30 days. Our registered office is in Delhi, India.',
+    body: 'For any privacy-related questions or to exercise your rights, contact our Data Protection Officer at hello@unifiednexgrade.com. We will respond to all requests within 30 days. Our registered office is in Delhi, India.',
   },
 ]
 
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
             <div style={{ marginTop: '48px', padding: '24px', background: '#faf5ff', border: '1.5px solid #e9d5ff', borderRadius: '12px' }}>
               <p style={{ fontSize: '14px', color: '#425466', lineHeight: 1.65 }}>
                 <strong style={{ color: '#061b31' }}>Privacy questions?</strong>{' '}
-                Email us at <a href="mailto:gradient365.team@gmail.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>gradient365.team@gmail.com</a> or read our{' '}
+                Email us at <a href="mailto:hello@unifiednexgrade.com" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>hello@unifiednexgrade.com</a> or read our{' '}
                 <a href="/terms" style={{ color: 'var(--portal-primary)', textDecoration: 'none' }}>Terms of Service</a>.
               </p>
             </div>

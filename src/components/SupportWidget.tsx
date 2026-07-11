@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 type Msg = { from: 'them' | 'me'; node: ReactNode; time: string };
 
 const GREETING_TEXT = "Hi there, you're speaking with Gradient's AI Agent. How can I help you today?";
-const EMAIL = 'gradient365.team@gmail.com';
+const EMAIL = 'hello@unifiednexgrade.com';
 const PHONE_DISPLAY = '+91 74960 64936';
 const PHONE_DIAL    = '+917496064936';
 

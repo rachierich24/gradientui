@@ -1,11 +1,11 @@
 // POST /api/contact
 // Body: { name: string, email: string, company?: string, message: string }
-// Sends contact form submission to gradient365.team@gmail.com via Resend REST API.
+// Sends contact form submission to hello@unifiednexgrade.com via Resend REST API.
 
 import { NextResponse } from 'next/server';
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
-const TO = 'gradient365.team@gmail.com';
+const TO = 'hello@unifiednexgrade.com';
 const FROM = process.env.RESEND_FROM || 'Gradient Contact <onboarding@resend.dev>';
 
 export const runtime = 'edge';
