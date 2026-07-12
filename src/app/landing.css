@@ -2235,7 +2235,11 @@ section.l-sec.stats-sec {
   .bento { grid-template-columns: repeat(2, 1fr); }
   .bento .b.span-2, .bento .b.span-3, .bento .b.span-4 { grid-column: span 2; }
   .steps, .integ { grid-template-columns: repeat(2, 1fr); }
-  .pricing, .quotes, .stats-strip, .dual, .proof-grid, .chapters-head, .chapter-card, .inline-cta-grid { grid-template-columns: 1fr; }
+  .pricing, .stats-strip, .dual, .proof-grid, .chapters-head, .chapter-card, .inline-cta-grid { grid-template-columns: 1fr; }
+  /* testimonials expander is flex, not grid: stack it vertically on mobile */
+  .quotes { flex-direction: column; }
+  .quote { flex: 0 0 auto; }
+  .quote.feat { flex-grow: 0; }
   .chapter-card:nth-child(even) .chapter-copy { order: 0; }
   .cmd { grid-template-columns: 1fr; min-width: 900px; }
   .hero-peek { overflow-x: auto; padding-bottom: 10px; }
@@ -2253,6 +2257,8 @@ section.l-sec.stats-sec {
 
 @media (max-width: 640px) {
   :root { --pad-x: 18px; --section-y: 88px; }
+  /* single-column steps/integ so redesigned step titles don't clip on phones */
+  .steps, .integ { grid-template-columns: 1fr; }
   .nav { width: calc(100vw - 24px); top: 10px; justify-content: space-between; padding-left: 12px; }
   .nav-signin { display: none; }
   .nav-cta { padding: 8px 11px; }
