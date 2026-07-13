@@ -188,14 +188,14 @@ export default function ContactPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {[
                       { icon: '📧', label: 'General enquiries', value: 'hello@unifiednexgrade.com', href: 'mailto:hello@unifiednexgrade.com' },
-                      { icon: '📍', label: 'Office', value: 'Delhi, India', href: null },
+                      { icon: '📍', label: 'Headquarters', value: 'Delhi NCR, India', href: null },
                     ].map(item => (
                       <div key={item.label} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                         <span style={{ fontSize: '18px', marginTop: '1px' }}>{item.icon}</span>
                         <div>
                           <p style={{ fontSize: '12px', fontWeight: 600, color: '#425466', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>{item.label}</p>
                           {item.href ? (
-                            <a href={item.href} style={{ fontSize: '15px', color: 'var(--portal-primary)', textDecoration: 'none' }}>{item.value}</a>
+                            <a className="link-underline" href={item.href} style={{ fontSize: '15px', color: 'var(--portal-primary)', textDecoration: 'none' }}>{item.value}</a>
                           ) : (
                             <p style={{ fontSize: '15px', color: '#061b31' }}>{item.value}</p>
                           )}

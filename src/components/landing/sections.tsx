@@ -450,7 +450,7 @@ export function LDual() {
               <li>Auto-replenish with AI demand sensing</li>
               <li>Net-15 credit, fully digital invoicing</li>
             </ul>
-            <a className="link" href="/features#cafe">Explore the café portal <Icon.Arrow size={14}/></a>
+            <a className="link link-underline" href="/features#cafe">Explore the café portal <Icon.Arrow size={14}/></a>
             <div className="visual"><DualCafeVisual /></div>
           </div>
 
@@ -465,7 +465,7 @@ export function LDual() {
               <li>WhatsApp orders auto-parsed into POs</li>
               <li>T+7 settlements, GST-ready invoicing</li>
             </ul>
-            <a className="link" href="/features#supplier">Explore the supplier portal <Icon.Arrow size={14}/></a>
+            <a className="link link-underline" href="/features#supplier">Explore the supplier portal <Icon.Arrow size={14}/></a>
             <div className="visual"><DualSupVisual /></div>
           </div>
 
@@ -480,7 +480,7 @@ export function LDual() {
               <li>City-wise demand intelligence</li>
               <li>Competitor-blind privacy walls</li>
             </ul>
-            <a className="link" href="/features#brand">Explore the brand portal <Icon.Arrow size={14}/></a>
+            <a className="link link-underline" href="https://brand.gradient365.com" target="_blank" rel="noopener noreferrer">Explore the brand portal <Icon.Arrow size={14}/></a>
             <div className="visual"><DualBrandVisual /></div>
           </div>
         </div>
@@ -1010,40 +1010,11 @@ export function LStats() {
       return;
     }
 
-    // Freeze scroll while the graph plays (count-up + curve draw reaching top-right),
-    // then release. Lenis runs a virtual scroll loop, so body{overflow:hidden} alone
-    // does NOT stop it - must call lenis.stop()/start(). Keep the native blockers as a
-    // fallback for when Lenis isn't present.
-    // No cleanup return: React 18 strict-mode double-invoke would release immediately;
-    // the timeout below auto-releases.
-    const lenis = (window as unknown as { lenis?: { stop: () => void; start: () => void } }).lenis;
-    lenis?.stop();
-    const prevBody = document.body.style.overflow;
-    const prevHtml = document.documentElement.style.overflow;
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-    const prevent = (e: Event) => { e.preventDefault(); };
-    const blockKeys = (e: KeyboardEvent) => {
-      const keys = ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', ' ', 'Home', 'End'];
-      if (keys.includes(e.key)) e.preventDefault();
-    };
-    window.addEventListener('wheel', prevent, { passive: false });
-    window.addEventListener('touchmove', prevent, { passive: false });
-    window.addEventListener('keydown', blockKeys);
-
+    // Play once when the section enters view. Scroll is NOT gated (Attio-style):
+    // the user can keep scrolling; the graph animates in place whether they stay or not.
     animate(pathLength, 1, { duration: 1.8, ease: [0.22, 0.61, 0.36, 1] });
     animate(areaOpacity, 1, { duration: 0.9, delay: 1.4, ease: 'easeOut' });
     animate(gridOpacity, 1, { duration: 0.7, delay: 1.6, ease: 'easeOut' });
-
-    const LOCK_MS = 2400;
-    window.setTimeout(() => {
-      lenis?.start();
-      document.body.style.overflow = prevBody;
-      document.documentElement.style.overflow = prevHtml;
-      window.removeEventListener('wheel', prevent);
-      window.removeEventListener('touchmove', prevent);
-      window.removeEventListener('keydown', blockKeys);
-    }, LOCK_MS);
   }, [inView, pathLength, areaOpacity, gridOpacity]);
   return (
     <div ref={outerRef} className="stats-pin-outer">
@@ -1138,6 +1109,14 @@ export function LQuotes() {
     { q: 'T+7 settlements changed how we run the roastery. Cash flow is finally a plan, not a prayer.', nm: 'Priya R.', ro: 'Head Roaster, Highland Coffee Co.', in: 'PR', bg: '#16A34A' },
   ];
   const [active, setActive] = useState(0);
+  // Hover-driven, debounced: brushing the mouse across cards won't spam the
+  // transition; only settling on a card for ~110ms activates it.
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverActivate = (i: number) => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setActive(i), 110);
+  };
+  useEffect(() => () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); }, []);
   return (
     <section className="l-sec l-sec--pull-up">
       <div className="l-wrap">
@@ -1155,6 +1134,8 @@ export function LQuotes() {
               key={i}
               className={`quote ${active === i ? 'feat' : ''}`}
               aria-pressed={active === i}
+              onMouseEnter={() => hoverActivate(i)}
+              onFocus={() => setActive(i)}
               onClick={() => setActive(i)}
             >
               <p className="mark">&quot;</p>
@@ -1189,7 +1170,7 @@ export function LPricing() {
           </div>
           <p className="sec-lead" style={{ margin: '20px auto 0', fontSize: 15 }}>
             Or email us at{' '}
-            <a href="mailto:hello@unifiednexgrade.com" style={{ color: 'var(--ink)', fontWeight: 600, textUnderlineOffset: 3 }}>hello@unifiednexgrade.com</a>
+            <a className="link-underline" href="mailto:hello@unifiednexgrade.com" style={{ color: 'var(--ink)', fontWeight: 600 }}>hello@unifiednexgrade.com</a>
           </p>
         </div>
       </div>
@@ -1296,7 +1277,7 @@ export function LFooter() {
               <span>Gradient</span>
             </div>
             <p>The operating system for the café supply chain. Built in Delhi, shipping nationwide.</p>
-            <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Gradient 365 is a product of <strong>Unified Nexgrade Private Limited</strong>.</p>
+            <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Gradient 365 is a product of <a className="link-underline" href="https://unifiednexgrade.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', fontWeight: 700 }}>Unified Nexgrade Private Limited</a>.</p>
             <div style={{ display: 'flex', gap: 12 }}>
               {['TW', 'IN', 'YT'].map(s => (
                 <span key={s} style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border-soft)', display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--ink-2)' }}>{s}</span>
@@ -1317,6 +1298,7 @@ export function LFooter() {
             <ul>
               <li><a href="/about">About</a></li>
               <li><a href="/careers">Careers <span style={{ color: 'var(--c-orange)', fontWeight: 600 }}>· 6</span></a></li>
+              <li><a href="/faq">FAQ</a></li>
               <li><a href="/contact">Contact</a></li>
             </ul>
           </div>
