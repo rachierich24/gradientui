@@ -1278,6 +1278,7 @@ export function LFooter() {
             </div>
             <p>The operating system for the café supply chain. Built in Delhi, shipping nationwide.</p>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Gradient 365 is a product of <a className="link-underline" href="https://unifiednexgrade.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', fontWeight: 700 }}>Unified Nexgrade Private Limited</a>.</p>
+            <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Also from Unified Nexgrade: <a className="link-underline" href="https://letsgrabbit.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', fontWeight: 700 }}>Grabbit</a>, cafe order-ahead and pickup in Delhi.</p>
             <div style={{ display: 'flex', gap: 12 }}>
               {['TW', 'IN', 'YT'].map(s => (
                 <span key={s} style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border-soft)', display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--ink-2)' }}>{s}</span>
