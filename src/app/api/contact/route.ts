@@ -32,7 +32,12 @@ export async function POST(req: Request) {
   if (!name || name.length > 120) {
     return NextResponse.json({ ok: false, reason: 'invalid-name' }, { status: 400 });
   }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 200) {
+  // ponytail: length check runs before the regex (cheap bound on input reaching
+  // it) and the domain segment excludes '.' so it can't overlap with the
+  // literal '.' that follows - fixes CodeQL-flagged polynomial ReDoS on the
+  // old /^[^\s@]+@[^\s@]+\.[^\s@]+$/ pattern (two adjacent unbounded
+  // quantifiers over the same charset, ambiguous at every '.' in the input).
+  if (!email || email.length > 200 || !/^[^\s@]+@[^\s@.]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ ok: false, reason: 'invalid-email' }, { status: 400 });
   }
   if (!message || message.length < 5 || message.length > 4000) {
