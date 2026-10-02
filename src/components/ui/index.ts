@@ -1,1 +1,2 @@
-export * from '@gradient365/gradientui-commons'
+// UI components re-export placeholder
+export {}
