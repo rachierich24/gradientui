@@ -1,0 +1,179 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Gradient 365 hero + footer
+   Ported from the standalone ~/gradient hero/footer. Every rule is scoped under
+   .g365 so it can't leak into the rest of the landing page; the opening-sequence
+   classes (boot-*) live on #g365hero instead of <html>.
+   Scripts: public/g365/js/*  ·  Fonts: public/g365/fonts/* (self-hosted)
+───────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/g365/fonts/geist.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/g365/fonts/geist-mono.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/g365/fonts/instrument-sans.woff2') format('woff2');
+}
+
+.g365 {
+  --navy: #142B63; --navy-deep: #0F214D; --teal: #10B8B5; --teal-light: #39D6CF; --teal-ink: #0B7F7C;
+  --ground: #FFFFFF; --mist: #F8FBFC; --ink: #0F214D; --ink-soft: #5A6784; --hair: rgba(20,43,99,.09);
+  --e-cafe: #FF0000; --e-supply: #22C55E; --e-brand: #7F00FF;
+  --light: linear-gradient(100deg, #142B63 0%, #142B63 41%, #7F00FF 45.5%, #FF0000 50%, #22C55E 54.5%, #142B63 59%, #142B63 100%);
+  --light-glass: linear-gradient(100deg, rgba(20,43,99,.93) 0%, rgba(20,43,99,.93) 41%, rgba(127,0,255,.93) 45.5%, rgba(255,0,0,.93) 50%, rgba(34,197,94,.93) 54.5%, rgba(20,43,99,.93) 59%, rgba(20,43,99,.93) 100%);
+  --glass-sheen: linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 46%, rgba(255,255,255,0) 52%);
+  --glass-edge: inset 0 1px 0 rgba(255,255,255,.28), inset 0 0 0 1px rgba(255,255,255,.1);
+  --display: "Instrument Sans", "Geist", ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --grad-wash: radial-gradient(70% 55% at 50% 42%, rgba(16,184,181,.10), rgba(28,94,168,.06) 45%, rgba(255,255,255,0) 78%);
+  --sans: "Geist", ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  position: relative;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  color-scheme: light;
+}
+.g365 a { color: inherit; }
+
+/* the band sweeps left to right, then the words rest in navy before the next pass */
+@keyframes g365LightPass { 0% { background-position: 100% 50%; } 62% { background-position: 0% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes g365Blip { from { opacity: .6; transform: scale(1); } to { opacity: 0; transform: scale(1.18); } }
+
+/* ═════════════════════════════ HERO ═════════════════════════════ */
+/* above the ecosystem section (z-index 10) so the ribbons can reach down onto its devices */
+.g365-hero { z-index: 11; isolation: isolate; overflow-x: clip; }
+.g365-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--grad-wash); pointer-events: none; }
+
+/* ---------- hero copy ---------- */
+.g365-hero .hero { position: relative; z-index: 5; text-align: center; padding: clamp(64px, 8.6vw, 126px) 16px 0; pointer-events: none; }
+.g365-hero .hero a { pointer-events: auto; }
+/* the whole headline carries the energy: navy text with colour travelling through it */
+.g365-hero h1 { margin: 0 auto; max-width: 17ch; font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5vw, 72px); line-height: 1.06; letter-spacing: -.035em; text-wrap: balance;
+  color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: var(--light);
+  background-size: 300% 100%; background-position: 100% 50%; animation: g365LightPass 8s cubic-bezier(.45,.05,.55,.95) infinite; }
+.g365-hero h1 em { font-style: normal; }
+.g365-hero .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 72px; margin-top: 46px; }
+.g365-hero .actions .btn { min-width: 186px; text-align: center; }
+.g365-hero .btn { font: 500 15px/1 var(--sans); padding: 16px 22px; border-radius: 999px; text-decoration: none; }
+.g365-hero .btn.primary { position: relative; color: #fff; font-weight: 600; background-image: var(--light-glass); -webkit-backdrop-filter: blur(12px) saturate(1.6); backdrop-filter: blur(12px) saturate(1.6); background-size: 300% 100%; background-position: 100% 50%;
+  animation: g365LightPass 8s cubic-bezier(.45,.05,.55,.95) .5s infinite; box-shadow: var(--glass-edge), 0 14px 30px -14px rgba(20,43,99,.6); }
+.g365-hero .btn.primary::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--glass-sheen); pointer-events: none; }
+.g365-hero .btn.ghost { border: 1px solid var(--hair); background: #fff; }
+.g365-hero .btn.ghost span { font-weight: 600; color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: var(--light); background-size: 300% 100%; background-position: 100% 50%; animation: g365LightPass 8s cubic-bezier(.45,.05,.55,.95) .65s infinite; }
+/* during the opening sequence the buttons wait, so their first pass starts together with the headline's */
+.g365-hero.boot-solid .btn.primary, .g365-hero.boot-solid .btn.ghost span { animation: none; }
+@media (prefers-reduced-motion: reduce) { .g365-hero h1, .g365-hero .btn.primary, .g365-hero .btn.ghost span { animation: none; } }
+
+/* ---------- first load: a blank page with only the energy, then the hero switches itself on ---------- */
+.g365-hero .hero .actions, .g365-hero .rows, .g365-hero #riders { transition: opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1); }
+.g365-hero .core { transition: opacity .9s ease, transform 1s cubic-bezier(.2,.7,.2,1); }
+.g365-hero.boot-ui .hero .actions { opacity: 0; transform: translateY(12px); }
+.g365-hero.boot-rows .rows { opacity: 0; transform: translateY(26px); }
+.g365-hero.boot-rows #riders { opacity: 0; }
+.g365-hero.boot-rows .core { opacity: 0; transform: translate(-50%, -50%) scale(.86); }
+.g365-hero.boot-head h1:not(.split) { opacity: 0; }
+.g365-hero h1 .w { display: inline-block; transition: opacity .85s ease, transform 1s cubic-bezier(.2,.7,.2,1), filter 1s ease; }
+.g365-hero h1.settled .w { display: inline; }
+.g365-hero.boot-head h1 .w { opacity: 0; transform: translateY(.42em); filter: blur(8px); }
+.g365-hero.boot-solid h1 { color: var(--navy); background-image: none; animation: none; }
+.g365-hero .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+/* ---------- flow stage ---------- */
+.g365-hero .stage { position: relative; height: calc(var(--cy, 220px) + 350px); margin-top: -28px; overflow-x: clip; overflow-y: visible; --cw: 270px; --ch: 56px; --ph: 38px; }
+.g365-hero .rows { position: absolute; inset: 0; z-index: 1; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%); }
+.g365-hero .card { position: absolute; left: 50%; top: 0; width: var(--cw); height: var(--ch); border-radius: 12px; will-change: transform; transform-origin: 50% 50%; }
+.g365-hero .full { box-shadow: 0 1px 2px rgba(15,33,77,.04), 0 10px 24px -16px rgba(15,33,77,.22); }
+/* once a card has passed through the core it takes its row's colour: red cafés, green suppliers, purple brands */
+.g365-hero .full.s-cafe { --rc: var(--e-cafe); } .g365-hero .full.s-supply { --rc: var(--e-supply); } .g365-hero .full.s-brand { --rc: var(--e-brand); }
+.g365-hero .face.full { border-color: color-mix(in srgb, var(--rc) 30%, transparent);
+  box-shadow: 0 1px 2px rgba(15,33,77,.04), 0 12px 26px -18px color-mix(in srgb, var(--rc) 55%, transparent); }
+.g365-hero .full::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; width: 3px; border-radius: 0 3px 3px 0; background: var(--rc); }
+.g365-hero .full .ph { background: color-mix(in srgb, var(--rc) 8%, #fff); }
+.g365-hero .full .metric em { color: var(--rc); }
+.g365-hero .face { position: absolute; inset: 0; display: flex; align-items: center; gap: 10px; padding: 0 12px 0 9px; border-radius: 12px; background: #fff; border: 1px solid rgba(20,43,99,.07); }
+.g365-hero .face.skel { display: flex; background: #fff; border-color: rgba(20,43,99,.05); box-shadow: 0 1px 2px rgba(15,33,77,.03); }
+.g365-hero .stage:not(.no-gl) .face.skel .ph { opacity: 0; }
+.g365-hero #riders { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 15%); mask-image: linear-gradient(90deg, transparent 0, #000 15%); }
+.g365-hero .ph { flex: none; width: var(--ph); height: var(--ph); border-radius: 9px; background: #F4F6F8; overflow: hidden; }
+.g365-hero .ph img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s; transform: scale(1.06); }
+.g365-hero .ph img.ready { opacity: 1; }
+.g365-hero .sep { flex: none; width: 1px; align-self: stretch; margin: 11px 0; background: rgba(20,43,99,.09); }
+.g365-hero .bars { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.g365-hero .bars b { display: block; height: 9px; border-radius: 4px; background: #F0F2F5; }
+.g365-hero .bars b + b { height: 7px; width: 58%; }
+.g365-hero .bars.r { flex: .7; }
+.g365-hero .bars.r b + b { width: 100%; }
+.g365-hero .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.g365-hero .info strong { font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g365-hero .info span { font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
+.g365-hero .metric { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.g365-hero .metric strong { font-size: 15px; font-weight: 600; letter-spacing: -.015em; font-variant-numeric: tabular-nums; color: var(--navy); }
+.g365-hero .metric span { font-size: 10px; color: var(--ink-soft); white-space: nowrap; }
+.g365-hero .metric em { font-style: normal; margin-left: 4px; font-family: var(--mono); font-size: 9px; color: var(--teal-ink); }
+
+/* a blank frosted tile on the line — reserved for what will sit here */
+.g365-hero .core { position: absolute; left: 50%; top: var(--cy, 220px); width: 88px; height: 88px; transform: translate(-50%, -50%); z-index: 4; border-radius: 25px;
+  background: linear-gradient(160deg, rgba(255,255,255,.78), rgba(255,255,255,.5));
+  -webkit-backdrop-filter: blur(12px) saturate(1.25); backdrop-filter: blur(12px) saturate(1.25);
+  border: 1px solid rgba(20,43,99,.1);
+  box-shadow: inset 0 1px 0 #fff, 0 18px 36px -22px rgba(15,33,77,.45); }
+.g365-hero .core::after { content: ""; position: absolute; inset: -4px; border-radius: 29px; border: 1px solid rgba(20,43,99,.25); opacity: 0; }
+.g365-hero .core.blip::after { animation: g365Blip .9s ease-out; }
+
+/* three energies leave the core, twist once, and land on their cards */
+.g365-hero .energy { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+
+/* a ribbon landing on a device in the ecosystem section: a ring in the ribbon's colour ripples off it
+   (outline follows the device's corner radius, so it doesn't fight its own shadows) */
+@keyframes g365Hit { from { outline-color: color-mix(in srgb, var(--g365-e) 70%, transparent); outline-offset: 2px; } to { outline-color: transparent; outline-offset: 16px; } }
+.g365-hit { outline: 2px solid transparent; animation: g365Hit .85s ease-out; }
+@media (prefers-reduced-motion: reduce) { .g365-hit { animation: none; } }
+
+/* ═════════════════════════════ FOOTER ═════════════════════════════ */
+/* the wordmark draws itself, then fills with the energy */
+.g365-footer { font-size: 13px; color: var(--ink-soft); }
+.g365-footer .ft-wrap { max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 36px; }
+.g365-footer .ft-wrap::before { content: ""; display: block; width: 1.5px; height: 72px; margin: 0 auto 56px; background: linear-gradient(180deg, rgba(20,43,99,0), rgba(16,184,181,.45)); }
+.g365-footer .ft-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 28px 48px; }
+.g365-footer .ft-links { display: flex; flex-wrap: wrap; gap: 10px clamp(24px, 3.4vw, 48px); }
+.g365-footer .ft-links a { font-size: clamp(18px, 1.8vw, 24px); letter-spacing: -.02em; color: var(--ink); text-decoration: none; }
+.g365-footer .ft-side { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.g365-footer .ft-side small { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.g365-footer .ft-links a:hover, .g365-footer .ft-bottom a:hover { color: transparent; -webkit-background-clip: text; background-clip: text; background-image: var(--light); background-size: 300% 100%; animation: g365LightPass 2.4s cubic-bezier(.45,.05,.55,.95) infinite; }
+.g365-footer .ft-mark { margin: clamp(56px, 9vw, 120px) 0 clamp(44px, 7vw, 96px); }
+.g365-footer .ft-mark svg { display: block; width: 100%; height: auto; overflow: visible; }
+.g365-footer .ft-guides * { fill: none; stroke: rgba(20,43,99,.18); }
+.g365-footer .ft-lines * { fill: none; stroke: var(--ink); }
+.g365-footer .ft-guides *, .g365-footer .ft-lines * { stroke-width: var(--sw, 4); stroke-dasharray: 1 2; stroke-dashoffset: 1; transition: stroke-dashoffset 1.2s cubic-bezier(.6,0,.2,1) calc(var(--i, 0) * 1ms); }
+.g365-footer .ft-mark.play .ft-guides *, .g365-footer .ft-mark.play .ft-lines * { stroke-dashoffset: 0; }
+.g365-footer .ft-dots circle { fill: var(--ink); transform: scale(0); transform-box: fill-box; transform-origin: center; transition: transform .45s cubic-bezier(.3,1.6,.5,1) calc(var(--i, 0) * 1ms); }
+.g365-footer .ft-mark.play .ft-dots circle { transform: scale(1); }
+.g365-footer .ft-guides, .g365-footer .ft-lines, .g365-footer .ft-dots { transition: opacity 1s ease; }
+.g365-footer .ft-mark.done .ft-guides, .g365-footer .ft-mark.done .ft-lines, .g365-footer .ft-mark.done .ft-dots { opacity: 0; }
+.g365-footer .ft-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px 32px; font-size: 14px; color: var(--ink); }
+.g365-footer .ft-legal { display: flex; flex-wrap: wrap; gap: 10px 28px; }
+.g365-footer .ft-bottom a { text-decoration: none; }
+.g365-footer .ft-bottom span { color: var(--ink-soft); }
+/* company + illustrative-content notice carried over from the previous footer */
+.g365-footer .ft-note { margin: 22px 0 0; max-width: 80ch; font-size: 11.5px; line-height: 1.55; color: var(--ink-soft); }
+.g365-footer .ft-note a { color: var(--ink); font-weight: 600; text-decoration: none; }
+.g365-footer .ft-note a:hover { text-decoration: underline; }
+.g365-footer a:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+@media (max-width: 640px) { .g365-footer .ft-side { align-items: flex-start; } }

@@ -3,6 +3,10 @@ import { Plus_Jakarta_Sans } from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import './landing-fonts.css'
 import './landing.css'
+import './ecosystem-showcase.css'
+import './product-sections.css'
+import './spotlight-section.css'
+import './g365.css'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { LenisProvider } from '@/components/LenisProvider'
 import { CookieConsent } from '@/components/CookieConsent'
@@ -14,7 +18,6 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
   variable: '--font-plus-jakarta',
   display: 'swap',
 })
