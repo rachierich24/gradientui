@@ -28,16 +28,29 @@ function Avatar({ initials, bg, size = 24 }: { initials: string; bg: string; siz
 
 export function LNav() {
   const [open, setOpen] = useState<'product' | 'resources' | null>(null);
-  // Mega-menu open/close intent: a short grace delay keeps the panel open while
-  // the pointer crosses the gap between trigger and panel, so it doesn't flicker shut.
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Mega-menu open/close intent
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cancelClose = () => { if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; } };
   const openMenu = (m: 'product' | 'resources') => { cancelClose(); setOpen(m); };
   const scheduleClose = () => { cancelClose(); closeTimer.current = setTimeout(() => setOpen(null), 140); };
   useEffect(() => cancelClose, []);
+
   // In-page anchors scroll smoothly (via Lenis if present); external links navigate normally.
-  const handleNav = (e: { preventDefault: () => void }, href: string) => {
+  const handleNav = (e: React.MouseEvent, href: string) => {
     setOpen(null);
+    setMobileMenuOpen(false);
     if (href.startsWith('#')) {
       const el = document.querySelector(href);
       if (el) {
@@ -48,69 +61,159 @@ export function LNav() {
       }
     }
   };
-  const productLinks = [
+
+  const resourceLinks = [
+    { t: 'Features', d: 'Source, inventory, and automated workflows', href: '/features' },
+    { t: 'Pricing', d: 'Flexible plans for teams of all sizes', href: '/pricing' },
+    { t: 'Team & About', d: 'Meet the people building Gradient', href: '/team' },
+    { t: 'FAQ & Docs', d: 'Everything you need to know to get started', href: '/faq' },
     { t: 'For cafés', d: 'Source from every supplier in one cart', href: '#for-cafes' },
     { t: 'For suppliers', d: 'Orders, stock, dispatch in one place', href: '#for-suppliers' },
-    { t: 'For brands', d: 'Verified café adoption & trials', href: 'https://brand.gradient365.com' },
-  ];
-  const resourceLinks = [
-    { t: 'Contact sales', d: 'Get a plan that fits your operation', href: '#contact-sales' },
-    { t: 'Customers', d: 'Proof from the floor', href: '#proof' },
-    { t: 'Security', d: 'Privacy walls by design', href: '#chapters' },
   ];
 
   return (
-    <nav className="nav" onMouseLeave={scheduleClose} onMouseEnter={cancelClose}>
-      <a className="nav-brand" href="/">
-        <div className="mark">G</div>
-        <span>Gradient</span>
-      </a>
-      <div className="nav-sep"></div>
-      <div className="nav-links">
-        <button type="button" className={`nav-link ${open === 'product' ? 'is-open' : ''}`} onMouseEnter={() => openMenu('product')} onFocus={() => openMenu('product')} onClick={() => setOpen(open === 'product' ? null : 'product')} aria-expanded={open === 'product'}>
-          Product <Icon.ChevronDown size={12} className="chev"/>
-        </button>
-        <button type="button" className={`nav-link ${open === 'resources' ? 'is-open' : ''}`} onMouseEnter={() => openMenu('resources')} onFocus={() => openMenu('resources')} onClick={() => setOpen(open === 'resources' ? null : 'resources')} aria-expanded={open === 'resources'}>
-          Resources <Icon.ChevronDown size={12} className="chev"/>
-        </button>
-        <a className="nav-link" href="/team">Team</a>
-      </div>
-      <div className="nav-spacer"></div>
-      <a className="nav-cta" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>Start free <span><Icon.Arrow size={12}/></span></a>
+    <header
+      className={`nav-header ${scrolled ? 'is-scrolled' : ''}`}
+      onMouseLeave={scheduleClose}
+      onMouseEnter={cancelClose}
+    >
+      <div className="nav-container">
+        {/* Left: Brand */}
+        <div className="nav-brand-wrap">
+          <a className="nav-brand" href="/">
+            <div className="mark">G</div>
+            <span className="brand-name">Gradient</span>
+          </a>
+        </div>
 
-      {open && (
-        <div className="nav-mega" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
-          <div className="nav-mega-grid">
-            {(open === 'product' ? productLinks : resourceLinks).map((item) => {
-              const ext = item.href.startsWith('http');
-              const isContactSales = item.href === '#contact-sales';
-              return (
-                <a
-                  href={item.href}
-                  className="nav-mega-item"
-                  key={item.t}
-                  onClick={(e) => {
-                    if (isContactSales) { e.preventDefault(); setOpen(null); openContactSalesModal(); return; }
-                    handleNav(e, item.href);
-                  }}
-                  {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  <span className="nav-mega-ic"><Icon.Arrow size={12}/></span>
-                  <span>
-                    <strong>{item.t}</strong>
-                    <small>{item.d}</small>
-                  </span>
-                </a>
-              );
-            })}
-          </div>
-          <div className="nav-mega-proof">
-            <span>Live network</span>
-            <strong>1,240 cafes, 340 suppliers, 47 brand trials</strong>
+        {/* Center: Floating Pill Capsule */}
+        <div className="nav-center">
+          <nav className="nav-pill" aria-label="Main Navigation">
+            <a className="nav-pill-item" href="/features">
+              Features
+            </a>
+            <a
+              className="nav-pill-item"
+              href="#ecosystem"
+              onClick={(e) => handleNav(e, '#ecosystem')}
+            >
+              How It Works
+            </a>
+            <a className="nav-pill-item" href="/pricing">
+              Pricing
+            </a>
+            <div
+              className="nav-pill-drop"
+              onMouseEnter={() => openMenu('resources')}
+              onFocus={() => openMenu('resources')}
+            >
+              <button
+                type="button"
+                className={`nav-pill-item nav-pill-btn ${open === 'resources' ? 'is-open' : ''}`}
+                onClick={() => setOpen(open === 'resources' ? null : 'resources')}
+                aria-expanded={open === 'resources'}
+              >
+                Docs <Icon.ChevronDown size={11} className="chev" />
+              </button>
+            </div>
+          </nav>
+
+          {/* Mega Menu Dropdown */}
+          {open && (
+            <div
+              className="nav-mega"
+              onMouseEnter={cancelClose}
+              onMouseLeave={scheduleClose}
+            >
+              <div className="nav-mega-grid">
+                {resourceLinks.map((item) => {
+                  const ext = item.href.startsWith('http');
+                  const isContactSales = item.href === '#contact-sales';
+                  return (
+                    <a
+                      href={item.href}
+                      className="nav-mega-item"
+                      key={item.t}
+                      onClick={(e) => {
+                        if (isContactSales) {
+                          e.preventDefault();
+                          setOpen(null);
+                          openContactSalesModal();
+                          return;
+                        }
+                        handleNav(e, item.href);
+                      }}
+                      {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      <span className="nav-mega-ic"><Icon.Arrow size={12}/></span>
+                      <span>
+                        <strong>{item.t}</strong>
+                        <small>{item.d}</small>
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+              <div className="nav-mega-proof">
+                <span>Live network</span>
+                <strong>1,240 cafes, 340 suppliers, 47 brand trials</strong>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Actions */}
+        <div className="nav-right">
+          <a className="nav-login" href="/login">
+            Log in
+          </a>
+          <a
+            className="nav-get-started"
+            href="#contact-sales"
+            onClick={(e) => {
+              e.preventDefault();
+              openContactSalesModal();
+            }}
+          >
+            Get Started
+          </a>
+          <button
+            type="button"
+            className="nav-mobile-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="nav-mobile-menu">
+          <div className="nav-mobile-inner">
+            <a className="nav-mobile-link" href="/features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+            <a className="nav-mobile-link" href="#ecosystem" onClick={(e) => handleNav(e, '#ecosystem')}>How It Works</a>
+            <a className="nav-mobile-link" href="/pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+            <a className="nav-mobile-link" href="/faq" onClick={() => setMobileMenuOpen(false)}>Docs</a>
+            <div className="nav-mobile-divider" />
+            <a className="nav-mobile-link" href="/login" onClick={() => setMobileMenuOpen(false)}>Log in</a>
+            <a
+              className="nav-mobile-cta"
+              href="#contact-sales"
+              onClick={(e) => {
+                e.preventDefault();
+                setMobileMenuOpen(false);
+                openContactSalesModal();
+              }}
+            >
+              Get Started
+            </a>
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }
 

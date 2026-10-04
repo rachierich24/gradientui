@@ -10,6 +10,7 @@ import { EcosystemShowcase } from '@/components/landing/EcosystemShowcase'
 import { ProductSections } from '@/components/landing/ProductSections'
 import { SpotlightSection } from '@/components/landing/SpotlightSection'
 import { G365Hero, G365Footer } from '@/components/landing/G365'
+import { Intersystem } from '@/components/landing/Intersystem'
 
 export default function HomePage() {
   return (
@@ -22,6 +23,7 @@ export default function HomePage() {
         <ProductSections />
       </LandingUniverse>
       <SpotlightSection />
+      <Intersystem />
       <LProofStrip />
       <LLogos />
       <LBento />

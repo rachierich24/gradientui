@@ -4,21 +4,7 @@
 // (three.js is self-hosted there too, so the CSP's script-src 'self' is enough).
 import { useEffect, useRef } from 'react';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
-
-const JS = '/g365/js/';
-// Shared 3D libraries: loaded once per page, never re-run.
-const LIBS = ['three.min.js', 'kit.js', 'thumbs.js', 'riders.js'];
-
-// async=false keeps dynamically inserted scripts executing in insertion order
-// while they still download in parallel.
-function injectScripts(files: string[]) {
-  for (const f of files) {
-    const s = document.createElement('script');
-    s.src = JS + f;
-    s.async = false;
-    document.body.appendChild(s);
-  }
-}
+import { loadG365, G365_LIBS } from './g365-scripts';
 
 // Runs inline during HTML parse, before first paint, so the hero starts blank and
 // switches itself on. A failsafe reveals everything after 5s regardless.
@@ -32,8 +18,7 @@ export function G365Hero() {
     // The scripts build their DOM once per element; guard against StrictMode's double effect.
     if (!root || root.dataset.g365Init) return;
     root.dataset.g365Init = '1';
-    const w = window as unknown as { G365?: { createRiders?: unknown } };
-    injectScripts([...(w.G365?.createRiders ? [] : LIBS), 'hero-flow.js', 'energy.js']);
+    loadG365([...G365_LIBS, 'thumbs.js', 'riders.js'], ['hero-flow.js', 'energy.js']).catch(() => {});
   }, []);
 
   return (
@@ -68,7 +53,7 @@ export function G365Footer() {
     const mark = markRef.current;
     if (!mark || mark.dataset.g365Init) return;
     mark.dataset.g365Init = '1';
-    injectScripts(['footer.js']);
+    loadG365([], ['footer.js']).catch(() => {});
   }, []);
 
   return (
