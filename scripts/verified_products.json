@@ -1,0 +1,582 @@
+[
+  {
+    "id": "spotlight-1",
+    "title": "Veg Sandwich Burger (Bold)",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-veg-sandwich-burger-bold.jpg",
+    "width": 162,
+    "alt": "Veg Sandwich Burger (Bold) - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-2",
+    "title": "Onion Rings",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-onion-rings.jpg",
+    "width": 168,
+    "alt": "Onion Rings - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-3",
+    "title": "Americano Mayo Burst (Veg)",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-americano-mayo-burst-veg.jpg",
+    "width": 174,
+    "alt": "Americano Mayo Burst (Veg) - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-4",
+    "title": "Habanero Burst (Chicken)",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-habanero-burst-chicken.jpg",
+    "width": 180,
+    "alt": "Habanero Burst (Chicken) - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-5",
+    "title": "Classic Ranch (Boneless)",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-classic-ranch-boneless.jpg",
+    "width": 186,
+    "alt": "Classic Ranch (Boneless) - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-6",
+    "title": "Spicy Barbeque (Boneless)",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-spicy-barbeque-boneless.jpg",
+    "width": 170,
+    "alt": "Spicy Barbeque (Boneless) - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-7",
+    "title": "Garlic Burst Veg Wrap",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-garlic-burst-veg-wrap.jpg",
+    "width": 176,
+    "alt": "Garlic Burst Veg Wrap - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-8",
+    "title": "Dal Makhani",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-dal-makhani.jpg",
+    "width": 182,
+    "alt": "Dal Makhani - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-9",
+    "title": "Amritsari Chole",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-amritsari-chole.jpg",
+    "width": 166,
+    "alt": "Amritsari Chole - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-10",
+    "title": "2 Pc Hot & Crispy Chicken",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-2-pc-hot-crispy-chicken.jpg",
+    "width": 172,
+    "alt": "2 Pc Hot & Crispy Chicken - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-11",
+    "title": "Peri Peri Chicken Strips 3",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-peri-peri-chicken-strips-3.jpg",
+    "width": 162,
+    "alt": "Peri Peri Chicken Strips 3 - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-12",
+    "title": "Hot Wings 4 Pc",
+    "category": "CAFÉ",
+    "tagColor": "#E03527",
+    "image": "/landing/spotlight/dtq-hot-wings-4-pc.jpg",
+    "width": 168,
+    "alt": "Hot Wings 4 Pc - DroptheQ Café & Food Court",
+    "source": "droptheq"
+  },
+  {
+    "id": "spotlight-13",
+    "title": "Hyderabadi Salan",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-hyderabadi-salan.jpg",
+    "width": 174,
+    "alt": "Hyderabadi Salan - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-14",
+    "title": "Baked Beans",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-baked-beans.jpg",
+    "width": 180,
+    "alt": "Baked Beans - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-15",
+    "title": "Classic Pomodoro Sauce Spa",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-classic-pomodoro-sauce-spa.jpg",
+    "width": 186,
+    "alt": "Classic Pomodoro Sauce Spa - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-16",
+    "title": "Mac and Cheese",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-mac-and-cheese.jpg",
+    "width": 170,
+    "alt": "Mac and Cheese - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-17",
+    "title": "Garden fresh Fusilli",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-garden-fresh-fusilli.jpg",
+    "width": 176,
+    "alt": "Garden fresh Fusilli - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-18",
+    "title": "Classic Penne Arrabiata",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-classic-penne-arrabiata.jpg",
+    "width": 182,
+    "alt": "Classic Penne Arrabiata - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-19",
+    "title": "Jamacian jerk chicken tikk",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-jamacian-jerk-chicken-tikk.jpg",
+    "width": 166,
+    "alt": "Jamacian jerk chicken tikk - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-20",
+    "title": "Paneer Butter Masala",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-paneer-butter-masala.jpg",
+    "width": 172,
+    "alt": "Paneer Butter Masala - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-21",
+    "title": "Chinese Fried Rice",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-chinese-fried-rice.jpg",
+    "width": 162,
+    "alt": "Chinese Fried Rice - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-22",
+    "title": "Hot Garlic Noodles",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-hot-garlic-noodles.jpg",
+    "width": 168,
+    "alt": "Hot Garlic Noodles - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-23",
+    "title": "Margherita Pizza",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-margherita-pizza.jpg",
+    "width": 174,
+    "alt": "Margherita Pizza - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-24",
+    "title": "Dal Fry",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/fsi-dal-fry.jpg",
+    "width": 180,
+    "alt": "Dal Fry - Food Service India HORECA Solution",
+    "source": "fsi"
+  },
+  {
+    "id": "spotlight-25",
+    "title": "McCain Aloo Tikki",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-aloo-tikki.png",
+    "width": 186,
+    "alt": "McCain Aloo Tikki - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-26",
+    "title": "McCain Chilli Garlic Potat",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-chilli-garlic-potat.png",
+    "width": 170,
+    "alt": "McCain Chilli Garlic Potat - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-27",
+    "title": "American Herb & Garlic",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-american-herb-garlic.png",
+    "width": 176,
+    "alt": "American Herb & Garlic - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-28",
+    "title": "Mexican Hot & Tangy",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mexican-hot-tangy.png",
+    "width": 182,
+    "alt": "Mexican Hot & Tangy - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-29",
+    "title": "McCain Smiles",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-smiles.png",
+    "width": 166,
+    "alt": "McCain Smiles - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-30",
+    "title": "McCain French Fries",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-french-fries.png",
+    "width": 172,
+    "alt": "McCain French Fries - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-31",
+    "title": "McCain Chilli Cheesy Nugge",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-chilli-cheesy-nugge.png",
+    "width": 162,
+    "alt": "McCain Chilli Cheesy Nugge - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-32",
+    "title": "McCain Potato Cheese Shotz",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-potato-cheese-shotz.png",
+    "width": 168,
+    "alt": "McCain Potato Cheese Shotz - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-33",
+    "title": "McCain French Fries Pepper",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-french-fries-pepper.png",
+    "width": 174,
+    "alt": "McCain French Fries Pepper - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-34",
+    "title": "McCain Masala Fries",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-masala-fries.png",
+    "width": 180,
+    "alt": "McCain Masala Fries - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-35",
+    "title": "McCain Veggie Fingers",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-veggie-fingers.png",
+    "width": 186,
+    "alt": "McCain Veggie Fingers - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-36",
+    "title": "McCain Veggie Nuggets",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/mccain-mccain-veggie-nuggets.png",
+    "width": 170,
+    "alt": "McCain Veggie Nuggets - McCain Foodservice",
+    "source": "mccain"
+  },
+  {
+    "id": "spotlight-37",
+    "title": "66591076 Ee25 4a68 8316 05",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-66591076-ee25-4a68-8316-05.png",
+    "width": 176,
+    "alt": "66591076 Ee25 4a68 8316 05 - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-38",
+    "title": "C954p0590 Uber Eats Small",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-c954p0590-uber-eats-small.png",
+    "width": 182,
+    "alt": "C954p0590 Uber Eats Small - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-39",
+    "title": "Petite Pth Brown",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-petite-pth-brown.png",
+    "width": 166,
+    "alt": "Petite Pth Brown - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-40",
+    "title": "Detpak Wide Gusset Bag Bro",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-detpak-wide-gusset-bag-bro.png",
+    "width": 172,
+    "alt": "Detpak Wide Gusset Bag Bro - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-41",
+    "title": "Kraft Eco Packaging",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-kraft-eco-packaging.png",
+    "width": 162,
+    "alt": "Kraft Eco Packaging - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-42",
+    "title": "Y994p0241 Uber Eats Delive",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-y994p0241-uber-eats-delive.png",
+    "width": 168,
+    "alt": "Y994p0241 Uber Eats Delive - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-43",
+    "title": "Y994p0324 Uber L Seal No",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-y994p0324-uber-l-seal-no.png",
+    "width": 174,
+    "alt": "Y994p0324 Uber L Seal No - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-44",
+    "title": "Product Page Images Bags 3",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/detpak-product-page-images-bags-3.jpg",
+    "width": 180,
+    "alt": "Product Page Images Bags 3 - Detpak Sustainable Packaging",
+    "source": "detpak"
+  },
+  {
+    "id": "spotlight-45",
+    "title": "Gourmet Double Wall Cup",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/worldstar-gourmet-double-wall-cup.png",
+    "width": 186,
+    "alt": "Gourmet Double Wall Cup - Worldstar Packaging",
+    "source": "worldstar"
+  },
+  {
+    "id": "spotlight-46",
+    "title": "Coffee Eat Insulated Cup",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/worldstar-coffee-eat-insulated-cup.png",
+    "width": 170,
+    "alt": "Coffee Eat Insulated Cup - Worldstar Packaging",
+    "source": "worldstar"
+  },
+  {
+    "id": "spotlight-47",
+    "title": "Hot Beverage Paper Cup",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/worldstar-hot-beverage-paper-cup.png",
+    "width": 176,
+    "alt": "Hot Beverage Paper Cup - Worldstar Packaging",
+    "source": "worldstar"
+  },
+  {
+    "id": "spotlight-48",
+    "title": "Kraft Disposable Salad Bowl",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/worldstar-kraft-disposable-salad-bowl.png",
+    "width": 182,
+    "alt": "Kraft Disposable Salad Bowl - Worldstar Packaging",
+    "source": "worldstar"
+  },
+  {
+    "id": "spotlight-49",
+    "title": "Kraft Paper Meal Container",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/worldstar-kraft-paper-meal-container.png",
+    "width": 166,
+    "alt": "Kraft Paper Meal Container - Worldstar Packaging",
+    "source": "worldstar"
+  },
+  {
+    "id": "spotlight-50",
+    "title": "Bio-kraft Takeaway Food Tub",
+    "category": "SUPPLIER",
+    "tagColor": "#22C55E",
+    "image": "/landing/spotlight/worldstar-bio-kraft-takeaway-food-tub.png",
+    "width": 172,
+    "alt": "Bio-kraft Takeaway Food Tub - Worldstar Packaging",
+    "source": "worldstar"
+  },
+  {
+    "id": "spotlight-51",
+    "title": "Heinz Tomato Ketchup",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-tomato-ketchup.png",
+    "width": 162,
+    "alt": "Heinz Tomato Ketchup - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-52",
+    "title": "Heinz Yellow Mustard",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-yellow-mustard.png",
+    "width": 168,
+    "alt": "Heinz Yellow Mustard - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-53",
+    "title": "Heinz Sweet Pickle Relish",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-sweet-pickle-relish.png",
+    "width": 174,
+    "alt": "Heinz Sweet Pickle Relish - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-54",
+    "title": "Heinz Real Mayonnaise Dip",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-real-mayonnaise-dip.png",
+    "width": 180,
+    "alt": "Heinz Real Mayonnaise Dip - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-55",
+    "title": "Heinz Classic BBQ Sauce",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-classic-bbq-sauce.png",
+    "width": 186,
+    "alt": "Heinz Classic BBQ Sauce - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-56",
+    "title": "Kraft Dipping Sauce Pot",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-kraft-dipping-sauce-pot.png",
+    "width": 170,
+    "alt": "Kraft Dipping Sauce Pot - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-57",
+    "title": "Heinz 57 Gourmet Sauce",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-57-gourmet-sauce.png",
+    "width": 176,
+    "alt": "Heinz 57 Gourmet Sauce - Heinz Foodservice",
+    "source": "heinz"
+  },
+  {
+    "id": "spotlight-58",
+    "title": "Heinz Smoky Chipotle Dip",
+    "category": "BRAND",
+    "tagColor": "#6D28D9",
+    "image": "/landing/spotlight/heinz-heinz-smoky-chipotle-dip.png",
+    "width": 182,
+    "alt": "Heinz Smoky Chipotle Dip - Heinz Foodservice",
+    "source": "heinz"
+  }
+]

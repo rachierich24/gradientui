@@ -5,6 +5,7 @@ import {
   motion,
   useScroll,
   useTransform,
+  useSpring,
   useReducedMotion,
   useMotionValueEvent,
 } from 'framer-motion';
@@ -94,18 +95,26 @@ export function EcosystemShowcase() {
     offset: ['start start', 'end end'],
   });
 
+  // Inertial spring smoothing: absorbs mouse wheel notches into liquid continuous motion
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 70,
+    damping: 24,
+    mass: 0.28,
+    restDelta: 0.0001,
+  });
+
   // Activate Café product film when scroll reaches the Café chapter
-  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
-    const active = latest >= 0.38 && latest <= 0.82;
+  useMotionValueEvent(smoothProgress, 'change', (latest) => {
+    const active = latest >= 0.32;
     setIsCafeActive(active);
-    if (!active && latest < 0.38) {
+    if (!active && latest < 0.32) {
       setFilmIndex(0); // Reset to first frame when returning to ecosystem
     } else if (active) {
       setHoveredScreen(null); // Clear hover in Café section
     }
 
     // Immediately clear hover state as soon as user begins scrolling down
-    if (latest > 0.06) {
+    if (latest > 0.08) {
       setHoveredScreen(null);
     }
 
@@ -148,24 +157,17 @@ export function EcosystemShowcase() {
   const currentStep = CAFE_FILM_STEPS[filmIndex];
   const currentState = isCafeActive ? currentStep.state : 'DISCOVER';
 
-  // ─── Continuous Scroll Interpolations ────────────────────────────────────
+  // ─── Continuous Scroll Interpolations (Smooth, Paced & Tangible Downward Motion) ───
   
-  // Slower, velvety background transition from White to Red, then seamless shift into Supplier Green:
-  // 1. Holds White #FFFFFF across [0.0, 0.10],
-  // 2. Slow, velvety transition into Café Red #E03527 across [0.10, 0.38],
-  // 3. Holds Café Red #E03527 100% across the Café chapter [0.38, 0.68],
-  // 4. Smooth, synchronized transition into Supplier Green #16A34A across [0.68, 0.94],
-  // 5. Holds 100% solid Supplier Green #16A34A at unpin handoff [0.94, 1.0]!
+  // 1. Seamless background transition from White to Café Red (#E03527):
   const containerBg = useTransform(
-    scrollYProgress,
-    [0.0, 0.10, 0.38, 0.68, 0.94, 1.0],
+    smoothProgress,
+    [0.0, 0.12, 0.46, 1.0],
     [
-      '#FFFFFF', // White during Ecosystem
-      '#FFFFFF', // Holds White comfortably - no sudden fast shifts
-      '#E03527', // Slower, gradual transition into Café Red
-      '#E03527', // Holds Café Red throughout Café chapter
-      '#16A34A', // Smoothly shifts into Supplier Green before unpin!
-      '#16A34A', // 100% Supplier Green at unpin handoff!
+      '#FFFFFF', // Holds White comfortably through Chapter 1
+      '#FFFFFF', // Begins graceful color shift at 0.12
+      '#E03527', // Smoothly saturates to full Café Red at 0.46
+      '#E03527', // Holds Café Red throughout Chapter 2 until unpin
     ]
   );
 
@@ -177,56 +179,53 @@ export function EcosystemShowcase() {
     document.documentElement.style.setProperty('--universe-bg', containerBg.get());
   }, [containerBg]);
 
-  // Chapter 1 Ecosystem Header Copy moves UP and fades out slowly
-  const ecoTextOpacity = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [1, 1, 0]);
-  const ecoTextY = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [0, 0, -65]);
+  // 2. Chapter 1 Ecosystem Header Copy: glides gently upward and fades out
+  const ecoTextOpacity = useTransform(smoothProgress, [0.0, 0.10, 0.32], [1, 1, 0]);
+  const ecoTextY = useTransform(smoothProgress, [0.0, 0.10, 0.32], [0, 0, -60]);
 
-  // Side dashboards move UP and fade out along with the text on scroll down
-  const supplierX = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [0, 0, -45]);
-  const supplierY = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [0, 0, -65]);
-  const supplierScale = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [1.0, 1.0, 0.94]);
-  const supplierOpacity = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [1, 1, 0]);
+  // 3. Side dashboards (Supplier Left & Brand Right):
+  // Gracefully recede outward, scale down, and float upward
+  const supplierX = useTransform(smoothProgress, [0.0, 0.10, 0.36], [0, 0, -80]);
+  const supplierY = useTransform(smoothProgress, [0.0, 0.10, 0.36], [0, 0, -45]);
+  const supplierScale = useTransform(smoothProgress, [0.0, 0.10, 0.36], [1.0, 1.0, 0.92]);
+  const supplierOpacity = useTransform(smoothProgress, [0.0, 0.10, 0.34], [1, 1, 0]);
 
-  const brandX = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [0, 0, 45]);
-  const brandY = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [0, 0, -65]);
-  const brandScale = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [1.0, 1.0, 0.94]);
-  const brandOpacity = useTransform(scrollYProgress, [0.0, 0.10, 0.38], [1, 1, 0]);
+  const brandX = useTransform(smoothProgress, [0.0, 0.10, 0.36], [0, 0, 80]);
+  const brandY = useTransform(smoothProgress, [0.0, 0.10, 0.36], [0, 0, -45]);
+  const brandScale = useTransform(smoothProgress, [0.0, 0.10, 0.36], [1.0, 1.0, 0.92]);
+  const brandOpacity = useTransform(smoothProgress, [0.0, 0.10, 0.34], [1, 1, 0]);
 
-  // Phone motion:
-  // Starts at scale 1.00, perfectly centered in Ecosystem.
-  // Smoothly enlarges (scale: 1.00 -> 1.36) across [0.10, 0.38], stays centered (Y: 0),
-  // showing the ENTIRE phone upright with top and bottom fully visible.
-  // Holds across Café chapter [0.38, 0.68], then moves UP normally with the entire section!
+  // 4. Central Phone Protagonist:
+  // Starts slightly elevated in Chapter 1 (-16px), then glides DOWN smoothly into place (+6px)
+  // while scaling into prominent, commanding hero display (1.00 -> 1.44).
+  // Remains at scale 1.44 throughout and after the transition.
   const phoneY = useTransform(
-    scrollYProgress,
-    [0.0, 0.68, 0.96, 1.0],
-    [0, 0, -950, -1050]
+    smoothProgress,
+    [0.0, 0.12, 0.44, 1.0],
+    [-16, -16, 6, 6]
   );
   const phoneScale = useTransform(
-    scrollYProgress,
-    [0.0, 0.10, 0.38, 0.68, 1.0],
-    [1.00, 1.00, 1.36, 1.36, 1.36]
+    smoothProgress,
+    [0.0, 0.12, 0.44, 1.0],
+    [1.00, 1.00, 1.44, 1.44]
   );
-  const phoneOpacity = useTransform(
-    scrollYProgress,
-    [0.0, 0.85, 0.96],
-    [1, 1, 0]
-  );
+  const phoneOpacity = useTransform(smoothProgress, [0.0, 1.0], [1, 1]);
 
-  // Next screen (Café Chapter flanking content): comes up smoothly from below
-  // Holds 100% visible across Café chapter [0.38, 0.68], then moves UP normally in lockstep with the phone!
+  // 5. Chapter 2 Café story flanking content (Headline left + 4 narrative cards right):
+  // Glides smoothly UP from below (+70px -> 0px) over a generous, comfortable scroll window
+  // giving the unmistakable sensation of descending into the new section
   const cafeContentY = useTransform(
-    scrollYProgress,
-    [0.0, 0.16, 0.38, 0.68, 0.96, 1.0],
-    [50, 50, 0, 0, -950, -1050]
+    smoothProgress,
+    [0.0, 0.16, 0.46, 1.0],
+    [70, 70, 0, 0]
   );
   const cafeContentOpacity = useTransform(
-    scrollYProgress,
-    [0.0, 0.16, 0.38, 0.85, 0.96],
-    [0, 0, 1, 1, 0]
+    smoothProgress,
+    [0.0, 0.16, 0.44, 1.0],
+    [0, 0, 1, 1]
   );
 
-  const stageBg = isReduced ? '#FFFFFF' : containerBg;
+  const stageBg = isReduced ? '#FFFFFF' : 'var(--universe-bg, #FFFFFF)';
 
   return (
     <section

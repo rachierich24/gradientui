@@ -69,7 +69,7 @@
 .spotlight-stage {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   width: 100%;
   overflow: hidden;
   padding: 6px 0;
@@ -85,7 +85,7 @@
 
 .spotlight-row {
   display: flex;
-  gap: 16px;
+  gap: 13px;
   align-items: center;
   flex-shrink: 0;
   will-change: transform;
@@ -94,27 +94,63 @@
 }
 
 /* ==========================================================================
-   PRODUCT IMAGE CARDS (Physical, Rounded, Subtle Shadow, Editorial Rhythm)
+   PRODUCT IMAGE CARDS (Category-themed pastels, inset rounded image, soft border)
    ========================================================================== */
 
 .spotlight-card {
   flex-shrink: 0;
-  height: 152px;
-  border-radius: 16px;
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  height: 122px;
+  border-radius: 17px;
+  padding: 5px;
+  box-sizing: border-box;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1);
-  box-sizing: border-box;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
 }
 
 .spotlight-card:hover {
-  transform: scale(1.025) translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.09);
+  transform: translateY(-4px) scale(1.025);
   z-index: 5;
+}
+
+/* 1. BRAND (Vivid Bold Purple / Violet - matching #for-brands) */
+.spotlight-card--brand {
+  background: linear-gradient(145deg, #7C3AED 0%, #6D28D9 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 6px 18px -4px rgba(109, 40, 217, 0.40), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.spotlight-card--brand:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 14px 28px -4px rgba(109, 40, 217, 0.55), 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* 2. SUPPLIER (Vivid Bold Emerald Green - matching #for-suppliers) */
+.spotlight-card--supplier {
+  background: linear-gradient(145deg, #16A34A 0%, #15803D 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 6px 18px -4px rgba(22, 163, 74, 0.40), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.spotlight-card--supplier:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 14px 28px -4px rgba(22, 163, 74, 0.55), 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* 3. CAFÉ (Vivid Bold Orangish Red / Crimson - matching #for-cafes) */
+.spotlight-card--cafe {
+  background: linear-gradient(145deg, #E03527 0%, #C82417 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 6px 18px -4px rgba(224, 53, 39, 0.40), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.spotlight-card--cafe:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 14px 28px -4px rgba(224, 53, 39, 0.55), 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .spotlight-card-inner {
@@ -126,10 +162,16 @@
 
 .spotlight-image-box {
   width: 100%;
-  height: 112px;
-  background: #F8F6F0;
+  height: 100%;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
+  flex: 1;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
 .spotlight-image {
@@ -137,8 +179,15 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  border-radius: 12px;
   display: block;
   transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-image[src$=".png"] {
+  object-fit: contain;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .spotlight-card:hover .spotlight-image {
@@ -146,61 +195,7 @@
 }
 
 /* ==========================================================================
-   RESTRAINED 5% ECOSYSTEM METADATA FOOTER
-   Ecosystem Colors: CAFÉ (#E03527) | SUPPLIER (#22C55E) | BRAND (#6D28D9)
-   ========================================================================== */
-
-.spotlight-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  height: 40px;
-  padding: 0 11px;
-  background: #FFFFFF;
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-  box-sizing: border-box;
-}
-
-.spotlight-eco-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4.5px;
-  flex-shrink: 0;
-}
-
-.spotlight-eco-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.spotlight-eco-text {
-  font-family: var(--font-plus-jakarta, 'Plus Jakarta Sans', -apple-system, sans-serif);
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: #5A574E;
-}
-
-.spotlight-card-name {
-  font-family: var(--font-plus-jakarta, 'Plus Jakarta Sans', -apple-system, sans-serif);
-  font-size: 10px;
-  font-weight: 500;
-  color: #2D2B27;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: right;
-  flex: 1;
-}
-
-/* ==========================================================================
    RESPONSIVE DESIGN (TABLET & MOBILE)
-   Mobile maintains 2 horizontal overflow rows without vertical stacking!
    ========================================================================== */
 
 @media (max-width: 1024px) {
@@ -217,16 +212,14 @@
   }
 
   .spotlight-card {
-    height: 142px;
+    height: 110px;
+    border-radius: 15px;
+    padding: 4.5px;
   }
 
-  .spotlight-image-box {
-    height: 104px;
-  }
-
-  .spotlight-card-footer {
-    height: 38px;
-    padding: 0 9px;
+  .spotlight-image-box,
+  .spotlight-image {
+    border-radius: 11px;
   }
 }
 
@@ -252,39 +245,27 @@
   }
 
   .spotlight-stage {
-    gap: 14px;
-  }
-
-  .spotlight-row {
     gap: 12px;
   }
 
+  .spotlight-row {
+    gap: 10px;
+  }
+
   .spotlight-card {
-    height: 130px;
+    height: 98px;
     border-radius: 14px;
-    transform: scale(0.88);
-    transform-origin: center center;
+    padding: 4px;
+    transform: none;
   }
 
   .spotlight-card:hover {
-    transform: scale(0.91) translateY(-3px);
+    transform: translateY(-2px) scale(1.02);
   }
 
-  .spotlight-image-box {
-    height: 94px;
-  }
-
-  .spotlight-card-footer {
-    height: 36px;
-    padding: 0 8px;
-  }
-
-  .spotlight-eco-text {
-    font-size: 7.5px;
-  }
-
-  .spotlight-card-name {
-    font-size: 9px;
+  .spotlight-image-box,
+  .spotlight-image {
+    border-radius: 10px;
   }
 }
 
