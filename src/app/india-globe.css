@@ -1,0 +1,98 @@
+/* "Across India" globe section (components/landing/IndiaGlobe.tsx).
+   A rounded panel between pricing and the footer. Night (deep indigo) and Day (white with a violet wash) themes, switched by
+   .is-night / .is-day on the section. The canvas paints the globe; everything readable stays in the DOM. */
+section.l-sec.ig {
+  --ig-edge: clamp(28px, 4.4vw, 64px);
+  --ig-bg: radial-gradient(110% 80% at 64% 72%, #1A1F4D 0%, #070A1C 62%);
+  --ig-ink: #EEF0FF;
+  --ig-soft: #9BA3D1;
+  --ig-line: rgba(160, 170, 255, .18);
+  --ig-glass: rgba(18, 22, 52, .78);
+  --ig-inv: #0B0D1F;
+  --ig-ring: #8C7BFF;
+  --ig-grain: .06;
+  padding: 24px 0 72px;
+}
+section.l-sec.ig.is-day {
+  --ig-bg: radial-gradient(110% 80% at 64% 72%, #EEEAFF 0%, #FFFFFF 62%);
+  --ig-ink: #10142A;
+  --ig-soft: #5B6178;
+  --ig-line: rgba(16, 20, 42, .1);
+  --ig-glass: rgba(255, 255, 255, .86);
+  --ig-inv: #FFFFFF;
+  --ig-ring: #5B3DF5;
+  --ig-grain: 0;
+}
+
+.ig-panel {
+  position: relative; isolation: isolate; overflow: hidden;
+  height: clamp(600px, 58vw, 720px);
+  border-radius: 32px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 40px 80px -40px rgba(20, 20, 60, .45);
+  color: var(--ig-ink);
+  background: var(--ig-bg);
+  cursor: pointer;
+  touch-action: pan-y;
+  outline: none;
+  transition: box-shadow .35s ease, color .4s ease;
+}
+/* fine grain on Night, so the dark reads as material rather than flat fill */
+.ig-panel::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: var(--ig-grain); mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.ig-panel:focus-visible { box-shadow: inset 0 0 0 2px var(--ig-ring), 0 40px 80px -40px rgba(20, 20, 60, .45); }
+.ig-panel.is-live { cursor: grab; touch-action: none; box-shadow: inset 0 0 0 1.5px var(--ig-ring), 0 0 0 5px color-mix(in srgb, var(--ig-ring) 16%, transparent), 0 40px 80px -40px rgba(20, 20, 60, .45); }
+.ig-panel.is-live.dragging { cursor: grabbing; }
+.ig-panel.on-node { cursor: pointer; }
+
+.ig-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.ig-copy { position: absolute; z-index: 2; left: var(--ig-edge); top: clamp(36px, 5vw, 64px); max-width: 470px; display: grid; gap: 14px; pointer-events: none; }
+.ig-eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ig-soft); }
+.ig-copy h2 { margin: 0; font-size: clamp(32px, 3.6vw, 52px); font-weight: 700; line-height: 1.04; letter-spacing: -.035em; max-width: 13ch; text-wrap: balance; color: var(--ig-ink); }
+.ig-copy h2 span { color: var(--ig-soft); }
+.ig-copy p { margin: 4px 0 0; font-size: 17px; line-height: 1.55; max-width: 38ch; color: var(--ig-soft); }
+
+.ig-mode { position: absolute; z-index: 3; right: var(--ig-edge); top: clamp(28px, 3.4vw, 40px); display: flex; gap: 2px; padding: 3px;
+  background: var(--ig-glass); border: 1px solid var(--ig-line); border-radius: 999px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.ig-mode button { font: 500 12px/1 var(--font-mono); color: var(--ig-soft); background: none; border: 0; padding: 9px 14px; border-radius: 999px; transition: background .25s, color .25s; }
+.ig-mode button[aria-pressed="true"] { background: var(--ig-ink); color: var(--ig-inv); }
+.ig-mode button:focus-visible { outline: 2px solid var(--ig-ring); outline-offset: 2px; }
+
+.ig-ctl { position: absolute; z-index: 3; right: var(--ig-edge); bottom: clamp(20px, 3.4vw, 40px); display: flex; align-items: center; gap: 6px;
+  font: 500 11.5px/1 var(--font-mono); letter-spacing: .04em; color: var(--ig-soft);
+  background: var(--ig-glass); border: 1px solid var(--ig-line); border-radius: 999px; padding: 5px;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.ig-ctl > span { padding: 0 8px 0 10px; }
+.ig-ctl button { font: inherit; color: var(--ig-ink); background: none; border: 1px solid var(--ig-line); border-radius: 999px; padding: 9px 14px; transition: border-color .2s; }
+.ig-ctl button:hover { border-color: var(--ig-soft); }
+.ig-ctl button.is-primary { background: var(--ig-ink); color: var(--ig-inv); border-color: transparent; }
+.ig-ctl button:focus-visible { outline: 2px solid var(--ig-ring); outline-offset: 2px; }
+.ig-ctl .ig-start { display: flex; align-items: center; gap: 9px; border: 0; padding: 9px 14px 9px 12px; }
+.ig-start svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; animation: igTurn 6s linear infinite; }
+@keyframes igTurn { to { transform: rotate(360deg); } }
+
+.ig-card { position: absolute; z-index: 4; left: 0; top: 0; width: 248px; display: grid; gap: 8px; padding: 16px 18px 15px;
+  background: var(--ig-glass); border: 1px solid var(--ig-line); border-radius: 16px;
+  backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 24px 48px -16px rgba(4, 6, 20, .35); pointer-events: none;
+  opacity: 0; transition: opacity .2s ease; will-change: transform; }
+.ig-card[data-show] { opacity: 1; }
+.ig-card-tag { display: flex; align-items: center; gap: 7px; font: 500 10.5px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ig-soft); }
+.ig-card-tag i { width: 7px; height: 7px; border-radius: 50%; background: var(--c, conic-gradient(#7F00FF, #FF2E4D, #22C55E, #7F00FF)); }
+.ig-card strong { font-size: 21px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+.ig-card p { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--ig-soft); }
+.ig-card-km { margin-top: 2px; padding-top: 9px; border-top: 1px solid var(--ig-line); font: 500 12px/1 var(--font-mono); color: var(--ig-ink); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 820px) {
+  section.l-sec.ig { padding: 8px 0 48px; }
+  .ig-panel { height: 640px; border-radius: 24px; }
+  .ig-copy { left: 20px; right: 20px; top: 84px; }
+  .ig-copy p { font-size: 15.5px; }
+  .ig-mode { right: auto; left: 20px; top: 28px; }
+  .ig-ctl { left: 16px; right: 16px; bottom: 16px; justify-content: space-between; }
+  .ig-ctl .ig-start { flex: 1; justify-content: center; }
+  .ig-card { width: 210px; }
+}
+@media (prefers-reduced-motion: reduce) { .ig-start svg { animation: none; } }

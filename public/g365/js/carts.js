@@ -23,10 +23,11 @@
     const cam = new THREE.OrthographicCamera(0, 1, 0, -1, -4000, 4000);
 
     /* ---------- materials ---------- */
-    const wire = new THREE.MeshStandardMaterial({ color: 0xe9edf2, metalness: 1, roughness: 0.2 });
-    const frame = new THREE.MeshStandardMaterial({ color: 0xc7ced8, metalness: 1, roughness: 0.32 });
+    // satin steel rather than mirror chrome, so the cart reads against a light page
+    const wire = new THREE.MeshStandardMaterial({ color: 0xa9b1bd, metalness: 0.9, roughness: 0.3 });
+    const frame = new THREE.MeshStandardMaterial({ color: 0x3b4252, metalness: 0.7, roughness: 0.38 });
     const rubber = new THREE.MeshStandardMaterial({ color: 0x1b2130, roughness: 0.62 });
-    const kraft = new THREE.MeshStandardMaterial({ color: 0xc9a77c, roughness: 0.85 });
+    const kraft = new THREE.MeshStandardMaterial({ color: 0xb98a55, roughness: 0.8 });
     const tape = new THREE.MeshStandardMaterial({ color: 0xe6d3b4, roughness: 0.6 });
     const grip = {}, parcel = {};
     const tone = (hex) => {
@@ -54,7 +55,7 @@
 
     // model space: forward = +x, up = +y, width along z; ~1.3 long
     function makeCart(hex) {
-      const t = tone(hex), cart = new THREE.Group(), R = 0.016;
+      const t = tone(hex), cart = new THREE.Group(), R = 0.021;
       // basket: wider at the top, like a real cart
       const bx = 0.44, bz = 0.27, tx = 0.58, tz = 0.33, y0 = 0.34, y1 = 0.84;
       const at = (s, sx, sz) => V(sx * (bx + (tx - bx) * s), y0 + (y1 - y0) * s, sz * (bz + (tz - bz) * s));
@@ -92,13 +93,13 @@
       [-1, 1].forEach((sz) => rod(cart, V(-tx, y1, sz * tz), V(-0.74, 0.98, sz * tz), R * 1.6, wire));
       const g = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, tz * 2 + 0.06, 16), t.grip);
       g.rotation.x = Math.PI / 2; g.position.set(-0.74, 0.98, 0); cart.add(g);
-      // cargo: a kraft carton and a parcel in the side's colour
-      const box = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.34), kraft);
-      box.position.set(-0.12, y0 + 0.17, -0.02); box.rotation.y = 0.18; cart.add(box);
-      const strip = new THREE.Mesh(new THREE.BoxGeometry(0.405, 0.012, 0.07), tape);
-      strip.position.set(-0.12, y0 + 0.326, -0.02); strip.rotation.y = 0.18; cart.add(strip);
-      const pc = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.24, 0.24), t.parcel);
-      pc.position.set(0.22, y0 + 0.13, 0.06); pc.rotation.y = -0.25; cart.add(pc);
+      // cargo: a kraft carton and a parcel in the side's colour, peeking over the rim
+      const box = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.5, 0.4), kraft);
+      box.position.set(-0.13, y0 + 0.25, -0.02); box.rotation.y = 0.18; cart.add(box);
+      const strip = new THREE.Mesh(new THREE.BoxGeometry(0.465, 0.014, 0.08), tape);
+      strip.position.set(-0.13, y0 + 0.505, -0.02); strip.rotation.y = 0.18; cart.add(strip);
+      const pc = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.38, 0.28), t.parcel);
+      pc.position.set(0.23, y0 + 0.19, 0.06); pc.rotation.y = -0.25; cart.add(pc);
       return { cart, wheels };
     }
 
@@ -115,7 +116,7 @@
       if (c) return c;
       const { cart, wheels } = makeCart(it.color);
       const yaw = new THREE.Group(); yaw.add(cart);
-      const tilt = new THREE.Group(); tilt.add(yaw); tilt.rotation.x = 0.62;   // a three-quarter view from above
+      const tilt = new THREE.Group(); tilt.add(yaw); tilt.rotation.x = 0.5;   // a three-quarter view from above
       const shadow = new THREE.Mesh(shadowGeo, new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
       shadow.renderOrder = -1;
       const holder = new THREE.Group(); holder.add(shadow, tilt);

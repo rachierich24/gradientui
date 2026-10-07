@@ -1,0 +1,44 @@
+/* Section rail (components/landing/SectionRail.tsx) — upvent-style glyph stack on the left edge.
+   Inactive glyphs are small and grey; the current section's glyph goes dark inside a ring that
+   fills with scroll progress. No backdrop: sits bottom-right above the support widget, and a soft
+   white halo on the glyphs keeps them legible over the coloured sections. */
+.srail {
+  position: fixed; right: 27px; bottom: 108px; z-index: 45;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  transform: translateY(8px); opacity: 0; pointer-events: none;
+  transition: opacity .4s ease, transform .5s cubic-bezier(.2,.7,.2,1);
+}
+.srail.is-on { opacity: 1; transform: none; pointer-events: auto; }
+
+.srail-stop {
+  position: relative; display: grid; place-items: center; width: 48px; height: 38px;
+  padding: 0; border: 0; background: none; cursor: pointer; color: #A2A7B2;
+  transition: height .45s cubic-bezier(.2,.7,.2,1), color .3s;
+}
+.srail-stop.is-active { height: 56px; color: #1B1E27; }
+.srail-stop:hover { color: #6B7185; }
+.srail-stop.is-active:hover { color: #1B1E27; }
+.srail-stop:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; border-radius: 14px; }
+
+.srail-icon { position: relative; width: 19px; height: 19px; filter: drop-shadow(0 0 1.5px rgba(255,255,255,.9)) drop-shadow(0 0 4px rgba(255,255,255,.5)); transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+.srail-stop.is-active .srail-icon { transform: scale(1.12); }
+
+.srail-ring { position: absolute; left: 0; top: 50%; width: 48px; height: 48px; margin-top: -24px; transform: rotate(-90deg) scale(.6); opacity: 0;
+  transition: opacity .35s, transform .45s cubic-bezier(.2,.7,.2,1); }
+.srail-stop.is-active .srail-ring { opacity: 1; transform: rotate(-90deg) scale(1); }
+/* white track with a hairline edge, so the coloured fill reads on white and on coloured sections */
+.srail-track { fill: rgba(255,255,255,.55); stroke: rgba(255,255,255,.95); stroke-width: 4.2; }
+.srail-ring { filter: drop-shadow(0 0 .6px rgba(17,22,42,.35)); }
+.srail-done { fill: none; stroke: rgba(17,22,42,.18); stroke-width: 3; }
+.srail-fill { fill: none; stroke: #111318; stroke-width: 3; stroke-linecap: round; }
+
+/* name slides out on hover */
+.srail-label { position: absolute; right: calc(100% + 8px); top: 50%; padding: 6px 10px; border-radius: 8px; white-space: nowrap;
+  font-family: "Geist", ui-sans-serif, -apple-system, sans-serif; font-size: 12.5px; font-weight: 500; color: #fff; background: #1B1E27;
+  opacity: 0; transform: translate(6px, -50%); pointer-events: none; transition: opacity .2s, transform .25s; }
+.srail-stop:hover .srail-label, .srail-stop:focus-visible .srail-label { opacity: 1; transform: translate(0, -50%); }
+
+@media (max-width: 1100px) { .srail { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .srail, .srail-stop, .srail-icon, .srail-ring, .srail-fill, .srail-label { transition: none; }
+}
