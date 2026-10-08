@@ -145,11 +145,20 @@ const INDIA_MASK = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 const IM_W = 128, IM_H = 132, IM_STEP = 0.25, IM_LAT = 38, IM_LON = 67;
 // Gradient brand spectrum
 const RING = ['#7F00FF', '#FF2E4D', '#22C55E', '#F59E0B'];
-const vec = (lat: number, lon: number): V3 => [
-  Math.cos(lat * D) * Math.sin(lon * D),
-  Math.sin(lat * D),
-  Math.cos(lat * D) * Math.cos(lon * D),
+const INDIA_CTR_LAT = 22.0, INDIA_CTR_LON = 78.5, SCALE_INDIA = 1.45;
+const scaleCoord = (lat: number, lon: number): [number, number] => [
+  INDIA_CTR_LAT + (lat - INDIA_CTR_LAT) * SCALE_INDIA,
+  INDIA_CTR_LON + (lon - INDIA_CTR_LON) * SCALE_INDIA,
 ];
+
+const vec = (lat: number, lon: number): V3 => {
+  const [sLat, sLon] = scaleCoord(lat, lon);
+  return [
+    Math.cos(sLat * D) * Math.sin(sLon * D),
+    Math.sin(sLat * D),
+    Math.cos(sLat * D) * Math.cos(sLon * D),
+  ];
+};
 const visible = (p: number[]) => p[2] > 0 || p[0] * p[0] + p[1] * p[1] > 1;
 
 // Rotator matrix: rotates unit vector so (lat0, lon0) faces the viewer directly
@@ -510,11 +519,12 @@ export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive }: Opts) 
     const cx = W * 0.5;
     const cy = H - 1; // Horizon baseline anchored at the bottom edge
 
-    // Radius: expansive half-dome filling vertical height
-    base = wide ? Math.min(W * 0.46, H - 24) : Math.min(W * 0.52, H - 20);
+    // Radius: expansive half-dome filling vertical height completely from upper side
+    const maxRy = Math.max(200, H - 70);
+    base = wide ? Math.min(W * 0.5, maxRy / view.z) : Math.min(W * 0.6, maxRy / view.z);
     const Ry = base * view.z;
-    // Natural horizontal dome stretch: elegant half dome while maintaining authentic, systematic India proportions
-    const stretchX = wide ? 1.18 : 1.12;
+    // Horizontal stretch factor: extremely wide sweeping panoramic horizon like Attio
+    const stretchX = wide ? 2.4 : 1.8;
     const Rx = Ry * stretchX;
     const rot = rotator(view.lon, view.lat);
 
