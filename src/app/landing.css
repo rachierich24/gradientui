@@ -61,7 +61,7 @@
   --max-w: 1240px;
   --pad-x: 32px;
   --section-y: 140px;
-  --hero-bg: #F4F4F1;
+  --hero-bg: #FFFCF3;
 }
 
 * { box-sizing: border-box; }
@@ -100,10 +100,10 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .nav-header.is-scrolled {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 252, 243, 0.95);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   backdrop-filter: blur(18px) saturate(160%);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
   padding: 11px 0;
 }

@@ -695,7 +695,6 @@ export function SpotlightSection() {
       <div className="spotlight-container">
         {/* Minimal Typographic Section Header */}
         <div className="spotlight-header">
-          <span className="spotlight-eyebrow">SPOTLIGHT</span>
           <h2 className="spotlight-title">
             Everything your café needs.{' '}
             <span className="spotlight-title-muted">One connected supply network.</span>
@@ -726,7 +725,7 @@ export function SpotlightSection() {
                           draggable={false}
                         />
                       </div>
-                      </div>
+                    </div>
                   </div>
                 )
               })}
@@ -755,7 +754,7 @@ export function SpotlightSection() {
                           draggable={false}
                         />
                       </div>
-                      </div>
+                    </div>
                   </div>
                 )
               })}
