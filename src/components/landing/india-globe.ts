@@ -12,16 +12,6 @@ export type GlobeNode = {
   subtitle?: string;
 };
 
-export type TradePillData = {
-  id: string;
-  sx: number;
-  sy: number;
-  vis: boolean;
-  icon: string;
-  tag: string;
-  title: string;
-  route: string;
-};
 
 export const SIDE_COLOR: Record<Side, string> = {
   core: '#6366F1',
@@ -110,7 +100,6 @@ type Opts = {
   mask: Uint8Array;
   onFocus: (n: GlobeNode | null) => void;
   onLive: (live: boolean) => void;
-  onPills?: (pills: TradePillData[]) => void;
 };
 
 // Pure, pristine white aesthetic with chromatic iridescent point-cloud and glowing comets
@@ -149,8 +138,8 @@ const THEME = {
 };
 
 const D = Math.PI / 180;
-// Half globe: central meridian 78.5°E, viewing tilt -16.0° elevates India to the top center crest of the half dome
-const HOME = { lon: 78.5, lat: -16.0, z: 1.0 };
+// Systematic half-globe: central meridian 78.5°E, viewing tilt -12.0° centers India symmetrically, z: 1.25 makes India 25% bigger
+const HOME = { lon: 78.5, lat: -12.0, z: 1.25 };
 
 // Precomputed bitmask for India's high-definition borders
 const INDIA_MASK = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP8AAAAAAAAAAAAAAAAAAOD/BwAAAAAAAAAAAAAAAAD4/x8AAAAAAAAAAAAAAAAA/P//AAAAAAAAAAAAAAAAAP7//wMAAAAAAAAAAAAAAAD4////AQAAAAAAAAAAAAAA8P///w8AAAAAAAAAAAAAAOD///8fAAAAAAAAAAAAAACA////HwAAAAAAAAAAAAAAAP///w8AAAAAAAAAAAAAAAD+//8PAAAAAAAAAAAAAAAA/P//DwAAAAAAAAAAAAAAAPz//wcAAAAAAAAAAAAAAAD8//8HAAAAAAAAAAAAAAAA/P//AwAAAAAAAAAAAAAAAPj//wEAAAAAAAAAAAAAAADw//8BAAAAAAAAAAAAAAAA4P//AQAAAAAAAAAAAAAAAAD+PwAAAAAAAAAAAAAAAAAA/j8AAAAAAAAAAAAAAAAAwP9/AAAAAAAAAAAAAAAAAMD/fwAAAAAAAAAAAAAAAADA/38BAAAAAAAAAAAAAAAAwP//AQAAAAAAAAAAAAAAAOD//w8AAAAAAAAAAAAAAADw//8fAAAAAAAAAAAAAAAA8P//fwAAAAAAAAAAAAAAAPj//38AAAAAAAAAAAAAAAD+//8/AAAAAAAAAAAAAAAA/v//HwAAAAAAAAAAAAAAAP7//x8AAAAAAAAAGAAAAAD///8fAAAAAAAA4BwAAADA////DwAAAAAAAPA/AAAA4P///38AAAAAAAD+PwAAAOD/////AAAAAAAA/18AAADw/////wMAAAAAgP//AQBg/P////8HAABwAMD//wEA8P//////fwAAcAD8//8AAPj///////8/AHAA8P//AAD8////////fwBwAPD/DwAA/P////////8A4CDw/wcAAPj/////////B+D///8BAADg//////////+/////AAAA8P//////////H/r//wAAAOD//////////w/4//8AAACA//////////8/+P//AAAAgP//////////f/j/PwAAAID//////////z8A4H8AAAAA//////////8fAMB/AAAAAP//////////DwDgPwAAACD//////////z8A8B8AAID///////////9/APwfAADg////////////fwD+AQAAwP///////////z8A7gMAAMD///////////9/AOYDAACA/////////////wDkAQAAAO7///////////8AwAEAAADg////////////AMAAAAAA/f///////////wDAAQAAAP/f//////////8AwAAAAAD+z/////////+vAAAAAAAA/J//////////AwAAAAAAAPif/////////wAAAAAAAADwj////////38AAAAAAAAAwIP/////////AAAAAAAAAAAA/////////wAAAAAAAAAAgP///////38AAAAAAAAAAID///////8/AAAAAAAAAACA////////HwAAAAAAAAAAgP///////wMAAAAAAAAAAID///////8AAAAAAAAAAACA//////9/AAAAAAAAAAAAAP//////PwAAAAAAAAAAAAD//////z8AAAAAAAAAAAAA//////8fAAAAAAAAAAAAAP//////BwAAAAAAAAAAAAD//////wMAAAAAAAAAAAAA/v////8BAAAAAAAAAAAAAP7///9/AAAAAAAAAAAAAAD+////PwAAAAAAAAAAAAAA/v///x8AAAAAAAAAAAAAAP7///8fAAAAAAAAAAAAAAD+////BwAAAAAAAAAAAAAA/P///wEAAAAAAAAAAAAAAPz//78AAAAAAAAAAAAAAAD4//8fAAAAAAAAAAAAAAAA+P//HwAAAAAAAAAAAAAAAPD//w8AAAAAAAAAAAAAAADw//8PAAAAAAAAAAAAAAAA4P//HwAAAAAAAAAAAAAAAMD//x8AAAAAAAAAAAAAAADA//8fAAAAAAAAAAAAAAAAwP//HwAAAAAAAAAAAAAAAID//w8AAAAAAAAAAAAAAACA//8fAAAAAACAAAAAAAAAgP//HwAAAAAAgAAAAAAAAID//x8AAAAAAIAAAAAAAAAA//8fAAAAAACAAAAAAAAAAP//DwAAAAAAAAAAAAAAAAD+/w8AAAAAAAAAAAAAAAAA/P8HAAAAAABAAAAAAAAAAPz/BwAAAAAAQAAAAAAAAAD4/wcAAAAAAEAAAAAAAAAA+P8HAAAAAAAAAAAAAAAAAPD/BwAAAAAAAAAAAAAAAADw/wcAAAAAAAAAAAAAAAAA8P8HAAAAAAAAAAAAAAAAAOD/AQAAAAAAAAAAAAAAAADg/wEAAAAAAAAAAAAAAAAAwP8AAAAAAAAAAAAAAAAAAOD/AAAAAAAAAAAAAAAAAADAPwAAAAAAAAAAAAAAAAAAwB8AAAAAAAAAAAAAAAAAAIAfAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
@@ -186,7 +175,7 @@ function arc(a: [number, number], b: [number, number], lift: number, n = 96): V3
   });
 }
 
-export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, onPills }: Opts) {
+export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive }: Opts) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return { setLive: () => {}, recenter: () => {}, destroy: () => {} };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -224,49 +213,40 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     dots.push([v[0], v[1], v[2], 0.75 + ((k * 7919) % 100) / 100, 0, lat]);
   }
 
-  // Ultra-dense high-definition India lattice (centered, vibrant, enlarged)
-  // Scale factor 1.25 around Central India makes India 25% bigger on the globe!
-  const CTR_LAT = 22.0, CTR_LON = 78.5, SCALE_INDIA = 1.25;
-  const scaleIn = (lat: number, lon: number): [number, number] => [
-    CTR_LAT + (lat - CTR_LAT) * SCALE_INDIA,
-    CTR_LON + (lon - CTR_LON) * SCALE_INDIA,
-  ];
-
-  for (let row = 0, lat = 6.8; lat < 37.6; row++, lat += 0.18) {
-    const step = 0.18 / Math.cos(lat * D);
-    for (let lon = 67 + ((row % 2) * step) / 2; lon < 98; lon += step) {
+  // Systematic high-definition India dot matrix (geographically true, uniform hexagonal lattice)
+  const LAT_STEP = 0.22;
+  for (let row = 0, lat = 6.8; lat < 37.6; row++, lat += LAT_STEP) {
+    const cosLat = Math.cos(lat * D);
+    const lonStep = LAT_STEP / Math.max(0.1, cosLat);
+    const lonStart = 67.0 + ((row % 2) * lonStep) / 2;
+    for (let lon = lonStart; lon < 98.0; lon += lonStep) {
       if (!inIndia(lat, lon)) continue;
-      const [sLat, sLon] = scaleIn(lat, lon);
-      const v = vec(sLat, sLon);
+      const v = vec(lat, lon);
       dots.push([
         v[0],
         v[1],
         v[2],
-        0.90 + (((row * 31 + lon * 97) | 0) % 100) / 100,
-        0.65 + 0.35 * indiaWeight(lat, lon),
-        sLat,
+        0.92 + (((row * 31 + lon * 97) | 0) % 100) / 100,
+        0.70 + 0.30 * indiaWeight(lat, lon),
+        lat,
       ]);
     }
   }
 
-  const [coreLat, coreLon] = scaleIn(CORE.at[0], CORE.at[1]);
-  const coreV = vec(coreLat, coreLon);
+  const coreV = vec(...CORE.at);
 
   // Routes: Domestic hubs to Delhi NCR + origin links + international corridors
   const routes: Route[] = NODES.map((node) => {
-    const isDomestic = node.at[0] > 6 && node.at[0] < 36 && node.at[1] > 66 && node.at[1] < 96;
-    const at = isDomestic ? scaleIn(node.at[0], node.at[1]) : node.at;
+    const at = node.at;
     const v = vec(...at);
     const ang = Math.acos(Math.min(1, v[0] * coreV[0] + v[1] * coreV[1] + v[2] * coreV[2]));
-    // Higher lift for international long-range arcs, graceful lift for domestic
-    const isIntl = !isDomestic;
-    const lift = isIntl ? 0.08 + ang * 0.45 : 0.03 + ang * 0.42;
-    // Deliberate, slow, majestic energy duration (8 - 18s per pulse)
+    const isIntl = node.at[0] <= 6 || node.at[0] >= 36 || node.at[1] <= 66 || node.at[1] >= 96;
+    const lift = isIntl ? 0.08 + ang * 0.45 : 0.03 + ang * 0.40;
     const dur = 8.5 + ang * 18.0;
     return {
       node,
       v,
-      pts: arc(at, [coreLat, coreLon], lift, 120),
+      pts: arc(at, CORE.at, lift, 120),
       dur,
       start: -1,
       next: -1,
@@ -540,10 +520,10 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     const cy = H - 1; // Horizon baseline anchored at the bottom edge
 
     // Radius: expansive half-dome filling vertical height
-    base = wide ? Math.min(W * 0.46, H - 32) : Math.min(W * 0.52, H - 24);
+    base = wide ? Math.min(W * 0.46, H - 24) : Math.min(W * 0.52, H - 20);
     const Ry = base * view.z;
-    // Horizontal stretch factor: stretches the globe widely across the screen
-    const stretchX = wide ? 1.62 : 1.42;
+    // Natural horizontal dome stretch: elegant half dome while maintaining authentic, systematic India proportions
+    const stretchX = wide ? 1.18 : 1.12;
     const Rx = Ry * stretchX;
     const rot = rotator(view.lon, view.lat);
 
@@ -611,7 +591,7 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       ctx.restore();
     }
 
-    // Point cloud rendering (chromatic iridescent dots with horizontal stretch & enlarged India)
+    // Point cloud rendering (chromatic iridescent dots with systematic India lattice)
     const LR = 130, lk = mouse.k, mx = mouse.x, my = mouse.y, zs = Math.min(1.6, view.z);
     for (const p of dots) {
       rot(p[0], p[1], p[2], P);
@@ -622,8 +602,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       const rim = Math.pow(1 - P[2], 0.8);
       const ind = p[4];
       const lat = p[5];
-      // India dots are larger, bolder, and more tangible
-      let s = (ind > 0 ? (1.5 + 1.8 * ind + 0.3 * (p[3] - 0.75)) : (1.0 + 0.25 * (p[3] - 0.75))) * zs;
+      // Systematic India dots: crisp, uniform matrix
+      let s = (ind > 0 ? 2.3 : 1.1) * zs;
       let boost = 0;
 
       if (lk > 0.01) {
@@ -802,7 +782,7 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       ctx.font = '700 11px ui-monospace, "SF Mono", Menlo, monospace';
       if ('letterSpacing' in ctx) ctx.letterSpacing = '0.14em';
       ctx.fillStyle = THEME.label;
-      ctx.fillText('DELHI NCR', hx + 12, hy + 4);
+      ctx.fillText('DELHI NCR', hx + 10, hy - 8);
       if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
       ctx.globalAlpha = 1;
     }
@@ -837,35 +817,6 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     ctx.lineTo(cx + Rx * 1.2, cy + 4);
     ctx.stroke();
     ctx.restore();
-
-    // Pass projected floating trade pills (Image 2 style)
-    if (onPills) {
-      const pillRoutes = [
-        { id: 'p1', nodeName: 'Chikmagalur', icon: '☕️', tag: 'Arabica PO', title: '₹28,400 Lot #14', route: 'Chikmagalur → Delhi' },
-        { id: 'p2', nodeName: 'Mumbai', icon: '⚡️', tag: 'Live Pickups', title: '412 Pickups Synced', route: 'Mumbai Roastery' },
-        { id: 'p3', nodeName: 'Coorg', icon: '📦', tag: 'Green Coffee', title: '1,200 kg Micro-lot', route: 'Coorg → Bengaluru' },
-        { id: 'p4', nodeName: 'Hyderabad', icon: '✨', tag: 'T+7 Settled', title: '₹4.2L Invoice Cleared', route: 'Hyderabad Outlet' },
-      ];
-
-      const pillData: TradePillData[] = pillRoutes.map((p) => {
-        const r = routes.find((x) => x.node.name === p.nodeName);
-        if (!r) return { ...p, sx: 0, sy: 0, vis: false };
-        // Project midpoint of the arc for floating effect
-        const midIdx = Math.round(r.pts.length * 0.45);
-        const midPt = r.pts[midIdx];
-        rot(midPt[0], midPt[1], midPt[2], P);
-        const px = cx + P[0] * Rx;
-        const py = cy - P[1] * Ry;
-        const vis = P[2] > 0.15 && intro > 0.6 && py <= cy - 36 && py >= 24 && px >= 24 && px <= W - 200;
-        return {
-          ...p,
-          sx: px,
-          sy: py,
-          vis,
-        };
-      });
-      onPills(pillData);
-    }
 
     // Hover inspection card placement
     if (shown) {

@@ -10,7 +10,6 @@ import {
   CORE,
   SIDE_COLOR,
   type GlobeNode,
-  type TradePillData,
 } from './india-globe';
 
 const SIDE = {
@@ -25,12 +24,10 @@ export function IndiaGlobe() {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const pillsWrapRef = useRef<HTMLDivElement>(null);
   const api = useRef<ReturnType<typeof createIndiaGlobe> | null>(null);
 
   const [node, setNode] = useState<GlobeNode | null>(null);
   const [live, setLive] = useState(false);
-  const [pills, setPills] = useState<TradePillData[]>([]);
 
   useEffect(() => {
     const root = rootRef.current,
@@ -50,9 +47,6 @@ export function IndiaGlobe() {
           mask: new Uint8Array(buf),
           onFocus: setNode,
           onLive: setLive,
-          onPills: (pList) => {
-            if (alive) setPills(pList);
-          },
         });
       })
       .catch(() => {});
@@ -119,31 +113,6 @@ export function IndiaGlobe() {
         aria-label="Interactive 3D half-globe of the Gradient network across India. Drag to inspect or click to zoom."
       >
         <canvas className="ig-canvas" ref={canvasRef} aria-hidden="true" />
-
-          {/* Floating live trade pills along energy arcs (Image 2 style) */}
-          <div className="ig-pills-overlay" ref={pillsWrapRef} aria-hidden="true">
-            {pills.map(
-              (p) =>
-                p.vis && (
-                  <div
-                    key={p.id}
-                    className="ig-trade-pill"
-                    style={{
-                      transform: `translate3d(${p.sx}px, ${p.sy}px, 0)`,
-                    }}
-                  >
-                    <span className="ig-trade-icon">{p.icon}</span>
-                    <div className="ig-trade-info">
-                      <div className="ig-trade-top">
-                        <span className="ig-trade-tag">{p.tag}</span>
-                        <span className="ig-trade-title">{p.title}</span>
-                      </div>
-                      <span className="ig-trade-route">{p.route}</span>
-                    </div>
-                  </div>
-                ),
-            )}
-          </div>
 
           {/* Interactive controls */}
           <div className="ig-ctl" data-globe-ui>
