@@ -224,38 +224,49 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     dots.push([v[0], v[1], v[2], 0.75 + ((k * 7919) % 100) / 100, 0, lat]);
   }
 
-  // Ultra-dense high-definition India lattice (centered, vibrant and crisp)
-  for (let row = 0, lat = 6.8; lat < 37.6; row++, lat += 0.22) {
-    const step = 0.22 / Math.cos(lat * D);
+  // Ultra-dense high-definition India lattice (centered, vibrant, enlarged)
+  // Scale factor 1.25 around Central India makes India 25% bigger on the globe!
+  const CTR_LAT = 22.0, CTR_LON = 78.5, SCALE_INDIA = 1.25;
+  const scaleIn = (lat: number, lon: number): [number, number] => [
+    CTR_LAT + (lat - CTR_LAT) * SCALE_INDIA,
+    CTR_LON + (lon - CTR_LON) * SCALE_INDIA,
+  ];
+
+  for (let row = 0, lat = 6.8; lat < 37.6; row++, lat += 0.18) {
+    const step = 0.18 / Math.cos(lat * D);
     for (let lon = 67 + ((row % 2) * step) / 2; lon < 98; lon += step) {
       if (!inIndia(lat, lon)) continue;
-      const v = vec(lat, lon);
+      const [sLat, sLon] = scaleIn(lat, lon);
+      const v = vec(sLat, sLon);
       dots.push([
         v[0],
         v[1],
         v[2],
-        0.85 + (((row * 31 + lon * 97) | 0) % 100) / 100,
-        0.45 + 0.55 * indiaWeight(lat, lon),
-        lat,
+        0.90 + (((row * 31 + lon * 97) | 0) % 100) / 100,
+        0.65 + 0.35 * indiaWeight(lat, lon),
+        sLat,
       ]);
     }
   }
 
-  const coreV = vec(...CORE.at);
+  const [coreLat, coreLon] = scaleIn(CORE.at[0], CORE.at[1]);
+  const coreV = vec(coreLat, coreLon);
 
   // Routes: Domestic hubs to Delhi NCR + origin links + international corridors
   const routes: Route[] = NODES.map((node) => {
-    const v = vec(...node.at);
+    const isDomestic = node.at[0] > 6 && node.at[0] < 36 && node.at[1] > 66 && node.at[1] < 96;
+    const at = isDomestic ? scaleIn(node.at[0], node.at[1]) : node.at;
+    const v = vec(...at);
     const ang = Math.acos(Math.min(1, v[0] * coreV[0] + v[1] * coreV[1] + v[2] * coreV[2]));
     // Higher lift for international long-range arcs, graceful lift for domestic
-    const isIntl = node.at[1] < 60 || node.at[1] > 100 || node.at[0] < 5;
+    const isIntl = !isDomestic;
     const lift = isIntl ? 0.08 + ang * 0.45 : 0.03 + ang * 0.42;
     // Deliberate, slow, majestic energy duration (8 - 18s per pulse)
     const dur = 8.5 + ang * 18.0;
     return {
       node,
       v,
-      pts: arc(node.at, CORE.at, lift, 120),
+      pts: arc(at, [coreLat, coreLon], lift, 120),
       dur,
       start: -1,
       next: -1,
@@ -527,9 +538,13 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     // Centered half globe composition: sphere center at the bottom horizon baseline
     const cx = W * 0.5;
     const cy = H - 1; // Horizon baseline anchored at the bottom edge
-    // Radius: wide celestial dome spanning across the page
-    base = wide ? Math.min(W * 0.50, H - 36) : Math.min(W * 0.56, H - 28);
-    const R = base * view.z;
+
+    // Radius: expansive half-dome filling vertical height
+    base = wide ? Math.min(W * 0.46, H - 32) : Math.min(W * 0.52, H - 24);
+    const Ry = base * view.z;
+    // Horizontal stretch factor: stretches the globe widely across the screen
+    const stretchX = wide ? 1.62 : 1.42;
+    const Rx = Ry * stretchX;
     const rot = rotator(view.lon, view.lat);
 
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -541,67 +556,74 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     ctx.rect(-20, -20, W + 40, cy + 1);
     ctx.clip();
 
-    // Soft celestial sphere volume & atmosphere (half dome)
-    const sphereGlow = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R * 1.04);
+    // Soft celestial sphere volume & atmosphere (horizontally stretched half dome)
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, Rx * 1.03, Ry * 1.03, 0, Math.PI, Math.PI * 2, false);
+    const sphereGlow = ctx.createRadialGradient(cx, cy, Ry * 0.2, cx, cy, Ry * 1.04);
     sphereGlow.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
     sphereGlow.addColorStop(0.65, 'rgba(246, 248, 255, 0.82)');
     sphereGlow.addColorStop(0.9, 'rgba(238, 242, 255, 0.35)');
     sphereGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
     ctx.fillStyle = sphereGlow;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R * 1.04, Math.PI, Math.PI * 2, false);
     ctx.fill();
+    ctx.restore();
 
-    // Gradient brand spectrum upper celestial horizon arc
+    // Gradient brand spectrum upper celestial horizon arc (elliptical curve)
     const ringSpin = t * 0.04;
     const ringGrad = ctx.createConicGradient(ringSpin, cx, cy);
     [...RING, RING[0]].forEach((c, i) => ringGrad.addColorStop(i / 4, c));
 
     // Soft atmospheric halo over the dome
     ctx.save();
-    ctx.globalAlpha = THEME.ringA * 0.26 * fade;
+    ctx.globalAlpha = THEME.ringA * 0.28 * fade;
     ctx.strokeStyle = ringGrad;
-    ctx.lineWidth = 22;
-    ctx.filter = 'blur(14px)';
+    ctx.lineWidth = 24;
+    ctx.filter = 'blur(16px)';
     ctx.beginPath();
-    ctx.arc(cx, cy, R * 1.004, Math.PI, Math.PI * 2, false);
+    ctx.ellipse(cx, cy, Rx * 1.004, Ry * 1.004, 0, Math.PI, Math.PI * 2, false);
     ctx.stroke();
     ctx.restore();
 
     // Razor-sharp celestial horizon hairline
     ctx.save();
-    ctx.globalAlpha = THEME.ringA * 0.72 * fade;
+    ctx.globalAlpha = THEME.ringA * 0.74 * fade;
     ctx.strokeStyle = ringGrad;
-    ctx.lineWidth = 1.3;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
-    ctx.arc(cx, cy, R, Math.PI, Math.PI * 2, false);
+    ctx.ellipse(cx, cy, Rx, Ry, 0, Math.PI, Math.PI * 2, false);
     ctx.stroke();
     ctx.restore();
 
     // Radiant soft light bloom over India
     rot(INDIA_CENTER[0], INDIA_CENTER[1], INDIA_CENTER[2], P);
     if (P[2] > 0) {
-      const gx = cx + P[0] * R, gy = cy - P[1] * R, gr = R * 0.44;
-      const indiaGlow = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-      indiaGlow.addColorStop(0, 'rgba(244, 63, 94, 0.18)');
+      const gx = cx + P[0] * Rx, gy = cy - P[1] * Ry, grX = Rx * 0.42, grY = Ry * 0.42;
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(gx, gy, grX, grY, 0, 0, Math.PI * 2);
+      const indiaGlow = ctx.createRadialGradient(gx, gy, 0, gx, gy, grY);
+      indiaGlow.addColorStop(0, 'rgba(244, 63, 94, 0.20)');
       indiaGlow.addColorStop(0.5, 'rgba(124, 58, 237, 0.12)');
       indiaGlow.addColorStop(1, 'rgba(99, 102, 241, 0)');
       ctx.fillStyle = indiaGlow;
-      ctx.fillRect(gx - gr, gy - gr, gr * 2, gr * 2);
+      ctx.fill();
+      ctx.restore();
     }
 
-    // Point cloud rendering (chromatic iridescent dots inspired by Image 2)
+    // Point cloud rendering (chromatic iridescent dots with horizontal stretch & enlarged India)
     const LR = 130, lk = mouse.k, mx = mouse.x, my = mouse.y, zs = Math.min(1.6, view.z);
     for (const p of dots) {
       rot(p[0], p[1], p[2], P);
       if (P[2] <= 0) continue;
-      let sx = cx + P[0] * R, sy = cy - P[1] * R;
+      let sx = cx + P[0] * Rx, sy = cy - P[1] * Ry;
       if (sy < -8 || sy > cy + 2 || sx < -8 || sx > W + 8) continue;
 
       const rim = Math.pow(1 - P[2], 0.8);
       const ind = p[4];
       const lat = p[5];
-      let s = (1.1 + 0.95 * ind + 0.3 * (p[3] - 0.75)) * zs;
+      // India dots are larger, bolder, and more tangible
+      let s = (ind > 0 ? (1.5 + 1.8 * ind + 0.3 * (p[3] - 0.75)) : (1.0 + 0.25 * (p[3] - 0.75))) * zs;
       let boost = 0;
 
       if (lk > 0.01) {
@@ -647,13 +669,13 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       const side = r.node.side as Side;
       const color = THEME.side[side] || THEME.side.cafe;
       rot(r.v[0], r.v[1], r.v[2], P);
-      r.sx = cx + P[0] * R;
-      r.sy = cy - P[1] * R;
+      r.sx = cx + P[0] * Rx;
+      r.sy = cy - P[1] * Ry;
       r.vis = P[2] > 0.05 && intro > 0.4;
 
       const Q = r.pts.map((q) => {
         rot(q[0], q[1], q[2], P);
-        return [cx + P[0] * R, cy - P[1] * R, visible(P) ? 1 : 0];
+        return [cx + P[0] * Rx, cy - P[1] * Ry, visible(P) ? 1 : 0];
       });
       const m = Q.length - 1;
       const on = !f || f === r.node || f === CORE;
@@ -713,13 +735,14 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
         path(0, m);
       }
 
-      // Ethereal slow luminous comet / energy pulse
+      // Ethereal slow luminous comet / energy pulse - ENDS ONLY WITH NORMAL LINE, NO DOTS
       if (p >= 0 && running) {
         const head = e * m;
-        const L = m * 0.28;
+        const L = m * 0.32;
         const from = Math.max(0, head - L);
 
         ctx.strokeStyle = color;
+        ctx.lineCap = 'round';
         for (let k = Math.floor(from); k < head; k++) {
           const a = Q[k], b = Q[Math.min(m, k + 1)];
           if (!a[2] || !b[2]) continue;
@@ -731,51 +754,17 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
           ctx.lineTo(b[0], b[1]);
           ctx.stroke();
         }
-
-        const hq = Q[Math.min(m, Math.round(head))];
-        if (hq[2]) {
-          ctx.globalAlpha = dim;
-          ctx.drawImage(glow(color), hq[0] - 12, hq[1] - 12, 24, 24);
-          ctx.fillStyle = THEME.head;
-          ctx.beginPath();
-          ctx.arc(hq[0], hq[1], 1.8, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        // NOTE: No dot at the front of the energy line. Pure flowing line only.
       }
 
-      // Node hub beacon (halo + crisp circular dot)
+      // City labels when focused or zoomed (normal clean lines, NO endpoint dots)
       if (r.vis) {
-        const lk2 = Math.min(1, (t - r.launch) / 1.3);
-        if (lk2 < 1) {
-          ctx.globalAlpha = dim * (1 - lk2) ** 2 * 0.75;
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 0.9;
-          ctx.beginPath();
-          ctx.arc(r.sx, r.sy, 4 + lk2 * 18, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        ctx.globalAlpha = dim * (focused ? 0.95 : 0.45);
-        ctx.drawImage(glow(color), r.sx - 10, r.sy - 10, 20, 20);
-
-        ctx.globalAlpha = on ? 1 : 0.4;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 0.9;
-        ctx.beginPath();
-        ctx.arc(r.sx, r.sy, focused ? 7.2 + Math.sin(t * 3) : 5.0, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(r.sx, r.sy, focused ? 3.0 : 2.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // City labels when focused or zoomed
         if (focused || live || view.z > 1.25) {
           ctx.font = `600 ${focused ? 11.5 : 10}px ui-monospace, "SF Mono", Menlo, monospace`;
           if ('letterSpacing' in ctx) ctx.letterSpacing = '0.08em';
           ctx.globalAlpha = focused ? 1 : 0.75;
           ctx.fillStyle = THEME.label;
-          ctx.fillText(r.node.name.toUpperCase(), r.sx + 10, r.sy - 8);
+          ctx.fillText(r.node.name.toUpperCase(), r.sx + 8, r.sy - 6);
           if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
         }
       }
@@ -784,8 +773,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
 
     // The Central Beacon: Delhi NCR Core
     rot(coreV[0], coreV[1], coreV[2], P);
-    coreHit.sx = cx + P[0] * R;
-    coreHit.sy = cy - P[1] * R;
+    coreHit.sx = cx + P[0] * Rx;
+    coreHit.sy = cy - P[1] * Ry;
     coreHit.vis = P[2] > 0.05 && intro > 0.4;
 
     if (P[2] > 0.05) {
@@ -809,41 +798,11 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
         ctx.stroke();
       }
 
-      // Beacon rings
-      ctx.globalAlpha = fade * 0.35;
-      ctx.strokeStyle = 'rgba(79, 70, 229, 0.4)';
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.arc(hx, hy, 18, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.globalAlpha = fade;
-      ctx.fillStyle = THEME.hubFill;
-      ctx.beginPath();
-      ctx.arc(hx, hy, 12, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Slow spinning Gradient logo ring
-      const spinA = reduce ? 0 : t * 0.6;
-      const logo = ctx.createConicGradient(spinA, hx, hy);
-      [...RING, RING[0]].forEach((c, idx) => logo.addColorStop(idx / 4, c));
-      ctx.strokeStyle = logo;
-      ctx.lineWidth = 2.4;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(hx, hy, 7.5, spinA, spinA + 4.8);
-      ctx.stroke();
-
-      ctx.fillStyle = THEME.core;
-      ctx.beginPath();
-      ctx.arc(hx, hy, 2.5 + beat * 0.8, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Label
+      // Clean label for core destination (NO DOT)
       ctx.font = '700 11px ui-monospace, "SF Mono", Menlo, monospace';
       if ('letterSpacing' in ctx) ctx.letterSpacing = '0.14em';
       ctx.fillStyle = THEME.label;
-      ctx.fillText('DELHI NCR', hx + 24, hy + 4);
+      ctx.fillText('DELHI NCR', hx + 12, hy + 4);
       if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
       ctx.globalAlpha = 1;
     }
@@ -851,8 +810,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     // Restore upper hemisphere clipping context before drawing baseline
     ctx.restore();
 
-    // Horizon Baseline (anchors the celestial half globe and transitions into footer)
-    const horizGrad = ctx.createLinearGradient(cx - R * 1.15, cy, cx + R * 1.15, cy);
+    // Horizon Baseline (spans horizontally stretched base and transitions into footer)
+    const horizGrad = ctx.createLinearGradient(cx - Rx * 1.15, cy, cx + Rx * 1.15, cy);
     horizGrad.addColorStop(0, 'rgba(226, 232, 240, 0)');
     horizGrad.addColorStop(0.12, 'rgba(226, 232, 240, 0.7)');
     horizGrad.addColorStop(0.35, 'rgba(99, 102, 241, 0.45)');
@@ -864,8 +823,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     ctx.strokeStyle = horizGrad;
     ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.moveTo(cx - R * 1.15, cy);
-    ctx.lineTo(cx + R * 1.15, cy);
+    ctx.moveTo(cx - Rx * 1.15, cy);
+    ctx.lineTo(cx + Rx * 1.15, cy);
     ctx.stroke();
 
     // Delicate dashed latitude ticks as in the user's sketch
@@ -874,8 +833,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(cx - R * 1.2, cy + 4);
-    ctx.lineTo(cx + R * 1.2, cy + 4);
+    ctx.moveTo(cx - Rx * 1.2, cy + 4);
+    ctx.lineTo(cx + Rx * 1.2, cy + 4);
     ctx.stroke();
     ctx.restore();
 
@@ -895,8 +854,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
         const midIdx = Math.round(r.pts.length * 0.45);
         const midPt = r.pts[midIdx];
         rot(midPt[0], midPt[1], midPt[2], P);
-        const px = cx + P[0] * R;
-        const py = cy - P[1] * R;
+        const px = cx + P[0] * Rx;
+        const py = cy - P[1] * Ry;
         const vis = P[2] > 0.15 && intro > 0.6 && py <= cy - 36 && py >= 24 && px >= 24 && px <= W - 200;
         return {
           ...p,

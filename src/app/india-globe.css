@@ -139,7 +139,7 @@ section.l-sec.ig {
   isolation: isolate;
   overflow: hidden;
   width: 100%;
-  height: clamp(520px, 60vh, 740px);
+  height: clamp(560px, 66vh, 800px);
   border-radius: 0;
   background: #FFFFFF;
   border: none;
