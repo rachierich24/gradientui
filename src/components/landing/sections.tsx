@@ -27,7 +27,7 @@ function Avatar({ initials, bg, size = 24 }: { initials: string; bg: string; siz
 }
 
 export function LNav() {
-  const [open, setOpen] = useState<'product' | 'resources' | null>(null);
+  const [open, setOpen] = useState<'features' | 'how' | 'pricing' | 'docs' | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -43,7 +43,7 @@ export function LNav() {
   // Mega-menu open/close intent
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cancelClose = () => { if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; } };
-  const openMenu = (m: 'product' | 'resources') => { cancelClose(); setOpen(m); };
+  const openMenu = (m: 'features' | 'how' | 'pricing' | 'docs') => { cancelClose(); setOpen(m); };
   const scheduleClose = () => { cancelClose(); closeTimer.current = setTimeout(() => setOpen(null), 140); };
   useEffect(() => cancelClose, []);
 
@@ -61,15 +61,6 @@ export function LNav() {
       }
     }
   };
-
-  const resourceLinks = [
-    { t: 'Features', d: 'Source, inventory, and automated workflows', href: '/features' },
-    { t: 'Pricing', d: 'Flexible plans for teams of all sizes', href: '/pricing' },
-    { t: 'Team & About', d: 'Meet the people building Gradient', href: '/team' },
-    { t: 'FAQ & Docs', d: 'Everything you need to know to get started', href: '/faq' },
-    { t: 'For cafés', d: 'Source from every supplier in one cart', href: '#for-cafes' },
-    { t: 'For suppliers', d: 'Orders, stock, dispatch in one place', href: '#for-suppliers' },
-  ];
 
   return (
     <header
@@ -89,74 +80,100 @@ export function LNav() {
         {/* Center: Floating Pill Capsule */}
         <div className="nav-center">
           <nav className="nav-pill" aria-label="Main Navigation">
-            <a className="nav-pill-item" href="/features">
+            <a 
+              className={`nav-pill-item ${open === 'features' ? 'is-open' : ''}`} 
+              href="/features"
+              onMouseEnter={() => openMenu('features')}
+              onFocus={() => openMenu('features')}
+            >
               Features
             </a>
             <a
-              className="nav-pill-item"
+              className={`nav-pill-item ${open === 'how' ? 'is-open' : ''}`} 
               href="#ecosystem"
               onClick={(e) => handleNav(e, '#ecosystem')}
+              onMouseEnter={() => openMenu('how')}
+              onFocus={() => openMenu('how')}
             >
               How It Works
             </a>
-            <a className="nav-pill-item" href="/pricing">
+            <a 
+              className={`nav-pill-item ${open === 'pricing' ? 'is-open' : ''}`} 
+              href="/pricing"
+              onMouseEnter={() => openMenu('pricing')}
+              onFocus={() => openMenu('pricing')}
+            >
               Pricing
             </a>
-            <div
-              className="nav-pill-drop"
-              onMouseEnter={() => openMenu('resources')}
-              onFocus={() => openMenu('resources')}
+            <button
+              type="button"
+              className={`nav-pill-item nav-pill-btn ${open === 'docs' ? 'is-open' : ''}`}
+              onClick={() => setOpen(open === 'docs' ? null : 'docs')}
+              onMouseEnter={() => openMenu('docs')}
+              onFocus={() => openMenu('docs')}
+              aria-expanded={open === 'docs'}
             >
-              <button
-                type="button"
-                className={`nav-pill-item nav-pill-btn ${open === 'resources' ? 'is-open' : ''}`}
-                onClick={() => setOpen(open === 'resources' ? null : 'resources')}
-                aria-expanded={open === 'resources'}
-              >
-                Docs <Icon.ChevronDown size={11} className="chev" />
-              </button>
-            </div>
+              Docs <Icon.ChevronDown size={11} className="chev" />
+            </button>
           </nav>
 
-          {/* Mega Menu Dropdown */}
+          {/* Apple-style Mega Menu Dropdown */}
           {open && (
             <div
-              className="nav-mega"
+              className="nav-mega-apple"
               onMouseEnter={cancelClose}
               onMouseLeave={scheduleClose}
             >
-              <div className="nav-mega-grid">
-                {resourceLinks.map((item) => {
-                  const ext = item.href.startsWith('http');
-                  const isContactSales = item.href === '#contact-sales';
-                  return (
-                    <a
-                      href={item.href}
-                      className="nav-mega-item"
-                      key={item.t}
-                      onClick={(e) => {
-                        if (isContactSales) {
-                          e.preventDefault();
-                          setOpen(null);
-                          openContactSalesModal();
-                          return;
-                        }
-                        handleNav(e, item.href);
-                      }}
-                      {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                    >
-                      <span className="nav-mega-ic"><Icon.Arrow size={12}/></span>
-                      <span>
-                        <strong>{item.t}</strong>
-                        <small>{item.d}</small>
-                      </span>
-                    </a>
-                  );
-                })}
-              </div>
-              <div className="nav-mega-proof">
-                <span>Live network</span>
-                <strong>1,240 cafes, 340 suppliers, 47 brand trials</strong>
+              <div className="nav-mega-apple-inner">
+                <div className="nma-col nma-main">
+                  <span className="nma-label">{
+                    open === 'features' ? 'Explore Features' : 
+                    open === 'how' ? 'The Ecosystem' : 
+                    open === 'pricing' ? 'Gradient Plans' : 'Resources'
+                  }</span>
+                  {open === 'features' && (
+                    <>
+                      <a href="/features" className="nma-link-l">Source</a>
+                      <a href="/features" className="nma-link-l">Inventory</a>
+                      <a href="/features" className="nma-link-l">Automated Workflows</a>
+                      <a href="/features" className="nma-link-l">Insights</a>
+                    </>
+                  )}
+                  {open === 'how' && (
+                    <>
+                      <a href="#for-cafes" className="nma-link-l" onClick={(e) => handleNav(e, '#for-cafes')}>For Cafés</a>
+                      <a href="#for-suppliers" className="nma-link-l" onClick={(e) => handleNav(e, '#for-suppliers')}>For Suppliers</a>
+                      <a href="#network" className="nma-link-l">Network Operations</a>
+                    </>
+                  )}
+                  {open === 'pricing' && (
+                    <>
+                      <a href="/pricing" className="nma-link-l">Starter</a>
+                      <a href="/pricing" className="nma-link-l">Professional</a>
+                      <a href="/pricing" className="nma-link-l">Enterprise</a>
+                    </>
+                  )}
+                  {open === 'docs' && (
+                    <>
+                      <a href="/docs" className="nma-link-l">Documentation</a>
+                      <a href="/api" className="nma-link-l">API Reference</a>
+                      <a href="/help" className="nma-link-l">Help Center</a>
+                    </>
+                  )}
+                </div>
+                
+                <div className="nma-col nma-sub">
+                  <span className="nma-label">Quick Links</span>
+                  <a href="/partners" className="nma-link-s">Find a Partner</a>
+                  <a href="/status" className="nma-link-s">Order Status</a>
+                  <a href="/buy" className="nma-link-s">Ways to Buy</a>
+                </div>
+
+                <div className="nma-col nma-sub">
+                  <span className="nma-label">Special Stores</span>
+                  <a href="/enterprise" className="nma-link-s">Enterprise</a>
+                  <a href="/startups" className="nma-link-s">Startups</a>
+                </div>
               </div>
             </div>
           )}
