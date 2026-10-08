@@ -23,7 +23,6 @@ const SIDE = {
 export function IndiaGlobe() {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
   const api = useRef<ReturnType<typeof createIndiaGlobe> | null>(null);
 
   const [node, setNode] = useState<GlobeNode | null>(null);
@@ -31,9 +30,8 @@ export function IndiaGlobe() {
 
   useEffect(() => {
     const root = rootRef.current,
-      canvas = canvasRef.current,
-      card = cardRef.current;
-    if (!root || !canvas || !card) return;
+      canvas = canvasRef.current;
+    if (!root || !canvas) return;
     let alive = true;
 
     fetch('/g365/land-720x360.bin')
@@ -43,7 +41,6 @@ export function IndiaGlobe() {
         api.current = createIndiaGlobe({
           root,
           canvas,
-          card,
           mask: new Uint8Array(buf),
           onFocus: setNode,
           onLive: setLive,
@@ -136,31 +133,6 @@ export function IndiaGlobe() {
             )}
           </div>
 
-          {/* Frosted glass city inspection card */}
-          <div
-            className="ig-card"
-            ref={cardRef}
-            role="status"
-            aria-live="polite"
-            style={{ '--c': color } as React.CSSProperties}
-          >
-            {node && side && (
-              <>
-                <span className="ig-card-tag">
-                  <i />
-                  {side.tag}
-                </span>
-                <strong>{node.name}</strong>
-                {node.metric && <span className="ig-card-metric">{node.metric}</span>}
-                <p>{node.subtitle || side.line}</p>
-                {node !== CORE && (
-                  <span className="ig-card-km">
-                    {kmBetween(node.at, CORE.at).toLocaleString('en-IN')} km to Delhi NCR
-                  </span>
-                )}
-              </>
-            )}
-          </div>
         </div>
       </section>
     );

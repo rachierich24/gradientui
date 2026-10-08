@@ -96,7 +96,6 @@ type Route = {
 type Opts = {
   root: HTMLElement;
   canvas: HTMLCanvasElement;
-  card: HTMLElement;
   mask: Uint8Array;
   onFocus: (n: GlobeNode | null) => void;
   onLive: (live: boolean) => void;
@@ -175,7 +174,7 @@ function arc(a: [number, number], b: [number, number], lift: number, n = 96): V3
   });
 }
 
-export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive }: Opts) {
+export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive }: Opts) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return { setLive: () => {}, recenter: () => {}, destroy: () => {} };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -474,14 +473,6 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive }: 
   root.addEventListener('pointercancel', onCancel);
   root.addEventListener('wheel', onWheel, { passive: false });
   root.addEventListener('keydown', onKey);
-
-  const placeCard = (sx: number, sy: number) => {
-    const cw = card.offsetWidth, ch = card.offsetHeight;
-    let x = sx + 22;
-    if (x + cw > W - 20) x = sx - cw - 22;
-    const y = Math.max(20, Math.min(H - ch - 20, sy - ch / 2));
-    card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-  };
 
   const P = [0, 0, 0];
   let last = performance.now();
@@ -818,18 +809,6 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive }: 
     ctx.stroke();
     ctx.restore();
 
-    // Hover inspection card placement
-    if (shown) {
-      const r = shown === CORE ? coreHit : routes.find((x) => x.node === shown);
-      if (r?.vis) {
-        card.dataset.show = '';
-        placeCard(r.sx, r.sy);
-      } else {
-        delete card.dataset.show;
-      }
-    } else {
-      delete card.dataset.show;
-    }
   };
 
   raf = requestAnimationFrame(frame);
