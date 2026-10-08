@@ -149,8 +149,8 @@ const THEME = {
 };
 
 const D = Math.PI / 180;
-// Centered over India: Latitude ~21.8°N (Central India near Nagpur), Longitude ~79.0°E
-const HOME = { lon: 79.0, lat: 21.8, z: 1.0 };
+// Half globe: central meridian 78.5°E, viewing tilt -16.0° elevates India to the top center crest of the half dome
+const HOME = { lon: 78.5, lat: -16.0, z: 1.0 };
 
 // Precomputed bitmask for India's high-definition borders
 const INDIA_MASK = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwP8AAAAAAAAAAAAAAAAAAOD/BwAAAAAAAAAAAAAAAAD4/x8AAAAAAAAAAAAAAAAA/P//AAAAAAAAAAAAAAAAAP7//wMAAAAAAAAAAAAAAAD4////AQAAAAAAAAAAAAAA8P///w8AAAAAAAAAAAAAAOD///8fAAAAAAAAAAAAAACA////HwAAAAAAAAAAAAAAAP///w8AAAAAAAAAAAAAAAD+//8PAAAAAAAAAAAAAAAA/P//DwAAAAAAAAAAAAAAAPz//wcAAAAAAAAAAAAAAAD8//8HAAAAAAAAAAAAAAAA/P//AwAAAAAAAAAAAAAAAPj//wEAAAAAAAAAAAAAAADw//8BAAAAAAAAAAAAAAAA4P//AQAAAAAAAAAAAAAAAAD+PwAAAAAAAAAAAAAAAAAA/j8AAAAAAAAAAAAAAAAAwP9/AAAAAAAAAAAAAAAAAMD/fwAAAAAAAAAAAAAAAADA/38BAAAAAAAAAAAAAAAAwP//AQAAAAAAAAAAAAAAAOD//w8AAAAAAAAAAAAAAADw//8fAAAAAAAAAAAAAAAA8P//fwAAAAAAAAAAAAAAAPj//38AAAAAAAAAAAAAAAD+//8/AAAAAAAAAAAAAAAA/v//HwAAAAAAAAAAAAAAAP7//x8AAAAAAAAAGAAAAAD///8fAAAAAAAA4BwAAADA////DwAAAAAAAPA/AAAA4P///38AAAAAAAD+PwAAAOD/////AAAAAAAA/18AAADw/////wMAAAAAgP//AQBg/P////8HAABwAMD//wEA8P//////fwAAcAD8//8AAPj///////8/AHAA8P//AAD8////////fwBwAPD/DwAA/P////////8A4CDw/wcAAPj/////////B+D///8BAADg//////////+/////AAAA8P//////////H/r//wAAAOD//////////w/4//8AAACA//////////8/+P//AAAAgP//////////f/j/PwAAAID//////////z8A4H8AAAAA//////////8fAMB/AAAAAP//////////DwDgPwAAACD//////////z8A8B8AAID///////////9/APwfAADg////////////fwD+AQAAwP///////////z8A7gMAAMD///////////9/AOYDAACA/////////////wDkAQAAAO7///////////8AwAEAAADg////////////AMAAAAAA/f///////////wDAAQAAAP/f//////////8AwAAAAAD+z/////////+vAAAAAAAA/J//////////AwAAAAAAAPif/////////wAAAAAAAADwj////////38AAAAAAAAAwIP/////////AAAAAAAAAAAA/////////wAAAAAAAAAAgP///////38AAAAAAAAAAID///////8/AAAAAAAAAACA////////HwAAAAAAAAAAgP///////wMAAAAAAAAAAID///////8AAAAAAAAAAACA//////9/AAAAAAAAAAAAAP//////PwAAAAAAAAAAAAD//////z8AAAAAAAAAAAAA//////8fAAAAAAAAAAAAAP//////BwAAAAAAAAAAAAD//////wMAAAAAAAAAAAAA/v////8BAAAAAAAAAAAAAP7///9/AAAAAAAAAAAAAAD+////PwAAAAAAAAAAAAAA/v///x8AAAAAAAAAAAAAAP7///8fAAAAAAAAAAAAAAD+////BwAAAAAAAAAAAAAA/P///wEAAAAAAAAAAAAAAPz//78AAAAAAAAAAAAAAAD4//8fAAAAAAAAAAAAAAAA+P//HwAAAAAAAAAAAAAAAPD//w8AAAAAAAAAAAAAAADw//8PAAAAAAAAAAAAAAAA4P//HwAAAAAAAAAAAAAAAMD//x8AAAAAAAAAAAAAAADA//8fAAAAAAAAAAAAAAAAwP//HwAAAAAAAAAAAAAAAID//w8AAAAAAAAAAAAAAACA//8fAAAAAACAAAAAAAAAgP//HwAAAAAAgAAAAAAAAID//x8AAAAAAIAAAAAAAAAA//8fAAAAAACAAAAAAAAAAP//DwAAAAAAAAAAAAAAAAD+/w8AAAAAAAAAAAAAAAAA/P8HAAAAAABAAAAAAAAAAPz/BwAAAAAAQAAAAAAAAAD4/wcAAAAAAEAAAAAAAAAA+P8HAAAAAAAAAAAAAAAAAPD/BwAAAAAAAAAAAAAAAADw/wcAAAAAAAAAAAAAAAAA8P8HAAAAAAAAAAAAAAAAAOD/AQAAAAAAAAAAAAAAAADg/wEAAAAAAAAAAAAAAAAAwP8AAAAAAAAAAAAAAAAAAOD/AAAAAAAAAAAAAAAAAADAPwAAAAAAAAAAAAAAAAAAwB8AAAAAAAAAAAAAAAAAAIAfAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
@@ -250,8 +250,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     // Higher lift for international long-range arcs, graceful lift for domestic
     const isIntl = node.at[1] < 60 || node.at[1] > 100 || node.at[0] < 5;
     const lift = isIntl ? 0.08 + ang * 0.45 : 0.03 + ang * 0.42;
-    // Deliberate, slow, majestic energy duration (7 - 14s per pulse)
-    const dur = 7.5 + ang * 16.0;
+    // Deliberate, slow, majestic energy duration (8 - 18s per pulse)
+    const dur = 8.5 + ang * 18.0;
     return {
       node,
       v,
@@ -400,7 +400,7 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
       if (!drag.engage) {
         goal.lon -= dx * k;
-        goal.lat = Math.max(-45, Math.min(58, goal.lat + dy * k));
+        goal.lat = Math.max(-34, Math.min(12, goal.lat + dy * k));
         spin.lon = -dx * k;
         spin.lat = dy * k;
       }
@@ -472,8 +472,8 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     const s = 3.6 / view.z;
     if (e.key === 'ArrowLeft') goal.lon -= s;
     if (e.key === 'ArrowRight') goal.lon += s;
-    if (e.key === 'ArrowUp') goal.lat = Math.min(58, goal.lat + s);
-    if (e.key === 'ArrowDown') goal.lat = Math.max(-45, goal.lat - s);
+    if (e.key === 'ArrowUp') goal.lat = Math.min(12, goal.lat + s);
+    if (e.key === 'ArrowDown') goal.lat = Math.max(-34, goal.lat - s);
   };
 
   root.addEventListener('pointermove', onMove);
@@ -512,7 +512,7 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       goal.lat = HOME.lat - lean * ((mouse.y / H - 0.5) * 2.5);
     } else if (live && !drag && Math.abs(spin.lon) + Math.abs(spin.lat) > 0.001) {
       goal.lon += spin.lon;
-      goal.lat = Math.max(-45, Math.min(58, goal.lat + spin.lat));
+      goal.lat = Math.max(-34, Math.min(12, goal.lat + spin.lat));
       spin.lon *= 0.94;
       spin.lat *= 0.94;
     }
@@ -524,47 +524,57 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
     mouse.k += ((mouse.in && !drag ? 1 : 0) - mouse.k) * Math.min(1, dt * 7);
 
     const wide = W > 860;
-    // Centered composition: exactly in the middle of the panel
+    // Centered half globe composition: sphere center at the bottom horizon baseline
     const cx = W * 0.5;
-    const cy = wide ? H * 0.53 : H * 0.56;
-    base = wide ? Math.min(H * 0.94, W * 0.58) : Math.min(W * 0.92, H * 0.68);
+    const cy = H - 1; // Horizon baseline anchored at the bottom edge
+    // Radius: wide celestial dome spanning across the page
+    base = wide ? Math.min(W * 0.50, H - 36) : Math.min(W * 0.56, H - 28);
     const R = base * view.z;
     const rot = rotator(view.lon, view.lat);
 
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
 
-    // Soft celestial sphere volume & atmosphere
-    const sphereGlow = ctx.createRadialGradient(cx, cy, R * 0.3, cx, cy, R * 1.04);
-    sphereGlow.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-    sphereGlow.addColorStop(0.7, 'rgba(245, 247, 255, 0.6)');
-    sphereGlow.addColorStop(0.95, 'rgba(235, 240, 255, 0.25)');
+    // Upper hemisphere clipping: ensures clean cutoff at the horizon baseline
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(-20, -20, W + 40, cy + 1);
+    ctx.clip();
+
+    // Soft celestial sphere volume & atmosphere (half dome)
+    const sphereGlow = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R * 1.04);
+    sphereGlow.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+    sphereGlow.addColorStop(0.65, 'rgba(246, 248, 255, 0.82)');
+    sphereGlow.addColorStop(0.9, 'rgba(238, 242, 255, 0.35)');
     sphereGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
     ctx.fillStyle = sphereGlow;
     ctx.beginPath();
-    ctx.arc(cx, cy, R * 1.04, 0, Math.PI * 2);
+    ctx.arc(cx, cy, R * 1.04, Math.PI, Math.PI * 2, false);
     ctx.fill();
 
-    // Attio / Gradient spectrum horizon ring (Image 1 reference)
-    const ringSpin = t * 0.08;
+    // Gradient brand spectrum upper celestial horizon arc
+    const ringSpin = t * 0.04;
     const ringGrad = ctx.createConicGradient(ringSpin, cx, cy);
     [...RING, RING[0]].forEach((c, i) => ringGrad.addColorStop(i / 4, c));
+
+    // Soft atmospheric halo over the dome
     ctx.save();
-    ctx.globalAlpha = THEME.ringA * 0.22 * fade;
+    ctx.globalAlpha = THEME.ringA * 0.26 * fade;
     ctx.strokeStyle = ringGrad;
-    ctx.lineWidth = 26;
-    ctx.filter = 'blur(16px)';
+    ctx.lineWidth = 22;
+    ctx.filter = 'blur(14px)';
     ctx.beginPath();
-    ctx.arc(cx, cy, R * 1.008, 0, Math.PI * 2);
+    ctx.arc(cx, cy, R * 1.004, Math.PI, Math.PI * 2, false);
     ctx.stroke();
     ctx.restore();
 
+    // Razor-sharp celestial horizon hairline
     ctx.save();
-    ctx.globalAlpha = THEME.ringA * 0.65 * fade;
+    ctx.globalAlpha = THEME.ringA * 0.72 * fade;
     ctx.strokeStyle = ringGrad;
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.3;
     ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.arc(cx, cy, R, Math.PI, Math.PI * 2, false);
     ctx.stroke();
     ctx.restore();
 
@@ -586,7 +596,7 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       rot(p[0], p[1], p[2], P);
       if (P[2] <= 0) continue;
       let sx = cx + P[0] * R, sy = cy - P[1] * R;
-      if (sy < -8 || sy > H + 8 || sx < -8 || sx > W + 8) continue;
+      if (sy < -8 || sy > cy + 2 || sx < -8 || sx > W + 8) continue;
 
       const rim = Math.pow(1 - P[2], 0.8);
       const ind = p[4];
@@ -838,6 +848,37 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
       ctx.globalAlpha = 1;
     }
 
+    // Restore upper hemisphere clipping context before drawing baseline
+    ctx.restore();
+
+    // Horizon Baseline (anchors the celestial half globe and transitions into footer)
+    const horizGrad = ctx.createLinearGradient(cx - R * 1.15, cy, cx + R * 1.15, cy);
+    horizGrad.addColorStop(0, 'rgba(226, 232, 240, 0)');
+    horizGrad.addColorStop(0.12, 'rgba(226, 232, 240, 0.7)');
+    horizGrad.addColorStop(0.35, 'rgba(99, 102, 241, 0.45)');
+    horizGrad.addColorStop(0.5, 'rgba(244, 63, 94, 0.55)');
+    horizGrad.addColorStop(0.65, 'rgba(99, 102, 241, 0.45)');
+    horizGrad.addColorStop(0.88, 'rgba(226, 232, 240, 0.7)');
+    horizGrad.addColorStop(1, 'rgba(226, 232, 240, 0)');
+
+    ctx.strokeStyle = horizGrad;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(cx - R * 1.15, cy);
+    ctx.lineTo(cx + R * 1.15, cy);
+    ctx.stroke();
+
+    // Delicate dashed latitude ticks as in the user's sketch
+    ctx.save();
+    ctx.setLineDash([4, 12]);
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - R * 1.2, cy + 4);
+    ctx.lineTo(cx + R * 1.2, cy + 4);
+    ctx.stroke();
+    ctx.restore();
+
     // Pass projected floating trade pills (Image 2 style)
     if (onPills) {
       const pillRoutes = [
@@ -854,11 +895,13 @@ export function createIndiaGlobe({ root, canvas, card, mask, onFocus, onLive, on
         const midIdx = Math.round(r.pts.length * 0.45);
         const midPt = r.pts[midIdx];
         rot(midPt[0], midPt[1], midPt[2], P);
-        const vis = P[2] > 0.15 && intro > 0.6;
+        const px = cx + P[0] * R;
+        const py = cy - P[1] * R;
+        const vis = P[2] > 0.15 && intro > 0.6 && py <= cy - 36 && py >= 24 && px >= 24 && px <= W - 200;
         return {
           ...p,
-          sx: cx + P[0] * R,
-          sy: cy - P[1] * R,
+          sx: px,
+          sy: py,
           vis,
         };
       });

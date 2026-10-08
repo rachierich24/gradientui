@@ -109,15 +109,16 @@ export function IndiaGlobe() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Interactive globe panel on pristine white canvas */}
-        <div
-          className={`ig-panel${live ? ' is-live' : ''}`}
-          ref={rootRef}
-          tabIndex={0}
-          aria-label="Interactive 3D globe of the Gradient network across India. Drag to inspect or click to zoom."
-        >
-          <canvas className="ig-canvas" ref={canvasRef} aria-hidden="true" />
+      {/* Unboxed Celestial Half-Globe Stage - NO BOX around the globe */}
+      <div
+        className={`ig-stage${live ? ' is-live' : ''}`}
+        ref={rootRef}
+        tabIndex={0}
+        aria-label="Interactive 3D half-globe of the Gradient network across India. Drag to inspect or click to zoom."
+      >
+        <canvas className="ig-canvas" ref={canvasRef} aria-hidden="true" />
 
           {/* Floating live trade pills along energy arcs (Image 2 style) */}
           <div className="ig-pills-overlay" ref={pillsWrapRef} aria-hidden="true">
@@ -192,7 +193,6 @@ export function IndiaGlobe() {
             )}
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }
