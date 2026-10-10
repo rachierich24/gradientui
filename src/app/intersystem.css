@@ -1,6 +1,7 @@
 /* ==========================================================================
    GRABBIT CONNECTED ECOSYSTEM — DENSE ORTHOGONAL DATA GRAPH
    Strictly Horizontal & Vertical Connectors with Rounded 90° Fillets
+   Enhanced with Attio-Grade Border Beams, Precision Sockets & Signal Flow
    ========================================================================== */
 
 .att-section {
@@ -20,9 +21,9 @@
 .att-grid-bg {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#D8D6CE 1px, transparent 1px);
+  background-image: radial-gradient(#D8D6CE 1.2px, transparent 1.2px);
   background-size: 24px 24px;
-  opacity: 0.35;
+  opacity: 0.38;
   pointer-events: none;
   z-index: 0;
 }
@@ -42,8 +43,12 @@
   letter-spacing: 0.16em;
   color: #8C867B;
   text-transform: uppercase;
-  display: block;
+  display: inline-block;
   margin-bottom: 12px;
+  padding: 3px 10px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .att-title {
@@ -73,125 +78,256 @@
   z-index: 5;
 }
 
+@media (max-width: 1024px) {
+  .att-stage {
+    height: 720px;
+  }
+}
+
 /* ─── SVG WIRES (STRICTLY ORTHOGONAL) ─── */
 .att-wires {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  overflow: visible;
 }
 
 .att-wire-path {
   fill: none;
   stroke: #D9D9D2;
-  stroke-width: 1px;
+  stroke-width: 1.2px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.48;
-  transition: stroke 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, stroke-width 0.2s ease;
+  opacity: 0.52;
+  transition: stroke 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease, stroke-width 0.25s ease;
 }
 
 .att-wire-path.is-active {
-  opacity: 0.95;
-  stroke-width: 1.6px;
+  opacity: 1;
+  stroke-width: 1.8px;
 }
 
 .att-wire-path.is-secondary {
   stroke-dasharray: 4 4;
-  opacity: 0.32;
+  opacity: 0.35;
 }
 
-/* Junction nodes where wires branch */
-.att-wire-junction {
-  fill: #FAF9F5;
-  stroke: #B8B4AA;
+/* Wire Glow Underlay (Quiet & Subtle) */
+.att-wire-glow-underlay {
+  fill: none;
+  stroke-width: 2.8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Wire Arrowhead */
+.att-wire-arrowhead {
+  fill: none;
+  stroke: #D9D9D2;
   stroke-width: 1.2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.45;
+  transition: stroke 0.35s ease, opacity 0.35s ease;
 }
 
-/* ─── ATTIO 3-DOT BRACKET SOCKETS (MATCHING USER'S REFERENCE) ─── */
-.att-bracket-socket-group {
+.att-wire-arrowhead.is-active {
+  stroke-width: 1.4px;
+  opacity: 0.9;
+}
+
+/* Traveling Photon Packet (Minimal) */
+.att-photon-packet-core {
+  filter: drop-shadow(0 0 3px currentColor);
+  transition: r 0.15s ease;
+}
+
+/* Subtle Arrival Halo Ripple */
+.att-arrival-halo-inner {
+  animation: attioHaloInner 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   pointer-events: none;
 }
 
-.att-bracket-wire {
-  transition: stroke 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.att-bracket-dot {
-  transition: stroke 0.25s ease, fill 0.25s ease, r 0.2s ease;
-}
-
-.att-bracket-dot.is-mid {
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.att-bracket-halo {
-  animation: bracketHaloAnim 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  pointer-events: none;
-}
-
-@keyframes bracketHaloAnim {
+@keyframes attioHaloInner {
   0% {
-    r: 3px;
-    opacity: 0.9;
-    stroke-width: 2px;
+    r: 2px;
+    opacity: 0.7;
+    stroke-width: 1.5px;
   }
   100% {
-    r: 12px;
+    r: 9px;
     opacity: 0;
     stroke-width: 0.5px;
   }
 }
 
-/* Signal packet (4-6px core + halo) */
-.att-packet-core {
-  filter: drop-shadow(0 0 4px currentColor);
-  transition: r 0.2s ease;
-}
-.att-packet-glow {
+/* ─── ATTIO PRECISION CIRCULAR SOCKET PORTS ─── */
+.attio-socket-port {
+  position: absolute;
+  z-index: 30;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid #E4E5E8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   pointer-events: none;
-  transition: r 0.2s ease;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Arrival expanding pulse ring */
-.att-arrival-pulse-ring {
-  animation: arrivalRippleAnim 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.attio-socket-port.is-right {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.attio-socket-port.is-left {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.attio-socket-port.is-top {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.attio-socket-port.is-bottom {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.attio-socket-inner-dot {
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background-color: #CDCED2;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.attio-socket-port.is-active .attio-socket-inner-dot {
+  transform: scale(1.15);
+}
+
+.attio-socket-port.is-active {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.08);
+}
+
+.attio-socket-port.triple-port {
+  width: 12px;
+  height: 28px;
+  border-radius: 6px;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 2px 0;
+}
+
+.attio-socket-port.triple-port.is-top,
+.attio-socket-port.triple-port.is-bottom {
+  width: 28px;
+  height: 12px;
+  flex-direction: row;
+  padding: 0 2px;
+}
+
+/* ─── ATTIO BORDER BEAM & DRAWING RAY (MINIMAL & PRECISE) ─── */
+.attio-card-beam-svg {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  z-index: 25;
+  pointer-events: none;
+  overflow: visible;
+  border-radius: inherit;
+}
+
+/* Crisp solid border left behind by the ray */
+.attio-beam-solid-trace {
+  fill: none;
+  stroke-width: 1.4px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 0.3s ease;
+}
+
+/* Minimal traveling ray head */
+.attio-beam-ray-head {
+  fill: none;
+  stroke-width: 2.2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── ATTIO TRIGGER TAG (CAFÉ ONLY) ─── */
+.att-trigger-tag {
+  position: absolute;
+  top: -19px;
+  left: 0;
+  z-index: 0;
+  background-color: #E5483B;
+  color: #FFFFFF;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   pointer-events: none;
 }
 
-@keyframes arrivalRippleAnim {
-  0% {
-    r: 10px;
-    opacity: 0.9;
-    stroke-width: 2px;
-  }
-  100% {
-    r: 38px;
-    opacity: 0;
-    stroke-width: 0.5px;
-  }
-}
-
-/* ─── GENERAL CARD STYLES ─── */
+/* ─── GENERAL CARD STYLES (MINIMAL & CRISP) ─── */
 .att-card {
   position: absolute;
   background: #FFFFFF;
   border: 1px solid #EAE9E2;
   box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.22s ease, opacity 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.25s ease;
   z-index: 10;
   will-change: transform;
 }
 
 .att-card.is-dimmed {
-  opacity: 0.72;
+  opacity: 0.7;
+}
+
+/* Subtle active elevation while beam is sweeping */
+.att-card.is-active-drawing {
+  transform: translateY(-2px) !important;
+  z-index: 20 !important;
+}
+
+/* Minimal persistent colored borders once ray completes */
+.att-card.is-colored-cafe {
+  border-color: rgba(229, 72, 59, 0.65) !important;
+  box-shadow: 0 4px 16px -2px rgba(229, 72, 59, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.att-card.is-colored-supplier {
+  border-color: rgba(34, 197, 94, 0.65) !important;
+  box-shadow: 0 4px 16px -2px rgba(34, 197, 94, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.att-card.is-colored-brand {
+  border-color: rgba(109, 40, 217, 0.65) !important;
+  box-shadow: 0 4px 16px -2px rgba(109, 40, 217, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 /* ─── PRIMARY CARDS (~260px) ─── */
 .att-card-primary {
   width: 260px;
-  border-radius: 12px;
+  border-radius: 14px;
 }
 
 .att-card-cafe {
@@ -199,9 +335,9 @@
   left: 160px;
 }
 .att-card-cafe:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 28px -4px rgba(229, 72, 59, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
-  border-color: rgba(229, 72, 59, 0.45);
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 28px -4px rgba(229, 72, 59, 0.18), 0 2px 6px rgba(0, 0, 0, 0.03);
+  border-color: rgba(229, 72, 59, 0.85) !important;
   z-index: 15;
 }
 
@@ -210,9 +346,9 @@
   left: 140px;
 }
 .att-card-supplier:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 28px -4px rgba(34, 197, 94, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
-  border-color: rgba(34, 197, 94, 0.45);
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 28px -4px rgba(34, 197, 94, 0.18), 0 2px 6px rgba(0, 0, 0, 0.03);
+  border-color: rgba(34, 197, 94, 0.85) !important;
   z-index: 15;
 }
 
@@ -221,9 +357,9 @@
   right: 140px;
 }
 .att-card-brand:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 28px -4px rgba(109, 40, 217, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
-  border-color: rgba(109, 40, 217, 0.45);
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 28px -4px rgba(109, 40, 217, 0.18), 0 2px 6px rgba(0, 0, 0, 0.03);
+  border-color: rgba(109, 40, 217, 0.85) !important;
   z-index: 15;
 }
 
@@ -232,7 +368,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 13px;
+  padding: 10px 14px;
   border-bottom: 1px solid #F4F3ED;
 }
 
@@ -243,9 +379,9 @@
 }
 
 .att-card-icon-wrap {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -254,18 +390,21 @@
 .att-card-icon-wrap.is-cafe {
   background: #FEF2F2;
   color: #E5483B;
+  border: 1px solid rgba(229, 72, 59, 0.15);
 }
 .att-card-icon-wrap.is-supplier {
   background: #F0FDF4;
   color: #22C55E;
+  border: 1px solid rgba(34, 197, 94, 0.15);
 }
 .att-card-icon-wrap.is-brand {
   background: #F5F3FF;
   color: #6D28D9;
+  border: 1px solid rgba(109, 40, 217, 0.15);
 }
 
 .att-card-title {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 650;
   color: #171716;
   letter-spacing: -0.01em;
@@ -276,8 +415,8 @@
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  padding: 2.5px 6.5px;
-  border-radius: 4px;
+  padding: 2.5px 7px;
+  border-radius: 5px;
 }
 .att-card-badge.is-cafe {
   background: #FEF2F2;
@@ -306,7 +445,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6.5px 13px;
+  padding: 6.5px 14px;
   border-bottom: 1px solid #F9F8F5;
   font-size: 11.5px;
   transition: background 0.15s ease;
@@ -326,6 +465,11 @@
 .att-attr-val {
   color: #1A1917;
   font-weight: 500;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.att-attr-val.is-pulsed {
+  transform: scale(1.08);
 }
 
 /* Card Footer */
@@ -333,15 +477,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 13px;
+  padding: 8px 14px;
   border-top: 1px solid #FAF9F5;
   font-size: 10.5px;
   color: #8F8B82;
 }
 
 .att-status-dot {
-  width: 5px;
-  height: 5px;
+  width: 5.5px;
+  height: 5.5px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -360,21 +504,21 @@
 
 .att-footer-text {
   font-size: 10.5px;
-  font-weight: 450;
+  font-weight: 500;
 }
 
 /* ─── SECONDARY INTERMEDIATE CARDS (~135-155px) ─── */
 .att-card-secondary {
-  border-radius: 9px;
-  padding: 8px 12px;
+  border-radius: 10px;
+  padding: 9px 13px;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
 .att-card-secondary:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 20px -2px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2.5px) !important;
+  box-shadow: 0 8px 20px -2px rgba(0, 0, 0, 0.08);
   z-index: 15;
 }
 
@@ -411,9 +555,14 @@
   font-size: 12.5px;
   font-weight: 650;
   color: #1E1D1B;
+  transition: transform 0.25s ease, color 0.25s ease;
 }
 
-/* ─── PRECISE EDGE ANCHORS FOR SVG BRACKETS ─── */
+.att-sec-metric.is-pulsed {
+  transform: scale(1.08);
+}
+
+/* ─── PRECISE EDGE ANCHORS FOR PORTS ─── */
 .att-port-anchor {
   position: absolute;
   width: 1px;
@@ -519,162 +668,53 @@
   background: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
-  padding: 10px 16px 10px 13px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 4px rgba(0, 0, 0, 0.02), 0 8px 26px -4px rgba(0, 0, 0, 0.06);
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.25s ease,
-              border-color 0.25s ease;
-  will-change: transform;
-  cursor: default;
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  cursor: pointer;
+  user-select: none;
 }
 
 .att-grabbit-chip:hover,
 .att-grabbit-chip.is-hovered {
-  transform: translate(-50%, -50%) scale(1.018);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 4px 8px rgba(0, 0, 0, 0.03), 0 12px 32px -4px rgba(0, 0, 0, 0.08);
-}
-
-/* Dynamic Border Accent during Processing (Section 15) */
-.att-grabbit-chip.is-processing {
   transform: translate(-50%, -50%) scale(1.015);
+  box-shadow: 0 14px 38px -4px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-color: rgba(38, 109, 240, 0.8) !important;
 }
 
-.att-grabbit-chip.is-processing-cafe {
-  border-top-color: #E5483B;
-  border-left-color: rgba(229, 72, 59, 0.35);
+.att-grabbit-chip.is-colored-grabbit {
+  border-color: rgba(38, 109, 240, 0.8) !important;
+  box-shadow: 0 10px 34px -4px rgba(38, 109, 240, 0.2), 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-.att-grabbit-chip.is-processing-supplier {
-  border-left-color: #22C55E;
-  border-bottom-color: rgba(34, 197, 94, 0.35);
-}
-
-.att-grabbit-chip.is-processing-brand {
-  border-bottom-color: #6D28D9;
-  border-right-color: rgba(109, 40, 217, 0.35);
-}
-
-/* Expanding Signal Processing Ring (Section 21) */
-.att-chip-process-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  pointer-events: none;
-  animation: chipProcessRingAnim 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.att-chip-process-ring.is-cafe {
-  border: 1.5px solid #E5483B;
-}
-.att-chip-process-ring.is-supplier {
-  border: 1.5px solid #22C55E;
-}
-.att-chip-process-ring.is-brand {
-  border: 1.5px solid #6D28D9;
-}
-
-@keyframes chipProcessRingAnim {
-  0% {
-    transform: translate(-50%, -50%) scale(0.7);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.45);
-    opacity: 0;
-  }
-}
-
+/* Grabbit Internal Layout */
 .att-chip-inner {
   display: flex;
   align-items: center;
-  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+  gap: 14px;
 }
 
-/* ─── TRIPARTITE OPTICAL NETWORK ENGINE MARK (SECTIONS 4 & 5) ─── */
 .att-chip-mark-wrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: #F8F7F4;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  position: relative;
 }
 
-.att-chip-mark {
-  width: 28px;
-  height: 28px;
-  display: block;
-  overflow: visible;
-}
-
-.att-mark-arc {
-  transition: opacity 0.25s ease, stroke-width 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s ease;
-  opacity: 0.45;
-}
-
-.att-mark-arc.is-active {
-  opacity: 1;
-  stroke-width: 2.8px;
-}
-
-.att-mark-arc.is-cafe.is-active {
-  transform: rotate(4deg);
-  transform-origin: 14px 14px;
-  filter: drop-shadow(0 0 2.5px rgba(229, 72, 59, 0.45));
-}
-.att-mark-arc.is-supplier.is-active {
-  transform: rotate(4deg);
-  transform-origin: 14px 14px;
-  filter: drop-shadow(0 0 2.5px rgba(34, 197, 94, 0.45));
-}
-.att-mark-arc.is-brand.is-active {
-  transform: rotate(4deg);
-  transform-origin: 14px 14px;
-  filter: drop-shadow(0 0 2.5px rgba(109, 40, 217, 0.45));
-}
-
-.att-mark-core-lens {
-  transition: transform 0.2s ease, fill 0.2s ease;
-}
-.att-mark-core-lens.is-active {
-  transform: scale(1.35);
-  transform-origin: 14px 14px;
-}
-.att-mark-core-lens.is-active-cafe {
-  fill: #E5483B;
-}
-.att-mark-core-lens.is-active-supplier {
-  fill: #22C55E;
-}
-.att-mark-core-lens.is-active-brand {
-  fill: #6D28D9;
-}
-
-/* Hairline Structural Divider */
 .att-chip-divider {
   width: 1px;
-  height: 26px;
-  background: rgba(0, 0, 0, 0.06);
-  margin: 0 12px 0 11px;
+  height: 34px;
+  background: #EFECE6;
   flex-shrink: 0;
 }
 
-/* ─── CHIP BODY & LABELS ─── */
 .att-chip-body {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 3px;
-  flex: 1;
-  min-width: 0;
 }
 
 .att-chip-primary-line {
@@ -684,256 +724,73 @@
 }
 
 .att-chip-brand {
-  font-size: 13.5px;
-  font-weight: 750;
-  color: #161514;
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1;
+  color: #111110;
 }
 
 .att-chip-signals-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4.5px;
-  background: #F6F5F2;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 1.5px 7px;
+  gap: 5px;
+  padding: 2px 7px;
+  background: #F7F6F2;
   border-radius: 999px;
+  font-size: 10px;
+  color: #6E6A61;
 }
 
 .att-chip-status-dot {
-  width: 3.5px;
-  height: 3.5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #22C55E;
-  box-shadow: 0 0 0 1.5px rgba(34, 197, 94, 0.25);
-  flex-shrink: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .att-chip-status-dot.is-pulsing {
-  transform: scale(1.35);
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
-}
-
-.att-chip-signals {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10.5px;
-  font-weight: 550;
-  color: #59564E;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
+  box-shadow: 0 0 8px #22C55E;
 }
 
 .att-chip-routing-track {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 9px;
+  gap: 5px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #9A958C;
-}
-
-.att-chip-track-arrow {
-  color: #CDC9BE;
-  font-size: 9px;
-  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: #A39E93;
 }
 
 .att-chip-track-node {
-  transition: color 0.2s ease, font-weight 0.2s ease, text-shadow 0.2s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
-
 .att-chip-track-node.is-active.is-cafe {
   color: #E5483B;
-  font-weight: 850;
-  text-shadow: 0 0 6px rgba(229, 72, 59, 0.22);
+  text-shadow: 0 0 8px rgba(229, 72, 59, 0.4);
 }
 .att-chip-track-node.is-active.is-supplier {
   color: #22C55E;
-  font-weight: 850;
-  text-shadow: 0 0 6px rgba(34, 197, 94, 0.22);
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
 }
 .att-chip-track-node.is-active.is-brand {
   color: #6D28D9;
-  font-weight: 850;
-  text-shadow: 0 0 6px rgba(109, 40, 217, 0.22);
+  text-shadow: 0 0 8px rgba(109, 40, 217, 0.4);
 }
 
-/* ─── CHIP CONNECTION PORTS ─── */
-.att-chip-port {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #FFFFFF;
-  border: 1.2px solid #C4C0B5;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 25;
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.2s ease,
-              box-shadow 0.2s ease;
-  pointer-events: none;
+.att-chip-track-arrow {
+  color: #D6D2C8;
 }
 
-.att-chip-port-core {
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: transparent;
-  transition: background-color 0.2s ease;
+/* ─── ARRIVAL FLASH CORE ─── */
+.att-arrival-core-flash {
+  animation: attioCoreFlash 0.35s ease-out forwards;
 }
 
-.att-chip-port.is-top {
-  top: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.att-chip-port.is-bottom {
-  bottom: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.att-chip-port.is-left {
-  left: -3px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.att-chip-port.is-right {
-  right: -3px;
-  top: 50%;
-  transform: translateY(-50%);
+@keyframes attioCoreFlash {
+  0% { r: 2px; opacity: 1; }
+  100% { r: 7px; opacity: 0; }
 }
 
-/* Active Port State (Halo 6-10px) */
-.att-chip-port.is-active.is-cafe {
-  border-color: #E5483B;
-  box-shadow: 0 0 0 4.5px rgba(229, 72, 59, 0.22);
-}
-.att-chip-port.is-active.is-cafe .att-chip-port-core {
-  background: #E5483B;
-}
 
-.att-chip-port.is-active.is-supplier {
-  border-color: #22C55E;
-  box-shadow: 0 0 0 4.5px rgba(34, 197, 94, 0.22);
-}
-.att-chip-port.is-active.is-supplier .att-chip-port-core {
-  background: #22C55E;
-}
 
-.att-chip-port.is-active.is-brand {
-  border-color: #6D28D9;
-  box-shadow: 0 0 0 4.5px rgba(109, 40, 217, 0.22);
-}
-.att-chip-port.is-active.is-brand .att-chip-port-core {
-  background: #6D28D9;
-}
 
-/* Arrival Border Light Pulses (Section 14) */
-.att-card.pulse {
-  animation: cardLightPulseAnim 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes cardLightPulseAnim {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.att-card-cafe.pulse,
-.att-node-orders.pulse,
-.att-node-demand.pulse {
-  border-color: rgba(229, 72, 59, 0.65) !important;
-  box-shadow: 0 10px 28px -2px rgba(229, 72, 59, 0.2) !important;
-}
-
-.att-card-supplier.pulse,
-.att-node-routing.pulse,
-.att-node-inventory.pulse,
-.att-node-fulfillment.pulse,
-.att-node-dispatch.pulse {
-  border-color: rgba(34, 197, 94, 0.65) !important;
-  box-shadow: 0 10px 28px -2px rgba(34, 197, 94, 0.2) !important;
-}
-
-.att-card-brand.pulse,
-.att-node-signals.pulse,
-.att-node-adoption.pulse,
-.att-node-repeat.pulse,
-.att-node-gmv.pulse {
-  border-color: rgba(109, 40, 217, 0.65) !important;
-  box-shadow: 0 10px 28px -2px rgba(109, 40, 217, 0.2) !important;
-}
-
-/* ─── RESPONSIVE LAYOUTS ─── */
-@media (max-width: 1140px) {
-  .att-stage {
-    transform: scale(0.92);
-    transform-origin: top center;
-  }
-}
-
-@media (max-width: 960px) {
-  .att-stage {
-    transform: scale(0.82);
-    transform-origin: top center;
-    height: 680px;
-  }
-}
-
-@media (max-width: 767px) {
-  .att-stage {
-    transform: none;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding-bottom: 40px;
-  }
-  .att-card,
-  .att-grabbit-chip {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: 320px !important;
-  }
-  .att-wires,
-  .att-bracket-socket-group,
-  .att-chip-port,
-  .att-chip-hover-labels {
-    display: none !important;
-  }
-  .att-title {
-    font-size: 32px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .att-card,
-  .att-grabbit-chip,
-  .att-wire-path,
-  .att-arrival-pulse-ring,
-  .att-bracket-socket-group,
-  .att-mark-arc,
-  .att-chip-process-ring {
-    transition: none !important;
-    animation: none !important;
-  }
-}

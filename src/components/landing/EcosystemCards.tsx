@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Icon } from './icons';
 
@@ -18,285 +19,409 @@ const CafePreview = ({
 }: {
   large?: boolean;
   onOpen?: () => void;
-}) => (
-  <div className={`mock-preview-shell is-cafe ${large ? 'is-large' : ''}`}>
-    <div className="eco-preview-chrome">
-      <div className="eco-preview-dots">
-        <div className="eco-preview-dot is-red" />
-        <div className="eco-preview-dot" />
-        <div className="eco-preview-dot" />
-      </div>
-      <div className="eco-preview-address">grabbit.io/cafe/marketplace</div>
-    </div>
+}) => {
+  const [activeFilter, setActiveFilter] = useState<'All' | 'Beans' | 'Dairy' | 'Syrups'>('All');
+  const [addedItems, setAddedItems] = useState<Record<string, number>>({});
+  const [cartCount, setCartCount] = useState(2);
+  const [totalPrice, setTotalPrice] = useState(1240);
 
-    {/* Search & Filter Header */}
-    <div className="mock-cafe-header">
-      <div className="mock-cafe-search">
-        <Icon.Search size={large ? 13 : 10} />
-        <span>Search beans, milks, syrups...</span>
-      </div>
-      <div className="mock-cafe-pill-row">
-        <span className="mock-cafe-pill is-active">All</span>
-        <span className="mock-cafe-pill">Beans</span>
-        <span className="mock-cafe-pill">Dairy</span>
-        {large && <span className="mock-cafe-pill">Syrups</span>}
-      </div>
-    </div>
+  const handleAdd = (id: string, name: string, price: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAddedItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    setCartCount((c) => c + 1);
+    setTotalPrice((t) => t + price);
+  };
 
-    {/* Product Catalog Grid */}
-    <div className={`mock-cafe-content ${large ? 'is-large' : ''}`}>
-      {/* Product 1: Arabica Beans */}
-      <div className="mock-cafe-card">
-        <div className="mock-cafe-img-wrap">
-          <img
-            src="/landing/spotlight/arabica-beans.jpg"
-            alt="Arabica Estate Beans"
-            className="mock-cafe-img-photo"
-            loading="lazy"
-          />
-          <span className="mock-cafe-tag">Verified</span>
-        </div>
-        <div className="mock-cafe-card-info">
-          <div className="mock-cafe-card-name">Arabica Estate AA</div>
-          <div className="mock-cafe-card-meta">
-            <span className="mock-cafe-card-price">₹820 / kg</span>
-            <button
-              type="button"
-              className="mock-cafe-add-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpen?.();
-              }}
-            >
-              + Quick PO
-            </button>
+  return (
+    <div className={`mock-preview-shell is-cafe ${large ? 'is-large' : ''}`}>
+      {!large && (
+        <div className="eco-preview-chrome">
+          <div className="eco-preview-dots">
+            <div className="eco-preview-dot is-red" />
+            <div className="eco-preview-dot is-yellow" />
+            <div className="eco-preview-dot is-green" />
           </div>
-        </div>
-      </div>
-
-      {/* Product 2: Barista Oat Milk */}
-      <div className="mock-cafe-card">
-        <div className="mock-cafe-img-wrap">
-          <img
-            src="/landing/spotlight/barista-oat-carton.jpg"
-            alt="Barista Oat Milk"
-            className="mock-cafe-img-photo"
-            loading="lazy"
-          />
-          <span className="mock-cafe-tag">Verified</span>
-        </div>
-        <div className="mock-cafe-card-info">
-          <div className="mock-cafe-card-name">Barista Oat Milk 1L</div>
-          <div className="mock-cafe-card-meta">
-            <span className="mock-cafe-card-price">₹420 / L</span>
-            <button
-              type="button"
-              className="mock-cafe-add-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpen?.();
-              }}
-            >
-              + Quick PO
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Product 3 (Shown in large modal) */}
-      {large && (
-        <div className="mock-cafe-card">
-          <div className="mock-cafe-img-wrap">
-            <img
-              src="/landing/spotlight/caramel-syrup-bottle.jpg"
-              alt="Caramel Artisan Syrup"
-              className="mock-cafe-img-photo"
-              loading="lazy"
-            />
-            <span className="mock-cafe-tag">Verified</span>
-          </div>
-          <div className="mock-cafe-card-info">
-            <div className="mock-cafe-card-name">Caramel Artisan Syrup</div>
-            <div className="mock-cafe-card-meta">
-              <span className="mock-cafe-card-price">₹680 / btl</span>
-              <span className="mock-cafe-add-btn">+ Quick PO</span>
-            </div>
-          </div>
+          <a
+            href={ECOSYSTEM_LINKS.cafes}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="eco-preview-address is-link"
+            onClick={(e) => e.stopPropagation()}
+            title="Visit grabbit.io/cafe/marketplace"
+          >
+            <span className="eco-address-lock">🔒</span> grabbit.io/cafe/marketplace <span className="eco-address-ext">↗</span>
+          </a>
         </div>
       )}
-    </div>
 
-    {/* Bottom Live Cart Bar */}
-    <div className="mock-cafe-bottom-strip">
-      <div className="mock-cafe-cart-info">
-        <span className="mock-cafe-cart-badge">2 items</span>
-        <span className="mock-cafe-cart-total">₹1,240 PO batch</span>
-      </div>
-      <div className="mock-cafe-dispatch-pill">
-        <span>⚡ Next-Day 8 AM</span>
-      </div>
-    </div>
-  </div>
-);
-
-const SupplierPreview = ({ large = false }: { large?: boolean }) => (
-  <div className={`mock-preview-shell is-supplier ${large ? 'is-large' : ''}`}>
-    <div className="eco-preview-chrome">
-      <div className="eco-preview-dots">
-        <div className="eco-preview-dot is-green" />
-        <div className="eco-preview-dot" />
-        <div className="eco-preview-dot" />
-      </div>
-      <div className="eco-preview-address">grabbit.io/supplier/dispatch</div>
-    </div>
-
-    <div className="mock-sup-split">
-      {/* Dark Green Sidebar with Icons */}
-      <div className="mock-sup-sidebar">
-        <div className="mock-sup-icon is-active">
-          <Icon.Box size={large ? 16 : 12} />
+      {/* Search & Filter Header */}
+      <div className="mock-cafe-header">
+        <div className="mock-cafe-search">
+          <Icon.Search size={large ? 13 : 10} />
+          <span>Search beans, milks, syrups...</span>
         </div>
-        <div className="mock-sup-icon">
-          <Icon.Truck size={large ? 16 : 12} />
-        </div>
-        <div className="mock-sup-icon">
-          <Icon.Chart size={large ? 16 : 12} />
+        <div className="mock-cafe-pill-row">
+          {(['All', 'Beans', 'Dairy', ...(large ? ['Syrups'] : [])] as const).map((pill) => (
+            <button
+              key={pill}
+              type="button"
+              className={`mock-cafe-pill ${activeFilter === pill ? 'is-active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveFilter(pill as 'All' | 'Beans' | 'Dairy' | 'Syrups');
+              }}
+            >
+              {pill}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Fulfillment Feed */}
-      <div className="mock-sup-main">
-        {/* KPI Row */}
-        <div className="mock-sup-kpi">
-          <div className="mock-sup-kpi-box">
-            <div className="mock-sup-kpi-top">
-              <span className="mock-sup-kpi-val">39</span>
-              <span className="mock-sup-kpi-trend">+14%</span>
+      {/* Product Catalog Grid */}
+      <div className={`mock-cafe-content ${large ? 'is-large' : ''}`}>
+        {/* Product 1: Arabica Beans */}
+        {(activeFilter === 'All' || activeFilter === 'Beans') && (
+          <div className="mock-cafe-card">
+            <div className="mock-cafe-img-wrap">
+              <img
+                src="/landing/spotlight/arabica-beans.jpg"
+                alt="Arabica Estate Beans"
+                className="mock-cafe-img-photo"
+                loading="lazy"
+              />
+              <span className="mock-cafe-tag">Verified</span>
             </div>
-            <div className="mock-sup-kpi-lbl">Orders Today</div>
-          </div>
-          <div className="mock-sup-kpi-box">
-            <div className="mock-sup-kpi-top">
-              <span className="mock-sup-kpi-val">98.8%</span>
-              <span className="mock-sup-kpi-trend is-sla">Target</span>
+            <div className="mock-cafe-card-info">
+              <div className="mock-cafe-card-name">Arabica Estate AA</div>
+              <div className="mock-cafe-card-meta">
+                <span className="mock-cafe-card-price">₹820 / kg</span>
+                <button
+                  type="button"
+                  className={`mock-cafe-add-btn ${addedItems['arabica'] ? 'is-added' : ''}`}
+                  onClick={(e) => handleAdd('arabica', 'Arabica Estate AA', 820, e)}
+                >
+                  {addedItems['arabica'] ? `Added (${addedItems['arabica']})` : '+ Quick PO'}
+                </button>
+              </div>
             </div>
-            <div className="mock-sup-kpi-lbl">On-Time SLA</div>
           </div>
-        </div>
+        )}
 
-        {/* Live Orders Stream */}
-        <div className="mock-sup-orders-list">
-          <div className="mock-sup-row">
-            <div className="mock-sup-row-left">
-              <span className="mock-sup-order-id">#GRB-1049</span>
-              <span className="mock-sup-order-cafe">Blue Tokai · 12kg</span>
+        {/* Product 2: Barista Oat Milk */}
+        {(activeFilter === 'All' || activeFilter === 'Dairy') && (
+          <div className="mock-cafe-card">
+            <div className="mock-cafe-img-wrap">
+              <img
+                src="/landing/spotlight/barista-oat-carton.jpg"
+                alt="Barista Oat Milk"
+                className="mock-cafe-img-photo"
+                loading="lazy"
+              />
+              <span className="mock-cafe-tag">Verified</span>
             </div>
-            <span className="mock-sup-badge is-new">New PO</span>
-          </div>
-          <div className="mock-sup-row">
-            <div className="mock-sup-row-left">
-              <span className="mock-sup-order-id">#GRB-1048</span>
-              <span className="mock-sup-order-cafe">Third Wave · 24L</span>
+            <div className="mock-cafe-card-info">
+              <div className="mock-cafe-card-name">Barista Oat Milk 1L</div>
+              <div className="mock-cafe-card-meta">
+                <span className="mock-cafe-card-price">₹420 / L</span>
+                <button
+                  type="button"
+                  className={`mock-cafe-add-btn ${addedItems['oat'] ? 'is-added' : ''}`}
+                  onClick={(e) => handleAdd('oat', 'Barista Oat Milk 1L', 420, e)}
+                >
+                  {addedItems['oat'] ? `Added (${addedItems['oat']})` : '+ Quick PO'}
+                </button>
+              </div>
             </div>
-            <span className="mock-sup-badge is-transit">Fulfilling</span>
           </div>
-          <div className="mock-sup-row">
-            <div className="mock-sup-row-left">
-              <span className="mock-sup-order-id">#GRB-1047</span>
-              <span className="mock-sup-order-cafe">Subko Roasters · 6pk</span>
+        )}
+
+        {/* Product 3 (Shown in large modal or when Syrups selected) */}
+        {large && (activeFilter === 'All' || activeFilter === 'Syrups') && (
+          <div className="mock-cafe-card">
+            <div className="mock-cafe-img-wrap">
+              <img
+                src="/landing/spotlight/caramel-syrup-bottle.jpg"
+                alt="Caramel Artisan Syrup"
+                className="mock-cafe-img-photo"
+                loading="lazy"
+              />
+              <span className="mock-cafe-tag">Verified</span>
             </div>
-            <span className="mock-sup-badge is-dispatched">Dispatched</span>
+            <div className="mock-cafe-card-info">
+              <div className="mock-cafe-card-name">Caramel Artisan Syrup</div>
+              <div className="mock-cafe-card-meta">
+                <span className="mock-cafe-card-price">₹680 / btl</span>
+                <button
+                  type="button"
+                  className={`mock-cafe-add-btn ${addedItems['caramel'] ? 'is-added' : ''}`}
+                  onClick={(e) => handleAdd('caramel', 'Caramel Artisan Syrup', 680, e)}
+                >
+                  {addedItems['caramel'] ? `Added (${addedItems['caramel']})` : '+ Quick PO'}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+      </div>
 
-        {/* Bottom Fleet Status Bar */}
-        <div className="mock-sup-bottom-strip">
-          <div className="mock-sup-fleet-status">
-            <span className="mock-sup-fleet-dot" />
-            <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
+      {/* Bottom Live Cart Bar */}
+      <a
+        href={ECOSYSTEM_LINKS.cafes}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mock-cafe-bottom-strip is-clickable-cart"
+        onClick={(e) => e.stopPropagation()}
+        title="View Live Cart on grabbit.io/cafe"
+      >
+        <div className="mock-cafe-cart-info">
+          <span className="mock-cafe-cart-badge">{cartCount} items</span>
+          <span className="mock-cafe-cart-total">₹{totalPrice.toLocaleString()} PO batch</span>
+        </div>
+        <div className="mock-cafe-dispatch-pill">
+          <span>⚡ Next-Day 8 AM</span>
+          <span className="mock-cafe-checkout-arrow">→</span>
+        </div>
+      </a>
+    </div>
+  );
+};
+
+const SupplierPreview = ({ large = false }: { large?: boolean }) => {
+  const [selectedTab, setSelectedTab] = useState<'orders' | 'fleet' | 'analytics'>('orders');
+  const [activeRow, setActiveRow] = useState<number | null>(null);
+
+  return (
+    <div className={`mock-preview-shell is-supplier ${large ? 'is-large' : ''}`}>
+      {!large && (
+        <div className="eco-preview-chrome">
+          <div className="eco-preview-dots">
+            <div className="eco-preview-dot is-red" />
+            <div className="eco-preview-dot is-yellow" />
+            <div className="eco-preview-dot is-green" />
           </div>
-          <span className="mock-sup-eta">ETA 11:20 AM</span>
+          <a
+            href={ECOSYSTEM_LINKS.suppliers}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="eco-preview-address is-link"
+            onClick={(e) => e.stopPropagation()}
+            title="Visit grabbit.io/supplier/dispatch"
+          >
+            <span className="eco-address-lock">🔒</span> grabbit.io/supplier/dispatch <span className="eco-address-ext">↗</span>
+          </a>
         </div>
-      </div>
-    </div>
-  </div>
-);
+      )}
 
-const BrandPreview = ({ large = false }: { large?: boolean }) => (
-  <div className={`mock-preview-shell is-brand ${large ? 'is-large' : ''}`}>
-    <div className="eco-preview-chrome">
-      <div className="eco-preview-dots">
-        <div className="eco-preview-dot is-purple" />
-        <div className="eco-preview-dot" />
-        <div className="eco-preview-dot" />
-      </div>
-      <div className="eco-preview-address">grabbit.io/brand/intelligence</div>
-    </div>
+      <div className="mock-sup-split">
+        {/* Dark Green Sidebar with Icons */}
+        <div className="mock-sup-sidebar">
+          <button
+            type="button"
+            className={`mock-sup-icon ${selectedTab === 'orders' ? 'is-active' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedTab('orders');
+            }}
+            title="Orders Feed"
+          >
+            <Icon.Box size={large ? 16 : 12} />
+          </button>
+          <button
+            type="button"
+            className={`mock-sup-icon ${selectedTab === 'fleet' ? 'is-active' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedTab('fleet');
+            }}
+            title="Fleet Dispatch"
+          >
+            <Icon.Truck size={large ? 16 : 12} />
+          </button>
+          <button
+            type="button"
+            className={`mock-sup-icon ${selectedTab === 'analytics' ? 'is-active' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedTab('analytics');
+            }}
+            title="SLA Analytics"
+          >
+            <Icon.Chart size={large ? 16 : 12} />
+          </button>
+        </div>
 
-    {/* Header */}
-    <div className="mock-brand-header">
-      <div className="mock-brand-title-wrap">
-        <div className="mock-brand-title">Café Adoption</div>
-        <div className="mock-brand-sub">Demand velocity</div>
-      </div>
-      <span className="mock-brand-period-pill">Last 30 days</span>
-    </div>
-
-    {/* Animated Bar Chart */}
-    <div className="mock-brand-chart">
-      {[
-        { height: 42, label: 'W1' },
-        { height: 60, label: 'W2' },
-        { height: 78, label: 'W3' },
-        { height: 95, label: 'W4' },
-        { height: 68, label: 'W5' },
-      ].map((bar, i) => (
-        <div key={i} className="mock-brand-bar-col">
-          <div className="mock-brand-bar">
-            <motion.div
-              className="mock-brand-bar-fill"
-              initial={{ height: '0%' }}
-              whileInView={{ height: `${bar.height}%` }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            />
+        {/* Main Fulfillment Feed */}
+        <div className="mock-sup-main">
+          {/* KPI Row */}
+          <div className="mock-sup-kpi">
+            <div className="mock-sup-kpi-box">
+              <div className="mock-sup-kpi-top">
+                <span className="mock-sup-kpi-val">39</span>
+                <span className="mock-sup-kpi-trend">+14%</span>
+              </div>
+              <div className="mock-sup-kpi-lbl">Orders Today</div>
+            </div>
+            <div className="mock-sup-kpi-box">
+              <div className="mock-sup-kpi-top">
+                <span className="mock-sup-kpi-val">98.8%</span>
+                <span className="mock-sup-kpi-trend is-sla">Target</span>
+              </div>
+              <div className="mock-sup-kpi-lbl">On-Time SLA</div>
+            </div>
           </div>
-          <span className="mock-brand-bar-lbl">{bar.label}</span>
-        </div>
-      ))}
-    </div>
 
-    {/* Stats Row */}
-    <div className="mock-brand-stats">
-      <div className="mock-brand-stat-box">
-        <div className="mock-brand-stat-top">
-          <span className="mock-brand-stat-val">124</span>
-          <span className="mock-brand-stat-trend">+18.4%</span>
-        </div>
-        <div className="mock-brand-stat-lbl">Cafés Reached</div>
-      </div>
-      <div className="mock-brand-stat-box">
-        <div className="mock-brand-stat-top">
-          <span className="mock-brand-stat-val">25.0%</span>
-          <span className="mock-brand-stat-trend">+4.2%</span>
-        </div>
-        <div className="mock-brand-stat-lbl">Repeat POs</div>
-      </div>
-    </div>
+          {/* Live Orders Stream */}
+          <div className="mock-sup-orders-list">
+            {[
+              { id: '#GRB-1049', cafe: 'Blue Tokai · 12kg', badge: 'New PO', badgeClass: 'is-new' },
+              { id: '#GRB-1048', cafe: 'Third Wave · 24L', badge: 'Fulfilling', badgeClass: 'is-transit' },
+              { id: '#GRB-1047', cafe: 'Subko Roasters · 6pk', badge: 'Dispatched', badgeClass: 'is-dispatched' },
+              ...(large
+                ? [{ id: '#GRB-1046', cafe: 'Araku Coffee · 18kg', badge: 'Ready', badgeClass: 'is-new' }]
+                : []),
+            ].map((order, idx) => (
+              <div
+                key={order.id}
+                className={`mock-sup-row ${activeRow === idx ? 'is-selected' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveRow(activeRow === idx ? null : idx);
+                }}
+              >
+                <div className="mock-sup-row-left">
+                  <span className="mock-sup-order-id">{order.id}</span>
+                  <span className="mock-sup-order-cafe">{order.cafe}</span>
+                </div>
+                <span className={`mock-sup-badge ${order.badgeClass}`}>{order.badge}</span>
+              </div>
+            ))}
+          </div>
 
-    {/* Bottom Top-SKUs Feed */}
-    <div className="mock-brand-bottom-strip">
-      <div className="mock-brand-sku-row">
-        <span className="mock-brand-sku-name">Arabica Estate AA</span>
-        <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
-      </div>
-      <div className="mock-brand-sku-row">
-        <span className="mock-brand-sku-name">Barista Oat Milk</span>
-        <span className="mock-brand-sku-metric">64 cafés · 89% retention</span>
+          {/* Bottom Fleet Status Bar */}
+          <a
+            href={ECOSYSTEM_LINKS.suppliers}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mock-sup-bottom-strip is-clickable-fleet"
+            onClick={(e) => e.stopPropagation()}
+            title="Open Live Fleet Route on grabbit.io/supplier"
+          >
+            <div className="mock-sup-fleet-status">
+              <span className="mock-sup-fleet-dot" />
+              <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
+            </div>
+            <span className="mock-sup-eta">ETA 11:20 AM ↗</span>
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+const BrandPreview = ({ large = false }: { large?: boolean }) => {
+  const [hoveredBar, setHoveredBar] = useState<number | null>(null);
+
+  const bars = [
+    { height: 42, label: 'W1', value: '42 POs · ₹3.4L' },
+    { height: 60, label: 'W2', value: '60 POs · ₹4.9L' },
+    { height: 78, label: 'W3', value: '78 POs · ₹6.2L' },
+    { height: 95, label: 'W4', value: '95 POs · ₹7.8L' },
+    { height: 68, label: 'W5', value: '68 POs · ₹5.5L' },
+  ];
+
+  return (
+    <div className={`mock-preview-shell is-brand ${large ? 'is-large' : ''}`}>
+      {!large && (
+        <div className="eco-preview-chrome">
+          <div className="eco-preview-dots">
+            <div className="eco-preview-dot is-red" />
+            <div className="eco-preview-dot is-yellow" />
+            <div className="eco-preview-dot is-green" />
+          </div>
+          <a
+            href={ECOSYSTEM_LINKS.brands}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="eco-preview-address is-link"
+            onClick={(e) => e.stopPropagation()}
+            title="Visit grabbit.io/brand/intelligence"
+          >
+            <span className="eco-address-lock">🔒</span> grabbit.io/brand/intelligence <span className="eco-address-ext">↗</span>
+          </a>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="mock-brand-header">
+        <div className="mock-brand-title-wrap">
+          <div className="mock-brand-title">Café Adoption</div>
+          <div className="mock-brand-sub">Demand velocity</div>
+        </div>
+        <span className="mock-brand-period-pill">Last 30 days</span>
+      </div>
+
+      {/* Animated Bar Chart */}
+      <div className="mock-brand-chart">
+        {bars.map((bar, i) => (
+          <div
+            key={i}
+            className="mock-brand-bar-col"
+            onMouseEnter={() => setHoveredBar(i)}
+            onMouseLeave={() => setHoveredBar(null)}
+          >
+            {hoveredBar === i && <div className="mock-brand-tooltip">{bar.value}</div>}
+            <div className="mock-brand-bar">
+              <motion.div
+                className="mock-brand-bar-fill"
+                initial={{ height: '0%' }}
+                animate={{ height: `${bar.height}%` }}
+                transition={{ duration: 1.1, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </div>
+            <span className="mock-brand-bar-lbl">{bar.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Stats Row */}
+      <div className="mock-brand-stats">
+        <div className="mock-brand-stat-box">
+          <div className="mock-brand-stat-top">
+            <span className="mock-brand-stat-val">124</span>
+            <span className="mock-brand-stat-trend">+18.4%</span>
+          </div>
+          <div className="mock-brand-stat-lbl">Cafés Reached</div>
+        </div>
+        <div className="mock-brand-stat-box">
+          <div className="mock-brand-stat-top">
+            <span className="mock-brand-stat-val">25.0%</span>
+            <span className="mock-brand-stat-trend">+4.2%</span>
+          </div>
+          <div className="mock-brand-stat-lbl">Repeat POs</div>
+        </div>
+      </div>
+
+      {/* Bottom Top-SKUs Feed */}
+      <a
+        href={ECOSYSTEM_LINKS.brands}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mock-brand-bottom-strip is-clickable-brand"
+        onClick={(e) => e.stopPropagation()}
+        title="View SKU Intelligence on grabbit.io/brand"
+      >
+        <div className="mock-brand-sku-row">
+          <span className="mock-brand-sku-name">Arabica Estate AA</span>
+          <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
+        </div>
+        <div className="mock-brand-sku-row">
+          <span className="mock-brand-sku-name">Barista Oat Milk</span>
+          <span className="mock-brand-sku-metric">64 cafés · 89% retention ↗</span>
+        </div>
+      </a>
+    </div>
+  );
+};
 
 // ─── STAKEHOLDER CARDS CONFIG ───
 
@@ -305,6 +430,7 @@ const CARDS = [
     id: 'cafes',
     index: '01',
     title: 'CAFÉS',
+    tagline: 'THE SOURCING ENGINE',
     theme: 'cafe',
     color: '#E03527',
     desc: 'Run your café from sourcing to delivery.',
@@ -319,13 +445,14 @@ const CARDS = [
       'Consolidated monthly supplier invoices',
     ],
     link: ECOSYSTEM_LINKS.cafes,
-    miniPreview: (onOpen: () => void) => <CafePreview onOpen={onOpen} />,
+    miniPreview: (onOpen?: () => void) => <CafePreview onOpen={onOpen} />,
     largePreview: <CafePreview large />,
   },
   {
     id: 'suppliers',
     index: '02',
     title: 'SUPPLIERS',
+    tagline: 'THE DISPATCH NETWORK',
     theme: 'supplier',
     color: '#22C55E',
     desc: 'Receive wholesale orders and manage dispatch.',
@@ -347,6 +474,7 @@ const CARDS = [
     id: 'brands',
     index: '03',
     title: 'BRANDS',
+    tagline: 'THE DEMAND RADAR',
     theme: 'brand',
     color: '#6D28D9',
     desc: 'Understand café adoption and distribution.',
@@ -366,17 +494,76 @@ const CARDS = [
   },
 ];
 
-const springTransition = {
-  type: 'spring',
-  stiffness: 300,
-  damping: 28,
+// ─── TAB WINDOW ANIMATION VARIANTS (macOS MINIMIZE & EXPAND MOTION) ───
+
+interface OriginPoint {
+  x: number;
+  y: number;
+  scale: number;
+}
+
+const overlayVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.24, ease: 'easeOut' } },
+  exit: { opacity: 0, transition: { duration: 0.28, delay: 0.04, ease: 'easeIn' } },
+};
+
+const tabWindowVariants = {
+  initial: (origin: OriginPoint) => ({
+    opacity: 0,
+    x: origin?.x ?? 0,
+    y: origin?.y ?? 20,
+    scale: origin?.scale ?? 0.35,
+    rotateX: 10,
+    rotateY: origin?.x && origin.x > 0 ? -4 : 4,
+    borderRadius: 32,
+    filter: 'blur(16px)',
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    rotateY: 0,
+    borderRadius: 20,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 360,
+      damping: 32,
+      mass: 0.8,
+    },
+  },
+  exit: (origin: OriginPoint) => ({
+    opacity: 0,
+    x: origin?.x ?? 0,
+    y: origin?.y ?? 0,
+    scale: origin?.scale ?? 0.35,
+    scaleY: (origin?.scale ?? 0.35) * 0.85,
+    rotateX: 8,
+    borderRadius: 32,
+    filter: 'blur(12px)',
+    transition: {
+      type: 'spring',
+      stiffness: 450,
+      damping: 40,
+      mass: 0.8,
+    },
+  }),
 };
 
 // ─── MAIN COMPONENT ───
 
 export function EcosystemCards() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [originPoint, setOriginPoint] = useState<OriginPoint>({ x: 0, y: 0, scale: 0.35 });
+  const [mounted, setMounted] = useState<boolean>(false);
   const isReduced = useReducedMotion();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Prevent background scrolling and manage Lenis virtual scroll
   useEffect(() => {
@@ -396,24 +583,79 @@ export function EcosystemCards() {
     };
   }, [activeCardId]);
 
-  // Close on Escape key
+  // Capture the clicked card's exact viewport coordinates for origin-anchored minimize/expand
+  const openCard = (id: string, e?: React.MouseEvent) => {
+    if (typeof window !== 'undefined') {
+      let rect: DOMRect | null = null;
+      if (e?.currentTarget) {
+        const cardEl = (e.currentTarget as HTMLElement).closest('.eco-card') as HTMLElement | null;
+        if (cardEl) rect = cardEl.getBoundingClientRect();
+      }
+      if (!rect) {
+        const cardEl = document.querySelector(`[data-eco-card-id="${id}"]`);
+        if (cardEl) rect = cardEl.getBoundingClientRect();
+      }
+
+      if (rect) {
+        const cardCenterX = rect.left + rect.width / 2;
+        const cardCenterY = rect.top + rect.height / 2;
+        const screenCenterX = window.innerWidth / 2;
+        const screenCenterY = window.innerHeight / 2;
+        setOriginPoint({
+          x: Math.round(cardCenterX - screenCenterX),
+          y: Math.round(cardCenterY - screenCenterY),
+          scale: Math.max(0.24, Math.min(0.42, rect.width / 1120)),
+        });
+      }
+    }
+    setActiveCardId(id);
+  };
+
+  // Switch tabs inside the open window and update the minimize target to the new tab's card
+  const switchPlatformTab = (newId: string) => {
+    setActiveCardId(newId);
+    if (typeof window !== 'undefined') {
+      const cardEl = document.querySelector(`[data-eco-card-id="${newId}"]`);
+      if (cardEl) {
+        const rect = cardEl.getBoundingClientRect();
+        const cardCenterX = rect.left + rect.width / 2;
+        const cardCenterY = rect.top + rect.height / 2;
+        const screenCenterX = window.innerWidth / 2;
+        const screenCenterY = window.innerHeight / 2;
+        setOriginPoint({
+          x: Math.round(cardCenterX - screenCenterX),
+          y: Math.round(cardCenterY - screenCenterY),
+          scale: Math.max(0.24, Math.min(0.42, rect.width / 1120)),
+        });
+      }
+    }
+  };
+
+  // Close / minimize window back into the card
+  const closeCard = () => {
+    setActiveCardId(null);
+  };
+
+  // Close on Escape key or switch tabs on 1, 2, 3
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setActiveCardId(null);
+      if (e.key === 'Escape' && activeCardId) {
+        closeCard();
+      } else if (activeCardId) {
+        if (e.key === '1') switchPlatformTab('cafes');
+        if (e.key === '2') switchPlatformTab('suppliers');
+        if (e.key === '3') switchPlatformTab('brands');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [activeCardId]);
 
-  const openCard = (id: string) => {
-    setActiveCardId(id);
-  };
+  const activeCard = CARDS.find((c) => c.id === activeCardId) || CARDS[0];
 
   return (
     <section className="eco-section" id="ecosystem-cards" aria-label="The Grabbit Ecosystem">
-      <div className="eco-container">
+      <div className="eco-cards-container eco-container">
         {/* Section Header */}
         <motion.div
           className="eco-header"
@@ -433,6 +675,7 @@ export function EcosystemCards() {
         <div className="eco-grid">
           {CARDS.map((card, i) => {
             const isDimmed = activeCardId !== null && activeCardId !== card.id;
+            const isActive = activeCardId === card.id;
 
             return (
               <motion.div
@@ -444,11 +687,12 @@ export function EcosystemCards() {
                 transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div
-                  className={`eco-card ${isDimmed ? 'is-dimmed' : ''}`}
-                  onClick={() => openCard(card.id)}
+                  className={`eco-card ${isDimmed ? 'is-dimmed' : ''} ${isActive ? 'is-active-tab' : ''}`}
+                  data-eco-card-id={card.id}
+                  onClick={(e) => openCard(card.id, e)}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Open ${card.title} platform overview`}
+                  aria-label={`Open ${card.title} platform tab`}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
@@ -466,22 +710,52 @@ export function EcosystemCards() {
                     </div>
 
                     {/* Rich Mini UI Mockup */}
-                    <div className="eco-preview-container">
+                    <div
+                      className="eco-preview-container"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openCard(card.id, e);
+                      }}
+                    >
                       {card.miniPreview(() => openCard(card.id))}
+
+                      {/* Floating tactile hover badge indicating tab expansion */}
+                      <div className="eco-card-hover-pill">
+                        <span className="eco-hover-icon">↗</span> Click to Expand Tab
+                      </div>
                     </div>
 
-                    {/* Bottom Metadata & Working Open Button */}
+                    {/* Bottom Metadata & Working Direct Platform Link */}
                     <div className="eco-card-bottom">
                       <h3 className="eco-card-title">{card.title}</h3>
                       <p className="eco-card-desc">{card.desc}</p>
 
-                      <button
-                        type="button"
-                        className={`eco-card-cta ${card.theme}-cta`}
-                        title={`Open ${card.title} platform preview`}
-                      >
-                        VISIT {card.title} PLATFORM <span className="arrow">→</span>
-                      </button>
+                      <div className="eco-card-actions">
+                        {/* Direct link to that specific platform */}
+                        <a
+                          href={card.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`eco-card-cta ${card.theme}-cta`}
+                          onClick={(e) => e.stopPropagation()}
+                          title={`Go directly to ${card.title} platform website`}
+                        >
+                          VISIT {card.title} PLATFORM <span className="arrow">→</span>
+                        </a>
+
+                        {/* Secondary click badge to expand tab */}
+                        <button
+                          type="button"
+                          className="eco-card-preview-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCard(card.id, e);
+                          }}
+                          title="Expand interactive tab"
+                        >
+                          <span>Expand Tab ↗</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -491,106 +765,179 @@ export function EcosystemCards() {
         </div>
       </div>
 
-      {/* Expanded Interactive Window Overlay */}
-      <AnimatePresence>
-        {activeCardId && (
-          <motion.div
-            className="eco-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            onClick={() => setActiveCardId(null)}
-          >
-            {/* Expanded Modal Window */}
+      {/* Expanded Interactive macOS Tab Window Rendered in Portal */}
+      {mounted && typeof document !== 'undefined' && createPortal(
+        <AnimatePresence custom={originPoint}>
+          {activeCardId && (
             <motion.div
-              className="eco-expanded-window"
-              initial={{ scale: 0.94, opacity: 0, y: 16 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              transition={springTransition}
-              onClick={(e) => e.stopPropagation()}
+              className="eco-tab-overlay"
+              variants={overlayVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              onClick={closeCard}
             >
-              {/* Window Chrome & Tabs */}
-              <div className="eco-expanded-chrome">
-                <div className="eco-expanded-tabs">
-                  {CARDS.map((c) => (
+              {/* Dynamic ambient color glow */}
+              <div
+                className="eco-tab-ambient-glow"
+                style={{
+                  background: `radial-gradient(ellipse at 50% 30%, ${activeCard.color}24 0%, ${activeCard.color}06 50%, transparent 75%)`,
+                }}
+              />
+
+              <motion.div
+                className="eco-tab-window"
+                custom={originPoint}
+                variants={tabWindowVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* ─── SLEEK macOS TITLEBAR ─── */}
+                <div className="eco-tab-titlebar">
+                  {/* Left: Authentic Traffic Lights */}
+                  <div className="eco-traffic-lights">
                     <button
-                      key={c.id}
                       type="button"
-                      className={`eco-expanded-tab ${activeCardId === c.id ? 'is-active' : ''}`}
-                      onClick={() => setActiveCardId(c.id)}
+                      className="eco-traffic-dot is-close"
+                      onClick={closeCard}
+                      title="Close tab (Esc)"
+                      aria-label="Close tab"
                     >
-                      <span>{c.index}</span> {c.title}
-                      {activeCardId === c.id && (
-                        <motion.div
-                          layoutId="active-tab-indicator"
-                          className="eco-expanded-tab-indicator"
-                          style={{ background: c.color }}
-                          transition={springTransition}
-                        />
-                      )}
+                      <span className="eco-traffic-symbol">✕</span>
                     </button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="eco-close-btn"
-                  onClick={() => setActiveCardId(null)}
-                  aria-label="Close preview"
-                >
-                  <Icon.X size={16} />
-                </button>
-              </div>
+                    <button
+                      type="button"
+                      className="eco-traffic-dot is-minimize"
+                      onClick={closeCard}
+                      title="Minimize tab back to card (Esc)"
+                      aria-label="Minimize tab"
+                    >
+                      <span className="eco-traffic-symbol">−</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="eco-traffic-dot is-expand"
+                      onClick={() => window.open(activeCard.link, '_blank')}
+                      title={`Open ${activeCard.link} in new window`}
+                      aria-label="Open in new window"
+                    >
+                      <span className="eco-traffic-symbol">↗</span>
+                    </button>
+                  </div>
 
-              {/* Modal Body */}
-              <div className="eco-expanded-content">
-                {/* Left Overview Column */}
-                <div className="eco-expanded-sidebar">
-                  <h3>{CARDS.find((c) => c.id === activeCardId)?.expandedTitle}</h3>
-                  <p>{CARDS.find((c) => c.id === activeCardId)?.expandedDesc}</p>
-
-                  <div className="eco-expanded-features">
-                    {CARDS.find((c) => c.id === activeCardId)?.features.map((feature, i) => (
-                      <div key={i} className="eco-feature-item">
-                        <div
-                          className="eco-feature-icon"
-                          style={{
-                            background: `${CARDS.find((c) => c.id === activeCardId)?.color}15`,
-                            color: CARDS.find((c) => c.id === activeCardId)?.color,
-                          }}
+                  {/* Center: Segmented Platform Switcher */}
+                  <div className="eco-tab-switcher">
+                    {CARDS.map((c) => {
+                      const isActive = activeCardId === c.id;
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          className={`eco-tab-pill ${isActive ? 'is-active' : ''}`}
+                          onClick={() => switchPlatformTab(c.id)}
                         >
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                        </div>
-                        <span>{feature}</span>
+                          <span className="eco-tab-pill-dot" style={{ background: c.color }} />
+                          <span className="eco-tab-pill-idx">{c.index}</span>
+                          <span className="eco-tab-pill-title">{c.title}</span>
+                          {isActive && (
+                            <motion.div
+                              layoutId="eco-tab-pill-indicator"
+                              className="eco-tab-pill-indicator"
+                              transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Right: Clean Minimal Address Pill & Esc Hint */}
+                  <div className="eco-tab-titlebar-right">
+                    <a
+                      href={activeCard.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="eco-tab-url-pill"
+                      title={`Open live website: ${activeCard.link}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span className="eco-url-lock">🔒</span>
+                      <span className="eco-url-text">{activeCard.link.replace('https://', '')}</span>
+                      <span className="eco-url-arrow">↗</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      className="eco-tab-esc-badge"
+                      onClick={closeCard}
+                      title="Minimize tab (Esc)"
+                    >
+                      <span>esc</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* ─── STAGE: MINIMAL PANORAMIC CANVAS ─── */}
+                <div className="eco-tab-stage-panoramic">
+                  {/* Context Header Strip */}
+                  <div className="eco-tab-header-strip">
+                    <div className="eco-strip-left">
+                      <div className="eco-strip-eyebrow" style={{ color: activeCard.color }}>
+                        {activeCard.index} · {activeCard.tagline}
                       </div>
-                    ))}
+                      <h3 className="eco-strip-heading">{activeCard.expandedTitle}</h3>
+                      <p className="eco-strip-desc">{activeCard.expandedDesc}</p>
+                    </div>
+
+                    <div className="eco-strip-right">
+                      <div className="eco-strip-chips">
+                        {activeCard.features.slice(0, 3).map((feat, idx) => (
+                          <div key={idx} className="eco-strip-chip">
+                            <span className="eco-chip-dot" style={{ background: activeCard.color }} />
+                            <span>{feat}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <a
+                        href={activeCard.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="eco-strip-visit-link"
+                        style={{ color: activeCard.color, borderColor: `${activeCard.color}40` }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span>Visit {activeCard.title} Platform</span>
+                        <span className="arrow">↗</span>
+                      </a>
+                    </div>
                   </div>
 
-                  <a
-                    href={CARDS.find((c) => c.id === activeCardId)?.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="eco-expanded-cta"
-                    style={{ background: CARDS.find((c) => c.id === activeCardId)?.color }}
-                  >
-                    LAUNCH {CARDS.find((c) => c.id === activeCardId)?.title} APP ↗
-                  </a>
-                </div>
-
-                {/* Right Interactive Mockup Stage */}
-                <div className="eco-expanded-main">
-                  <div className="eco-large-preview">
-                    {CARDS.find((c) => c.id === activeCardId)?.largePreview}
+                  {/* Wide Interactive Workspace Viewport */}
+                  <div className="eco-tab-panoramic-workspace">
+                    {activeCard.largePreview}
                   </div>
                 </div>
-              </div>
+
+                {/* ─── FOOTER STATUSBAR ─── */}
+                <div className="eco-tab-statusbar">
+                  <div className="eco-status-left">
+                    <span className="eco-status-live-dot" />
+                    <span>Live Workspace · {activeCard.link.replace('https://', '')}</span>
+                    <span className="eco-status-sep">·</span>
+                    <span className="eco-status-shortcut">Shortcuts: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> switch tabs</span>
+                  </div>
+                  <div className="eco-status-right">
+                    <span>Click yellow button (−) or press <kbd>ESC</kbd> to minimize tab</span>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 }

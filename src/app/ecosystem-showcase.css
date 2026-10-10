@@ -2766,3 +2766,116 @@
   }
 }
 
+/* ═════════════════════════════════════════════════════════════════════
+   ECOSYSTEM SHOWCASE 3-SCREEN VIDEO TOUR & TRAVELING BORDER BEAMS
+═════════════════════════════════════════════════════════════════════ */
+
+/* ─── Video Containers & Media Styling ─── */
+.eco-video-body {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 30px);
+  background: #0B0D13;
+  overflow: hidden;
+  border-radius: 0 0 14px 14px;
+}
+
+.eco-dashboard-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #0B0D13;
+}
+
+.eco-video-phone-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #0B0C0E;
+  overflow: hidden;
+  border-radius: 36px;
+}
+
+.eco-mobile-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 36px;
+  background: #0B0C0E;
+}
+
+/* ─── Active Screen Transitions & 3D Pop ─── */
+.eco-browser-window.is-video-active .eco-device-scaler {
+  box-shadow: 0 28px 75px rgba(0, 0, 0, 0.28), 0 8px 24px rgba(0, 0, 0, 0.12);
+  filter: none !important;
+  opacity: 1 !important;
+  transform: scale(1.03) translateY(-4px) !important;
+}
+
+.eco-browser-window.eco-screen-supplier.is-video-active .eco-device-scaler {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.eco-browser-window.eco-screen-brand.is-video-active .eco-device-scaler {
+  border-color: rgba(139, 92, 246, 0.45);
+}
+
+.eco-screen-mobile.is-video-active .eco-phone-chassis {
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.24),
+    0 0 0 1px #181A1F,
+    0 4px 14px rgba(229, 72, 59, 0.25),
+    0 20px 48px rgba(0, 0, 0, 0.25),
+    0 28px 60px rgba(0, 0, 0, 0.18);
+  transform: scale(1.03) translateY(-4px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.eco-browser-window:not(.is-video-active):not(:hover) .eco-device-scaler {
+  opacity: 0.90;
+}
+
+.eco-screen-mobile:not(.is-video-active):not(:hover) .eco-phone-chassis {
+  opacity: 0.92;
+}
+
+/* ─── Traveling Border Beam Ray Animations ─── */
+.eco-border-beam-container {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  pointer-events: none;
+  z-index: 60;
+  overflow: visible;
+}
+
+.eco-border-beam-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+
+@keyframes ecoRayCirculate {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.eco-beam-glow-trace {
+  animation: ecoRayCirculate 3.4s linear infinite;
+}
+
+.eco-beam-core-ray {
+  animation: ecoRayCirculate 3.4s linear infinite;
+}
+
+.eco-beam-spark-tip {
+  animation: ecoRayCirculate 3.4s linear infinite;
+}

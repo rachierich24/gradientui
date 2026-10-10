@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 type Edge = 'l' | 'r' | 't' | 'b';
 
@@ -15,18 +15,21 @@ interface LinkDef {
   stakeholder: 'cafe' | 'supplier' | 'brand' | 'neutral';
   color: string;
   secondary?: boolean;
+  hasTriplePort?: boolean;
 }
 
-interface BracketDef {
-  id: string;
-  edge: Edge;
-  stakeholder: 'cafe' | 'supplier' | 'brand' | 'neutral';
+interface PulseEffect {
+  id: number;
+  x: number;
+  y: number;
+  color: string;
 }
 
 // Color tokens
 const COLOR_CAFE = '#E5483B';
 const COLOR_SUPPLIER = '#22C55E';
 const COLOR_BRAND = '#6D28D9';
+const COLOR_GRABBIT = '#266DF0';
 const COLOR_NEUTRAL = '#D9D9D2';
 
 // Purely orthogonal links — absolutely ZERO diagonals!
@@ -42,6 +45,7 @@ const GRAPH_LINKS: LinkDef[] = [
     midSplit: 0.5,
     stakeholder: 'cafe',
     color: COLOR_CAFE,
+    hasTriplePort: true,
   },
   {
     id: 'link-orders-demand',
@@ -77,6 +81,7 @@ const GRAPH_LINKS: LinkDef[] = [
     midSplit: 0.5,
     stakeholder: 'supplier',
     color: COLOR_SUPPLIER,
+    hasTriplePort: true,
   },
   {
     id: 'link-routing-supplier',
@@ -121,6 +126,7 @@ const GRAPH_LINKS: LinkDef[] = [
     midSplit: 0.5,
     stakeholder: 'supplier',
     color: COLOR_SUPPLIER,
+    hasTriplePort: true,
   },
 
   // ─── FLOW 03: GRABBIT → DEMAND SIGNALS → BRAND → ADOPTION → REPEAT ORDERS → GMV (PURPLE) ───
@@ -134,6 +140,7 @@ const GRAPH_LINKS: LinkDef[] = [
     midSplit: 0.5,
     stakeholder: 'brand',
     color: COLOR_BRAND,
+    hasTriplePort: true,
   },
   {
     id: 'link-signals-brand',
@@ -156,6 +163,7 @@ const GRAPH_LINKS: LinkDef[] = [
     midSplit: 0.5,
     stakeholder: 'brand',
     color: COLOR_BRAND,
+    hasTriplePort: true,
   },
   {
     id: 'link-repeat-adoption',
@@ -179,7 +187,6 @@ const GRAPH_LINKS: LinkDef[] = [
     stakeholder: 'brand',
     color: COLOR_BRAND,
   },
-  // ─── FLOW 04: NETWORK RETURN / DOWNSTREAM GMV ACTIVITY → GRABBIT CORE ───
   {
     id: 'link-gmv-grabbit',
     from: 'port-gmv-t',
@@ -206,6 +213,18 @@ const GRAPH_LINKS: LinkDef[] = [
     secondary: true,
   },
   {
+    id: 'link-routing-fulfillment-bridge',
+    from: 'port-routing-l',
+    to: 'port-fulfillment-r',
+    fromEdge: 'l',
+    toEdge: 'r',
+    startDir: 'h',
+    midSplit: 0.5,
+    stakeholder: 'neutral',
+    color: COLOR_NEUTRAL,
+    secondary: true,
+  },
+  {
     id: 'link-dispatch-gmv-bridge',
     from: 'port-dispatch-r',
     to: 'port-gmv-l',
@@ -219,98 +238,546 @@ const GRAPH_LINKS: LinkDef[] = [
   },
 ];
 
-// Ports equipped with the Attio 3-dot bracket socket system
-const BRACKET_PORT_CONFIGS: BracketDef[] = [
-  { id: 'port-cafe-r', edge: 'r', stakeholder: 'cafe' },
-  { id: 'port-orders-l', edge: 'l', stakeholder: 'cafe' },
-  { id: 'port-orders-b', edge: 'b', stakeholder: 'cafe' },
-  { id: 'port-demand-t', edge: 't', stakeholder: 'cafe' },
-  { id: 'port-routing-r', edge: 'r', stakeholder: 'supplier' },
-  { id: 'port-supplier-r', edge: 'r', stakeholder: 'supplier' },
-  { id: 'port-dispatch-l', edge: 'l', stakeholder: 'supplier' },
-  { id: 'port-supplier-l', edge: 'l', stakeholder: 'supplier' },
-  { id: 'port-signals-l', edge: 'l', stakeholder: 'brand' },
-  { id: 'port-brand-l', edge: 'l', stakeholder: 'brand' },
-  { id: 'port-gmv-r', edge: 'r', stakeholder: 'brand' },
-  { id: 'port-brand-r', edge: 'r', stakeholder: 'brand' },
-];
-
+// Helper to generate orthogonal paths with filleted 90-degree corner arcs
 function createOrthogonalPath(
   x1: number,
   y1: number,
   x2: number,
   y2: number,
   startDir: 'h' | 'v',
-  midSplit = 0.5,
-  r = 14
+  splitRatio = 0.5,
+  radius = 14
 ): string {
-  if (Math.abs(y1 - y2) < 2) return `M ${x1} ${y1} L ${x2} ${y2}`;
-  if (Math.abs(x1 - x2) < 2) return `M ${x1} ${y1} L ${x2} ${y2}`;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+
+  if (Math.abs(dx) < 1) return `M ${x1} ${y1} L ${x2} ${y2}`;
+  if (Math.abs(dy) < 1) return `M ${x1} ${y1} L ${x2} ${y2}`;
 
   if (startDir === 'h') {
-    const mx = x1 + (x2 - x1) * midSplit;
-    const sx1 = Math.sign(mx - x1);
-    const sy = Math.sign(y2 - y1);
-    const sx2 = Math.sign(x2 - mx);
-    const radius = Math.min(r, Math.abs(mx - x1) / 2, Math.abs(x2 - mx) / 2, Math.abs(y2 - y1) / 2);
+    const midX = x1 + dx * splitRatio;
+    const r1 = Math.min(radius, Math.abs(dx * splitRatio), Math.abs(dy));
+    const r2 = Math.min(radius, Math.abs(dx * (1 - splitRatio)), Math.abs(dy));
+    const signX = dx > 0 ? 1 : -1;
+    const signY = dy > 0 ? 1 : -1;
 
-    return [
-      `M ${x1} ${y1}`,
-      `L ${mx - sx1 * radius} ${y1}`,
-      `Q ${mx} ${y1} ${mx} ${y1 + sy * radius}`,
-      `L ${mx} ${y2 - sy * radius}`,
-      `Q ${mx} ${y2} ${mx + sx2 * radius} ${y2}`,
-      `L ${x2} ${y2}`,
-    ].join(' ');
+    return (
+      `M ${x1} ${y1} ` +
+      `L ${midX - signX * r1} ${y1} ` +
+      `A ${r1} ${r1} 0 0 ${dx * dy > 0 ? 1 : 0} ${midX} ${y1 + signY * r1} ` +
+      `L ${midX} ${y2 - signY * r2} ` +
+      `A ${r2} ${r2} 0 0 ${dx * dy > 0 ? 0 : 1} ${midX + signX * r2} ${y2} ` +
+      `L ${x2} ${y2}`
+    );
   } else {
-    const my = y1 + (y2 - y1) * midSplit;
-    const sy1 = Math.sign(my - y1);
-    const sx = Math.sign(x2 - x1);
-    const sy2 = Math.sign(y2 - my);
-    const radius = Math.min(r, Math.abs(my - y1) / 2, Math.abs(y2 - my) / 2, Math.abs(x2 - x1) / 2);
+    const midY = y1 + dy * splitRatio;
+    const r1 = Math.min(radius, Math.abs(dy * splitRatio), Math.abs(dx));
+    const r2 = Math.min(radius, Math.abs(dy * (1 - splitRatio)), Math.abs(dx));
+    const signX = dx > 0 ? 1 : -1;
+    const signY = dy > 0 ? 1 : -1;
 
-    return [
-      `M ${x1} ${y1}`,
-      `L ${x1} ${my - sy1 * radius}`,
-      `Q ${x1} ${my} ${x1 + sx * radius} ${my}`,
-      `L ${x2 - sx * radius} ${my}`,
-      `Q ${x2} ${my} ${x2} ${my + sy2 * radius}`,
-      `L ${x2} ${y2}`,
-    ].join(' ');
+    return (
+      `M ${x1} ${y1} ` +
+      `L ${x1} ${midY - signY * r1} ` +
+      `A ${r1} ${r1} 0 0 ${dx * dy > 0 ? 0 : 1} ${x1 + signX * r1} ${midY} ` +
+      `L ${x2 - signX * r2} ${midY} ` +
+      `A ${r2} ${r2} 0 0 ${dx * dy > 0 ? 1 : 0} ${x2} ${midY + signY * r2} ` +
+      `L ${x2} ${y2}`
+    );
   }
 }
 
-function createBracketCurve(x: number, y: number, edge: Edge, span = 12, depth = 9, r = 5): string {
-  if (edge === 'r') {
-    return `M ${x} ${y - span} L ${x + depth - r} ${y - span} Q ${x + depth} ${y - span} ${x + depth} ${y - span + r} L ${x + depth} ${y + span - r} Q ${x + depth} ${y + span} ${x + depth - r} ${y + span} L ${x} ${y + span}`;
+// ─── EXACT ATTIO DIRECTION-AWARE BORDER BEAM PATH ───
+// The ray starts at the incoming port and circumnavigates the card
+function getDirectionalBorderBeamPath(w: number, h: number, r = 12, startEdge: Edge = 'l') {
+  if (startEdge === 'l') {
+    return `M 0.5 ${h / 2} L 0.5 ${r} A ${r} ${r} 0 0 1 ${r} 0.5 L ${w - r} 0.5 A ${r} ${r} 0 0 1 ${w - 0.5} ${r} L ${w - 0.5} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h - 0.5} L ${r} ${h - 0.5} A ${r} ${r} 0 0 1 0.5 ${h - r} L 0.5 ${h / 2}`;
   }
-  if (edge === 'l') {
-    return `M ${x} ${y - span} L ${x - depth + r} ${y - span} Q ${x - depth} ${y - span} ${x - depth} ${y - span + r} L ${x - depth} ${y + span - r} Q ${x - depth} ${y + span} ${x - depth + r} ${y + span} L ${x} ${y + span}`;
+  if (startEdge === 'r') {
+    return `M ${w - 0.5} ${h / 2} L ${w - 0.5} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h - 0.5} L ${r} ${h - 0.5} A ${r} ${r} 0 0 1 0.5 ${h - r} L 0.5 ${r} A ${r} ${r} 0 0 1 ${r} 0.5 L ${w - r} 0.5 A ${r} ${r} 0 0 1 ${w - 0.5} ${r} L ${w - 0.5} ${h / 2}`;
   }
-  if (edge === 'b') {
-    return `M ${x - span} ${y} L ${x - span} ${y + depth - r} Q ${x - span} ${y + depth} ${x - span + r} ${y + depth} L ${x + span - r} ${y + depth} Q ${x + span} ${y + depth} ${x + span} ${y + depth - r} L ${x + span} ${y}`;
+  if (startEdge === 't') {
+    return `M ${w / 2} 0.5 L ${w - r} 0.5 A ${r} ${r} 0 0 1 ${w - 0.5} ${r} L ${w - 0.5} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h - 0.5} L ${r} ${h - 0.5} A ${r} ${r} 0 0 1 0.5 ${h - r} L 0.5 ${r} A ${r} ${r} 0 0 1 ${r} 0.5 L ${w / 2} 0.5`;
   }
-  return `M ${x - span} ${y} L ${x - span} ${y - depth + r} Q ${x - span} ${y - depth} ${x - span + r} ${y - depth} L ${x + span - r} ${y - depth} Q ${x + span} ${y - depth} ${x + span} ${y - depth + r} L ${x + span} ${y}`;
+  return `M ${w / 2} ${h - 0.5} L ${r} ${h - 0.5} A ${r} ${r} 0 0 1 0.5 ${h - r} L 0.5 ${r} A ${r} ${r} 0 0 1 ${r} 0.5 L ${w - r} 0.5 A ${r} ${r} 0 0 1 ${w - 0.5} ${r} L ${w - 0.5} ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h - 0.5} L ${w / 2} ${h - 0.5}`;
 }
 
-interface ComputedBracket {
-  id: string;
-  x: number;
-  y: number;
-  edge: Edge;
-  stakeholder: 'cafe' | 'supplier' | 'brand' | 'neutral';
-  curvePath: string;
-  dot1: [number, number];
-  dot2: [number, number];
-  dot3: [number, number];
-}
-
-interface PulseEffect {
-  id: string;
-  x: number;
-  y: number;
+// ─── BORDER BEAM COMPONENT (MINIMAL & PRECISE PERIMETER RAY) ───
+function CardBorderRay({
+  width,
+  height,
+  radius = 12,
+  startEdge = 'l',
+  color,
+  isDrawing,
+  drawProgress,
+  isCompleted,
+}: {
+  width: number;
+  height: number;
+  radius?: number;
+  startEdge?: Edge;
   color: string;
+  isDrawing: boolean;
+  drawProgress: number; // 0 to 1
+  isCompleted: boolean;
+}) {
+  if (width <= 0 || height <= 0 || (!isDrawing && !isCompleted)) return null;
+
+  const d = getDirectionalBorderBeamPath(width, height, radius, startEdge);
+  const offset = isCompleted ? 0 : 1000 * (1 - Math.min(1, Math.max(0, drawProgress)));
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
+      className="attio-card-beam-svg"
+      aria-hidden="true"
+    >
+      {/* 1. Permanent solid border left behind by the traveling ray */}
+      <path
+        d={d}
+        pathLength={1000}
+        stroke={color}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray={1000}
+        strokeDashoffset={offset}
+        className="attio-beam-solid-trace"
+        style={{
+          stroke: color,
+        }}
+      />
+
+      {/* 2. Traveling ray head (clean & crisp subtle glow) */}
+      {isDrawing && drawProgress < 0.995 && (
+        <path
+          d={d}
+          pathLength={1000}
+          stroke={color}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="80 920"
+          strokeDashoffset={offset}
+          className="attio-beam-ray-head"
+          style={{
+            filter: `drop-shadow(0 0 3px ${color})`,
+          }}
+        />
+      )}
+
+      {/* 3. White spark tip leading the ray */}
+      {isDrawing && drawProgress < 0.995 && (
+        <path
+          d={d}
+          pathLength={1000}
+          stroke="#FFFFFF"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="18 982"
+          strokeDashoffset={offset}
+          className="attio-beam-ray-core"
+          style={{
+            stroke: '#FFFFFF',
+            filter: 'drop-shadow(0 0 2px #FFFFFF)',
+          }}
+        />
+      )}
+    </svg>
+  );
 }
+
+// Attio Circular Socket Port Component
+function SocketPort({
+  edge,
+  color,
+  isActive,
+}: {
+  edge: 'l' | 'r' | 't' | 'b';
+  color: string;
+  isActive: boolean;
+}) {
+  const edgeClass = edge === 'l' ? 'is-left' : edge === 'r' ? 'is-right' : edge === 't' ? 'is-top' : 'is-bottom';
+  return (
+    <div className={`attio-socket-port ${edgeClass} ${isActive ? 'is-active' : ''}`}>
+      <span
+        className="attio-socket-inner-dot"
+        style={{
+          backgroundColor: isActive ? color : '#CDCED2',
+          boxShadow: isActive ? `0 0 6px ${color}` : 'none',
+        }}
+      />
+    </div>
+  );
+}
+
+// Triple Socket Port Component
+function TripleSocketPort({
+  edge,
+  color,
+  isActive,
+}: {
+  edge: 'l' | 'r' | 't' | 'b';
+  color: string;
+  isActive: boolean;
+}) {
+  const edgeClass = edge === 'l' ? 'is-left' : edge === 'r' ? 'is-right' : edge === 't' ? 'is-top' : 'is-bottom';
+  return (
+    <div className={`attio-socket-port triple-port ${edgeClass} ${isActive ? 'is-active' : ''}`}>
+      <span
+        className="attio-socket-inner-dot"
+        style={{
+          backgroundColor: isActive ? color : '#CDCED2',
+          boxShadow: isActive ? `0 0 6px ${color}` : 'none',
+        }}
+      />
+      <span
+        className="attio-socket-inner-dot triple-dot-2"
+        style={{
+          backgroundColor: isActive ? color : '#CDCED2',
+          boxShadow: isActive ? `0 0 6px ${color}` : 'none',
+        }}
+      />
+      <span
+        className="attio-socket-inner-dot triple-dot-3"
+        style={{
+          backgroundColor: isActive ? color : '#CDCED2',
+          boxShadow: isActive ? `0 0 6px ${color}` : 'none',
+        }}
+      />
+    </div>
+  );
+}
+
+// Pipeline Step Type
+type StepItem =
+  | {
+    type: 'node';
+    nodeId: string;
+    color: string;
+    duration: number;
+    startEdge: Edge;
+    phase: 1 | 2 | 3 | 4;
+    stakeholder: 'cafe' | 'supplier' | 'brand' | 'grabbit';
+    metricPulse?: string;
+    activeText: string;
+    completedText: string;
+  }
+  | {
+    type: 'wire';
+    wireId: string;
+    color: string;
+    duration: number;
+    phase: 1 | 2 | 3 | 4;
+    departPort?: string;
+    arrivePort?: string;
+  };
+
+const PIPELINE_SEQUENCE: StepItem[] = [
+  // ── PHASE 1: CAFÉ DEMAND ──
+  {
+    type: 'node',
+    nodeId: 'node-cafe',
+    color: COLOR_CAFE,
+    duration: 1500,
+    startEdge: 'r',
+    phase: 1,
+    stakeholder: 'cafe',
+    activeText: 'Emitting Demand...',
+    completedText: 'Demand Live',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-cafe-orders',
+    color: COLOR_CAFE,
+    duration: 1100,
+    phase: 1,
+    departPort: 'port-cafe-r',
+    arrivePort: 'port-orders-l',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-orders',
+    color: COLOR_CAFE,
+    duration: 1200,
+    startEdge: 'l',
+    phase: 1,
+    stakeholder: 'cafe',
+    metricPulse: 'orders',
+    activeText: 'Verifying PO...',
+    completedText: 'Verified',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-orders-demand',
+    color: COLOR_CAFE,
+    duration: 1000,
+    phase: 1,
+    departPort: 'port-orders-b',
+    arrivePort: 'port-demand-t',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-demand',
+    color: COLOR_CAFE,
+    duration: 1200,
+    startEdge: 't',
+    phase: 1,
+    stakeholder: 'cafe',
+    metricPulse: 'demand',
+    activeText: 'Aggregating...',
+    completedText: '+18.4% Surge',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-demand-grabbit',
+    color: COLOR_CAFE,
+    duration: 1150,
+    phase: 1,
+    departPort: 'port-demand-b',
+    arrivePort: 'port-grabbit-t',
+  },
+
+  // ── PHASE 2: GRABBIT CORE PROCESSING ──
+  {
+    type: 'node',
+    nodeId: 'node-grabbit',
+    color: COLOR_GRABBIT,
+    duration: 1650,
+    startEdge: 't',
+    phase: 2,
+    stakeholder: 'grabbit',
+    metricPulse: 'grabbit',
+    activeText: 'Routing Circuit...',
+    completedText: 'Routed',
+  },
+
+  // ── PHASE 3: SUPPLIER FULFILLMENT ──
+  {
+    type: 'wire',
+    wireId: 'link-grabbit-routing',
+    color: COLOR_SUPPLIER,
+    duration: 1100,
+    phase: 3,
+    departPort: 'port-grabbit-l',
+    arrivePort: 'port-routing-r',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-routing',
+    color: COLOR_SUPPLIER,
+    duration: 1200,
+    startEdge: 'r',
+    phase: 3,
+    stakeholder: 'supplier',
+    metricPulse: 'routing',
+    activeText: 'Assigning Hub...',
+    completedText: 'Assigned',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-routing-supplier',
+    color: COLOR_SUPPLIER,
+    duration: 1100,
+    phase: 3,
+    departPort: 'port-routing-b',
+    arrivePort: 'port-supplier-t',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-supplier',
+    color: COLOR_SUPPLIER,
+    duration: 1550,
+    startEdge: 't',
+    phase: 3,
+    stakeholder: 'supplier',
+    metricPulse: 'supplier',
+    activeText: 'Locking Order...',
+    completedText: 'Ready',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-supplier-fulfillment',
+    color: COLOR_SUPPLIER,
+    duration: 1050,
+    phase: 3,
+    departPort: 'port-supplier-l',
+    arrivePort: 'port-fulfillment-b',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-fulfillment',
+    color: COLOR_SUPPLIER,
+    duration: 1150,
+    startEdge: 'b',
+    phase: 3,
+    stakeholder: 'supplier',
+    metricPulse: 'fulfillment',
+    activeText: 'Validating SLA...',
+    completedText: '98.8% SLA',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-fulfillment-inventory',
+    color: COLOR_SUPPLIER,
+    duration: 950,
+    phase: 3,
+    departPort: 'port-fulfillment-t',
+    arrivePort: 'port-inventory-b',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-inventory',
+    color: COLOR_SUPPLIER,
+    duration: 1150,
+    startEdge: 'b',
+    phase: 3,
+    stakeholder: 'supplier',
+    metricPulse: 'inventory',
+    activeText: 'Allocating Stock...',
+    completedText: '1,240 SKUs',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-supplier-dispatch',
+    color: COLOR_SUPPLIER,
+    duration: 1050,
+    phase: 3,
+    departPort: 'port-supplier-r',
+    arrivePort: 'port-dispatch-l',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-dispatch',
+    color: COLOR_SUPPLIER,
+    duration: 1150,
+    startEdge: 'l',
+    phase: 3,
+    stakeholder: 'supplier',
+    metricPulse: 'dispatch',
+    activeText: 'Scheduling...',
+    completedText: '12:05 PM',
+  },
+
+  // ── PHASE 4: BRAND DEMAND INTELLIGENCE ──
+  {
+    type: 'wire',
+    wireId: 'link-grabbit-signals',
+    color: COLOR_BRAND,
+    duration: 1100,
+    phase: 4,
+    departPort: 'port-grabbit-r',
+    arrivePort: 'port-signals-l',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-signals',
+    color: COLOR_BRAND,
+    duration: 1200,
+    startEdge: 'l',
+    phase: 4,
+    stakeholder: 'brand',
+    metricPulse: 'signals',
+    activeText: 'Broadcasting...',
+    completedText: '125 Cafés',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-signals-brand',
+    color: COLOR_BRAND,
+    duration: 1100,
+    phase: 4,
+    departPort: 'port-signals-b',
+    arrivePort: 'port-brand-t',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-brand',
+    color: COLOR_BRAND,
+    duration: 1550,
+    startEdge: 't',
+    phase: 4,
+    stakeholder: 'brand',
+    metricPulse: 'brand',
+    activeText: 'Syncing POs...',
+    completedText: 'Connected',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-brand-repeat',
+    color: COLOR_BRAND,
+    duration: 1050,
+    phase: 4,
+    departPort: 'port-brand-r',
+    arrivePort: 'port-repeat-b',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-repeat',
+    color: COLOR_BRAND,
+    duration: 1150,
+    startEdge: 'b',
+    phase: 4,
+    stakeholder: 'brand',
+    metricPulse: 'repeat',
+    activeText: 'Calculating...',
+    completedText: '31 POs',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-repeat-adoption',
+    color: COLOR_BRAND,
+    duration: 950,
+    phase: 4,
+    departPort: 'port-repeat-t',
+    arrivePort: 'port-adoption-b',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-adoption',
+    color: COLOR_BRAND,
+    duration: 1150,
+    startEdge: 'b',
+    phase: 4,
+    stakeholder: 'brand',
+    metricPulse: 'adoption',
+    activeText: 'Verifying...',
+    completedText: '85 Verified',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-brand-gmv',
+    color: COLOR_BRAND,
+    duration: 1050,
+    phase: 4,
+    departPort: 'port-brand-l',
+    arrivePort: 'port-gmv-r',
+  },
+  {
+    type: 'node',
+    nodeId: 'node-gmv',
+    color: COLOR_BRAND,
+    duration: 1150,
+    startEdge: 'r',
+    phase: 4,
+    stakeholder: 'brand',
+    metricPulse: 'gmv',
+    activeText: 'Reconciling...',
+    completedText: '₹6.4L Verified',
+  },
+  {
+    type: 'wire',
+    wireId: 'link-gmv-grabbit',
+    color: COLOR_BRAND,
+    duration: 1100,
+    phase: 4,
+    departPort: 'port-gmv-t',
+    arrivePort: 'port-grabbit-b',
+  },
+];
 
 export function Intersystem() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -325,59 +792,83 @@ export function Intersystem() {
       d: string;
       stakeholder: 'cafe' | 'supplier' | 'brand' | 'neutral';
       color: string;
-      dot1: [number, number];
-      dot2: [number, number];
-      junction?: [number, number];
+      arrowhead?: string;
       secondary?: boolean;
     }[]
   >([]);
 
-  const [brackets, setBrackets] = useState<ComputedBracket[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState(true);
 
-  // Active hover states
+  // Hover states
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [hoveredStakeholder, setHoveredStakeholder] = useState<'cafe' | 'supplier' | 'brand' | 'grabbit' | null>(null);
-  const [grabbitHovered, setGrabbitHovered] = useState(false);
-
-  // Central Grabbit Processing State ('cafe' | 'supplier' | 'brand' | null)
-  const [grabbitProcessing, setGrabbitProcessing] = useState<'cafe' | 'supplier' | 'brand' | null>(null);
 
   // Active ports flashing
   const [activePorts, setActivePorts] = useState<Record<string, boolean>>({});
 
-  // Dynamic live signal counter (starts 2633, increments subtly every ~22s)
-  const [signalCount, setSignalCount] = useState(2633);
+  // Dynamic live signal counter
+  const [signalCount, setSignalCount] = useState(2634);
 
-  // Micro-data live metrics (animating on signal arrival)
+  // Micro-data live metrics
   const [cafeOrdersCount, setCafeOrdersCount] = useState(38);
   const [supplierOrdersCount, setSupplierOrdersCount] = useState(38);
   const [inventoryCount, setInventoryCount] = useState(1240);
   const [brandRepeatCount, setBrandRepeatCount] = useState(31);
 
-  // Active signal packet travelling
-  const [activePacket, setActivePacket] = useState<{
-    link: string;
-    color: string;
-    progress: number;
-  } | null>(null);
-  const [activeLinkId, setActiveLinkId] = useState<string | null>(null);
+  // Central Grabbit Processing State
+  const [grabbitProcessing, setGrabbitProcessing] = useState<'cafe' | 'supplier' | 'brand' | null>(null);
 
-  // Arrival pulse rings
+  // ─── ATTIO BORDER RAY & WIRE STATE ───
+  const [completedNodes, setCompletedNodes] = useState<Set<string>>(new Set());
+  const [drawingNode, setDrawingNode] = useState<{ id: string; color: string; progress: number; startEdge: Edge } | null>(null);
+  const [completedWires, setCompletedWires] = useState<Set<string>>(new Set());
+  const [drawingWire, setDrawingWire] = useState<{ id: string; color: string; progress: number; x: number; y: number } | null>(null);
+
+  const wireLengthsRef = useRef<Record<string, number>>({});
+
+  // Dual arrival pulse rings
   const [arrivalPulses, setArrivalPulses] = useState<PulseEffect[]>([]);
 
   const pathEls = useRef<Record<string, SVGPathElement | null>>({});
+  const [cardDims, setCardDims] = useState<Record<string, { w: number; h: number }>>({});
 
-  // Live counter timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSignalCount((c) => (c >= 2635 ? 2633 : c + 1));
-    }, 22000);
-    return () => clearInterval(timer);
+  // Flash port with dual halo & core flare
+  const flashPort = useCallback((portId: string, color: string) => {
+    setActivePorts((prev) => ({ ...prev, [portId]: true }));
+    const stage = stageRef.current;
+    const portEl = els.current[portId];
+    if (stage && portEl) {
+      const pr = portEl.getBoundingClientRect();
+      const sr = stage.getBoundingClientRect();
+      const pulseId = Date.now() + Math.random();
+      setArrivalPulses((prev) => [
+        ...prev,
+        {
+          id: pulseId,
+          x: pr.left - sr.left + pr.width / 2,
+          y: pr.top - sr.top + pr.height / 2,
+          color,
+        },
+      ]);
+      setTimeout(() => {
+        setArrivalPulses((prev) => prev.filter((p) => p.id !== pulseId));
+      }, 750);
+    }
   }, []);
 
-  // Route paths and compute 3-dot brackets dynamically
+  // Update card dimensions
+  const updateDims = useCallback(() => {
+    const dims: Record<string, { w: number; h: number }> = {};
+    for (const [k, el] of Object.entries(els.current)) {
+      if (el && k.startsWith('node-')) {
+        dims[k] = { w: el.offsetWidth, h: el.offsetHeight };
+      }
+    }
+    setCardDims(dims);
+  }, []);
+
+  // Route paths dynamically
   const route = useCallback(() => {
     const stage = stageRef.current;
     if (!stage) return;
@@ -386,9 +877,10 @@ export function Intersystem() {
 
     if (sr.width < 768) {
       setPaths([]);
-      setBrackets([]);
       return;
     }
+
+    updateDims();
 
     const rect = (k: string) => {
       const n = els.current[k];
@@ -404,7 +896,6 @@ export function Intersystem() {
       };
     };
 
-    // 1. Build Paths
     const outPaths: typeof paths = [];
     for (const link of GRAPH_LINKS) {
       const a = rect(link.from);
@@ -426,349 +917,199 @@ export function Intersystem() {
       else if (link.toEdge === 't') y2 = z.t;
       else if (link.toEdge === 'b') y2 = z.b;
 
-      const d = createOrthogonalPath(x1, y1, x2, y2, link.startDir, link.midSplit ?? 0.5, 14);
+      let d = createOrthogonalPath(x1, y1, x2, y2, link.startDir, link.midSplit ?? 0.5, 14);
 
-      const jx = link.startDir === 'h' ? x1 + (x2 - x1) * (link.midSplit ?? 0.5) : x1;
-      const jy = link.startDir === 'v' ? y1 + (y2 - y1) * (link.midSplit ?? 0.5) : y2;
+      if (link.hasTriplePort) {
+        const offset = 8;
+        let xo = link.fromEdge === 't' || link.fromEdge === 'b' ? offset : 0;
+        let yo = link.fromEdge === 'l' || link.fromEdge === 'r' ? offset : 0;
+        let d1 = createOrthogonalPath(x1 - xo, y1 - yo, x2, y2, link.startDir, link.midSplit ?? 0.5, 14);
+        let d2 = createOrthogonalPath(x1 + xo, y1 + yo, x2, y2, link.startDir, link.midSplit ?? 0.5, 14);
+        d = d + " " + d1 + " " + d2;
+      }
+
+      let ah = '';
+      if (link.toEdge === 'l') {
+        ah = `M ${x2 - 5} ${y2 - 4} L ${x2} ${y2} L ${x2 - 5} ${y2 + 4}`;
+      } else if (link.toEdge === 'r') {
+        ah = `M ${x2 + 5} ${y2 - 4} L ${x2} ${y2} L ${x2 + 5} ${y2 + 4}`;
+      } else if (link.toEdge === 't') {
+        ah = `M ${x2 - 4} ${y2 - 5} L ${x2} ${y2} L ${x2 + 4} ${y2 - 5}`;
+      } else if (link.toEdge === 'b') {
+        ah = `M ${x2 - 4} ${y2 + 5} L ${x2} ${y2} L ${x2 + 4} ${y2 + 5}`;
+      }
 
       outPaths.push({
         id: link.id,
         d,
         stakeholder: link.stakeholder,
         color: link.color,
-        dot1: [x1, y1],
-        dot2: [x2, y2],
-        junction: Math.abs(x1 - x2) > 20 && Math.abs(y1 - y2) > 20 ? [jx, jy] : undefined,
+        arrowhead: ah,
         secondary: link.secondary,
       });
     }
     setPaths(outPaths);
+  }, [updateDims]);
 
-    // 2. Build 3-Dot Brackets (Attio-style card port sockets)
-    const outBrackets: ComputedBracket[] = [];
-    const span = 12;
-    const depth = 9;
-
-    for (const bConf of BRACKET_PORT_CONFIGS) {
-      const pos = rect(bConf.id);
-      if (!pos) continue;
-
-      let x = pos.cx;
-      let y = pos.cy;
-
-      if (bConf.edge === 'r') x = pos.r;
-      else if (bConf.edge === 'l') x = pos.l;
-      else if (bConf.edge === 't') y = pos.t;
-      else if (bConf.edge === 'b') y = pos.b;
-
-      const curvePath = createBracketCurve(x, y, bConf.edge, span, depth, 5);
-
-      let dot1: [number, number];
-      let dot2: [number, number] = [x, y];
-      let dot3: [number, number];
-
-      if (bConf.edge === 'r' || bConf.edge === 'l') {
-        dot1 = [x, y - span];
-        dot3 = [x, y + span];
-      } else {
-        dot1 = [x - span, y];
-        dot3 = [x + span, y];
-      }
-
-      outBrackets.push({
-        id: bConf.id,
-        x,
-        y,
-        edge: bConf.edge,
-        stakeholder: bConf.stakeholder,
-        curvePath,
-        dot1,
-        dot2,
-        dot3,
-      });
-    }
-    setBrackets(outBrackets);
-  }, []);
-
-  const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-
-  useIsoLayoutEffect(() => {
+  useLayoutEffect(() => {
     route();
-    const ro = new ResizeObserver(() => route());
-    if (stageRef.current) ro.observe(stageRef.current);
-    const t = setTimeout(route, 200);
-    return () => {
-      ro.disconnect();
-      clearTimeout(t);
-    };
   }, [route]);
 
   useEffect(() => {
-    const n = stageRef.current;
-    if (!n) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
-      rootMargin: '100px',
-    });
-    io.observe(n);
-    return () => io.disconnect();
+    const handleResize = () => {
+      route();
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [route]);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        setInView(e.isIntersecting);
+      },
+      { threshold: 0, rootMargin: '200px 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
-  // Flash active port bracket
-  const flashPort = useCallback((portId: string) => {
-    setActivePorts((prev) => ({ ...prev, [portId]: true }));
-    setTimeout(() => {
-      setActivePorts((prev) => {
-        const next = { ...prev };
-        delete next[portId];
-        return next;
-      });
-    }, 450);
-  }, []);
-
-  // Trigger DOM border light and arrival pulse
-  const triggerNodeArrival = useCallback((nodeId: string, color: string, arrivingPort?: string) => {
-    if (arrivingPort) flashPort(arrivingPort);
-
-    const el = els.current[nodeId];
-    if (el) {
-      el.classList.remove('pulse');
-      void el.offsetWidth;
-      el.classList.add('pulse');
-
-      const stage = stageRef.current;
-      if (stage) {
-        const sr = stage.getBoundingClientRect();
-        const b = el.getBoundingClientRect();
-        const pulseX = b.left - sr.left + b.width / 2;
-        const pulseY = b.top - sr.top + b.height / 2;
-
-        const pulseId = `pulse-${Date.now()}-${Math.random()}`;
-        setArrivalPulses((prev) => [...prev, { id: pulseId, x: pulseX, y: pulseY, color }]);
-        setTimeout(() => {
-          setArrivalPulses((prev) => prev.filter((p) => p.id !== pulseId));
-        }, 700);
-      }
-    }
-  }, [flashPort]);
-
-  // ─── SEQUENTIAL ANIMATION & GRABBIT NETWORK ROUTER PIPELINE ───
+  // ─── CHOREOGRAPHED RAY & WIRE SEQUENCE LOOP (CONTINUOUS REPEAT) ───
   useEffect(() => {
     if (!inView || paths.length === 0) return;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
     let raf = 0;
+    let stepIndex = 0;
+    let progress = 0;
     let lastTime = performance.now();
-    let currentStepIndex = 0;
-    let nextStepTime = performance.now() + 1000;
-
-    const PIPELINE_STEPS = [
-      // ── Sequence A (Café -> Grabbit) ──
-      {
-        link: 'link-cafe-orders',
-        color: COLOR_CAFE,
-        duration: 0.9,
-        departPort: 'port-cafe-r',
-        arrivePort: 'port-orders-l',
-        onArrive: () => {
-          triggerNodeArrival('node-orders', COLOR_CAFE, 'port-orders-l');
-          setCafeOrdersCount(39);
-          setTimeout(() => setCafeOrdersCount(38), 1400);
-        },
-      },
-      {
-        link: 'link-orders-demand',
-        color: COLOR_CAFE,
-        duration: 0.85,
-        departPort: 'port-orders-b',
-        arrivePort: 'port-demand-t',
-        onArrive: () => {
-          triggerNodeArrival('node-demand', COLOR_CAFE, 'port-demand-t');
-        },
-      },
-      {
-        link: 'link-demand-grabbit',
-        color: COLOR_CAFE,
-        duration: 1.0,
-        departPort: 'port-demand-b',
-        arrivePort: 'port-grabbit-t',
-        onArrive: () => {
-          // Packet enters Grabbit -> Processing state
-          triggerNodeArrival('node-grabbit', COLOR_CAFE, 'port-grabbit-t');
-          setGrabbitProcessing('cafe');
-          setTimeout(() => {
-            setGrabbitProcessing(null);
-          }, 450);
-        },
-      },
-
-      // ── Sequence B (Grabbit -> Supplier) ──
-      {
-        link: 'link-grabbit-routing',
-        color: COLOR_SUPPLIER,
-        duration: 0.9,
-        departPort: 'port-grabbit-l',
-        arrivePort: 'port-routing-r',
-        onArrive: () => {
-          triggerNodeArrival('node-routing', COLOR_SUPPLIER, 'port-routing-r');
-        },
-      },
-      {
-        link: 'link-routing-supplier',
-        color: COLOR_SUPPLIER,
-        duration: 0.95,
-        departPort: 'port-routing-b',
-        arrivePort: 'port-supplier-t',
-        onArrive: () => {
-          triggerNodeArrival('node-supplier', COLOR_SUPPLIER);
-          setSupplierOrdersCount(39);
-          setTimeout(() => setSupplierOrdersCount(38), 1400);
-        },
-      },
-      {
-        link: 'link-supplier-fulfillment',
-        color: COLOR_SUPPLIER,
-        duration: 0.9,
-        departPort: 'port-supplier-l',
-        arrivePort: 'port-fulfillment-b',
-        onArrive: () => {
-          triggerNodeArrival('node-fulfillment', COLOR_SUPPLIER);
-        },
-      },
-      {
-        link: 'link-fulfillment-inventory',
-        color: COLOR_SUPPLIER,
-        duration: 0.85,
-        departPort: 'port-fulfillment-t',
-        arrivePort: 'port-inventory-b',
-        onArrive: () => {
-          triggerNodeArrival('node-inventory', COLOR_SUPPLIER);
-          setInventoryCount(1239);
-          setTimeout(() => setInventoryCount(1240), 1600);
-        },
-      },
-      {
-        link: 'link-supplier-dispatch',
-        color: COLOR_SUPPLIER,
-        duration: 0.9,
-        departPort: 'port-supplier-r',
-        arrivePort: 'port-dispatch-l',
-        onArrive: () => {
-          triggerNodeArrival('node-dispatch', COLOR_SUPPLIER, 'port-dispatch-l');
-          // Dispatch signal reaches downstream -> Grabbit transforms to Brand insight
-          setTimeout(() => {
-            flashPort('port-grabbit-l');
-            setGrabbitProcessing('supplier');
-            setTimeout(() => setGrabbitProcessing(null), 450);
-          }, 300);
-        },
-      },
-
-      // ── Sequence C (Grabbit -> Brand) ──
-      {
-        link: 'link-grabbit-signals',
-        color: COLOR_BRAND,
-        duration: 0.9,
-        departPort: 'port-grabbit-r',
-        arrivePort: 'port-signals-l',
-        onArrive: () => {
-          triggerNodeArrival('node-signals', COLOR_BRAND, 'port-signals-l');
-        },
-      },
-      {
-        link: 'link-signals-brand',
-        color: COLOR_BRAND,
-        duration: 0.95,
-        departPort: 'port-signals-b',
-        arrivePort: 'port-brand-t',
-        onArrive: () => {
-          triggerNodeArrival('node-brand', COLOR_BRAND);
-        },
-      },
-      {
-        link: 'link-brand-repeat',
-        color: COLOR_BRAND,
-        duration: 0.9,
-        departPort: 'port-brand-r',
-        arrivePort: 'port-repeat-b',
-        onArrive: () => {
-          triggerNodeArrival('node-repeat', COLOR_BRAND);
-          setBrandRepeatCount(32);
-          setTimeout(() => setBrandRepeatCount(31), 1400);
-        },
-      },
-      {
-        link: 'link-repeat-adoption',
-        color: COLOR_BRAND,
-        duration: 0.85,
-        departPort: 'port-repeat-t',
-        arrivePort: 'port-adoption-b',
-        onArrive: () => {
-          triggerNodeArrival('node-adoption', COLOR_BRAND);
-        },
-      },
-      {
-        link: 'link-brand-gmv',
-        color: COLOR_BRAND,
-        duration: 0.9,
-        departPort: 'port-brand-l',
-        arrivePort: 'port-gmv-r',
-        onArrive: () => {
-          triggerNodeArrival('node-gmv', COLOR_BRAND, 'port-gmv-r');
-        },
-      },
-      {
-        link: 'link-gmv-grabbit',
-        color: COLOR_BRAND,
-        duration: 0.95,
-        departPort: 'port-gmv-t',
-        arrivePort: 'port-grabbit-b',
-        onArrive: () => {
-          triggerNodeArrival('node-grabbit', COLOR_BRAND, 'port-grabbit-b');
-          setGrabbitProcessing('brand');
-          setSignalCount((c) => c + 1);
-          setTimeout(() => setGrabbitProcessing(null), 450);
-        },
-      },
-    ];
-
-    let currentProgress = 0;
-    let isRunning = false;
+    let isHolding = false;
+    let holdEndTime = 0;
+    let hasDepartFlashed = false;
+    let hasArriveFlashed = false;
+    let lastStep = -1;
 
     const frame = (now: number) => {
       const dt = Math.min(0.04, (now - lastTime) / 1000);
       lastTime = now;
 
-      if (!isRunning && now >= nextStepTime) {
-        isRunning = true;
-        currentProgress = 0;
-        const currentStep = PIPELINE_STEPS[currentStepIndex];
-        setActiveLinkId(currentStep.link);
-        if (currentStep.departPort) flashPort(currentStep.departPort);
+      // When hold ends, reset all completed items and cleanly repeat the entire sequence again
+      if (isHolding) {
+        if (now >= holdEndTime) {
+          isHolding = false;
+          setCompletedNodes(new Set());
+          setCompletedWires(new Set());
+          setActivePorts({});
+          setDrawingNode(null);
+          setDrawingWire(null);
+          setArrivalPulses([]);
+          setGrabbitProcessing(null);
+          setCafeOrdersCount(38);
+          setSupplierOrdersCount(38);
+          setInventoryCount(1240);
+          setBrandRepeatCount(31);
+          stepIndex = 0;
+          progress = 0;
+          lastStep = -1;
+          hasDepartFlashed = false;
+          hasArriveFlashed = false;
+        }
+        raf = requestAnimationFrame(frame);
+        return;
       }
 
-      if (isRunning) {
-        const step = PIPELINE_STEPS[currentStepIndex];
-        currentProgress += dt / step.duration;
+      if (stepIndex !== lastStep) {
+        lastStep = stepIndex;
+        hasDepartFlashed = false;
+        hasArriveFlashed = false;
+      }
+      (window as any).__ANIM = { stepIndex, progress, isHolding, lastStep };
 
-        if (currentProgress >= 1) {
-          step.onArrive();
-          isRunning = false;
-          setActivePacket(null);
-          setActiveLinkId(null);
+      const currentStep = PIPELINE_SEQUENCE[stepIndex];
+      const stepDurationSec = currentStep.duration / 1000;
+      progress += dt / stepDurationSec;
 
-          const wasSequenceEnd =
-            currentStepIndex === 2 || currentStepIndex === 7 || currentStepIndex === 12;
+      if (currentStep.type === 'node') {
+        setDrawingNode({
+          id: currentStep.nodeId,
+          color: currentStep.color,
+          progress: Math.min(1, progress),
+          startEdge: currentStep.startEdge,
+        });
 
-          currentStepIndex = (currentStepIndex + 1) % PIPELINE_STEPS.length;
-          const pause = wasSequenceEnd ? 2400 + Math.random() * 1200 : 350;
-          nextStepTime = now + pause;
-        } else {
-          setActivePacket({
-            link: step.link,
-            color: step.color,
-            progress: currentProgress,
-          });
+        if (progress >= 0.5 && currentStep.metricPulse) {
+          if (currentStep.metricPulse === 'orders') setCafeOrdersCount(39);
+          if (currentStep.metricPulse === 'grabbit') {
+            setGrabbitProcessing('cafe');
+            setSignalCount((c) => c + 1);
+          }
+          if (currentStep.metricPulse === 'routing') setSupplierOrdersCount(39);
+          if (currentStep.metricPulse === 'inventory') setInventoryCount(1239);
+          if (currentStep.metricPulse === 'repeat') setBrandRepeatCount(32);
+        }
+
+        if (progress >= 1) {
+          setCompletedNodes((prev) => new Set(prev).add(currentStep.nodeId));
+          setDrawingNode(null);
+
+          if (currentStep.metricPulse === 'orders') setTimeout(() => setCafeOrdersCount(38), 1200);
+          if (currentStep.metricPulse === 'grabbit') setTimeout(() => setGrabbitProcessing(null), 600);
+          if (currentStep.metricPulse === 'routing') setTimeout(() => setSupplierOrdersCount(38), 1200);
+          if (currentStep.metricPulse === 'inventory') setTimeout(() => setInventoryCount(1240), 1200);
+          if (currentStep.metricPulse === 'repeat') setTimeout(() => setBrandRepeatCount(31), 1200);
+
+          progress = 0;
+          stepIndex++;
+          if (stepIndex >= PIPELINE_SEQUENCE.length) {
+            isHolding = true;
+            holdEndTime = now + 1200;
+          }
+        }
+      } else {
+        if (currentStep.departPort && !hasDepartFlashed) {
+          hasDepartFlashed = true;
+          flashPort(currentStep.departPort, currentStep.color);
+        }
+
+        const pathEl = pathEls.current[currentStep.wireId];
+        let px = 0;
+        let py = 0;
+        if (pathEl) {
+          if (!wireLengthsRef.current[currentStep.wireId]) {
+            wireLengthsRef.current[currentStep.wireId] = pathEl.getTotalLength();
+          }
+          const totalLength = wireLengthsRef.current[currentStep.wireId];
+          const point = pathEl.getPointAtLength(Math.min(1, progress) * totalLength);
+          px = point.x;
+          py = point.y;
+        }
+
+        setDrawingWire({
+          id: currentStep.wireId,
+          color: currentStep.color,
+          progress: Math.min(1, progress),
+          x: px,
+          y: py,
+        });
+
+        if (progress >= 1) {
+          setCompletedWires((prev) => new Set(prev).add(currentStep.wireId));
+          setDrawingWire(null);
+
+          if (currentStep.arrivePort && !hasArriveFlashed) {
+            hasArriveFlashed = true;
+            flashPort(currentStep.arrivePort, currentStep.color);
+          }
+
+          progress = 0;
+          stepIndex++;
+          if (stepIndex >= PIPELINE_SEQUENCE.length) {
+            isHolding = true;
+            holdEndTime = now + 1200;
+          }
         }
       }
 
@@ -777,64 +1118,37 @@ export function Intersystem() {
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [inView, paths, triggerNodeArrival, flashPort]);
+  }, [inView, paths.length, flashPort]);
 
-  // Compute live SVG packet coordinates
-  let packetElement = null;
-  if (activePacket) {
-    const pathEl = pathEls.current[activePacket.link];
-    if (pathEl) {
-      const totalLen = pathEl.getTotalLength();
-      const pt = pathEl.getPointAtLength(activePacket.progress * totalLen);
-      // Briefly increase to 5.5px at the central chip
-      const isNearHub = activePacket.link.includes('grabbit') && (activePacket.progress > 0.8 || activePacket.progress < 0.2);
-      const rSize = isNearHub ? 5.2 : 4.2;
-
-      packetElement = (
-        <g transform={`translate(${pt.x}, ${pt.y})`} className="att-packet-group">
-          <circle r={rSize} fill={activePacket.color} className="att-packet-core" />
-          <circle r={rSize * 1.8} fill={activePacket.color} opacity="0.25" className="att-packet-glow" />
-        </g>
-      );
-    }
-  }
-
-  // Hover triggers for secondary and primary cards
-  const handleCardHover = (nodeId: string, stakeholder: 'cafe' | 'supplier' | 'brand' | 'grabbit') => {
-    setHoveredNode(nodeId);
+  // Hover triggers
+  const handleCardHover = (nodeKey: string, stakeholder: 'cafe' | 'supplier' | 'brand' | 'grabbit') => {
+    setHoveredNode(nodeKey);
     setHoveredStakeholder(stakeholder);
-
-    const targetLink = GRAPH_LINKS.find((l) => l.from.includes(nodeId) || l.to.includes(nodeId));
-    if (targetLink) setActiveLinkId(targetLink.id);
   };
 
   const handleCardLeave = () => {
     setHoveredNode(null);
     setHoveredStakeholder(null);
-    if (!activePacket) setActiveLinkId(null);
   };
 
-  // Hover Grabbit chip interaction
-  const handleGrabbitMouseEnter = () => {
-    setGrabbitHovered(true);
-    setHoveredStakeholder('grabbit');
-    setHoveredNode('grabbit');
-  };
+  // Helper to determine border color and active reaction classes
+  const getCardBorderClass = (nodeId: string, stakeholder: string) => {
+    const isCompleted = completedNodes.has(nodeId);
+    const isHovered = hoveredNode && nodeId.includes(hoveredNode);
+    const isDrawing = drawingNode?.id === nodeId;
 
-  const handleGrabbitMouseLeave = () => {
-    setGrabbitHovered(false);
-    handleCardLeave();
-  };
-
-  const getStakeholderColor = (sh: string) => {
-    if (sh === 'cafe') return COLOR_CAFE;
-    if (sh === 'supplier') return COLOR_SUPPLIER;
-    if (sh === 'brand') return COLOR_BRAND;
-    return COLOR_NEUTRAL;
+    let cls = '';
+    if (isDrawing) {
+      cls += ` is-active-drawing is-stakeholder-${stakeholder}`;
+    }
+    if (isCompleted || isHovered) {
+      cls += ` is-colored-${stakeholder}`;
+    }
+    return cls;
   };
 
   return (
-    <section className="att-section" id="ecosystem" aria-labelledby="att-title">
+    <section className="att-section" id="intersystem" aria-labelledby="att-title">
       <div className="att-grid-bg" />
 
       {/* ─── HEADER ─── */}
@@ -850,140 +1164,102 @@ export function Intersystem() {
 
       {/* ─── DENSE ORTHOGONAL GRAPH STAGE ─── */}
       <div className="att-stage" ref={stageRef}>
-        {/* SVG Orthogonal Relationship Wires & 3-Dot Brackets */}
+        {/* SVG Orthogonal Relationship Wires & Ports */}
         <svg className="att-wires" width={size.w} height={size.h} aria-hidden="true">
-          {/* 1. Wire Paths */}
+          {/* 1. Base Inactive Wires & Static Paths */}
           {paths.map((p) => {
-            const isActive = activeLinkId === p.id;
+            const isCompleted = completedWires.has(p.id);
+            const isCurrentlyDrawing = drawingWire?.id === p.id;
             const isHovered =
               hoveredStakeholder &&
               (hoveredStakeholder === p.stakeholder ||
                 (hoveredStakeholder === 'grabbit' && p.id.includes('grabbit')));
 
-            const strokeColor = isActive || isHovered ? p.color : COLOR_NEUTRAL;
+            const strokeColor = isCompleted || isHovered ? p.color : COLOR_NEUTRAL;
+            const isActive = isCompleted || isCurrentlyDrawing || isHovered;
 
             return (
               <g key={p.id}>
+                {/* Glowing underlay for active wire */}
+                {isActive && (
+                  <path
+                    d={p.d}
+                    className="att-wire-glow-underlay"
+                    stroke={p.color}
+                  />
+                )}
+
+                {/* Base wire stroke */}
                 <path
                   ref={(n) => {
                     pathEls.current[p.id] = n;
                   }}
-                  className={`att-wire-path ${isActive || isHovered ? 'is-active' : ''} ${
-                    p.secondary ? 'is-secondary' : ''
-                  }`}
+                  className={`att-wire-path ${isActive ? 'is-active' : ''} ${p.secondary ? 'is-secondary' : ''}`}
                   d={p.d}
                   stroke={strokeColor}
                 />
 
-                {/* Subtle Orthogonal Branch Junctions */}
-                {p.junction && (
-                  <circle
-                    cx={p.junction[0]}
-                    cy={p.junction[1]}
-                    r="2.5"
-                    className="att-wire-junction"
+                {/* Arrowhead at destination port */}
+                {p.arrowhead && (
+                  <path
+                    d={p.arrowhead}
+                    className={`att-wire-arrowhead ${isActive ? 'is-active' : ''}`}
+                    stroke={strokeColor}
                   />
                 )}
               </g>
             );
           })}
 
-          {/* 2. Attio 3-Dot Connection Bracket Sockets */}
-          {brackets.map((b) => {
-            const isPortActive = activePorts[b.id];
-            const isConnectedLinkActive =
-              activeLinkId &&
-              GRAPH_LINKS.find(
-                (l) => l.id === activeLinkId && (l.from === b.id || l.to === b.id)
-              );
+          {/* 2. Actively Drawing Wire Line with Animated StrokeDashoffset & Minimal Photon */}
+          {drawingWire && (
+            <g>
+              {/* Clean advancing wire line */}
+              <path
+                d={paths.find((p) => p.id === drawingWire.id)?.d || ''}
+                pathLength={1000}
+                fill="none"
+                stroke={drawingWire.color}
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={1000}
+                strokeDashoffset={1000 * (1 - drawingWire.progress)}
+              />
 
-            const isHovered =
-              hoveredStakeholder &&
-              (hoveredStakeholder === b.stakeholder ||
-                (hoveredStakeholder === 'grabbit' && b.id.includes('grabbit')));
+              {/* Minimal photon packet head */}
+              <circle
+                cx={drawingWire.x}
+                cy={drawingWire.y}
+                r="4"
+                fill={drawingWire.color}
+                style={{
+                  filter: `drop-shadow(0 0 3px ${drawingWire.color})`,
+                }}
+              />
 
-            const activeColor = getStakeholderColor(b.stakeholder);
-            const isHighlighted = isPortActive || isConnectedLinkActive || isHovered;
-            const bracketStroke = isHighlighted ? activeColor : '#CDC9BE';
-            const midDotFill = isHighlighted ? activeColor : '#FFFFFF';
+              {/* Crisp pure-white photon nucleus */}
+              <circle
+                cx={drawingWire.x}
+                cy={drawingWire.y}
+                r="1.8"
+                fill="#FFFFFF"
+              />
+            </g>
+          )}
 
-            return (
-              <g key={b.id} className="att-bracket-socket-group">
-                {/* Curved outer bracket wire */}
-                <path
-                  d={b.curvePath}
-                  fill="none"
-                  stroke={bracketStroke}
-                  strokeWidth="1.1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="att-bracket-wire"
-                />
-
-                {/* Top Dot */}
-                <circle
-                  cx={b.dot1[0]}
-                  cy={b.dot1[1]}
-                  r="2.5"
-                  fill="#FAF9F5"
-                  stroke={bracketStroke}
-                  strokeWidth="1.2"
-                  className="att-bracket-dot"
-                />
-
-                {/* Middle Dot */}
-                <circle
-                  cx={b.dot2[0]}
-                  cy={b.dot2[1]}
-                  r={isHighlighted ? '3.2' : '2.5'}
-                  fill={midDotFill}
-                  stroke={bracketStroke}
-                  strokeWidth="1.2"
-                  className="att-bracket-dot is-mid"
-                />
-
-                {/* Bottom Dot */}
-                <circle
-                  cx={b.dot3[0]}
-                  cy={b.dot3[1]}
-                  r="2.5"
-                  fill="#FAF9F5"
-                  stroke={bracketStroke}
-                  strokeWidth="1.2"
-                  className="att-bracket-dot"
-                />
-
-                {/* Expanding Halo on Active Middle Dot */}
-                {isPortActive && (
-                  <circle
-                    cx={b.dot2[0]}
-                    cy={b.dot2[1]}
-                    r="8"
-                    fill="none"
-                    stroke={activeColor}
-                    strokeWidth="1.5"
-                    className="att-bracket-halo"
-                  />
-                )}
-              </g>
-            );
-          })}
-
-          {/* 3. Traveling Signal Packet */}
-          {packetElement}
-
-          {/* 4. Expanding Arrival Pulse Rings */}
+          {/* 3. Minimal Arrival Pulse Ring */}
           {arrivalPulses.map((pulse) => (
-            <circle
-              key={pulse.id}
-              cx={pulse.x}
-              cy={pulse.y}
-              r="22"
-              fill="none"
-              stroke={pulse.color}
-              strokeWidth="2"
-              className="att-arrival-pulse-ring"
-            />
+            <g key={pulse.id}>
+              <circle
+                cx={pulse.x}
+                cy={pulse.y}
+                r="3"
+                fill="none"
+                stroke={pulse.color}
+                className="att-arrival-halo-inner"
+              />
+            </g>
           ))}
         </svg>
 
@@ -993,17 +1269,42 @@ export function Intersystem() {
 
         {/* 1. Primary Café Card (~260px) */}
         <div
-          className={`att-card att-card-primary att-card-cafe ${
-            hoveredStakeholder && hoveredStakeholder !== 'cafe' && hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-primary att-card-cafe ${hoveredStakeholder && hoveredStakeholder !== 'cafe' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-cafe', 'cafe')}`}
           ref={reg('node-cafe')}
           onMouseEnter={() => handleCardHover('cafe', 'cafe')}
           onMouseLeave={handleCardLeave}
         >
+          {/* Attio Trigger Tag at top-left */}
+          <div className="att-trigger-tag">
+            <svg viewBox="0 0 7.5 8.2" fill="currentColor" width="7" height="7.5">
+              <path d="M0 1.44C0 .34 1.19-.35 2.15.19l4.65 2.64c.97.55.97 1.95 0 2.5L2.15 7.97C1.19 8.51 0 7.82 0 6.72V1.44Z" />
+            </svg>
+            <span>Trigger</span>
+          </div>
+
           <div className="att-port-anchor is-right" ref={reg('port-cafe-r')} />
           <div className="att-port-anchor is-bottom" ref={reg('port-cafe-b')} />
+
+          <TripleSocketPort
+            edge="r"
+            color={COLOR_CAFE}
+            isActive={activePorts['port-cafe-r'] || completedWires.has('link-cafe-orders') || drawingWire?.id === 'link-cafe-orders'}
+          />
+
+          {/* Directional Border Ray & Permanent Border */}
+          <CardBorderRay
+            width={cardDims['node-cafe']?.w || 260}
+            height={cardDims['node-cafe']?.h || 180}
+            radius={14}
+            startEdge="r"
+            color={COLOR_CAFE}
+            isDrawing={drawingNode?.id === 'node-cafe'}
+            drawProgress={drawingNode?.id === 'node-cafe' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-cafe') || hoveredNode === 'cafe'}
+          />
 
           <div className="att-card-header">
             <div className="att-card-header-left">
@@ -1032,7 +1333,12 @@ export function Intersystem() {
             </div>
             <div className="att-attr-row is-highlight-row">
               <span className="att-attr-label">Active orders</span>
-              <span className="att-attr-val font-semibold">{cafeOrdersCount}</span>
+              <span
+                className={`att-attr-val font-semibold ${cafeOrdersCount === 39 ? 'is-pulsed' : ''}`}
+                style={{ color: cafeOrdersCount === 39 ? COLOR_CAFE : undefined }}
+              >
+                {cafeOrdersCount}
+              </span>
             </div>
           </div>
 
@@ -1044,33 +1350,57 @@ export function Intersystem() {
 
         {/* Secondary: Orders */}
         <div
-          className={`att-card att-card-secondary att-node-orders ${
-            hoveredStakeholder && hoveredStakeholder !== 'cafe' && hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-orders ${hoveredStakeholder && hoveredStakeholder !== 'cafe' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-orders', 'cafe')}`}
           ref={reg('node-orders')}
           onMouseEnter={() => handleCardHover('orders', 'cafe')}
           onMouseLeave={handleCardLeave}
         >
           <div className="att-port-anchor is-left" ref={reg('port-orders-l')} />
           <div className="att-port-anchor is-bottom" ref={reg('port-orders-b')} />
-          <div className="att-port-anchor is-top" ref={reg('port-orders-t')} />
+
+          <SocketPort
+            edge="l"
+            color={COLOR_CAFE}
+            isActive={activePorts['port-orders-l'] || completedWires.has('link-cafe-orders')}
+          />
+          <SocketPort
+            edge="b"
+            color={COLOR_CAFE}
+            isActive={activePorts['port-orders-b'] || completedWires.has('link-orders-demand') || drawingWire?.id === 'link-orders-demand'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-orders']?.w || 140}
+            height={cardDims['node-orders']?.h || 60}
+            radius={10}
+            startEdge="l"
+            color={COLOR_CAFE}
+            isDrawing={drawingNode?.id === 'node-orders'}
+            drawProgress={drawingNode?.id === 'node-orders' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-orders') || hoveredNode === 'orders'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">ORDERS</span>
             <span className="att-sec-dot is-cafe" />
           </div>
-          <span className="att-sec-metric">{cafeOrdersCount} active</span>
+          <span
+            className={`att-sec-metric ${cafeOrdersCount === 39 ? 'is-pulsed' : ''}`}
+            style={{ color: cafeOrdersCount === 39 ? COLOR_CAFE : undefined }}
+          >
+            {cafeOrdersCount} active
+          </span>
         </div>
 
         {/* Secondary: Demand */}
         <div
-          className={`att-card att-card-secondary att-node-demand ${
-            hoveredStakeholder && hoveredStakeholder !== 'cafe' && hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-demand ${hoveredStakeholder && hoveredStakeholder !== 'cafe' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-demand', 'cafe')}`}
           ref={reg('node-demand')}
           onMouseEnter={() => handleCardHover('demand', 'cafe')}
           onMouseLeave={handleCardLeave}
@@ -1078,6 +1408,28 @@ export function Intersystem() {
           <div className="att-port-anchor is-top" ref={reg('port-demand-t')} />
           <div className="att-port-anchor is-bottom" ref={reg('port-demand-b')} />
           <div className="att-port-anchor is-right" ref={reg('port-demand-r')} />
+
+          <SocketPort
+            edge="t"
+            color={COLOR_CAFE}
+            isActive={activePorts['port-demand-t'] || completedWires.has('link-orders-demand')}
+          />
+          <SocketPort
+            edge="b"
+            color={COLOR_CAFE}
+            isActive={activePorts['port-demand-b'] || completedWires.has('link-demand-grabbit') || drawingWire?.id === 'link-demand-grabbit'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-demand']?.w || 155}
+            height={cardDims['node-demand']?.h || 60}
+            radius={10}
+            startEdge="t"
+            color={COLOR_CAFE}
+            isDrawing={drawingNode?.id === 'node-demand'}
+            drawProgress={drawingNode?.id === 'node-demand' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-demand') || hoveredNode === 'demand'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">DEMAND</span>
@@ -1091,131 +1443,127 @@ export function Intersystem() {
         ══════════════════════════════════════════════════════════════ */}
 
         <div
-          className={`att-grabbit-chip ${
-            grabbitProcessing ? `is-processing is-processing-${grabbitProcessing}` : ''
-          } ${grabbitHovered ? 'is-hovered' : ''}`}
+          className={`att-grabbit-chip ${grabbitProcessing ? `is-processing is-processing-${grabbitProcessing}` : ''
+            } ${getCardBorderClass('node-grabbit', 'grabbit')} ${hoveredStakeholder === 'grabbit' ? 'is-hovered' : ''}`}
           ref={reg('node-grabbit')}
-          onMouseEnter={handleGrabbitMouseEnter}
-          onMouseLeave={handleGrabbitMouseLeave}
+          onMouseEnter={() => handleCardHover('grabbit', 'grabbit')}
+          onMouseLeave={handleCardLeave}
         >
-          {/* 4 Physical Orthogonal Connection Ports (Top, Bottom, Left, Right) */}
-          <div
-            className={`att-chip-port is-top ${activePorts['port-grabbit-t'] ? 'is-active is-cafe' : ''}`}
-            ref={reg('port-grabbit-t')}
-          >
-            <span className="att-chip-port-core" />
-          </div>
-          <div
-            className={`att-chip-port is-bottom ${activePorts['port-grabbit-b'] ? 'is-active is-brand' : ''}`}
-            ref={reg('port-grabbit-b')}
-          >
-            <span className="att-chip-port-core" />
-          </div>
-          <div
-            className={`att-chip-port is-left ${activePorts['port-grabbit-l'] ? 'is-active is-supplier' : ''}`}
-            ref={reg('port-grabbit-l')}
-          >
-            <span className="att-chip-port-core" />
-          </div>
-          <div
-            className={`att-chip-port is-right ${activePorts['port-grabbit-r'] ? 'is-active is-brand' : ''}`}
-            ref={reg('port-grabbit-r')}
-          >
-            <span className="att-chip-port-core" />
-          </div>
 
-          {/* Internal Processing Ring Pulse (Section 21) */}
-          {grabbitProcessing && (
-            <span className={`att-chip-process-ring is-${grabbitProcessing}`} />
-          )}
+          <div className="att-port-anchor is-top" ref={reg('port-grabbit-t')} />
+          <div className="att-port-anchor is-bottom" ref={reg('port-grabbit-b')} />
+          <div className="att-port-anchor is-left" ref={reg('port-grabbit-l')} />
+          <div className="att-port-anchor is-right" ref={reg('port-grabbit-r')} />
+
+          <SocketPort
+            edge="t"
+            color={COLOR_CAFE}
+            isActive={activePorts['port-grabbit-t'] || completedWires.has('link-demand-grabbit')}
+          />
+          <SocketPort
+            edge="b"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-grabbit-b'] || completedWires.has('link-gmv-grabbit')}
+          />
+          <TripleSocketPort
+            edge="l"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-grabbit-l'] || completedWires.has('link-grabbit-routing') || drawingWire?.id === 'link-grabbit-routing'}
+          />
+          <TripleSocketPort
+            edge="r"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-grabbit-r'] || completedWires.has('link-grabbit-signals') || drawingWire?.id === 'link-grabbit-signals'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-grabbit']?.w || 326}
+            height={cardDims['node-grabbit']?.h || 64}
+            radius={14}
+            startEdge="t"
+            color={COLOR_GRABBIT}
+            isDrawing={drawingNode?.id === 'node-grabbit'}
+            drawProgress={drawingNode?.id === 'node-grabbit' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-grabbit') || hoveredNode === 'grabbit'}
+          />
 
           <div className="att-chip-inner">
-            {/* Minimal High-Precision Tripartite Network Engine Mark */}
             <div className="att-chip-mark-wrap">
               <svg viewBox="0 0 28 28" width="28" height="28" className="att-chip-mark" aria-hidden="true">
-                {/* Café Red Arc (-138° to -42° across top) */}
                 <path
                   d="M 7.68 8.31 A 8.5 8.5 0 0 1 20.32 8.31"
                   fill="none"
                   stroke={COLOR_CAFE}
-                  strokeWidth="2.2"
+                  strokeWidth={drawingNode?.id === 'node-grabbit' ? "2.6" : "2.2"}
                   strokeLinecap="round"
-                  className={`att-mark-arc is-cafe ${grabbitProcessing === 'cafe' ? 'is-active' : ''}`}
+                  style={{
+                    opacity: grabbitProcessing === 'cafe' || completedNodes.has('node-cafe') ? 1 : 0.6,
+                    filter: grabbitProcessing === 'cafe' || drawingNode?.id === 'node-grabbit' ? `drop-shadow(0 0 6px ${COLOR_CAFE})` : 'none',
+                    transition: 'all 0.25s',
+                  }}
                 />
-                {/* Brand Purple Arc (-18° to 78° down right side) */}
                 <path
                   d="M 22.08 11.37 A 8.5 8.5 0 0 1 15.77 22.31"
                   fill="none"
                   stroke={COLOR_BRAND}
-                  strokeWidth="2.2"
+                  strokeWidth={drawingNode?.id === 'node-grabbit' ? "2.6" : "2.2"}
                   strokeLinecap="round"
-                  className={`att-mark-arc is-brand ${grabbitProcessing === 'brand' ? 'is-active' : ''}`}
+                  style={{
+                    opacity: grabbitProcessing === 'brand' || completedNodes.has('node-brand') ? 1 : 0.6,
+                    filter: grabbitProcessing === 'brand' || drawingNode?.id === 'node-grabbit' ? `drop-shadow(0 0 6px ${COLOR_BRAND})` : 'none',
+                    transition: 'all 0.25s',
+                  }}
                 />
-                {/* Supplier Green Arc (102° to 198° down left side) */}
                 <path
                   d="M 12.23 22.31 A 8.5 8.5 0 0 1 5.92 11.37"
                   fill="none"
                   stroke={COLOR_SUPPLIER}
-                  strokeWidth="2.2"
+                  strokeWidth={drawingNode?.id === 'node-grabbit' ? "2.6" : "2.2"}
                   strokeLinecap="round"
-                  className={`att-mark-arc is-supplier ${grabbitProcessing === 'supplier' ? 'is-active' : ''}`}
+                  style={{
+                    opacity: grabbitProcessing === 'supplier' || completedNodes.has('node-supplier') ? 1 : 0.6,
+                    filter: grabbitProcessing === 'supplier' || drawingNode?.id === 'node-grabbit' ? `drop-shadow(0 0 6px ${COLOR_SUPPLIER})` : 'none',
+                    transition: 'all 0.25s',
+                  }}
                 />
-                {/* Precision Outer Optical Bezel */}
                 <circle
                   cx="14"
                   cy="14"
-                  r="2.8"
+                  r="3"
                   fill="#FFFFFF"
-                  stroke="#CDC9BE"
-                  strokeWidth="1.1"
+                  stroke={drawingNode?.id === 'node-grabbit' ? COLOR_GRABBIT : "#CDC9BE"}
+                  strokeWidth="1.2"
                 />
-                {/* Dynamic Central Lens Dot */}
                 <circle
                   cx="14"
                   cy="14"
-                  r="1.3"
-                  fill="#8A867B"
-                  className={`att-mark-core-lens ${
-                    grabbitProcessing ? `is-active is-active-${grabbitProcessing}` : ''
-                  }`}
+                  r="1.4"
+                  fill={drawingNode?.id === 'node-grabbit' ? COLOR_GRABBIT : "#8A867B"}
+                  style={{
+                    filter: drawingNode?.id === 'node-grabbit' ? `drop-shadow(0 0 4px ${COLOR_GRABBIT})` : 'none',
+                  }}
                 />
               </svg>
             </div>
 
-            {/* Hairline Structural Divider */}
             <div className="att-chip-divider" />
 
-            {/* Content (Editorial Hardware/Software Hierarchy) */}
             <div className="att-chip-body">
               <div className="att-chip-primary-line">
                 <span className="att-chip-brand">grabbit</span>
                 <div className="att-chip-signals-badge">
-                  <span className={`att-chip-status-dot ${grabbitProcessing ? 'is-pulsing' : ''}`} />
-                  <span className="att-chip-signals">{signalCount.toLocaleString()} signals</span>
                 </div>
               </div>
               <div className="att-chip-routing-track">
-                <span
-                  className={`att-chip-track-node is-cafe ${
-                    grabbitProcessing === 'cafe' ? 'is-active' : ''
-                  }`}
-                >
+                <span className={`att-chip-track-node is-cafe ${completedNodes.has('node-cafe') ? 'is-active' : ''}`}>
                   CAFÉ
                 </span>
                 <span className="att-chip-track-arrow">→</span>
-                <span
-                  className={`att-chip-track-node is-supplier ${
-                    grabbitProcessing === 'supplier' ? 'is-active' : ''
-                  }`}
-                >
+                <span className={`att-chip-track-node is-supplier ${completedNodes.has('node-supplier') ? 'is-active' : ''}`}>
                   SUPPLIER
                 </span>
                 <span className="att-chip-track-arrow">→</span>
-                <span
-                  className={`att-chip-track-node is-brand ${
-                    grabbitProcessing === 'brand' ? 'is-active' : ''
-                  }`}
-                >
+                <span className={`att-chip-track-node is-brand ${completedNodes.has('node-brand') ? 'is-active' : ''}`}>
                   BRAND
                 </span>
               </div>
@@ -1229,13 +1577,10 @@ export function Intersystem() {
 
         {/* Secondary: Order Routing */}
         <div
-          className={`att-card att-card-secondary att-node-routing ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'supplier' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-routing ${hoveredStakeholder && hoveredStakeholder !== 'supplier' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-routing', 'supplier')}`}
           ref={reg('node-routing')}
           onMouseEnter={() => handleCardHover('routing', 'supplier')}
           onMouseLeave={handleCardLeave}
@@ -1243,27 +1588,68 @@ export function Intersystem() {
           <div className="att-port-anchor is-right" ref={reg('port-routing-r')} />
           <div className="att-port-anchor is-bottom" ref={reg('port-routing-b')} />
 
+          <SocketPort
+            edge="r"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-routing-r'] || completedWires.has('link-grabbit-routing')}
+          />
+          <SocketPort
+            edge="b"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-routing-b'] || completedWires.has('link-routing-supplier') || drawingWire?.id === 'link-routing-supplier'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-routing']?.w || 145}
+            height={cardDims['node-routing']?.h || 60}
+            radius={10}
+            startEdge="r"
+            color={COLOR_SUPPLIER}
+            isDrawing={drawingNode?.id === 'node-routing'}
+            drawProgress={drawingNode?.id === 'node-routing' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-routing') || hoveredNode === 'routing'}
+          />
+
           <div className="att-sec-header">
             <span className="att-sec-label">ORDER ROUTING</span>
             <span className="att-sec-dot is-supplier" />
           </div>
-          <span className="att-sec-metric">{supplierOrdersCount} today</span>
+          <span
+            className={`att-sec-metric ${supplierOrdersCount === 39 ? 'is-pulsed' : ''}`}
+            style={{ color: supplierOrdersCount === 39 ? COLOR_SUPPLIER : undefined }}
+          >
+            {supplierOrdersCount} today
+          </span>
         </div>
 
         {/* Secondary: Inventory */}
         <div
-          className={`att-card att-card-secondary att-node-inventory ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'supplier' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-inventory ${hoveredStakeholder && hoveredStakeholder !== 'supplier' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-inventory', 'supplier')}`}
           ref={reg('node-inventory')}
           onMouseEnter={() => handleCardHover('inventory', 'supplier')}
           onMouseLeave={handleCardLeave}
         >
           <div className="att-port-anchor is-bottom" ref={reg('port-inventory-b')} />
+
+          <SocketPort
+            edge="b"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-inventory-b'] || completedWires.has('link-fulfillment-inventory')}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-inventory']?.w || 145}
+            height={cardDims['node-inventory']?.h || 60}
+            radius={10}
+            startEdge="b"
+            color={COLOR_SUPPLIER}
+            isDrawing={drawingNode?.id === 'node-inventory'}
+            drawProgress={drawingNode?.id === 'node-inventory' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-inventory') || hoveredNode === 'inventory'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">INVENTORY</span>
@@ -1274,19 +1660,38 @@ export function Intersystem() {
 
         {/* Secondary: Fulfillment */}
         <div
-          className={`att-card att-card-secondary att-node-fulfillment ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'supplier' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-fulfillment ${hoveredStakeholder && hoveredStakeholder !== 'supplier' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-fulfillment', 'supplier')}`}
           ref={reg('node-fulfillment')}
           onMouseEnter={() => handleCardHover('fulfillment', 'supplier')}
           onMouseLeave={handleCardLeave}
         >
           <div className="att-port-anchor is-bottom" ref={reg('port-fulfillment-b')} />
           <div className="att-port-anchor is-top" ref={reg('port-fulfillment-t')} />
+
+          <SocketPort
+            edge="b"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-fulfillment-b'] || completedWires.has('link-supplier-fulfillment')}
+          />
+          <SocketPort
+            edge="t"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-fulfillment-t'] || completedWires.has('link-fulfillment-inventory') || drawingWire?.id === 'link-fulfillment-inventory'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-fulfillment']?.w || 140}
+            height={cardDims['node-fulfillment']?.h || 60}
+            radius={10}
+            startEdge="b"
+            color={COLOR_SUPPLIER}
+            isDrawing={drawingNode?.id === 'node-fulfillment'}
+            drawProgress={drawingNode?.id === 'node-fulfillment' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-fulfillment') || hoveredNode === 'fulfillment'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">FULFILLMENT</span>
@@ -1297,13 +1702,10 @@ export function Intersystem() {
 
         {/* 2. Primary Supplier Card (~260px) */}
         <div
-          className={`att-card att-card-primary att-card-supplier ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'supplier' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-primary att-card-supplier ${hoveredStakeholder && hoveredStakeholder !== 'supplier' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-supplier', 'supplier')}`}
           ref={reg('node-supplier')}
           onMouseEnter={() => handleCardHover('supplier', 'supplier')}
           onMouseLeave={handleCardLeave}
@@ -1312,12 +1714,39 @@ export function Intersystem() {
           <div className="att-port-anchor is-left" ref={reg('port-supplier-l')} />
           <div className="att-port-anchor is-right" ref={reg('port-supplier-r')} />
 
+          <SocketPort
+            edge="t"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-supplier-t'] || completedWires.has('link-routing-supplier')}
+          />
+          <SocketPort
+            edge="l"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-supplier-l'] || completedWires.has('link-supplier-fulfillment') || drawingWire?.id === 'link-supplier-fulfillment'}
+          />
+          <TripleSocketPort
+            edge="r"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-supplier-r'] || completedWires.has('link-supplier-dispatch') || drawingWire?.id === 'link-supplier-dispatch'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-supplier']?.w || 260}
+            height={cardDims['node-supplier']?.h || 180}
+            radius={14}
+            startEdge="t"
+            color={COLOR_SUPPLIER}
+            isDrawing={drawingNode?.id === 'node-supplier'}
+            drawProgress={drawingNode?.id === 'node-supplier' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-supplier') || hoveredNode === 'supplier'}
+          />
+
           <div className="att-card-header">
             <div className="att-card-header-left">
               <div className="att-card-icon-wrap is-supplier">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="1" y="3" width="15" height="13" />
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+                  <polygon points="16 8 20 8 23 11 23 16 8" />
                   <circle cx="5.5" cy="18.5" r="2.5" />
                   <circle cx="18.5" cy="18.5" r="2.5" />
                 </svg>
@@ -1330,7 +1759,12 @@ export function Intersystem() {
           <div className="att-card-body">
             <div className="att-attr-row is-highlight-row">
               <span className="att-attr-label">Incoming orders</span>
-              <span className="att-attr-val font-semibold">{supplierOrdersCount} today</span>
+              <span
+                className={`att-attr-val font-semibold ${supplierOrdersCount === 39 ? 'is-pulsed' : ''}`}
+                style={{ color: supplierOrdersCount === 39 ? COLOR_SUPPLIER : undefined }}
+              >
+                {supplierOrdersCount} today
+              </span>
             </div>
             <div className="att-attr-row">
               <span className="att-attr-label">Live inventory</span>
@@ -1350,19 +1784,34 @@ export function Intersystem() {
 
         {/* Secondary: Dispatch */}
         <div
-          className={`att-card att-card-secondary att-node-dispatch ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'supplier' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-dispatch ${hoveredStakeholder && hoveredStakeholder !== 'supplier' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-dispatch', 'supplier')}`}
           ref={reg('node-dispatch')}
           onMouseEnter={() => handleCardHover('dispatch', 'supplier')}
           onMouseLeave={handleCardLeave}
         >
+
           <div className="att-port-anchor is-left" ref={reg('port-dispatch-l')} />
           <div className="att-port-anchor is-right" ref={reg('port-dispatch-r')} />
+
+          <SocketPort
+            edge="l"
+            color={COLOR_SUPPLIER}
+            isActive={activePorts['port-dispatch-l'] || completedWires.has('link-supplier-dispatch')}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-dispatch']?.w || 135}
+            height={cardDims['node-dispatch']?.h || 60}
+            radius={10}
+            startEdge="l"
+            color={COLOR_SUPPLIER}
+            isDrawing={drawingNode?.id === 'node-dispatch'}
+            drawProgress={drawingNode?.id === 'node-dispatch' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-dispatch') || hoveredNode === 'dispatch'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">DISPATCH</span>
@@ -1377,13 +1826,10 @@ export function Intersystem() {
 
         {/* Secondary: Demand Signals */}
         <div
-          className={`att-card att-card-secondary att-node-signals ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'brand' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-signals ${hoveredStakeholder && hoveredStakeholder !== 'brand' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-signals', 'brand')}`}
           ref={reg('node-signals')}
           onMouseEnter={() => handleCardHover('signals', 'brand')}
           onMouseLeave={handleCardLeave}
@@ -1391,6 +1837,28 @@ export function Intersystem() {
           <div className="att-port-anchor is-left" ref={reg('port-signals-l')} />
           <div className="att-port-anchor is-bottom" ref={reg('port-signals-b')} />
           <div className="att-port-anchor is-top" ref={reg('port-signals-t')} />
+
+          <SocketPort
+            edge="l"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-signals-l'] || completedWires.has('link-grabbit-signals')}
+          />
+          <SocketPort
+            edge="b"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-signals-b'] || completedWires.has('link-signals-brand') || drawingWire?.id === 'link-signals-brand'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-signals']?.w || 150}
+            height={cardDims['node-signals']?.h || 60}
+            radius={10}
+            startEdge="l"
+            color={COLOR_BRAND}
+            isDrawing={drawingNode?.id === 'node-signals'}
+            drawProgress={drawingNode?.id === 'node-signals' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-signals') || hoveredNode === 'signals'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">DEMAND SIGNALS</span>
@@ -1401,18 +1869,32 @@ export function Intersystem() {
 
         {/* Secondary: Adoption */}
         <div
-          className={`att-card att-card-secondary att-node-adoption ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'brand' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-adoption ${hoveredStakeholder && hoveredStakeholder !== 'brand' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-adoption', 'brand')}`}
           ref={reg('node-adoption')}
           onMouseEnter={() => handleCardHover('adoption', 'brand')}
           onMouseLeave={handleCardLeave}
         >
           <div className="att-port-anchor is-bottom" ref={reg('port-adoption-b')} />
+
+          <SocketPort
+            edge="b"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-adoption-b'] || completedWires.has('link-repeat-adoption')}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-adoption']?.w || 140}
+            height={cardDims['node-adoption']?.h || 60}
+            radius={10}
+            startEdge="b"
+            color={COLOR_BRAND}
+            isDrawing={drawingNode?.id === 'node-adoption'}
+            drawProgress={drawingNode?.id === 'node-adoption' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-adoption') || hoveredNode === 'adoption'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">ADOPTION</span>
@@ -1423,13 +1905,10 @@ export function Intersystem() {
 
         {/* Secondary: Repeat Orders */}
         <div
-          className={`att-card att-card-secondary att-node-repeat ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'brand' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-repeat ${hoveredStakeholder && hoveredStakeholder !== 'brand' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-repeat', 'brand')}`}
           ref={reg('node-repeat')}
           onMouseEnter={() => handleCardHover('repeat', 'brand')}
           onMouseLeave={handleCardLeave}
@@ -1437,22 +1916,46 @@ export function Intersystem() {
           <div className="att-port-anchor is-bottom" ref={reg('port-repeat-b')} />
           <div className="att-port-anchor is-top" ref={reg('port-repeat-t')} />
 
+          <SocketPort
+            edge="b"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-repeat-b'] || completedWires.has('link-brand-repeat')}
+          />
+          <SocketPort
+            edge="t"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-repeat-t'] || completedWires.has('link-repeat-adoption') || drawingWire?.id === 'link-repeat-adoption'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-repeat']?.w || 140}
+            height={cardDims['node-repeat']?.h || 60}
+            radius={10}
+            startEdge="b"
+            color={COLOR_BRAND}
+            isDrawing={drawingNode?.id === 'node-repeat'}
+            drawProgress={drawingNode?.id === 'node-repeat' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-repeat') || hoveredNode === 'repeat'}
+          />
+
           <div className="att-sec-header">
             <span className="att-sec-label">REPEAT ORDERS</span>
             <span className="att-sec-dot is-brand" />
           </div>
-          <span className="att-sec-metric">{brandRepeatCount} POs</span>
+          <span
+            className={`att-sec-metric ${brandRepeatCount === 32 ? 'is-pulsed' : ''}`}
+            style={{ color: brandRepeatCount === 32 ? COLOR_BRAND : undefined }}
+          >
+            {brandRepeatCount} POs
+          </span>
         </div>
 
         {/* 3. Primary Brand Card (~260px) */}
         <div
-          className={`att-card att-card-primary att-card-brand ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'brand' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-primary att-card-brand ${hoveredStakeholder && hoveredStakeholder !== 'brand' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-brand', 'brand')}`}
           ref={reg('node-brand')}
           onMouseEnter={() => handleCardHover('brand', 'brand')}
           onMouseLeave={handleCardLeave}
@@ -1460,6 +1963,33 @@ export function Intersystem() {
           <div className="att-port-anchor is-top" ref={reg('port-brand-t')} />
           <div className="att-port-anchor is-right" ref={reg('port-brand-r')} />
           <div className="att-port-anchor is-left" ref={reg('port-brand-l')} />
+
+          <SocketPort
+            edge="t"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-brand-t'] || completedWires.has('link-signals-brand')}
+          />
+          <TripleSocketPort
+            edge="r"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-brand-r'] || completedWires.has('link-brand-repeat') || drawingWire?.id === 'link-brand-repeat'}
+          />
+          <SocketPort
+            edge="l"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-brand-l'] || completedWires.has('link-brand-gmv') || drawingWire?.id === 'link-brand-gmv'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-brand']?.w || 260}
+            height={cardDims['node-brand']?.h || 180}
+            radius={14}
+            startEdge="t"
+            color={COLOR_BRAND}
+            isDrawing={drawingNode?.id === 'node-brand'}
+            drawProgress={drawingNode?.id === 'node-brand' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-brand') || hoveredNode === 'brand'}
+          />
 
           <div className="att-card-header">
             <div className="att-card-header-left">
@@ -1482,11 +2012,16 @@ export function Intersystem() {
             </div>
             <div className="att-attr-row">
               <span className="att-attr-label">Repeat POs</span>
-              <span className="att-attr-val">{brandRepeatCount}</span>
+              <span
+                className={`att-attr-val ${brandRepeatCount === 32 ? 'is-pulsed' : ''}`}
+                style={{ color: brandRepeatCount === 32 ? COLOR_BRAND : undefined }}
+              >
+                {brandRepeatCount}
+              </span>
             </div>
             <div className="att-attr-row">
               <span className="att-attr-label">Projected GMV</span>
-              <span className="att-attr-val">₹6.4L</span>
+              <span className="att-attr-val font-semibold">₹6.4L</span>
             </div>
           </div>
 
@@ -1498,20 +2033,40 @@ export function Intersystem() {
 
         {/* Secondary: Projected GMV */}
         <div
-          className={`att-card att-card-secondary att-node-gmv ${
-            hoveredStakeholder &&
-            hoveredStakeholder !== 'brand' &&
-            hoveredStakeholder !== 'grabbit'
-              ? 'is-dimmed'
-              : ''
-          }`}
+          className={`att-card att-card-secondary att-node-gmv ${hoveredStakeholder && hoveredStakeholder !== 'brand' && hoveredStakeholder !== 'grabbit'
+            ? 'is-dimmed'
+            : ''
+            } ${getCardBorderClass('node-gmv', 'brand')}`}
           ref={reg('node-gmv')}
           onMouseEnter={() => handleCardHover('gmv', 'brand')}
           onMouseLeave={handleCardLeave}
         >
+
           <div className="att-port-anchor is-top" ref={reg('port-gmv-t')} />
           <div className="att-port-anchor is-right" ref={reg('port-gmv-r')} />
           <div className="att-port-anchor is-left" ref={reg('port-gmv-l')} />
+
+          <SocketPort
+            edge="r"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-gmv-r'] || completedWires.has('link-brand-gmv')}
+          />
+          <SocketPort
+            edge="t"
+            color={COLOR_BRAND}
+            isActive={activePorts['port-gmv-t'] || completedWires.has('link-gmv-grabbit') || drawingWire?.id === 'link-gmv-grabbit'}
+          />
+
+          <CardBorderRay
+            width={cardDims['node-gmv']?.w || 145}
+            height={cardDims['node-gmv']?.h || 60}
+            radius={10}
+            startEdge="r"
+            color={COLOR_BRAND}
+            isDrawing={drawingNode?.id === 'node-gmv'}
+            drawProgress={drawingNode?.id === 'node-gmv' ? drawingNode.progress : 1}
+            isCompleted={completedNodes.has('node-gmv') || hoveredNode === 'gmv'}
+          />
 
           <div className="att-sec-header">
             <span className="att-sec-label">PROJECTED GMV</span>
@@ -1523,3 +2078,5 @@ export function Intersystem() {
     </section>
   );
 }
+
+
