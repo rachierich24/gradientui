@@ -18,7 +18,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  background-color: var(--universe-bg, #16A34A);
+  background-color: #16A34A;
   isolation: isolate;
 }
 
@@ -62,8 +62,8 @@
 .product-story-section {
   position: relative;
   width: 100%;
-  min-height: 860px;
-  padding: clamp(75px, 10vh, 140px) clamp(20px, 5vw, 84px);
+  min-height: 100vh;
+  padding: clamp(36px, 5vh, 64px) clamp(20px, 4vw, 64px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -122,9 +122,10 @@
 /* 02 SUPPLIERS (Primary Green) */
 #for-suppliers.product-story-section {
   color: #FFFFFF;
-  min-height: auto;
-  padding-top: clamp(20px, 3vh, 40px);
-  padding-bottom: clamp(60px, 9vh, 100px);
+  min-height: 100vh;
+  padding-top: clamp(36px, 5vh, 64px);
+  padding-bottom: clamp(36px, 5vh, 64px);
+  scroll-margin-top: 70px;
   background: transparent !important;
 }
 
@@ -148,8 +149,10 @@
 /* 03 BRANDS (Purple) */
 #for-brands.product-story-section {
   color: #FFFFFF;
-  padding-top: clamp(80px, 12vh, 140px);
-  padding-bottom: clamp(80px, 12vh, 130px);
+  min-height: 100vh;
+  padding-top: clamp(36px, 5vh, 64px);
+  padding-bottom: clamp(36px, 5vh, 64px);
+  scroll-margin-top: 70px;
   background: transparent !important;
 }
 
@@ -173,30 +176,31 @@
 }
 
 /* ── Marketing Typography on Bold Energy Canvas (Pure White, Crisp, High Contrast) ── */
+/* ── Marketing Typography on Bold Energy Canvas (Pure White, Crisp, Refined) ── */
 .section-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
+  gap: 5px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  padding: 4px 12px;
+  letter-spacing: 0.12em;
+  padding: 3px 10px;
   border-radius: 9999px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   width: fit-content;
   user-select: none;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 }
 
 .section-title {
-  font-size: clamp(34px, 3.2vw, 48px);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  font-size: clamp(25px, 2.1vw, 35px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   font-weight: 700;
   color: #FFFFFF !important;
   margin: 0;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.20);
 }
 
 #for-suppliers .section-title,
@@ -206,40 +210,40 @@
 }
 
 .section-description {
-  font-size: 16.5px;
-  line-height: 1.58;
-  color: rgba(255, 255, 255, 0.90) !important;
-  margin-top: 16px;
-  margin-bottom: 36px;
-  max-width: 440px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88) !important;
+  margin-top: 12px;
+  margin-bottom: 22px;
+  max-width: 410px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 #for-suppliers .section-description,
 #for-brands .section-description,
 #for-cafes .section-description {
-  color: rgba(255, 255, 255, 0.90) !important;
+  color: rgba(255, 255, 255, 0.88) !important;
 }
 
 /* ── Frosted Glass Feature Cards & Interactive System ── */
 .feature-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 9px;
 }
 
 .feature-item {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 10px;
   opacity: 0.72;
   cursor: pointer;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 7px 11px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.10);
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(14px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
   transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   user-select: none;
 }
@@ -248,39 +252,39 @@
   opacity: 0.95;
   background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.32);
-  transform: translateX(4px);
+  transform: translateX(3px);
 }
 
 #for-cafes .feature-item.active {
   opacity: 1;
-  transform: translateX(8px);
+  transform: translateX(6px);
   background: rgba(255, 255, 255, 0.24);
   border: 1px solid rgba(254, 240, 138, 0.85);
-  box-shadow: 0 0 24px rgba(250, 204, 21, 0.45), 0 8px 30px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.40), 0 6px 24px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 
 #for-suppliers .feature-item.active {
   opacity: 1;
-  transform: translateX(8px);
+  transform: translateX(6px);
   background: rgba(255, 255, 255, 0.24);
   border: 1px solid rgba(134, 239, 172, 0.85);
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.45), 0 8px 30px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.40), 0 6px 24px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 
 #for-brands .feature-item.active {
   opacity: 1;
-  transform: translateX(8px);
+  transform: translateX(6px);
   background: rgba(255, 255, 255, 0.24);
   border: 1px solid rgba(216, 180, 254, 0.85);
-  box-shadow: 0 0 24px rgba(168, 85, 247, 0.45), 0 8px 30px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.40), 0 6px 24px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 
 .feature-num {
   font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: 11.5px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding-top: 2px;
+  padding-top: 1.5px;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
   transition: color 0.2s ease;
@@ -289,14 +293,14 @@
 .feature-content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1.5px;
 }
 
 .feature-heading {
-  font-size: 14.5px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   color: #FFFFFF !important;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 #for-suppliers .feature-heading,
@@ -306,37 +310,49 @@
 }
 
 .feature-text {
-  font-size: 13px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.86) !important;
+  font-size: 11.5px;
+  line-height: 1.38;
+  color: rgba(255, 255, 255, 0.84) !important;
 }
 
 #for-suppliers .feature-text,
 #for-brands .feature-text,
 #for-cafes .feature-text {
-  color: rgba(255, 255, 255, 0.86) !important;
+  color: rgba(255, 255, 255, 0.84) !important;
 }
 
 /* ── Layout Compositions (Café, Supplier, Brand) ── */
+.product-text-column {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .product-grid-cafe {
   display: grid;
   grid-template-columns: 32% 68%;
   align-items: center;
-  gap: clamp(32px, 3.5vw, 60px);
+  gap: clamp(28px, 3.2vw, 52px);
 }
 
+/* Green section (Supplier): Bigger 16:9 Dashboard on LEFT side of the text */
 .product-grid-supplier {
   display: grid;
-  grid-template-columns: 68% 32%;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(32px, 3.5vw, 60px);
+  gap: clamp(28px, 3.2vw, 52px);
+  width: 100%;
 }
 
+/* Purple section (Brand): Bigger 16:9 Dashboard on RIGHT side of the text */
 .product-grid-brand {
   display: grid;
-  grid-template-columns: 32% 68%;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
   align-items: center;
-  gap: clamp(32px, 3.5vw, 60px);
+  gap: clamp(28px, 3.2vw, 52px);
+  width: 100%;
 }
 
 /* Brand: Vertical composition (Details Top -> Product Center -> Details Bottom) */
@@ -396,39 +412,45 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  z-index: 5;
-  perspective: 1200px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  perspective: 1600px;
   transform-style: preserve-3d;
 }
 
 .product-frame {
   width: 100%;
-  max-width: 1040px;
+  aspect-ratio: 16 / 9;
+  max-width: 980px;
   background: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 14px;
-  box-shadow: 0 35px 95px rgba(0, 0, 0, 0.35), 0 10px 30px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.28), 0 8px 24px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
   will-change: transform, opacity;
   transform-style: preserve-3d;
   transition: box-shadow 0.35s ease;
 }
 
 #for-cafes .product-frame {
-  box-shadow: 0 35px 95px rgba(161, 98, 7, 0.45), 0 12px 35px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 70px rgba(161, 98, 7, 0.35), 0 8px 24px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 #for-suppliers .product-frame {
-  box-shadow: 0 35px 95px rgba(21, 128, 61, 0.45), 0 12px 35px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 70px rgba(21, 128, 61, 0.38), 0 8px 24px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 #for-brands .product-frame {
-  box-shadow: 0 35px 95px rgba(109, 40, 217, 0.50), 0 12px 35px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 70px rgba(109, 40, 217, 0.42), 0 8px 24px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .product-frame:hover {
-  box-shadow: 0 45px 110px rgba(0, 0, 0, 0.45), 0 15px 40px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.98);
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.38), 0 12px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.98);
 }
 
 /* ── Google-Style Product Motion Vignette Chrome & Controls ── */
@@ -539,7 +561,7 @@
 .animated-virtual-cursor {
   position: absolute;
   pointer-events: none;
-  z-index: 999;
+  z-index: 20;
   transition: transform 0.15s ease;
 }
 
@@ -753,15 +775,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 52px;
-  padding: 8px 16px;
-  margin-bottom: 14px;
+  gap: 12px;
+  min-height: 42px;
+  padding: 5px 12px;
+  margin-bottom: 2px;
   background: #FFFFFF;
-  border-radius: 8px;
+  border-radius: 7px;
   border: 1px solid rgba(23, 23, 23, 0.08);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .workflow-target-card {
@@ -832,25 +855,27 @@
 
 /* ── Browser Chrome Top Bar ── */
 .browser-top-bar {
-  height: 40px;
+  height: 32px;
   background: #FAFAFA;
   border-bottom: 1px solid rgba(23, 23, 23, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
+  padding: 0 12px;
   user-select: none;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .browser-dots {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .browser-dot {
-  width: 8px;
-  height: 8px;
+  width: 7.5px;
+  height: 7.5px;
   border-radius: 50%;
   background: #E5E5E5;
 }
@@ -860,21 +885,21 @@
 .browser-dot:nth-child(3) { background: #27C93F; }
 
 .browser-url-pill {
-  font-size: 10.5px;
+  font-size: 10px;
   font-family: var(--font-mono, monospace);
   color: #666666;
   background: #FFFFFF;
   border: 1px solid rgba(23, 23, 23, 0.06);
-  border-radius: 6px;
-  padding: 2px 10px;
+  border-radius: 5px;
+  padding: 1.5px 8px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 
 .browser-url-lock {
-  width: 8.5px;
-  height: 8.5px;
+  width: 8px;
+  height: 8px;
   opacity: 0.6;
 }
 
@@ -885,9 +910,9 @@
 }
 
 .browser-status-tag {
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 600;
-  padding: 1.5px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
   background: #F0FDF4;
   color: #166534;
@@ -895,21 +920,21 @@
 }
 
 .browser-user-badge {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   color: #525252;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .browser-avatar {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   background: #171717;
   color: #FFFFFF;
-  font-size: 8.5px;
+  font-size: 8px;
   display: grid;
   place-items: center;
   font-weight: 700;
@@ -921,22 +946,34 @@
 ═════════════════════════════════════════════════════════════════════════ */
 .dashboard-layout {
   display: flex;
-  min-height: 510px;
+  flex: 1;
+  min-height: 0;
+  height: calc(100% - 62px);
   background: #FFFFFF;
   position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* ── Shared Sidebar (Linear dense style, 170px width) ── */
+/* ── Shared Sidebar (Linear dense style, compact width) ── */
 .dashboard-sidebar {
-  width: 170px;
+  width: 156px;
   flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
   background: #FAFAFA;
   border-right: 1px solid rgba(23, 23, 23, 0.06);
-  padding: 12px 9px;
+  padding: 10px 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   user-select: none;
+  box-sizing: border-box;
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar-brand-header {
@@ -1143,16 +1180,31 @@
   100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* ── Main Dashboard Area ── */
+/* ── Main Dashboard Area (Optimized for 16:9 Display) ── */
 .dashboard-main {
   flex: 1;
   min-width: 0;
-  padding: 16px 18px 18px 18px;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 14px 14px 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   background: #FFFFFF;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+.dashboard-main::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dashboard-main::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
 }
 
 /* Top Navigation Bar */
@@ -1160,9 +1212,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 10px;
+  gap: 10px;
+  padding-bottom: 6px;
   border-bottom: 1px solid rgba(23, 23, 23, 0.05);
+  flex-shrink: 0;
 }
 
 .dashboard-heading-group {
@@ -1174,11 +1227,11 @@
 .dashboard-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .dashboard-page-title {
-  font-size: 16px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #171717;
   margin: 0;
@@ -1186,7 +1239,7 @@
 }
 
 .dashboard-page-subtitle {
-  font-size: 11px;
+  font-size: 10px;
   color: #737373;
 }
 
@@ -1293,14 +1346,15 @@
 .dashboard-overview-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .dashboard-stat {
-  padding: 10px 12px;
+  padding: 8px 12px;
   background: #FAFAFA;
   border: 1px solid rgba(23, 23, 23, 0.05);
-  border-radius: 8px;
+  border-radius: 7px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1314,7 +1368,7 @@
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   color: #737373;
   text-transform: uppercase;
@@ -1325,7 +1379,7 @@
 }
 
 .stat-value {
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 700;
   color: #171717;
   letter-spacing: -0.025em;
@@ -1341,7 +1395,7 @@
 }
 
 .stat-trend {
-  font-size: 10px;
+  font-size: 8.5px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -1434,14 +1488,14 @@
 .dashboard-bento {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .dashboard-card {
   background: #FFFFFF;
   border: 1px solid rgba(23, 23, 23, 0.07);
   border-radius: 8px;
-  padding: 12px 14px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1452,28 +1506,31 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .card-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: #171717;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .card-subtitle {
-  font-size: 10px;
+  font-size: 9.5px;
   color: #737373;
 }
 
 /* ── Operational Data Tables (Refined Heights & Tabular Alignment) ── */
 .dashboard-table-container {
   width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .dashboard-table {
@@ -1484,17 +1541,17 @@
 
 .dashboard-table th {
   text-align: left;
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #8C8C8C;
-  padding: 6px 6px;
+  padding: 5px 6px;
   border-bottom: 1px solid rgba(23, 23, 23, 0.05);
 }
 
 .dashboard-table-row {
-  height: 44px;
+  height: 33px;
   border-bottom: 1px solid rgba(23, 23, 23, 0.04);
   cursor: pointer;
   transition: background 0.18s ease-out;

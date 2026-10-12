@@ -1,0 +1,939 @@
+/* ==========================================================================
+   GRABBIT CONNECTED ECOSYSTEM — DENSE ORTHOGONAL DATA GRAPH
+   Strictly Horizontal & Vertical Connectors with Rounded 90° Fillets
+   ========================================================================== */
+
+.att-section {
+  position: relative;
+  background-color: var(--hero-bg, #FFFCF3);
+  padding: 100px 24px 130px;
+  overflow: hidden;
+  font-family: var(--font-plus-jakarta, 'Plus Jakarta Sans', -apple-system, sans-serif);
+  color: #141413;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Subtle dotted grid background */
+.att-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#D8D6CE 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── HEADER ─── */
+.att-header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 680px;
+  margin-bottom: 50px;
+}
+
+.att-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #8C867B;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.att-title {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  color: #141413;
+  margin: 0;
+}
+
+.att-desc {
+  font-size: 15.5px;
+  color: #6D695F;
+  margin: 14px auto 0;
+  line-height: 1.55;
+  max-width: 540px;
+}
+
+/* ─── STAGE CONTAINER ─── */
+.att-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 760px;
+  margin: 0 auto;
+  z-index: 5;
+}
+
+/* ─── SVG WIRES (STRICTLY ORTHOGONAL) ─── */
+.att-wires {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.att-wire-path {
+  fill: none;
+  stroke: #D9D9D2;
+  stroke-width: 1px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.48;
+  transition: stroke 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, stroke-width 0.2s ease;
+}
+
+.att-wire-path.is-active {
+  opacity: 0.95;
+  stroke-width: 1.6px;
+}
+
+.att-wire-path.is-secondary {
+  stroke-dasharray: 4 4;
+  opacity: 0.32;
+}
+
+/* Junction nodes where wires branch */
+.att-wire-junction {
+  fill: #FAF9F5;
+  stroke: #B8B4AA;
+  stroke-width: 1.2px;
+}
+
+/* ─── ATTIO 3-DOT BRACKET SOCKETS (MATCHING USER'S REFERENCE) ─── */
+.att-bracket-socket-group {
+  pointer-events: none;
+}
+
+.att-bracket-wire {
+  transition: stroke 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.att-bracket-dot {
+  transition: stroke 0.25s ease, fill 0.25s ease, r 0.2s ease;
+}
+
+.att-bracket-dot.is-mid {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.att-bracket-halo {
+  animation: bracketHaloAnim 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes bracketHaloAnim {
+  0% {
+    r: 3px;
+    opacity: 0.9;
+    stroke-width: 2px;
+  }
+  100% {
+    r: 12px;
+    opacity: 0;
+    stroke-width: 0.5px;
+  }
+}
+
+/* Signal packet (4-6px core + halo) */
+.att-packet-core {
+  filter: drop-shadow(0 0 4px currentColor);
+  transition: r 0.2s ease;
+}
+.att-packet-glow {
+  pointer-events: none;
+  transition: r 0.2s ease;
+}
+
+/* Arrival expanding pulse ring */
+.att-arrival-pulse-ring {
+  animation: arrivalRippleAnim 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes arrivalRippleAnim {
+  0% {
+    r: 10px;
+    opacity: 0.9;
+    stroke-width: 2px;
+  }
+  100% {
+    r: 38px;
+    opacity: 0;
+    stroke-width: 0.5px;
+  }
+}
+
+/* ─── GENERAL CARD STYLES ─── */
+.att-card {
+  position: absolute;
+  background: #FFFFFF;
+  border: 1px solid #EAE9E2;
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.22s ease, opacity 0.25s ease;
+  z-index: 10;
+  will-change: transform;
+}
+
+.att-card.is-dimmed {
+  opacity: 0.72;
+}
+
+/* ─── PRIMARY CARDS (~260px) ─── */
+.att-card-primary {
+  width: 260px;
+  border-radius: 12px;
+}
+
+.att-card-cafe {
+  top: 25px;
+  left: 160px;
+}
+.att-card-cafe:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px -4px rgba(229, 72, 59, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
+  border-color: rgba(229, 72, 59, 0.45);
+  z-index: 15;
+}
+
+.att-card-supplier {
+  bottom: 45px;
+  left: 140px;
+}
+.att-card-supplier:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px -4px rgba(34, 197, 94, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
+  border-color: rgba(34, 197, 94, 0.45);
+  z-index: 15;
+}
+
+.att-card-brand {
+  bottom: 45px;
+  right: 140px;
+}
+.att-card-brand:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px -4px rgba(109, 40, 217, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
+  border-color: rgba(109, 40, 217, 0.45);
+  z-index: 15;
+}
+
+/* Card Header */
+.att-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 13px;
+  border-bottom: 1px solid #F4F3ED;
+}
+
+.att-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.att-card-icon-wrap {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.att-card-icon-wrap.is-cafe {
+  background: #FEF2F2;
+  color: #E5483B;
+}
+.att-card-icon-wrap.is-supplier {
+  background: #F0FDF4;
+  color: #22C55E;
+}
+.att-card-icon-wrap.is-brand {
+  background: #F5F3FF;
+  color: #6D28D9;
+}
+
+.att-card-title {
+  font-size: 13px;
+  font-weight: 650;
+  color: #171716;
+  letter-spacing: -0.01em;
+}
+
+/* Badges */
+.att-card-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2.5px 6.5px;
+  border-radius: 4px;
+}
+.att-card-badge.is-cafe {
+  background: #FEF2F2;
+  color: #E5483B;
+  border: 1px solid rgba(229, 72, 59, 0.25);
+}
+.att-card-badge.is-supplier {
+  background: #F0FDF4;
+  color: #22C55E;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+.att-card-badge.is-brand {
+  background: #F5F3FF;
+  color: #6D28D9;
+  border: 1px solid rgba(109, 40, 217, 0.25);
+}
+
+/* Card Body */
+.att-card-body {
+  padding: 3px 0 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.att-attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6.5px 13px;
+  border-bottom: 1px solid #F9F8F5;
+  font-size: 11.5px;
+  transition: background 0.15s ease;
+}
+.att-attr-row:hover {
+  background: #FAF9F5;
+}
+.att-attr-row.is-highlight-row {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.att-attr-label {
+  color: #7E7A71;
+  font-weight: 450;
+}
+
+.att-attr-val {
+  color: #1A1917;
+  font-weight: 500;
+}
+
+/* Card Footer */
+.att-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-top: 1px solid #FAF9F5;
+  font-size: 10.5px;
+  color: #8F8B82;
+}
+
+.att-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.att-status-dot.is-cafe {
+  background: #E5483B;
+  box-shadow: 0 0 0 2px rgba(229, 72, 59, 0.2);
+}
+.att-status-dot.is-supplier {
+  background: #22C55E;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+.att-status-dot.is-brand {
+  background: #6D28D9;
+  box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2);
+}
+
+.att-footer-text {
+  font-size: 10.5px;
+  font-weight: 450;
+}
+
+/* ─── SECONDARY INTERMEDIATE CARDS (~135-155px) ─── */
+.att-card-secondary {
+  border-radius: 9px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.att-card-secondary:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 20px -2px rgba(0, 0, 0, 0.06);
+  z-index: 15;
+}
+
+.att-sec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.att-sec-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9A958C;
+}
+
+.att-sec-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.att-sec-dot.is-cafe {
+  background: #E5483B;
+}
+.att-sec-dot.is-supplier {
+  background: #22C55E;
+}
+.att-sec-dot.is-brand {
+  background: #6D28D9;
+}
+
+.att-sec-metric {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #1E1D1B;
+}
+
+/* ─── PRECISE EDGE ANCHORS FOR SVG BRACKETS ─── */
+.att-port-anchor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.att-port-anchor.is-right {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.att-port-anchor.is-left {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.att-port-anchor.is-top {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.att-port-anchor.is-bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Secondary Node Specific Placements */
+.att-node-orders {
+  top: 40px;
+  left: 470px;
+  width: 140px;
+}
+
+.att-node-demand {
+  top: 155px;
+  left: 560px;
+  width: 155px;
+}
+
+.att-node-routing {
+  top: 360px;
+  left: 240px;
+  width: 145px;
+}
+
+.att-node-inventory {
+  top: 260px;
+  left: 60px;
+  width: 145px;
+}
+
+.att-node-fulfillment {
+  bottom: 220px;
+  left: 40px;
+  width: 140px;
+}
+
+.att-node-dispatch {
+  bottom: 50px;
+  left: 450px;
+  width: 135px;
+}
+
+.att-node-signals {
+  top: 360px;
+  right: 240px;
+  width: 150px;
+}
+
+.att-node-adoption {
+  top: 260px;
+  right: 60px;
+  width: 140px;
+}
+
+.att-node-repeat {
+  bottom: 220px;
+  right: 40px;
+  width: 140px;
+}
+
+.att-node-gmv {
+  bottom: 50px;
+  right: 450px;
+  width: 145px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CENTRAL GRABBIT NETWORK CORE (THE ROUTING ENGINE)
+   Linear + Attio Restrained Product Aesthetics
+   ══════════════════════════════════════════════════════════════ */
+
+.att-grabbit-chip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  width: 326px;
+  height: 64px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  padding: 10px 16px 10px 13px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 4px rgba(0, 0, 0, 0.02), 0 8px 26px -4px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease,
+              border-color 0.25s ease;
+  will-change: transform;
+  cursor: default;
+}
+
+.att-grabbit-chip:hover,
+.att-grabbit-chip.is-hovered {
+  transform: translate(-50%, -50%) scale(1.018);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 4px 8px rgba(0, 0, 0, 0.03), 0 12px 32px -4px rgba(0, 0, 0, 0.08);
+}
+
+/* Dynamic Border Accent during Processing (Section 15) */
+.att-grabbit-chip.is-processing {
+  transform: translate(-50%, -50%) scale(1.015);
+}
+
+.att-grabbit-chip.is-processing-cafe {
+  border-top-color: #E5483B;
+  border-left-color: rgba(229, 72, 59, 0.35);
+}
+
+.att-grabbit-chip.is-processing-supplier {
+  border-left-color: #22C55E;
+  border-bottom-color: rgba(34, 197, 94, 0.35);
+}
+
+.att-grabbit-chip.is-processing-brand {
+  border-bottom-color: #6D28D9;
+  border-right-color: rgba(109, 40, 217, 0.35);
+}
+
+/* Expanding Signal Processing Ring (Section 21) */
+.att-chip-process-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: chipProcessRingAnim 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.att-chip-process-ring.is-cafe {
+  border: 1.5px solid #E5483B;
+}
+.att-chip-process-ring.is-supplier {
+  border: 1.5px solid #22C55E;
+}
+.att-chip-process-ring.is-brand {
+  border: 1.5px solid #6D28D9;
+}
+
+@keyframes chipProcessRingAnim {
+  0% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.45);
+    opacity: 0;
+  }
+}
+
+.att-chip-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* ─── TRIPARTITE OPTICAL NETWORK ENGINE MARK (SECTIONS 4 & 5) ─── */
+.att-chip-mark-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #F8F7F4;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.att-chip-mark {
+  width: 28px;
+  height: 28px;
+  display: block;
+  overflow: visible;
+}
+
+.att-mark-arc {
+  transition: opacity 0.25s ease, stroke-width 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s ease;
+  opacity: 0.45;
+}
+
+.att-mark-arc.is-active {
+  opacity: 1;
+  stroke-width: 2.8px;
+}
+
+.att-mark-arc.is-cafe.is-active {
+  transform: rotate(4deg);
+  transform-origin: 14px 14px;
+  filter: drop-shadow(0 0 2.5px rgba(229, 72, 59, 0.45));
+}
+.att-mark-arc.is-supplier.is-active {
+  transform: rotate(4deg);
+  transform-origin: 14px 14px;
+  filter: drop-shadow(0 0 2.5px rgba(34, 197, 94, 0.45));
+}
+.att-mark-arc.is-brand.is-active {
+  transform: rotate(4deg);
+  transform-origin: 14px 14px;
+  filter: drop-shadow(0 0 2.5px rgba(109, 40, 217, 0.45));
+}
+
+.att-mark-core-lens {
+  transition: transform 0.2s ease, fill 0.2s ease;
+}
+.att-mark-core-lens.is-active {
+  transform: scale(1.35);
+  transform-origin: 14px 14px;
+}
+.att-mark-core-lens.is-active-cafe {
+  fill: #E5483B;
+}
+.att-mark-core-lens.is-active-supplier {
+  fill: #22C55E;
+}
+.att-mark-core-lens.is-active-brand {
+  fill: #6D28D9;
+}
+
+/* Hairline Structural Divider */
+.att-chip-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 12px 0 11px;
+  flex-shrink: 0;
+}
+
+/* ─── CHIP BODY & LABELS ─── */
+.att-chip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.att-chip-primary-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.att-chip-brand {
+  font-size: 13.5px;
+  font-weight: 750;
+  color: #161514;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.att-chip-signals-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  background: #F6F5F2;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.5px 7px;
+  border-radius: 999px;
+}
+
+.att-chip-status-dot {
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 0 1.5px rgba(34, 197, 94, 0.25);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.att-chip-status-dot.is-pulsing {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
+}
+
+.att-chip-signals {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 550;
+  color: #59564E;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.att-chip-routing-track {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9A958C;
+}
+
+.att-chip-track-arrow {
+  color: #CDC9BE;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.att-chip-track-node {
+  transition: color 0.2s ease, font-weight 0.2s ease, text-shadow 0.2s ease;
+}
+
+.att-chip-track-node.is-active.is-cafe {
+  color: #E5483B;
+  font-weight: 850;
+  text-shadow: 0 0 6px rgba(229, 72, 59, 0.22);
+}
+.att-chip-track-node.is-active.is-supplier {
+  color: #22C55E;
+  font-weight: 850;
+  text-shadow: 0 0 6px rgba(34, 197, 94, 0.22);
+}
+.att-chip-track-node.is-active.is-brand {
+  color: #6D28D9;
+  font-weight: 850;
+  text-shadow: 0 0 6px rgba(109, 40, 217, 0.22);
+}
+
+/* ─── CHIP CONNECTION PORTS ─── */
+.att-chip-port {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.2px solid #C4C0B5;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+  pointer-events: none;
+}
+
+.att-chip-port-core {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.att-chip-port.is-top {
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.att-chip-port.is-bottom {
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.att-chip-port.is-left {
+  left: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.att-chip-port.is-right {
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Active Port State (Halo 6-10px) */
+.att-chip-port.is-active.is-cafe {
+  border-color: #E5483B;
+  box-shadow: 0 0 0 4.5px rgba(229, 72, 59, 0.22);
+}
+.att-chip-port.is-active.is-cafe .att-chip-port-core {
+  background: #E5483B;
+}
+
+.att-chip-port.is-active.is-supplier {
+  border-color: #22C55E;
+  box-shadow: 0 0 0 4.5px rgba(34, 197, 94, 0.22);
+}
+.att-chip-port.is-active.is-supplier .att-chip-port-core {
+  background: #22C55E;
+}
+
+.att-chip-port.is-active.is-brand {
+  border-color: #6D28D9;
+  box-shadow: 0 0 0 4.5px rgba(109, 40, 217, 0.22);
+}
+.att-chip-port.is-active.is-brand .att-chip-port-core {
+  background: #6D28D9;
+}
+
+/* Arrival Border Light Pulses (Section 14) */
+.att-card.pulse {
+  animation: cardLightPulseAnim 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes cardLightPulseAnim {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.att-card-cafe.pulse,
+.att-node-orders.pulse,
+.att-node-demand.pulse {
+  border-color: rgba(229, 72, 59, 0.65) !important;
+  box-shadow: 0 10px 28px -2px rgba(229, 72, 59, 0.2) !important;
+}
+
+.att-card-supplier.pulse,
+.att-node-routing.pulse,
+.att-node-inventory.pulse,
+.att-node-fulfillment.pulse,
+.att-node-dispatch.pulse {
+  border-color: rgba(34, 197, 94, 0.65) !important;
+  box-shadow: 0 10px 28px -2px rgba(34, 197, 94, 0.2) !important;
+}
+
+.att-card-brand.pulse,
+.att-node-signals.pulse,
+.att-node-adoption.pulse,
+.att-node-repeat.pulse,
+.att-node-gmv.pulse {
+  border-color: rgba(109, 40, 217, 0.65) !important;
+  box-shadow: 0 10px 28px -2px rgba(109, 40, 217, 0.2) !important;
+}
+
+/* ─── RESPONSIVE LAYOUTS ─── */
+@media (max-width: 1140px) {
+  .att-stage {
+    transform: scale(0.92);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 960px) {
+  .att-stage {
+    transform: scale(0.82);
+    transform-origin: top center;
+    height: 680px;
+  }
+}
+
+@media (max-width: 767px) {
+  .att-stage {
+    transform: none;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 40px;
+  }
+  .att-card,
+  .att-grabbit-chip {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 320px !important;
+  }
+  .att-wires,
+  .att-bracket-socket-group,
+  .att-chip-port,
+  .att-chip-hover-labels {
+    display: none !important;
+  }
+  .att-title {
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .att-card,
+  .att-grabbit-chip,
+  .att-wire-path,
+  .att-arrival-pulse-ring,
+  .att-bracket-socket-group,
+  .att-mark-arc,
+  .att-chip-process-ring {
+    transition: none !important;
+    animation: none !important;
+  }
+}

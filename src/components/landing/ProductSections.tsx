@@ -189,7 +189,15 @@ export function ProductSections() {
   const supplierRef = useRef<HTMLDivElement>(null);
   const brandRef = useRef<HTMLDivElement>(null);
 
-  // Track exact arrival of the Brand section into the viewport:
+  // 1. Track arrival of the Supplier section into the viewport:
+  // Starts transitioning as Supplier section enters bottom of viewport ('start end')
+  // Completes transition as Supplier section reaches comfortable reading zone ('start 30%')
+  const { scrollYProgress: supplierProgress } = useScroll({
+    target: supplierRef,
+    offset: ['start end', 'start 30%'],
+  });
+
+  // 2. Track arrival of the Brand section into the viewport:
   // Starts transitioning as Brand section enters bottom of viewport ('start end')
   // Completes transition as Brand section header reaches comfortable reading zone ('start 30%')
   const { scrollYProgress: brandProgress } = useScroll({
@@ -197,25 +205,75 @@ export function ProductSections() {
     offset: ['start end', 'start 30%'],
   });
 
-  // Dynamic chromatic transition for the whole background:
-  // Starts at 100% solid Supplier Green (#16A34A) and completely shifts to Brand Purple (#6D28D9)
+  // Inertial spring smoothing for butter-smooth color universe transitions:
+  const smoothSupplierProgress = useSpring(supplierProgress, {
+    stiffness: 70,
+    damping: 24,
+    mass: 0.28,
+    restDelta: 0.0001,
+  });
+
+  const smoothBrandProgress = useSpring(brandProgress, {
+    stiffness: 70,
+    damping: 24,
+    mass: 0.28,
+    restDelta: 0.0001,
+  });
+
+  // Dynamic continuous chromatic transition across all chapters:
+  // Café Red (#E03527) -> Supplier Green (#16A34A) -> Brand Purple (#6D28D9)
+  const interpolateRedToGreen = interpolate([0, 1], ['#E03527', '#16A34A']);
+  const interpolateGreenToPurple = interpolate([0, 1], ['#16A34A', '#6D28D9']);
+
   const productBg = useTransform(
-    brandProgress,
-    [0.0, 1.0],
-    ['#16A34A', '#6D28D9']
+    [smoothSupplierProgress, smoothBrandProgress],
+    (values: number[]) => {
+      const [sProg, bProg] = values;
+      const s = Math.max(0, Math.min(1, sProg));
+      const b = Math.max(0, Math.min(1, bProg));
+      if (b > 0.01 && s >= 0.85) {
+        return interpolateGreenToPurple(b);
+      }
+      return interpolateRedToGreen(s);
+    }
   );
 
   // Sync the whole background CSS variable across the document
-  useMotionValueEvent(productBg, 'change', (latest) => {
-    document.documentElement.style.setProperty('--universe-bg', latest);
+  useMotionValueEvent(productBg, 'change', (latest: string) => {
+    if (supplierProgress.get() > 0 || brandProgress.get() > 0) {
+      document.documentElement.style.setProperty('--universe-bg', String(latest));
+    }
   });
 
-  // Atmospheric radial fields opacity & subtle slow vertical drift
-  const supplierGlowOpacity = useTransform(brandProgress, [0.0, 0.4], [1, 0]);
-  const brandGlowOpacity = useTransform(brandProgress, [0.1, 0.5, 0.9, 1.0], [0, 1, 1, 1]);
+  useEffect(() => {
+    if (window.scrollY > 300) {
+      document.documentElement.style.setProperty('--universe-bg', String(productBg.get()));
+    }
+  }, [productBg]);
 
-  const supplierGlowY = useTransform(brandProgress, [0.0, 1.0], ['2%', '1%']);
-  const brandGlowY = useTransform(brandProgress, [0.0, 1.0], ['1%', '-1%']);
+  // Atmospheric radial fields opacity & subtle slow vertical drift
+  // 1. Café Glow (Warm Red): visible as section enters, fades out as Supplier locks in
+  const cafeGlowOpacity = useTransform(smoothSupplierProgress, [0.0, 0.5], [1, 0]);
+  const cafeGlowY = useTransform(smoothSupplierProgress, [0.0, 1.0], ['0%', '-2%']);
+
+  // 2. Supplier Glow (Vibrant Green): fades in as Supplier arrives, fades out as Brand arrives
+  const supplierGlowOpacity = useTransform(
+    [smoothSupplierProgress, smoothBrandProgress],
+    (values: number[]) => {
+      const [sProg, bProg] = values;
+      if (bProg > 0) {
+        return Math.max(0, 1 - bProg / 0.4);
+      }
+      if (sProg <= 0.1) return 0;
+      if (sProg >= 0.8) return 1;
+      return (sProg - 0.1) / 0.7;
+    }
+  );
+  const supplierGlowY = useTransform(smoothBrandProgress, [0.0, 1.0], ['2%', '1%']);
+
+  // 3. Brand Glow (Rich Purple): fades in as Brand arrives
+  const brandGlowOpacity = useTransform(smoothBrandProgress, [0.1, 0.5, 0.9, 1.0], [0, 1, 1, 1]);
+  const brandGlowY = useTransform(smoothBrandProgress, [0.0, 1.0], ['1%', '-1%']);
 
   return (
     <motion.div
@@ -226,6 +284,10 @@ export function ProductSections() {
     >
       {/* Immersive Atmospheric Color Fields */}
       <div className="universe-atmospheric-layer" aria-hidden="true">
+        <motion.div
+          className="env-atmospheric-field cafe-field"
+          style={{ opacity: cafeGlowOpacity, y: cafeGlowY }}
+        />
         <motion.div
           className="env-atmospheric-field supplier-field"
           style={{ opacity: supplierGlowOpacity, y: supplierGlowY }}
@@ -1081,18 +1143,17 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
     offset: ['start end', 'center 45%'],
   });
 
-  // Left to Right scroll-driven entrance:
-  // Glides from left to right (-220px -> 0) in the exact same manner as the purple Brand dashboard
-  const rawX = useTransform(scrollYProgress, [0, 1], [isMobile ? -70 : -220, 0]);
-  const rawOpacity = useTransform(scrollYProgress, [0, 0.25, 0.88], [0, 0.4, 1]);
-  const rawScale = useTransform(scrollYProgress, [0, 1], [0.94, 1]);
+  // Gentle scroll-driven entrance (stays strictly within viewport, never clipped):
+  const rawY = useTransform(scrollYProgress, [0, 1], [isMobile ? 0 : 28, 0]);
+  const rawOpacity = useTransform(scrollYProgress, [0, 0.25, 0.88], [0.35, 0.7, 1]);
+  const rawScale = useTransform(scrollYProgress, [0, 1], [0.97, 1]);
 
-  const springConfig = { stiffness: 90, damping: 20, mass: 0.35 };
-  const supplierX = useSpring(rawX, springConfig);
+  const springConfig = { stiffness: 70, damping: 24, mass: 0.28, restDelta: 0.0001 };
+  const supplierY = useSpring(rawY, springConfig);
   const supplierOpacity = useSpring(rawOpacity, springConfig);
   const supplierScale = useSpring(rawScale, springConfig);
 
-  // Desktop 3D Mouse Parallax (Refined ~4.5° Y, 3.5° X tilt with cursor tracking)
+  // Desktop 3D Mouse Parallax (Elegant 3D tilt angled inward towards editorial text)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const mouseSpring = { stiffness: 140, damping: 24, mass: 0.2 };
@@ -1113,8 +1174,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
     mouseY.set(0);
   };
 
-  const supplierRotateY = useTransform(smoothMouseX, (val) => 4.5 + val);
-  const supplierRotateX = useTransform(smoothMouseY, (val) => 3.5 + val);
+  const supplierRotateY = useTransform(smoothMouseX, (val) => 3.6 + val * 0.7);
+  const supplierRotateX = useTransform(smoothMouseY, (val) => 2.2 - val * 0.4);
 
   // Google-Style Product Motion Workflow Simulation (~9.5s cycle)
   const [motionStep, setMotionStep] = useState(0);
@@ -1184,7 +1245,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
             <motion.div
               className="product-frame"
               style={{
-                x: shouldReduceMotion ? 0 : supplierX,
+                x: 0,
+                y: shouldReduceMotion ? 0 : supplierY,
                 opacity: shouldReduceMotion ? 1 : supplierOpacity,
                 scale: shouldReduceMotion ? 1 : supplierScale,
                 rotateY: shouldReduceMotion || isMobile ? 0 : supplierRotateY,
@@ -1682,8 +1744,10 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
           {/* Right: Minimal, Typographic Editorial */}
           <motion.div
             className="product-text-column"
-            initial={{ opacity: 1, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className="section-eyebrow">FOR SUPPLIERS</span>
             <h2 className="section-title">
@@ -1828,18 +1892,17 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
     offset: ['start end', 'center 45%'],
   });
 
-  // Right to Left scroll-driven entrance:
-  // Symmetrical to Supplier section's left-to-right glide: Brand glides from right to left (+220px -> 0)
-  const rawX = useTransform(scrollYProgress, [0, 1], [isMobile ? 70 : 220, 0]);
-  const rawOpacity = useTransform(scrollYProgress, [0, 0.25, 0.88], [0, 0.4, 1]);
-  const rawScale = useTransform(scrollYProgress, [0, 1], [0.94, 1]);
+  // Gentle scroll-driven entrance (stays strictly within viewport, never clipped):
+  const rawY = useTransform(scrollYProgress, [0, 1], [isMobile ? 0 : 28, 0]);
+  const rawOpacity = useTransform(scrollYProgress, [0, 0.25, 0.88], [0.35, 0.7, 1]);
+  const rawScale = useTransform(scrollYProgress, [0, 1], [0.97, 1]);
 
-  const springConfig = { stiffness: 90, damping: 20, mass: 0.35 };
-  const brandX = useSpring(rawX, springConfig);
+  const springConfig = { stiffness: 70, damping: 24, mass: 0.28, restDelta: 0.0001 };
+  const brandY = useSpring(rawY, springConfig);
   const brandOpacity = useSpring(rawOpacity, springConfig);
   const brandScale = useSpring(rawScale, springConfig);
 
-  // Desktop 3D Mouse Parallax (Symmetrical to Supplier: -4.5° Y tilt angled left towards editorial text)
+  // Desktop 3D Mouse Parallax (Elegant 3D tilt angled inward towards editorial text)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const mouseSpring = { stiffness: 140, damping: 24, mass: 0.2 };
@@ -1860,8 +1923,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
     mouseY.set(0);
   };
 
-  const brandRotateY = useTransform(smoothMouseX, (val) => -4.5 + val);
-  const brandRotateX = useTransform(smoothMouseY, (val) => 3.5 + val);
+  const brandRotateY = useTransform(smoothMouseX, (val) => -3.6 + val * 0.7);
+  const brandRotateX = useTransform(smoothMouseY, (val) => 2.2 - val * 0.4);
 
   // Google-Style Product Motion Workflow Simulation (~9.5s cycle)
   const [motionStep, setMotionStep] = useState(0);
@@ -2034,8 +2097,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
             <motion.div
               className="product-frame"
               style={{
-                x: shouldReduceMotion ? 0 : brandX,
-                y: 0,
+                x: 0,
+                y: shouldReduceMotion ? 0 : brandY,
                 opacity: shouldReduceMotion ? 1 : brandOpacity,
                 scale: shouldReduceMotion ? 1 : brandScale,
                 rotateY: shouldReduceMotion || isMobile ? 0 : brandRotateY,
