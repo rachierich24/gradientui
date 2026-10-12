@@ -430,6 +430,7 @@ const CARDS = [
     id: 'cafes',
     index: '01',
     title: 'CAFÉS',
+    visitLabel: 'VISIT CAFÉ PLATFORM',
     tagline: 'THE SOURCING ENGINE',
     theme: 'cafe',
     color: '#E03527',
@@ -452,6 +453,7 @@ const CARDS = [
     id: 'suppliers',
     index: '02',
     title: 'SUPPLIERS',
+    visitLabel: 'VISIT SUPPLIER PLATFORM',
     tagline: 'THE DISPATCH NETWORK',
     theme: 'supplier',
     color: '#22C55E',
@@ -474,6 +476,7 @@ const CARDS = [
     id: 'brands',
     index: '03',
     title: 'BRANDS',
+    visitLabel: 'VISIT BRAND PLATFORM',
     tagline: 'THE DEMAND RADAR',
     theme: 'brand',
     color: '#6D28D9',
@@ -740,7 +743,7 @@ export function EcosystemCards() {
                           onClick={(e) => e.stopPropagation()}
                           title={`Go directly to ${card.title} platform website`}
                         >
-                          VISIT {card.title} PLATFORM <span className="arrow">→</span>
+                          {card.visitLabel || `VISIT ${card.title} PLATFORM`} <span className="arrow">↗</span>
                         </a>
 
                         {/* Secondary click badge to expand tab */}
