@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Icon } from './icons';
 
+// ─── VERIFIED LIVE PLATFORMS FOR THE THREE SIDES OF THE ECOSYSTEM ───
 const ECOSYSTEM_LINKS = {
-  cafes: 'https://cafe.grabbit.io',
-  suppliers: 'https://supplier.grabbit.io',
-  brands: 'https://brand.grabbit.io',
+  cafes: 'https://cafe.gradient365.com',
+  suppliers: 'https://supplier.gradient365.com',
+  brands: 'https://brand.gradient365.com',
 };
 
 // ─── RICH, AUTHENTIC UI MOCKUP COMPONENTS ───
@@ -47,9 +48,9 @@ const CafePreview = ({
             rel="noopener noreferrer"
             className="eco-preview-address is-link"
             onClick={(e) => e.stopPropagation()}
-            title="Visit grabbit.io/cafe/marketplace"
+            title="Visit cafe.gradient365.com"
           >
-            <span className="eco-address-lock">🔒</span> grabbit.io/cafe/marketplace <span className="eco-address-ext">↗</span>
+            <span className="eco-address-lock">🔒</span> cafe.gradient365.com <span className="eco-address-ext">↗</span>
           </a>
         </div>
       )}
@@ -165,28 +166,54 @@ const CafePreview = ({
       </div>
 
       {/* Bottom Live Cart Bar */}
-      <a
-        href={ECOSYSTEM_LINKS.cafes}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mock-cafe-bottom-strip is-clickable-cart"
-        onClick={(e) => e.stopPropagation()}
-        title="View Live Cart on grabbit.io/cafe"
-      >
-        <div className="mock-cafe-cart-info">
-          <span className="mock-cafe-cart-badge">{cartCount} items</span>
-          <span className="mock-cafe-cart-total">₹{totalPrice.toLocaleString()} PO batch</span>
+      {large ? (
+        <a
+          href={ECOSYSTEM_LINKS.cafes}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mock-cafe-bottom-strip is-clickable-cart"
+          onClick={(e) => e.stopPropagation()}
+          title="Open live PO order on cafe.gradient365.com"
+        >
+          <div className="mock-cafe-cart-info">
+            <span className="mock-cafe-cart-badge">{cartCount} items</span>
+            <span className="mock-cafe-cart-total">₹{totalPrice.toLocaleString()} PO batch</span>
+          </div>
+          <div className="mock-cafe-dispatch-pill">
+            <span>⚡ Next-Day 8 AM</span>
+            <span className="mock-cafe-checkout-arrow">↗</span>
+          </div>
+        </a>
+      ) : (
+        <div
+          className="mock-cafe-bottom-strip is-clickable-cart"
+          title="Click to expand cafe tab"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen?.();
+          }}
+        >
+          <div className="mock-cafe-cart-info">
+            <span className="mock-cafe-cart-badge">{cartCount} items</span>
+            <span className="mock-cafe-cart-total">₹{totalPrice.toLocaleString()} PO batch</span>
+          </div>
+          <div className="mock-cafe-dispatch-pill">
+            <span>⚡ Next-Day 8 AM</span>
+            <span className="mock-cafe-checkout-arrow">→</span>
+          </div>
         </div>
-        <div className="mock-cafe-dispatch-pill">
-          <span>⚡ Next-Day 8 AM</span>
-          <span className="mock-cafe-checkout-arrow">→</span>
-        </div>
-      </a>
+      )}
     </div>
   );
 };
 
-const SupplierPreview = ({ large = false }: { large?: boolean }) => {
+const SupplierPreview = ({
+  large = false,
+  onOpen,
+}: {
+  large?: boolean;
+  onOpen?: () => void;
+}) => {
   const [selectedTab, setSelectedTab] = useState<'orders' | 'fleet' | 'analytics'>('orders');
   const [activeRow, setActiveRow] = useState<number | null>(null);
 
@@ -205,9 +232,9 @@ const SupplierPreview = ({ large = false }: { large?: boolean }) => {
             rel="noopener noreferrer"
             className="eco-preview-address is-link"
             onClick={(e) => e.stopPropagation()}
-            title="Visit grabbit.io/supplier/dispatch"
+            title="Visit supplier.gradient365.com"
           >
-            <span className="eco-address-lock">🔒</span> grabbit.io/supplier/dispatch <span className="eco-address-ext">↗</span>
+            <span className="eco-address-lock">🔒</span> supplier.gradient365.com <span className="eco-address-ext">↗</span>
           </a>
         </div>
       )}
@@ -298,27 +325,50 @@ const SupplierPreview = ({ large = false }: { large?: boolean }) => {
           </div>
 
           {/* Bottom Fleet Status Bar */}
-          <a
-            href={ECOSYSTEM_LINKS.suppliers}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mock-sup-bottom-strip is-clickable-fleet"
-            onClick={(e) => e.stopPropagation()}
-            title="Open Live Fleet Route on grabbit.io/supplier"
-          >
-            <div className="mock-sup-fleet-status">
-              <span className="mock-sup-fleet-dot" />
-              <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
+          {large ? (
+            <a
+              href={ECOSYSTEM_LINKS.suppliers}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mock-sup-bottom-strip is-clickable-fleet"
+              onClick={(e) => e.stopPropagation()}
+              title="Open Live Fleet Route on supplier.gradient365.com"
+            >
+              <div className="mock-sup-fleet-status">
+                <span className="mock-sup-fleet-dot" />
+                <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
+              </div>
+              <span className="mock-sup-eta">ETA 11:20 AM ↗</span>
+            </a>
+          ) : (
+            <div
+              className="mock-sup-bottom-strip is-clickable-fleet"
+              title="Click to expand supplier tab"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpen?.();
+              }}
+            >
+              <div className="mock-sup-fleet-status">
+                <span className="mock-sup-fleet-dot" />
+                <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
+              </div>
+              <span className="mock-sup-eta">ETA 11:20 AM →</span>
             </div>
-            <span className="mock-sup-eta">ETA 11:20 AM ↗</span>
-          </a>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const BrandPreview = ({ large = false }: { large?: boolean }) => {
+const BrandPreview = ({
+  large = false,
+  onOpen,
+}: {
+  large?: boolean;
+  onOpen?: () => void;
+}) => {
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
 
   const bars = [
@@ -344,9 +394,9 @@ const BrandPreview = ({ large = false }: { large?: boolean }) => {
             rel="noopener noreferrer"
             className="eco-preview-address is-link"
             onClick={(e) => e.stopPropagation()}
-            title="Visit grabbit.io/brand/intelligence"
+            title="Visit brand.gradient365.com"
           >
-            <span className="eco-address-lock">🔒</span> grabbit.io/brand/intelligence <span className="eco-address-ext">↗</span>
+            <span className="eco-address-lock">🔒</span> brand.gradient365.com <span className="eco-address-ext">↗</span>
           </a>
         </div>
       )}
@@ -402,23 +452,43 @@ const BrandPreview = ({ large = false }: { large?: boolean }) => {
       </div>
 
       {/* Bottom Top-SKUs Feed */}
-      <a
-        href={ECOSYSTEM_LINKS.brands}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mock-brand-bottom-strip is-clickable-brand"
-        onClick={(e) => e.stopPropagation()}
-        title="View SKU Intelligence on grabbit.io/brand"
-      >
-        <div className="mock-brand-sku-row">
-          <span className="mock-brand-sku-name">Arabica Estate AA</span>
-          <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
+      {large ? (
+        <a
+          href={ECOSYSTEM_LINKS.brands}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mock-brand-bottom-strip is-clickable-brand"
+          onClick={(e) => e.stopPropagation()}
+          title="View SKU Intelligence on brand.gradient365.com"
+        >
+          <div className="mock-brand-sku-row">
+            <span className="mock-brand-sku-name">Arabica Estate AA</span>
+            <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
+          </div>
+          <div className="mock-brand-sku-row">
+            <span className="mock-brand-sku-name">Barista Oat Milk</span>
+            <span className="mock-brand-sku-metric">64 cafés · 89% retention ↗</span>
+          </div>
+        </a>
+      ) : (
+        <div
+          className="mock-brand-bottom-strip is-clickable-brand"
+          title="Click to expand brand tab"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen?.();
+          }}
+        >
+          <div className="mock-brand-sku-row">
+            <span className="mock-brand-sku-name">Arabica Estate AA</span>
+            <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
+          </div>
+          <div className="mock-brand-sku-row">
+            <span className="mock-brand-sku-name">Barista Oat Milk</span>
+            <span className="mock-brand-sku-metric">64 cafés · 89% retention →</span>
+          </div>
         </div>
-        <div className="mock-brand-sku-row">
-          <span className="mock-brand-sku-name">Barista Oat Milk</span>
-          <span className="mock-brand-sku-metric">64 cafés · 89% retention ↗</span>
-        </div>
-      </a>
+      )}
     </div>
   );
 };
@@ -469,7 +539,7 @@ const CARDS = [
       'Real-time SLA performance & fulfillment score',
     ],
     link: ECOSYSTEM_LINKS.suppliers,
-    miniPreview: () => <SupplierPreview />,
+    miniPreview: (onOpen?: () => void) => <SupplierPreview onOpen={onOpen} />,
     largePreview: <SupplierPreview large />,
   },
   {
@@ -492,75 +562,49 @@ const CARDS = [
       'Real-time brand GMV analytics & growth insights',
     ],
     link: ECOSYSTEM_LINKS.brands,
-    miniPreview: () => <BrandPreview />,
+    miniPreview: (onOpen?: () => void) => <BrandPreview onOpen={onOpen} />,
     largePreview: <BrandPreview large />,
   },
 ];
 
-// ─── TAB WINDOW ANIMATION VARIANTS (macOS MINIMIZE & EXPAND MOTION) ───
-
-interface OriginPoint {
-  x: number;
-  y: number;
-  scale: number;
-}
+// ─── TAB WINDOW ANIMATION VARIANTS (CLEAN, GPU-ACCELERATED TRANSITIONS) ───
 
 const overlayVariants = {
   initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.24, ease: 'easeOut' } },
-  exit: { opacity: 0, transition: { duration: 0.28, delay: 0.04, ease: 'easeIn' } },
+  animate: { opacity: 1, transition: { duration: 0.22, ease: 'easeOut' } },
+  exit: { opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } },
 };
 
 const tabWindowVariants = {
-  initial: (origin: OriginPoint) => ({
+  initial: {
     opacity: 0,
-    x: origin?.x ?? 0,
-    y: origin?.y ?? 20,
-    scale: origin?.scale ?? 0.35,
-    rotateX: 10,
-    rotateY: origin?.x && origin.x > 0 ? -4 : 4,
-    borderRadius: 32,
-    filter: 'blur(16px)',
-  }),
+    scale: 0.94,
+    y: 18,
+  },
   animate: {
     opacity: 1,
-    x: 0,
-    y: 0,
     scale: 1,
-    rotateX: 0,
-    rotateY: 0,
-    borderRadius: 20,
-    filter: 'blur(0px)',
+    y: 0,
     transition: {
-      type: 'spring',
-      stiffness: 360,
-      damping: 32,
-      mass: 0.8,
+      duration: 0.28,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
-  exit: (origin: OriginPoint) => ({
+  exit: {
     opacity: 0,
-    x: origin?.x ?? 0,
-    y: origin?.y ?? 0,
-    scale: origin?.scale ?? 0.35,
-    scaleY: (origin?.scale ?? 0.35) * 0.85,
-    rotateX: 8,
-    borderRadius: 32,
-    filter: 'blur(12px)',
+    scale: 0.95,
+    y: 12,
     transition: {
-      type: 'spring',
-      stiffness: 450,
-      damping: 40,
-      mass: 0.8,
+      duration: 0.2,
+      ease: [0.16, 1, 0.3, 1],
     },
-  }),
+  },
 };
 
 // ─── MAIN COMPONENT ───
 
 export function EcosystemCards() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
-  const [originPoint, setOriginPoint] = useState<OriginPoint>({ x: 0, y: 0, scale: 0.35 });
   const [mounted, setMounted] = useState<boolean>(false);
   const isReduced = useReducedMotion();
 
@@ -586,52 +630,17 @@ export function EcosystemCards() {
     };
   }, [activeCardId]);
 
-  // Capture the clicked card's exact viewport coordinates for origin-anchored minimize/expand
+  // Open modal tab directly
   const openCard = (id: string, e?: React.MouseEvent) => {
-    if (typeof window !== 'undefined') {
-      let rect: DOMRect | null = null;
-      if (e?.currentTarget) {
-        const cardEl = (e.currentTarget as HTMLElement).closest('.eco-card') as HTMLElement | null;
-        if (cardEl) rect = cardEl.getBoundingClientRect();
-      }
-      if (!rect) {
-        const cardEl = document.querySelector(`[data-eco-card-id="${id}"]`);
-        if (cardEl) rect = cardEl.getBoundingClientRect();
-      }
-
-      if (rect) {
-        const cardCenterX = rect.left + rect.width / 2;
-        const cardCenterY = rect.top + rect.height / 2;
-        const screenCenterX = window.innerWidth / 2;
-        const screenCenterY = window.innerHeight / 2;
-        setOriginPoint({
-          x: Math.round(cardCenterX - screenCenterX),
-          y: Math.round(cardCenterY - screenCenterY),
-          scale: Math.max(0.24, Math.min(0.42, rect.width / 1120)),
-        });
-      }
+    if (e) {
+      e.stopPropagation();
     }
     setActiveCardId(id);
   };
 
-  // Switch tabs inside the open window and update the minimize target to the new tab's card
+  // Switch tabs inside the open window
   const switchPlatformTab = (newId: string) => {
     setActiveCardId(newId);
-    if (typeof window !== 'undefined') {
-      const cardEl = document.querySelector(`[data-eco-card-id="${newId}"]`);
-      if (cardEl) {
-        const rect = cardEl.getBoundingClientRect();
-        const cardCenterX = rect.left + rect.width / 2;
-        const cardCenterY = rect.top + rect.height / 2;
-        const screenCenterX = window.innerWidth / 2;
-        const screenCenterY = window.innerHeight / 2;
-        setOriginPoint({
-          x: Math.round(cardCenterX - screenCenterX),
-          y: Math.round(cardCenterY - screenCenterY),
-          scale: Math.max(0.24, Math.min(0.42, rect.width / 1120)),
-        });
-      }
-    }
   };
 
   // Close / minimize window back into the card
@@ -734,14 +743,14 @@ export function EcosystemCards() {
                       <p className="eco-card-desc">{card.desc}</p>
 
                       <div className="eco-card-actions">
-                        {/* Direct link to that specific platform */}
+                        {/* Direct link to that specific live platform website */}
                         <a
                           href={card.link}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`eco-card-cta ${card.theme}-cta`}
                           onClick={(e) => e.stopPropagation()}
-                          title={`Go directly to ${card.title} platform website`}
+                          title={`Go directly to ${card.title} platform website (${card.link})`}
                         >
                           {card.visitLabel || `VISIT ${card.title} PLATFORM`} <span className="arrow">↗</span>
                         </a>
@@ -770,9 +779,10 @@ export function EcosystemCards() {
 
       {/* Expanded Interactive macOS Tab Window Rendered in Portal */}
       {mounted && typeof document !== 'undefined' && createPortal(
-        <AnimatePresence custom={originPoint}>
+        <AnimatePresence>
           {activeCardId && (
             <motion.div
+              key="eco-tab-overlay"
               className="eco-tab-overlay"
               variants={overlayVariants}
               initial="initial"
@@ -789,8 +799,8 @@ export function EcosystemCards() {
               />
 
               <motion.div
+                key="eco-tab-window"
                 className="eco-tab-window"
-                custom={originPoint}
                 variants={tabWindowVariants}
                 initial="initial"
                 animate="animate"
@@ -919,7 +929,18 @@ export function EcosystemCards() {
 
                   {/* Wide Interactive Workspace Viewport */}
                   <div className="eco-tab-panoramic-workspace">
-                    {activeCard.largePreview}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeCard.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}
+                      >
+                        {activeCard.largePreview}
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -932,7 +953,7 @@ export function EcosystemCards() {
                     <span className="eco-status-shortcut">Shortcuts: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> switch tabs</span>
                   </div>
                   <div className="eco-status-right">
-                    <span>Click yellow button (−) or press <kbd>ESC</kbd> to minimize tab</span>
+                    <span>Press <kbd>ESC</kbd> or click ✕ to close</span>
                   </div>
                 </div>
               </motion.div>

@@ -1294,3 +1294,62 @@
   font-family: inherit;
   color: #1E293B;
 }
+
+/* ─── MODAL RESPONSIVE STYLES ─── */
+@media (max-width: 860px) {
+  .eco-tab-overlay {
+    padding: 12px;
+  }
+
+  .eco-tab-window {
+    height: 92vh;
+    max-height: none;
+    border-radius: 16px;
+  }
+
+  .eco-tab-titlebar {
+    padding: 0 12px;
+  }
+
+  .eco-traffic-lights {
+    width: auto;
+  }
+
+  .eco-tab-titlebar-right {
+    width: auto;
+  }
+
+  .eco-tab-url-pill {
+    display: none;
+  }
+
+  .eco-tab-header-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 18px;
+    gap: 12px;
+  }
+
+  .eco-strip-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .eco-strip-chips {
+    justify-content: flex-start;
+  }
+
+  .eco-tab-panoramic-workspace {
+    padding: 14px 16px;
+  }
+
+  .eco-tab-statusbar {
+    font-size: 9.5px;
+    padding: 0 12px;
+  }
+
+  .eco-tab-statusbar .eco-status-right {
+    display: none;
+  }
+}
+
