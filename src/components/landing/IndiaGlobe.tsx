@@ -27,6 +27,7 @@ export function IndiaGlobe() {
 
   const [node, setNode] = useState<GlobeNode | null>(null);
   const [live, setLive] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const root = rootRef.current,
@@ -53,6 +54,29 @@ export function IndiaGlobe() {
       api.current?.destroy();
       api.current = null;
     };
+  }, []);
+
+  useEffect(() => {
+    const section = rootRef.current;
+    if (!section) return;
+
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const sectionTop = rect.top;
+      const sectionBottom = rect.bottom;
+
+      // Calculate progress: 0 when section is below viewport, 1 when fully in view
+      let progress = 0;
+      if (sectionTop < windowHeight && sectionBottom > 0) {
+        progress = Math.min(1, Math.max(0, (windowHeight - sectionTop) / (windowHeight + rect.height)));
+      }
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Call once on mount
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const side = node ? SIDE[node.side] : null;
@@ -109,7 +133,12 @@ export function IndiaGlobe() {
         tabIndex={0}
         aria-label="Interactive 3D half-globe of the Gradient network across India. Drag to inspect or click to zoom."
       >
-        <canvas className="ig-canvas" ref={canvasRef} aria-hidden="true" />
+        <canvas
+          className="ig-canvas"
+          ref={canvasRef}
+          aria-hidden="true"
+          style={{ opacity: scrollProgress }}
+        />
 
           {/* Interactive controls */}
           <div className="ig-ctl" data-globe-ui>
