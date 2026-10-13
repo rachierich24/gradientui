@@ -2789,12 +2789,14 @@
 }
 
 .eco-video-phone-viewport {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background: #0B0C0E;
+  background: #FFFFFF;
   overflow: hidden;
-  border-radius: 36px;
+  border-radius: 35.8px;
+  z-index: 5;
 }
 
 .eco-mobile-video {
@@ -2802,8 +2804,20 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 36px;
-  background: #0B0C0E;
+  transform: scale(1.39) translateY(6.0%);
+  transform-origin: 50% 50%;
+  background: #FFFFFF;
+}
+
+/* Hide duplicate HTML statusbar, dynamic island, and home indicator so the video's native app interface fills the phone mockup seamlessly */
+.eco-screen-mobile .eco-phone-statusbar,
+.eco-screen-mobile .eco-phone-island,
+.eco-screen-mobile .eco-phone-home-indicator {
+  display: none;
+}
+
+.eco-screen-mobile .eco-phone-glass-glare {
+  z-index: 12;
 }
 
 /* ─── Active Screen Transitions, 3D Elevation & Ambient Halo Glows ─── */
