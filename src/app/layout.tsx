@@ -119,6 +119,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={plusJakarta.variable}>
       <body>
+        <script
+          id="media-abort-guard"
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                window.addEventListener('unhandledrejection', function(e) {
+                  var r = e && e.reason;
+                  var msg = String((r && r.message) || r || '');
+                  var name = String((r && r.name) || '');
+                  if (
+                    name === 'AbortError' ||
+                    name === 'NotAllowedError' ||
+                    msg.indexOf('paused to save power') !== -1 ||
+                    msg.indexOf('AbortError') !== -1 ||
+                    msg.indexOf('interrupted') !== -1
+                  ) {
+                    e.preventDefault();
+                  }
+                });
+              }
+            `,
+          }}
+        />
         {GTM_ID && <GoogleTagManager gtmId={GTM_ID} />}
         <script
           type="application/ld+json"

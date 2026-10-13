@@ -204,6 +204,65 @@ export function EcosystemShowcase() {
 
   // Visibility state via IntersectionObserver (pauses playback when off-screen)
   const [isVisible, setIsVisible] = useState(false);
+  const [isTabVisible, setIsTabVisible] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return !document.hidden;
+    }
+    return true;
+  });
+
+  // Tab visibility awareness (Page Visibility API)
+  useEffect(() => {
+    const handleVisibility = () => {
+      const visible = !document.hidden;
+      setIsTabVisible(visible);
+      if (!visible) {
+        try { mobileVideoRef.current?.pause(); } catch {}
+        try { supplierVideoRef.current?.pause(); } catch {}
+        try { brandVideoRef.current?.pause(); } catch {}
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  // Suppress unhandled AbortError caused by Chromium pausing background media to save power (https://goo.gl/LdLk22)
+  useEffect(() => {
+    const handleUnhandledRejection = (e: PromiseRejectionEvent) => {
+      const reason = e.reason;
+      const name = String(reason?.name || '');
+      const msg = String(reason?.message || reason || '');
+      if (
+        name === 'AbortError' ||
+        name === 'NotAllowedError' ||
+        msg.includes('AbortError') ||
+        msg.includes('play()') ||
+        msg.includes('paused to save power') ||
+        msg.includes('interrupted')
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    const handleWindowError = (e: ErrorEvent) => {
+      const msg = String(e.message || '');
+      if (
+        msg.includes('AbortError') ||
+        msg.includes('paused to save power') ||
+        msg.includes('play()') ||
+        msg.includes('interrupted')
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener('error', handleWindowError);
+    return () => {
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener('error', handleWindowError);
+    };
+  }, []);
 
   // Chapter 2 Café Section Activation State
   // Turned on when user scrolls past the transition threshold (~48% of track)
@@ -225,6 +284,42 @@ export function EcosystemShowcase() {
   const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
   const supplierVideoRef = useRef<HTMLVideoElement | null>(null);
   const brandVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Safe play/pause helpers to guard against AbortError
+  const safePlay = useCallback((video: HTMLVideoElement | null) => {
+    if (!video) return;
+    if (typeof document !== 'undefined' && document.hidden) return;
+    try {
+      video.muted = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined && typeof playPromise.catch === 'function') {
+        playPromise.catch((err: unknown) => {
+          // Swallow any AbortError, NotAllowedError, or power-saving pause interruption (https://goo.gl/LdLk22)
+          const name = (err as any)?.name;
+          const msg = String((err as any)?.message || err || '');
+          if (
+            name === 'AbortError' ||
+            name === 'NotAllowedError' ||
+            msg.includes('pause') ||
+            msg.includes('save power') ||
+            msg.includes('interrupted') ||
+            msg.includes('AbortError')
+          ) {
+            return;
+          }
+        });
+      }
+    } catch {
+      // Synchronous play invocation errors safely swallowed
+    }
+  }, []);
+
+  const safePause = useCallback((video: HTMLVideoElement | null) => {
+    if (!video) return;
+    try {
+      video.pause();
+    } catch {}
+  }, []);
 
   // Transition to next screen
   const advanceToNext = useCallback(() => {
@@ -256,57 +351,48 @@ export function EcosystemShowcase() {
 
     if (!vMob || !vSupp || !vBrand) return;
 
-    if (!isVisible) {
-      vMob.pause();
-      vSupp.pause();
-      vBrand.pause();
+    if (!isVisible || !isTabVisible) {
+      safePause(vMob);
+      safePause(vSupp);
+      safePause(vBrand);
       return;
     }
 
     if (activeVideoScreen === 'mobile') {
-      // Pause suppliers & brands on first screen
-      vSupp.pause();
+      safePause(vSupp);
       try { vSupp.currentTime = 0; } catch {}
-      vBrand.pause();
+      safePause(vBrand);
       try { vBrand.currentTime = 0; } catch {}
 
-      // Play mobile
       try { vMob.currentTime = 0; } catch {}
-      const p = vMob.play();
-      if (p !== undefined) p.catch(() => {});
+      safePlay(vMob);
     } else if (activeVideoScreen === 'supplier') {
-      // Pause mobile & brands on first screen
-      vMob.pause();
+      safePause(vMob);
       try { vMob.currentTime = 0; } catch {}
-      vBrand.pause();
+      safePause(vBrand);
       try { vBrand.currentTime = 0; } catch {}
 
-      // Play supplier
       try { vSupp.currentTime = 0; } catch {}
-      const p = vSupp.play();
-      if (p !== undefined) p.catch(() => {});
+      safePlay(vSupp);
     } else if (activeVideoScreen === 'brand') {
-      // Pause mobile & supplier on first screen
-      vMob.pause();
+      safePause(vMob);
       try { vMob.currentTime = 0; } catch {}
-      vSupp.pause();
+      safePause(vSupp);
       try { vSupp.currentTime = 0; } catch {}
 
-      // Play brand
       try { vBrand.currentTime = 0; } catch {}
-      const p = vBrand.play();
-      if (p !== undefined) p.catch(() => {});
+      safePlay(vBrand);
     }
-  }, [activeVideoScreen, isVisible]);
+  }, [activeVideoScreen, isVisible, isTabVisible, safePlay, safePause]);
 
-  // Safety fallback timer (advances if onEnded is delayed or dropped)
+  // Safety fallback timer (advances if onEnded is delayed or dropped, only when tab is active)
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || !isTabVisible) return;
     const timer = setTimeout(() => {
       advanceToNext();
     }, 10500);
     return () => clearTimeout(timer);
-  }, [activeVideoScreen, isVisible, advanceToNext]);
+  }, [activeVideoScreen, isVisible, isTabVisible, advanceToNext]);
 
   // IntersectionObserver for viewport awareness
   useEffect(() => {
@@ -731,6 +817,11 @@ export function EcosystemShowcase() {
                     preload="auto"
                     className="eco-dashboard-video"
                     onEnded={handleSupplierEnded}
+                    onError={(e) => {
+                      try {
+                        e.currentTarget.pause();
+                      } catch {}
+                    }}
                   />
                 </div>
               </div>
@@ -829,6 +920,11 @@ export function EcosystemShowcase() {
                         preload="auto"
                         className="eco-mobile-video"
                         onEnded={handleMobileEnded}
+                        onError={(e) => {
+                          try {
+                            e.currentTarget.pause();
+                          } catch {}
+                        }}
                       />
                     </div>
 
@@ -911,6 +1007,11 @@ export function EcosystemShowcase() {
                     preload="auto"
                     className="eco-dashboard-video"
                     onEnded={handleBrandEnded}
+                    onError={(e) => {
+                      try {
+                        e.currentTarget.pause();
+                      } catch {}
+                    }}
                   />
                 </div>
               </div>
