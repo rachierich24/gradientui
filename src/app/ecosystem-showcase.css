@@ -741,7 +741,7 @@
   background: #FFFFFF !important;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
@@ -2806,57 +2806,108 @@
   background: #0B0C0E;
 }
 
-/* ─── Active Screen Transitions & 3D Pop ─── */
+/* ─── Active Screen Transitions, 3D Elevation & Ambient Halo Glows ─── */
 .eco-browser-window.is-video-active .eco-device-scaler {
-  box-shadow: 0 28px 75px rgba(0, 0, 0, 0.28), 0 8px 24px rgba(0, 0, 0, 0.12);
   filter: none !important;
   opacity: 1 !important;
-  transform: scale(1.03) translateY(-4px) !important;
+  transform: scale(1.025) translateY(-6px) !important;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s ease;
 }
 
 .eco-browser-window.eco-screen-supplier.is-video-active .eco-device-scaler {
-  border-color: rgba(34, 197, 94, 0.45);
+  border-color: rgba(34, 197, 94, 0.55) !important;
+  box-shadow: 
+    0 0 0 1px rgba(34, 197, 94, 0.35),
+    0 8px 24px rgba(34, 197, 94, 0.16),
+    0 24px 60px rgba(0, 0, 0, 0.22),
+    0 40px 90px rgba(34, 197, 94, 0.12) !important;
 }
 
 .eco-browser-window.eco-screen-brand.is-video-active .eco-device-scaler {
-  border-color: rgba(139, 92, 246, 0.45);
+  border-color: rgba(139, 92, 246, 0.55) !important;
+  box-shadow: 
+    0 0 0 1px rgba(139, 92, 246, 0.35),
+    0 8px 24px rgba(139, 92, 246, 0.16),
+    0 24px 60px rgba(0, 0, 0, 0.22),
+    0 40px 90px rgba(139, 92, 246, 0.12) !important;
 }
 
 .eco-screen-mobile.is-video-active .eco-phone-chassis {
+  opacity: 1 !important;
+  transform: scale(1.025) translateY(-6px) !important;
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.24),
-    0 0 0 1px #181A1F,
-    0 4px 14px rgba(229, 72, 59, 0.25),
-    0 20px 48px rgba(0, 0, 0, 0.25),
-    0 28px 60px rgba(0, 0, 0, 0.18);
-  transform: scale(1.03) translateY(-4px);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    0 0 0 1px rgba(255, 255, 255, 0.30),
+    0 0 0 1.5px #181A1F,
+    0 0 0 1px rgba(229, 72, 59, 0.45),
+    0 8px 24px rgba(229, 72, 59, 0.24),
+    0 24px 56px rgba(0, 0, 0, 0.28),
+    0 44px 96px rgba(229, 72, 59, 0.18) !important;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eco-screen-ambient-glow {
+  position: absolute;
+  inset: -28px;
+  border-radius: 28px;
+  pointer-events: none;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: blur(34px);
+  transform: scale(0.94);
+}
+
+.is-video-active .eco-screen-ambient-glow {
+  opacity: 0.88;
+  transform: scale(1.04);
+}
+
+.glow-supplier {
+  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.48) 0%, rgba(34, 197, 94, 0.16) 52%, transparent 75%);
+}
+
+.glow-mobile {
+  background: radial-gradient(ellipse at center, rgba(229, 72, 59, 0.52) 0%, rgba(229, 72, 59, 0.20) 52%, transparent 75%);
+}
+
+.glow-brand {
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.48) 0%, rgba(139, 92, 246, 0.16) 52%, transparent 75%);
 }
 
 .eco-browser-window:not(.is-video-active):not(:hover) .eco-device-scaler {
-  opacity: 0.90;
+  opacity: 0.86;
+  filter: saturate(92%);
 }
 
 .eco-screen-mobile:not(.is-video-active):not(:hover) .eco-phone-chassis {
-  opacity: 0.92;
+  opacity: 0.88;
+  filter: saturate(94%);
 }
 
 /* ─── Traveling Border Beam Ray Animations ─── */
 .eco-border-beam-container {
   position: absolute;
-  inset: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 60;
+  z-index: 55;
   overflow: visible;
+  transition: opacity 0.4s ease;
 }
 
 .eco-border-beam-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
   display: block;
+}
+
+.eco-beam-track {
+  transition: stroke-opacity 0.4s ease;
 }
 
 @keyframes ecoRayCirculate {
@@ -2870,12 +2921,188 @@
 
 .eco-beam-glow-trace {
   animation: ecoRayCirculate 3.4s linear infinite;
+  opacity: 0.85;
 }
 
 .eco-beam-core-ray {
   animation: ecoRayCirculate 3.4s linear infinite;
+  opacity: 1;
 }
 
 .eco-beam-spark-tip {
   animation: ecoRayCirculate 3.4s linear infinite;
+  opacity: 1;
+}
+
+/* ─── Ecosystem Interactive Flow Navigator ─── */
+.eco-flow-navigator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+
+.eco-flow-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+.eco-flow-pill:hover {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.eco-flow-pill.is-active {
+  background: #FFFFFF;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
+  transform: translateY(-2px);
+}
+
+.eco-flow-pill.is-active.is-mobile {
+  border-color: rgba(229, 72, 59, 0.45);
+  box-shadow: 0 4px 18px rgba(229, 72, 59, 0.20);
+}
+
+.eco-flow-pill.is-active.is-supplier {
+  border-color: rgba(34, 197, 94, 0.45);
+  box-shadow: 0 4px 18px rgba(34, 197, 94, 0.20);
+}
+
+.eco-flow-pill.is-active.is-brand {
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.20);
+}
+
+.eco-flow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.eco-flow-dot-red { background: #E5483B; }
+.eco-flow-dot-green { background: #22C55E; }
+.eco-flow-dot-purple { background: #8B5CF6; }
+
+.eco-flow-pill.is-active .eco-flow-dot-red {
+  box-shadow: 0 0 8px #E5483B;
+  animation: ecoDotPulse 1.6s ease-in-out infinite;
+}
+
+.eco-flow-pill.is-active .eco-flow-dot-green {
+  box-shadow: 0 0 8px #22C55E;
+  animation: ecoDotPulse 1.6s ease-in-out infinite;
+}
+
+.eco-flow-pill.is-active .eco-flow-dot-purple {
+  box-shadow: 0 0 8px #8B5CF6;
+  animation: ecoDotPulse 1.6s ease-in-out infinite;
+}
+
+.eco-flow-step {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.02em;
+}
+
+.eco-flow-pill.is-active .eco-flow-step {
+  color: #0F172A;
+}
+
+.eco-flow-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  letter-spacing: -0.01em;
+}
+
+.eco-flow-pill.is-active .eco-flow-label {
+  color: #0F172A;
+  font-weight: 700;
+}
+
+.eco-flow-connector {
+  color: #CBD5E1;
+  display: flex;
+  align-items: center;
+}
+
+.eco-flow-active-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.eco-flow-pill.is-mobile .eco-flow-active-bar { background: #E5483B; }
+.eco-flow-pill.is-supplier .eco-flow-active-bar { background: #22C55E; }
+.eco-flow-pill.is-brand .eco-flow-active-bar { background: #8B5CF6; }
+
+/* ─── URL Live Pings & Window Badges Polish ─── */
+.eco-url-ping {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: 4px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.ping-supplier {
+  background: #22C55E;
+  box-shadow: 0 0 6px #22C55E;
+  animation: ecoDotPulse 1.8s infinite ease-in-out;
+}
+.ping-brand {
+  background: #8B5CF6;
+  box-shadow: 0 0 6px #8B5CF6;
+  animation: ecoDotPulse 1.8s infinite ease-in-out;
+}
+
+.eco-role-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+  animation: ecoDotPulse 1.8s infinite ease-in-out;
+}
+
+.eco-window-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2.5px 7px;
+  border-radius: 999px;
+}
+
+.eco-island-status-pulse {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #E5483B;
+  box-shadow: 0 0 6px #E5483B;
+  animation: ecoDotPulse 1.6s infinite ease-in-out;
+  margin-left: 4px;
 }

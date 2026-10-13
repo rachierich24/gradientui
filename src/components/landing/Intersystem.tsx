@@ -1550,7 +1550,7 @@ export function Intersystem() {
 
             <div className="att-chip-body">
               <div className="att-chip-primary-line">
-                <span className="att-chip-brand">grabbit</span>
+                <span className="att-chip-brand">gradient</span>
                 <div className="att-chip-signals-badge">
                 </div>
               </div>

@@ -16,74 +16,157 @@ function ScreenBorderBeam({
   color,
   radius = 16,
   isActive,
+  initialWidth,
+  initialHeight,
+  duration = 3.4,
 }: {
   color: string;
   radius?: number;
   isActive: boolean;
+  initialWidth?: number;
+  initialHeight?: number;
+  duration?: number;
 }) {
-  if (!isActive) return null;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dims, setDims] = useState<{ w: number; h: number }>({
+    w: initialWidth || 0,
+    h: initialHeight || 0,
+  });
+
+  useEffect(() => {
+    const parent = containerRef.current?.parentElement;
+    if (!parent) return;
+
+    const measure = () => {
+      // Use offsetWidth and offsetHeight for untransformed local coordinates
+      if (parent.offsetWidth > 0 && parent.offsetHeight > 0) {
+        setDims({
+          w: parent.offsetWidth,
+          h: parent.offsetHeight,
+        });
+      }
+    };
+
+    measure();
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const target = entry.target as HTMLElement;
+        if (target.offsetWidth > 0 && target.offsetHeight > 0) {
+          setDims({
+            w: target.offsetWidth,
+            h: target.offsetHeight,
+          });
+        }
+      }
+    });
+
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
+
+  const w = dims.w || initialWidth || 400;
+  const h = dims.h || initialHeight || 250;
+
+  // Inset stroke by 1px so it travels precisely centered along the perimeter bezel
+  const strokeInset = 1;
+  const pLeft = strokeInset;
+  const pTop = strokeInset;
+  const pRight = w - strokeInset;
+  const pBottom = h - strokeInset;
+  const safeR = Math.max(0, Math.min(radius - strokeInset, (w - 2 * strokeInset) / 2, (h - 2 * strokeInset) / 2));
+
+  // Build exact rounded rectangle SVG path (Clockwise from top center)
+  // Top center -> Top right corner -> Right edge -> Bottom right corner -> Bottom edge -> Bottom left corner -> Left edge -> Top left corner -> Close
+  const pathD = `M ${w / 2} ${pTop} ` +
+    `L ${pRight - safeR} ${pTop} ` +
+    `A ${safeR} ${safeR} 0 0 1 ${pRight} ${pTop + safeR} ` +
+    `L ${pRight} ${pBottom - safeR} ` +
+    `A ${safeR} ${safeR} 0 0 1 ${pRight - safeR} ${pBottom} ` +
+    `L ${pLeft + safeR} ${pBottom} ` +
+    `A ${safeR} ${safeR} 0 0 1 ${pLeft} ${pBottom - safeR} ` +
+    `L ${pLeft} ${pTop + safeR} ` +
+    `A ${safeR} ${safeR} 0 0 1 ${pLeft + safeR} ${pTop} ` +
+    `Z`;
 
   return (
-    <div className="eco-border-beam-container" style={{ borderRadius: radius }}>
+    <div
+      ref={containerRef}
+      className={`eco-border-beam-container ${isActive ? 'is-active' : ''}`}
+      style={{ borderRadius: radius }}
+      aria-hidden="true"
+    >
       <svg
         className="eco-border-beam-svg"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        aria-hidden="true"
+        viewBox={`0 0 ${w} ${h}`}
+        fill="none"
       >
-        {/* Soft glowing ambient aura */}
-        <rect
-          x="1"
-          y="1"
-          width="98"
-          height="98"
-          rx={radius > 20 ? 18 : 6}
+        {/* Subtle permanent track outlining the card */}
+        <path
+          d={pathD}
           fill="none"
           stroke={color}
-          strokeWidth="3.6"
-          strokeLinecap="round"
-          pathLength={1000}
-          strokeDasharray="95 905"
-          className="eco-beam-glow-trace"
-          style={{
-            filter: `drop-shadow(0 0 8px ${color}) drop-shadow(0 0 16px ${color})`,
-            stroke: color,
-          }}
+          strokeWidth="1.2"
+          strokeOpacity={isActive ? 0.35 : 0.12}
+          className="eco-beam-track"
         />
-        {/* Crisp core traveling ray */}
-        <rect
-          x="1"
-          y="1"
-          width="98"
-          height="98"
-          rx={radius > 20 ? 18 : 6}
-          fill="none"
-          stroke={color}
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          pathLength={1000}
-          strokeDasharray="75 925"
-          className="eco-beam-core-ray"
-          style={{
-            filter: `drop-shadow(0 0 4px ${color})`,
-            stroke: color,
-          }}
-        />
-        {/* Pure white spark nucleus leading the ray */}
-        <rect
-          x="1"
-          y="1"
-          width="98"
-          height="98"
-          rx={radius > 20 ? 18 : 6}
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          pathLength={1000}
-          strokeDasharray="20 980"
-          className="eco-beam-spark-tip"
-        />
+
+        {isActive && (
+          <>
+            {/* 1. Ethereal ambient bloom aura trailing the comet */}
+            <path
+              d={pathD}
+              fill="none"
+              stroke={color}
+              strokeWidth="5.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              pathLength={1000}
+              strokeDasharray="180 820"
+              className="eco-beam-glow-trace"
+              style={{
+                stroke: color,
+                animationDuration: `${duration}s`,
+                filter: `drop-shadow(0 0 8px ${color}) drop-shadow(0 0 18px ${color})`,
+              }}
+            />
+
+            {/* 2. Vibrant core laser ray */}
+            <path
+              d={pathD}
+              fill="none"
+              stroke={color}
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              pathLength={1000}
+              strokeDasharray="110 890"
+              className="eco-beam-core-ray"
+              style={{
+                stroke: color,
+                animationDuration: `${duration}s`,
+                filter: `drop-shadow(0 0 4px ${color})`,
+              }}
+            />
+
+            {/* 3. Pure white spark nucleus leading the charge */}
+            <path
+              d={pathD}
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              pathLength={1000}
+              strokeDasharray="24 976"
+              className="eco-beam-spark-tip"
+              style={{
+                animationDuration: `${duration}s`,
+                filter: `drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px ${color})`,
+              }}
+            />
+          </>
+        )}
       </svg>
     </div>
   );
@@ -433,6 +516,54 @@ export function EcosystemShowcase() {
             <p className="eco-body">
               Watch one order move from café to supplier to delivery — with every side of the ecosystem connected.
             </p>
+
+            {/* Interactive Ecosystem Flow Navigator */}
+            <div className="eco-flow-navigator" aria-label="Ecosystem order journey stages">
+              <button
+                type="button"
+                className={`eco-flow-pill ${activeVideoScreen === 'mobile' ? 'is-active is-mobile' : ''}`}
+                onClick={() => setActiveVideoScreen('mobile')}
+              >
+                <span className="eco-flow-dot eco-flow-dot-red" />
+                <span className="eco-flow-step">01</span>
+                <span className="eco-flow-label">Café Order</span>
+                {activeVideoScreen === 'mobile' && <span className="eco-flow-active-bar" />}
+              </button>
+
+              <div className="eco-flow-connector" aria-hidden="true">
+                <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                  <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              <button
+                type="button"
+                className={`eco-flow-pill ${activeVideoScreen === 'supplier' ? 'is-active is-supplier' : ''}`}
+                onClick={() => setActiveVideoScreen('supplier')}
+              >
+                <span className="eco-flow-dot eco-flow-dot-green" />
+                <span className="eco-flow-step">02</span>
+                <span className="eco-flow-label">Supplier Dispatch</span>
+                {activeVideoScreen === 'supplier' && <span className="eco-flow-active-bar" />}
+              </button>
+
+              <div className="eco-flow-connector" aria-hidden="true">
+                <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                  <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              <button
+                type="button"
+                className={`eco-flow-pill ${activeVideoScreen === 'brand' ? 'is-active is-brand' : ''}`}
+                onClick={() => setActiveVideoScreen('brand')}
+              >
+                <span className="eco-flow-dot eco-flow-dot-purple" />
+                <span className="eco-flow-step">03</span>
+                <span className="eco-flow-label">Brand Funnel</span>
+                {activeVideoScreen === 'brand' && <span className="eco-flow-active-bar" />}
+              </button>
+            </div>
           </motion.div>
         </div>
 
@@ -534,6 +665,8 @@ export function EcosystemShowcase() {
             ─────────────────────────────────────────────────────────── */}
             <motion.div
               className={`eco-browser-window eco-screen-supplier ${
+                activeVideoScreen === 'supplier' ? 'is-video-active' : ''
+              } ${
                 hoveredScreen === 'supplier'
                   ? 'is-hovered'
                   : hoveredScreen !== null
@@ -543,6 +676,7 @@ export function EcosystemShowcase() {
               onMouseEnter={() => !isCafeActive && setHoveredScreen('supplier')}
               onMouseMove={handlePointerMove}
               onMouseLeave={handlePointerLeave}
+              onClick={() => setActiveVideoScreen('supplier')}
               style={
                 isReduced
                   ? { transform: 'none', opacity: 0.95 }
@@ -552,12 +686,20 @@ export function EcosystemShowcase() {
                       scale: supplierScale,
                       opacity: supplierOpacity,
                       pointerEvents: isCafeActive ? 'none' : 'auto',
-                      zIndex: hoveredScreen === 'supplier' ? 40 : 10,
+                      zIndex: activeVideoScreen === 'supplier' ? 35 : hoveredScreen === 'supplier' ? 40 : 10,
                     }
               }
             >
               <div className="eco-device-scaler" style={{ position: 'relative' }}>
-                <ScreenBorderBeam color="#22C55E" radius={14} isActive={activeVideoScreen === 'supplier'} />
+                <div className="eco-screen-ambient-glow glow-supplier" aria-hidden="true" />
+                <ScreenBorderBeam
+                  color="#22C55E"
+                  radius={14}
+                  initialWidth={490}
+                  initialHeight={276}
+                  isActive={activeVideoScreen === 'supplier'}
+                  duration={3.4}
+                />
                 {/* Chrome Top Bar */}
                 <div className="eco-chrome">
                   <div className="eco-chrome-dots">
@@ -571,8 +713,12 @@ export function EcosystemShowcase() {
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
                     <span>supplier.grabbit.io/live-orders</span>
+                    <span className="eco-url-ping ping-supplier" />
                   </div>
-                  <div className="eco-window-role-badge badge-supplier">SUPPLIER</div>
+                  <div className="eco-window-role-badge badge-supplier">
+                    <span className="eco-role-dot" />
+                    SUPPLIER
+                  </div>
                 </div>
 
                 {/* App Body */}
@@ -596,6 +742,8 @@ export function EcosystemShowcase() {
             ─────────────────────────────────────────────────────────── */}
             <motion.div
               className={`eco-screen-mobile ${
+                activeVideoScreen === 'mobile' ? 'is-video-active' : ''
+              } ${
                 hoveredScreen === 'mobile'
                   ? 'is-hovered'
                   : hoveredScreen !== null
@@ -605,6 +753,7 @@ export function EcosystemShowcase() {
               onMouseEnter={() => !isCafeActive && setHoveredScreen('mobile')}
               onMouseMove={handlePointerMove}
               onMouseLeave={handlePointerLeave}
+              onClick={() => setActiveVideoScreen('mobile')}
               style={
                 isReduced
                   ? { transform: 'none' }
@@ -612,7 +761,7 @@ export function EcosystemShowcase() {
                       y: phoneY,
                       scale: phoneScale,
                       opacity: phoneOpacity,
-                      zIndex: hoveredScreen === 'mobile' ? 45 : 20,
+                      zIndex: activeVideoScreen === 'mobile' ? 38 : hoveredScreen === 'mobile' ? 45 : 20,
                     }
               }
             >
@@ -620,7 +769,15 @@ export function EcosystemShowcase() {
                 {/* Realistic Ambient Floating Drop Shadow behind phone */}
                 <div className="eco-phone-back-shadow" aria-hidden="true" />
                 <div className="eco-phone-chassis">
-                  <ScreenBorderBeam color="#E5483B" radius={38} isActive={activeVideoScreen === 'mobile'} />
+                  <div className="eco-screen-ambient-glow glow-mobile" aria-hidden="true" />
+                  <ScreenBorderBeam
+                    color="#E5483B"
+                    radius={38}
+                    initialWidth={224}
+                    initialHeight={460}
+                    isActive={activeVideoScreen === 'mobile'}
+                    duration={3.4}
+                  />
                   {/* Physical Hardware Side Buttons */}
                   <div className="eco-phone-btn eco-btn-action" aria-hidden="true" />
                   <div className="eco-phone-btn eco-btn-vol-up" aria-hidden="true" />
@@ -639,6 +796,7 @@ export function EcosystemShowcase() {
                     <div className="eco-phone-island" aria-hidden="true">
                       <div className="eco-island-pill">
                         <span className="eco-island-dot" />
+                        <span className="eco-island-status-pulse" />
                       </div>
                     </div>
 
@@ -687,6 +845,8 @@ export function EcosystemShowcase() {
             ─────────────────────────────────────────────────────────── */}
             <motion.div
               className={`eco-browser-window eco-screen-brand ${
+                activeVideoScreen === 'brand' ? 'is-video-active' : ''
+              } ${
                 hoveredScreen === 'brand'
                   ? 'is-hovered'
                   : hoveredScreen !== null
@@ -696,6 +856,7 @@ export function EcosystemShowcase() {
               onMouseEnter={() => !isCafeActive && setHoveredScreen('brand')}
               onMouseMove={handlePointerMove}
               onMouseLeave={handlePointerLeave}
+              onClick={() => setActiveVideoScreen('brand')}
               style={
                 isReduced
                   ? { transform: 'none', opacity: 0.95 }
@@ -705,12 +866,20 @@ export function EcosystemShowcase() {
                       scale: brandScale,
                       opacity: brandOpacity,
                       pointerEvents: isCafeActive ? 'none' : 'auto',
-                      zIndex: hoveredScreen === 'brand' ? 40 : 10,
+                      zIndex: activeVideoScreen === 'brand' ? 35 : hoveredScreen === 'brand' ? 40 : 10,
                     }
               }
             >
               <div className="eco-device-scaler" style={{ position: 'relative' }}>
-                <ScreenBorderBeam color="#8B5CF6" radius={14} isActive={activeVideoScreen === 'brand'} />
+                <div className="eco-screen-ambient-glow glow-brand" aria-hidden="true" />
+                <ScreenBorderBeam
+                  color="#8B5CF6"
+                  radius={14}
+                  initialWidth={490}
+                  initialHeight={276}
+                  isActive={activeVideoScreen === 'brand'}
+                  duration={3.4}
+                />
                 {/* Chrome Top Bar */}
                 <div className="eco-chrome">
                   <div className="eco-chrome-dots">
@@ -724,8 +893,12 @@ export function EcosystemShowcase() {
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
                     <span>brand.grabbit.io/campaigns/trials-funnel</span>
+                    <span className="eco-url-ping ping-brand" />
                   </div>
-                  <div className="eco-window-role-badge badge-brand">BRAND</div>
+                  <div className="eco-window-role-badge badge-brand">
+                    <span className="eco-role-dot" />
+                    BRAND
+                  </div>
                 </div>
 
                 {/* App Body */}
