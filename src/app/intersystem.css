@@ -778,6 +778,7 @@
 .att-chip-routing-track {
   display: flex;
   align-items: center;
+  padding-left: 15px;
   gap: 5px;
   font-size: 9.5px;
   font-weight: 700;
