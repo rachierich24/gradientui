@@ -30,7 +30,7 @@ export function G365Hero() {
           <HeroHeadline />
         </h1>
         <p className="hero-sub">
-          Unifying procurement, catalog inventory, and daily supply chains into one connected network.
+          Sync live vendor catalogues, automate daily orders, and streamline kitchen restocks on one platform.
         </p>
         <div className="actions">
           <a className="btn primary" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>

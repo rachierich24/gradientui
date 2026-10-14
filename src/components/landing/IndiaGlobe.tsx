@@ -67,13 +67,12 @@ export function IndiaGlobe() {
         {/* Headline over the sky: the globe's curve starts just below it (measured by the engine) */}
           <div className="ig-header">
             <h2 id="ig-title">
-              Connecting India’s coffee trade. <br />
-              <span className="ig-gradient-text">From origin to every café counter.</span>
+              <span className="ig-line1">Nationwide supply infrastructure, connected in real time.</span>
+              <span className="ig-line2 ig-white-text">Direct fulfillment from verified brands to local café counters.</span>
             </h2>
 
             <p className="ig-subtitle">
-              16 hub cities, 1,200+ cafés, and India’s premier roasters and suppliers — routed in real-time
-              over one unified national supply network.
+              16 hub cities and 1,200+ partner outlets — powering automated replenishment and zero-stockout logistics.
             </p>
 
             <div className="ig-metrics-strip" aria-label="Network stats">

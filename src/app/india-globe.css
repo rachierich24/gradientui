@@ -19,10 +19,10 @@ section.l-sec.ig {
 .ig-header {
   position: absolute;
   z-index: 2;
-  top: clamp(32px, 6vh, 64px);
+  top: clamp(28px, 5.5vh, 60px);
   left: 50%;
   transform: translateX(-50%);
-  width: min(860px, calc(100% - 32px));
+  width: min(1080px, calc(100% - 32px));
   margin: 0;
   text-align: center;
   display: flex;
@@ -65,19 +65,30 @@ section.l-sec.ig {
 .ig-header h2 {
   margin: 0;
   font-family: "Instrument Sans", var(--font-sans), sans-serif;
-  font-size: clamp(30px, 3.5vw, 50px);
+  font-size: clamp(24px, 2.8vw, 42px);
   font-weight: 700;
-  line-height: 1.06;
+  line-height: 1.18;
   letter-spacing: -0.035em;
   color: #FFFFFF;
-  text-wrap: balance;
 }
 
+.ig-line1,
+.ig-line2 {
+  display: block;
+}
+
+@media (min-width: 820px) {
+  .ig-line1,
+  .ig-line2 {
+    white-space: nowrap;
+  }
+}
+
+.ig-white-text,
 .ig-gradient-text {
-  background: linear-gradient(100deg, #9CC3FF 0%, #E6EEFF 45%, #FFE2A6 75%, #9CC3FF 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background: none !important;
   display: inline-block;
 }
 
@@ -86,7 +97,8 @@ section.l-sec.ig {
   max-width: 62ch;
   font-size: clamp(15px, 1.1vw, 17px);
   line-height: 1.55;
-  color: #98A2BC;
+  color: #FFFFFF !important;
+  opacity: 0.92;
   text-wrap: pretty;
 }
 
@@ -101,7 +113,7 @@ section.l-sec.ig {
   padding: 10px 24px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: none;
 }
 
@@ -114,7 +126,7 @@ section.l-sec.ig {
 .ig-metric-val {
   font-size: 15px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -122,13 +134,14 @@ section.l-sec.ig {
 .ig-metric-lbl {
   font-size: 12.5px;
   font-weight: 500;
-  color: #8A94AE;
+  color: #FFFFFF !important;
+  opacity: 0.85;
 }
 
 .ig-metric-div {
   width: 1px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* ---------- Unboxed Celestial Half-Globe Stage (NO BOX AROUND GLOBE) ---------- */

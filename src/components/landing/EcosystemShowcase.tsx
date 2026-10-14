@@ -598,11 +598,11 @@ export function EcosystemShowcase() {
               <span>ONE CONNECTED ECOSYSTEM</span>
             </div>
             <h2 className="eco-headline">
-              <span className="eco-headline-main">How your café sources, orders &amp; tracks.</span>
-              <span className="eco-headline-highlight">In real time.</span>
+              <span className="eco-headline-main">Connecting cafés, suppliers &amp; brands.</span>
+              <span className="eco-headline-highlight">Food supply made easy.</span>
             </h2>
             <p className="eco-body">
-              Watch one order move seamlessly from café to supplier to delivery — with every side of the ecosystem connected in real time.
+              Browse live supplier catalogues, place unified orders, and track deliveries in real time across the entire ecosystem.
             </p>
 
           </motion.div>

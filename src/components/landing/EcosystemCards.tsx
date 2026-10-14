@@ -676,10 +676,10 @@ export function EcosystemCards() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="eco-header-eyebrow">THE GRABBIT ECOSYSTEM</span>
-          <h2 className="eco-header-title">Built differently for every side of the supply chain.</h2>
+          <span className="eco-header-eyebrow">THE GRADIENT ECOSYSTEM</span>
+          <h2 className="eco-header-title">Built for every side of the supply chain.</h2>
           <p className="eco-header-desc">
-            One connected network. Three purpose-built platforms tailored for cafés, suppliers, and brands.
+            One connected network for cafés, suppliers, and brands. Food supply, live catalogues, and order management made simple.
           </p>
         </motion.div>
 
