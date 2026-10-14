@@ -62,28 +62,268 @@
 .g365-hero .hero { position: relative; z-index: 5; text-align: center; padding: clamp(64px, 8.6vw, 126px) 16px 0; pointer-events: none; }
 .g365-hero .hero a { pointer-events: auto; }
 /* the whole headline carries the energy: black text with a sheen travelling through it */
-.g365-hero h1 { margin: 0 auto; max-width: 17ch; font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5vw, 72px); line-height: 1.06; letter-spacing: -.035em; text-wrap: balance;
+.g365-hero h1 { margin: 0 auto; max-width: 25ch; font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5.2vw, 74px); line-height: 1.08; letter-spacing: -.035em; text-wrap: balance;
   color: transparent; -webkit-background-clip: text; background-clip: text;
   background-image: var(--light);
   background-size: 300% 100%; background-position: 100% 50%; animation: g365LightPass 8s cubic-bezier(.45,.05,.55,.95) infinite; }
 .g365-hero h1 em { font-style: normal; }
-.g365-hero .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 72px; margin-top: 46px; }
-.g365-hero .actions .btn { min-width: 186px; text-align: center; }
-.g365-hero .btn { font: 500 15px/1 var(--sans); padding: 16px 22px; border-radius: 999px; text-decoration: none; }
-.g365-hero .btn.primary { position: relative; color: #fff; font-weight: 600; background-image: var(--light-glass); -webkit-backdrop-filter: blur(12px) saturate(1.6); backdrop-filter: blur(12px) saturate(1.6); background-size: 300% 100%; background-position: 100% 50%;
-  animation: g365LightPass 8s cubic-bezier(.45,.05,.55,.95) .5s infinite; box-shadow: var(--glass-edge), 0 14px 30px -14px rgba(0,0,0,.6); }
-.g365-hero .btn.primary::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--glass-sheen); pointer-events: none; }
-.g365-hero .btn.ghost { border: 1px solid var(--hair); background: #fff; }
-.g365-hero .btn.ghost span { font-weight: 600; color: transparent; -webkit-background-clip: text; background-clip: text;
-  background-image: var(--light); background-size: 300% 100%; background-position: 100% 50%; animation: g365LightPass 8s cubic-bezier(.45,.05,.55,.95) .65s infinite; }
-/* during the opening sequence the buttons wait, so their first pass starts together with the headline's */
-.g365-hero.boot-solid .btn.primary, .g365-hero.boot-solid .btn.ghost span { animation: none; }
-@media (prefers-reduced-motion: reduce) { .g365-hero h1, .g365-hero .btn.primary, .g365-hero .btn.ghost span { animation: none; } }
+
+.hero-br { display: block; }
+@media (max-width: 640px) {
+  .hero-br { display: none; }
+}
+
+/* Notion-style interactive rotating pill */
+.g365-hero h1 .hero-pill,
+.g365-hero h1.settled .hero-pill {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.84em;
+  padding: 0.04em 0.28em 0.05em 0.24em;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  vertical-align: middle;
+  transform: translateY(-0.05em);
+  margin: 0 0.10em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-background-clip: padding-box !important;
+  background-clip: padding-box !important;
+  -webkit-text-fill-color: initial !important;
+  color: initial !important;
+  pointer-events: auto !important;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, width;
+}
+
+.g365-hero h1 .hero-pill:hover {
+  transform: translateY(-0.07em) scale(1.025);
+}
+
+.hero-pill-content-box {
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  height: 1.14em;
+  align-items: center;
+  justify-content: center;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+.hero-pill-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22em;
+  line-height: 1;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+.hero-pill-icon {
+  font-size: 0.86em;
+  width: 0.98em;
+  height: 0.98em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  transform: translateY(-0.02em);
+  margin-right: 0.10em;
+}
+
+.hero-pill--supplier .hero-pill-icon {
+  width: 1.05em;
+  height: 0.95em;
+  transform: translateY(-0.01em);
+}
+
+.hero-pill--brand .hero-pill-icon {
+  width: 0.95em;
+  height: 0.95em;
+  transform: translateY(-0.03em);
+}
+
+.hero-pill--cafe .hero-pill-icon {
+  transform: translateY(-0.04em);
+}
+
+.hero-pill-icon .pill-svg-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-pill-emoji {
+  font-size: 0.82em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  transform: translateY(-0.02em);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+}
+
+.hero-pill-word {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  line-height: 1;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Notion-style hero subtitle - strictly one line */
+.g365-hero .hero-sub {
+  margin: 20px auto 0;
+  max-width: 1000px;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.4;
+  color: var(--ink-soft);
+  letter-spacing: -0.012em;
+  font-weight: 450;
+  white-space: nowrap;
+  text-align: center;
+  transition: opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1);
+}
+
+@media (max-width: 768px) {
+  .g365-hero .hero-sub {
+    white-space: normal;
+    text-wrap: balance;
+    max-width: 520px;
+    font-size: 15px;
+    padding: 0 16px;
+  }
+}
+
+/* ---------- Notion-style Black & White Action Buttons ---------- */
+.g365-hero .actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+  position: relative;
+  z-index: 10;
+}
+
+.g365-hero .actions .btn {
+  min-width: 0;
+  text-align: center;
+}
+
+.g365-hero .btn {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 550;
+  line-height: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  letter-spacing: -0.015em;
+  transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 160ms cubic-bezier(0.16, 1, 0.3, 1),
+              color 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Primary Button: Solid Black (Notion style) */
+.g365-hero .btn.primary {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  border: 1px solid #0A0A0A;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.g365-hero .btn.primary:hover {
+  background: #222222;
+  border-color: #222222;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: #FFFFFF;
+}
+
+.g365-hero .btn.primary:active {
+  transform: translateY(0);
+  background: #000000;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Secondary / Ghost Button: Soft Light Grey Tint (Notion style, Monochrome) */
+.g365-hero .btn.ghost {
+  background: #F1F3F5;
+  color: #0A0A0A;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: none;
+}
+
+.g365-hero .btn.ghost,
+.g365-hero .btn.ghost span {
+  color: #0A0A0A;
+  font-weight: 550;
+  background-image: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: initial;
+  animation: none;
+}
+
+.g365-hero .btn.ghost:hover {
+  background: #E5E7EB;
+  border-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  color: #000000;
+}
+
+.g365-hero .btn.ghost:hover span {
+  color: #000000;
+}
+
+.g365-hero .btn.ghost:active {
+  transform: translateY(0);
+  background: #DCE0E5;
+}
+
+.g365-hero.boot-solid .btn.primary,
+.g365-hero.boot-solid .btn.ghost span {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .g365-hero h1,
+  .g365-hero .btn.primary,
+  .g365-hero .btn.ghost span {
+    animation: none;
+  }
+}
 
 /* ---------- first load: a blank page with only the energy, then the hero switches itself on ---------- */
-.g365-hero .hero .actions, .g365-hero .rows, .g365-hero #riders { transition: opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1); }
+.g365-hero .hero .actions, .g365-hero .hero-sub, .g365-hero .rows, .g365-hero #riders { transition: opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1); }
 .g365-hero .core { transition: opacity .9s ease, transform 1s cubic-bezier(.2,.7,.2,1); }
-.g365-hero.boot-ui .hero .actions { opacity: 0; transform: translateY(12px); }
+.g365-hero.boot-ui .hero .actions,
+.g365-hero.boot-ui .hero-sub { opacity: 0; transform: translateY(12px); }
 .g365-hero.boot-rows .rows { opacity: 0; transform: translateY(26px); }
 .g365-hero.boot-rows #riders { opacity: 0; }
 .g365-hero.boot-rows .core { opacity: 0; transform: translate(-50%, -50%) scale(.86); }

@@ -147,7 +147,14 @@
             const w = document.createElement("span"); w.className = "w"; w.textContent = part; frag.appendChild(w); words.push(w);
           });
           node.replaceChild(frag, n);
-        } else if (n.nodeType === 1) split(n);
+        } else if (n.nodeType === 1) {
+          if (n.hasAttribute("data-no-split") || n.classList.contains("hero-pill")) {
+            n.classList.add("w");
+            words.push(n);
+          } else {
+            split(n);
+          }
+        }
       });
     };
     split(h1);

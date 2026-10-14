@@ -5,6 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
 import { loadG365, G365_LIBS } from './g365-scripts';
+import { HeroPill } from './HeroPill';
 
 // Runs inline during HTML parse, before first paint, so the hero starts blank and
 // switches itself on. A failsafe reveals everything after 5s regardless.
@@ -25,12 +26,18 @@ export function G365Hero() {
     <div className="g365 g365-hero" id="g365hero" ref={rootRef} suppressHydrationWarning>
       <script dangerouslySetInnerHTML={{ __html: BOOT }} />
       <header className="hero">
-        <h1>The infrastructure behind every <em>great café.</em></h1>
+        <h1>
+          The operating system from which<br className="hero-br" />
+          all <HeroPill /> are connected.
+        </h1>
+        <p className="hero-sub">
+          Unifying procurement, catalog inventory, and daily supply chains into one connected network.
+        </p>
         <div className="actions">
           <a className="btn primary" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>
-            Start free <span aria-hidden="true">→</span>
+            Start free
           </a>
-          <a className="btn ghost" href="/contact"><span>Book a walkthrough</span></a>
+          <a className="btn ghost" href="/contact">Book a walkthrough</a>
         </div>
       </header>
 
