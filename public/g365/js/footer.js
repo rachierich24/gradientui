@@ -31,8 +31,8 @@
   const gcx = X0 + BW / 2, gcy = Y0 + VH / 2, gdx = (GL / 2) * Math.cos(A), gdy = (GL / 2) * Math.sin(A);
   const grad = el("linearGradient", { id: "ftEnergy", gradientUnits: "userSpaceOnUse",
     x1: gcx - gdx, y1: gcy - gdy, x2: gcx + gdx, y2: gcy + gdy }, defs);
-  // deep navy with a single band of light passing left to right, then a rest — the same light as the headline
-  [["0", "#142B63"], [".41", "#142B63"], [".455", "#7F00FF"], [".5", "#FF0000"], [".545", "#22C55E"], [".59", "#142B63"], ["1", "#142B63"]]
+  // black with a single soft grey sheen passing left to right, then a rest — the same light as the headline
+  [["0", "#0A0A0A"], [".41", "#0A0A0A"], [".47", "#5C5C5C"], [".5", "#A3A3A3"], [".53", "#5C5C5C"], [".59", "#0A0A0A"], ["1", "#0A0A0A"]]
     .forEach(([o, c]) => el("stop", { offset: o, "stop-color": c }, grad));
   if (!reduce) el("animateTransform", { attributeName: "gradientTransform", type: "translate", values: `${-2 * VW} 0;0 0;0 0`, dur: "8s",
     repeatCount: "indefinite", calcMode: "spline", keyTimes: "0;.62;1", keySplines: ".45 .05 .55 .95;0 0 1 1" }, grad);

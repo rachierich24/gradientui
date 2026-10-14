@@ -1,827 +1,341 @@
-/* ==========================================================================
-   GRABBIT CONNECTED ECOSYSTEM — DENSE ORTHOGONAL DATA GRAPH
-   Strictly Horizontal & Vertical Connectors with Rounded 90° Fillets
-   Enhanced with Attio-Grade Border Beams, Precision Sockets & Signal Flow
-   ========================================================================== */
-
-.att-section {
+/* ─────────────────────────────────────────────────────────────────────────
+   The Gradient intersystem (components/landing/Intersystem.tsx) — a Stripe-style system diagram.
+   Near-black ground with a fading dot grid; bright product pills; dark trays and tiles for the
+   systems around them; dotted connectors with comets of light; a graphite core chip.
+   Monochrome at rest — hovering a side (or the core) brings that side's colour in.
+───────────────────────────────────────────────────────────────────────── */
+.isx {
+  --bg: #07080A;
+  --ink: #F5F6F7;
+  --muted: #9AA0A6;
+  --cafe: #FF5B4D;
+  --supply: #2ED573;
+  --brand: #A67CFF;
   position: relative;
-  background-color: var(--hero-bg, #FFFCF3);
-  padding: 100px 24px 130px;
   overflow: hidden;
-  font-family: var(--font-plus-jakarta, 'Plus Jakarta Sans', -apple-system, sans-serif);
-  color: #141413;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: var(--bg);
+  color: var(--ink);
+  padding: clamp(36px, 5vh, 56px) clamp(16px, 4vw, 48px) clamp(32px, 4.5vh, 52px);
+  font-family: "Geist", ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-
-/* Subtle dotted grid background */
-.att-grid-bg {
+/* a dot grid that fades out toward the edges */
+.isx::before {
+  content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#D8D6CE 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
-  opacity: 0.38;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1.3px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(75% 65% at 50% 60%, #000 25%, transparent 100%);
+  mask-image: radial-gradient(75% 65% at 50% 60%, #000 25%, transparent 100%);
   pointer-events: none;
-  z-index: 0;
 }
 
-/* ─── HEADER ─── */
-.att-header {
+/* ---------- heading ---------- */
+.isx-head {
   position: relative;
-  z-index: 10;
-  text-align: center;
-  max-width: 680px;
-  margin-bottom: 50px;
-}
-
-.att-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: #8C867B;
-  text-transform: uppercase;
-  display: inline-block;
-  margin-bottom: 12px;
-  padding: 3px 10px;
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.att-title {
-  font-size: 42px;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.18;
-  color: #141413;
-  margin: 0;
-}
-
-.att-desc {
-  font-size: 15.5px;
-  color: #6D695F;
-  margin: 14px auto 0;
-  line-height: 1.55;
-  max-width: 540px;
-}
-
-/* ─── STAGE CONTAINER ─── */
-.att-stage {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  height: 760px;
-  margin: 0 auto;
-  z-index: 5;
-}
-
-@media (max-width: 1024px) {
-  .att-stage {
-    height: 720px;
-  }
-}
-
-/* ─── SVG WIRES (STRICTLY ORTHOGONAL) ─── */
-.att-wires {
-  position: absolute;
-  inset: 0;
   z-index: 1;
-  pointer-events: none;
-  overflow: visible;
+  max-width: 1120px;
+  margin: 0 auto clamp(22px, 3.6vh, 40px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px;
 }
+.isx-eyebrow { display: inline-flex; align-items: center; gap: 5px; margin-bottom: 14px; font-size: 14px; font-weight: 500; color: #C9CDD2; }
+.isx-eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.28); transition: background 0.35s ease; }
+.isx-eyebrow i:nth-child(3) { margin-right: 6px; }
+.isx[data-hover="cafe"] .isx-eyebrow i:nth-child(1), .isx[data-hover="core"] .isx-eyebrow i:nth-child(1) { background: var(--cafe); }
+.isx[data-hover="supply"] .isx-eyebrow i:nth-child(2), .isx[data-hover="core"] .isx-eyebrow i:nth-child(2) { background: var(--supply); }
+.isx[data-hover="brand"] .isx-eyebrow i:nth-child(3), .isx[data-hover="core"] .isx-eyebrow i:nth-child(3) { background: var(--brand); }
+.isx-head h2 {
+  margin: 0;
+  max-width: 620px;
+  font-family: "Instrument Sans", "Geist", ui-sans-serif, sans-serif;
+  font-size: clamp(30px, 3.2vw, 44px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.isx-head p { margin: 0; max-width: 400px; font-size: 16px; line-height: 1.55; color: #E9EBED; text-wrap: pretty; }
 
-.att-wire-path {
+/* ---------- the diagram canvas ---------- */
+.isx-diagram { position: relative; z-index: 1; margin: 0 auto; }
+.isx-canvas { position: absolute; left: 0; top: 0; width: 1120px; height: 576px; transform-origin: 0 0; }
+.isx-canvas > * { position: absolute; }
+.isx-lines { left: 0; top: 0; overflow: visible; pointer-events: none; }
+
+/* side colours, used only while lit */
+.isx [data-side="cafe"] { --sc: var(--cafe); --sc-fill: #E5483B; }
+.isx [data-side="supply"] { --sc: var(--supply); --sc-fill: #16A34A; }
+.isx [data-side="brand"] { --sc: var(--brand); --sc-fill: #7C4DDB; }
+.isx[data-hover="cafe"] [data-side="cafe"],
+.isx[data-hover="supply"] [data-side="supply"],
+.isx[data-hover="brand"] [data-side="brand"],
+.isx[data-hover="core"] [data-side] {
+  --lit-bg: var(--sc-fill);
+  --lit-ink: #FFFFFF;
+  --lit-stroke: var(--sc);
+  --lit-glow: color-mix(in srgb, var(--sc) 70%, transparent);
+  --lit-border: color-mix(in srgb, var(--sc) 55%, transparent);
+  --lit-icon: var(--sc);
+}
+/* while one side is lit, the other two step back */
+.isx[data-hover="cafe"] .isx-canvas [data-side="supply"], .isx[data-hover="cafe"] .isx-canvas [data-side="brand"],
+.isx[data-hover="supply"] .isx-canvas [data-side="cafe"], .isx[data-hover="supply"] .isx-canvas [data-side="brand"],
+.isx[data-hover="brand"] .isx-canvas [data-side="cafe"], .isx[data-hover="brand"] .isx-canvas [data-side="supply"] { opacity: 0.24; }
+/* comets animate their opacity, so they step back with stroke-opacity instead */
+.isx[data-hover="cafe"] .isx-comet:not([data-side="cafe"]),
+.isx[data-hover="supply"] .isx-comet:not([data-side="supply"]),
+.isx[data-hover="brand"] .isx-comet:not([data-side="brand"]) { stroke-opacity: 0.22; }
+
+/* ---------- connectors ---------- */
+.isx-line {
   fill: none;
-  stroke: #D9D9D2;
-  stroke-width: 1.2px;
+  stroke: var(--lit-stroke, rgba(255, 255, 255, 0.34));
+  stroke-width: 1.6;
   stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.52;
-  transition: stroke 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease, stroke-width 0.25s ease;
-}
-
-.att-wire-path.is-active {
-  opacity: 1;
-  stroke-width: 1.8px;
-}
-
-.att-wire-path.is-secondary {
-  stroke-dasharray: 4 4;
-  opacity: 0.35;
-}
-
-/* Wire Glow Underlay (Quiet & Subtle) */
-.att-wire-glow-underlay {
-  fill: none;
-  stroke-width: 2.8px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.15;
-  pointer-events: none;
-}
-
-/* Wire Arrowhead */
-.att-wire-arrowhead {
-  fill: none;
-  stroke: #D9D9D2;
-  stroke-width: 1.2px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.45;
+  stroke-dasharray: 0.01 5;
   transition: stroke 0.35s ease, opacity 0.35s ease;
 }
-
-.att-wire-arrowhead.is-active {
-  stroke-width: 1.4px;
-  opacity: 0.9;
+.isx-line.is-ghost { opacity: 0.4; }
+.isx-comet {
+  fill: none;
+  stroke: var(--lit-stroke, #FFFFFF);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 22px 100000px;
+  stroke-dashoffset: 22px;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px var(--lit-stroke, rgba(255, 255, 255, 0.8)));
+  animation: isxComet 6.4s linear infinite;
+  animation-delay: var(--d, 0s);
+  transition: stroke 0.35s ease;
+}
+@keyframes isxComet {
+  0% { stroke-dashoffset: 22px; opacity: 1; }
+  14% { stroke-dashoffset: calc(var(--len, 300) * -1px); opacity: 1; }
+  14.01%, 100% { stroke-dashoffset: calc(var(--len, 300) * -1px); opacity: 0; }
 }
 
-/* Traveling Photon Packet (Minimal) */
-.att-photon-packet-core {
-  filter: drop-shadow(0 0 3px currentColor);
-  transition: r 0.15s ease;
+/* ---------- group labels ---------- */
+.isx-label {
+  font-family: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--lit-icon, rgba(255, 255, 255, 0.42));
+  transition: color 0.35s ease, opacity 0.35s ease;
 }
 
-/* Subtle Arrival Halo Ripple */
-.att-arrival-halo-inner {
-  animation: attioHaloInner 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  pointer-events: none;
-}
-
-@keyframes attioHaloInner {
-  0% {
-    r: 2px;
-    opacity: 0.7;
-    stroke-width: 1.5px;
-  }
-
-  100% {
-    r: 9px;
-    opacity: 0;
-    stroke-width: 0.5px;
-  }
-}
-
-/* ─── ATTIO PRECISION CIRCULAR SOCKET PORTS ─── */
-.attio-socket-port {
-  position: absolute;
-  z-index: 30;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #FFFFFF;
-  border: 1px solid #E4E5E8;
+/* ---------- café tray and slots ---------- */
+.isx-tray {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  pointer-events: none;
-  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--lit-border, rgba(255, 255, 255, 0.07));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: border-color 0.35s ease, opacity 0.35s ease;
 }
-
-.attio-socket-port.is-right {
-  right: -5px;
-  top: 50%;
-  transform: translateY(-50%);
+.isx-slot {
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #15161A;
+  border: 1px solid var(--lit-border, rgba(255, 255, 255, 0.06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  color: #E9EAEC;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  perspective: 300px;
+  transition: background 0.4s ease, border-color 0.35s ease, opacity 0.35s ease;
 }
+.isx-slot.is-ghost { background: transparent; border: 1px dashed rgba(255, 255, 255, 0.13); box-shadow: none; }
+.isx-slot > span { white-space: nowrap; animation: isxFlipX 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.isx-slot.is-end > span { animation: none; }
+@keyframes isxFlipX { from { opacity: 0; transform: rotateX(-90deg); } to { opacity: 1; transform: none; } }
 
-.attio-socket-port.is-left {
-  left: -5px;
-  top: 50%;
-  transform: translateY(-50%);
+/* ---------- product pills ---------- */
+.isx-pill {
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+  border-radius: 9px;
+  background-color: var(--lit-bg, #F1F2F4);
+  color: var(--lit-ink, #0A0B0D);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 10px 24px -12px rgba(0, 0, 0, 0.9),
+    0 0 30px -6px var(--lit-glow, transparent);
+  transition: background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+  cursor: default;
 }
+.isx-canvas .isx-pill:hover { transform: translateY(-1px); }
 
-.attio-socket-port.is-top {
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%);
+/* ---------- supplier and brand tiles ---------- */
+.isx-block {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--lit-border, rgba(255, 255, 255, 0.07));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: border-color 0.35s ease, opacity 0.35s ease;
 }
-
-.attio-socket-port.is-bottom {
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
+.isx-tile {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #15161A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: var(--lit-icon, #C9CCD2);
+  perspective: 300px;
+  transition: color 0.35s ease;
 }
+.isx-tile.is-ghost { background: transparent; border: 1px dashed rgba(255, 255, 255, 0.13); box-shadow: none; }
+.isx-tile svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; animation: isxFlipY 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes isxFlipY { from { opacity: 0; transform: rotateY(90deg); } to { opacity: 1; transform: none; } }
 
-.attio-socket-inner-dot {
-  width: 4.5px;
-  height: 4.5px;
-  border-radius: 50%;
-  background-color: #CDCED2;
-  transition: background-color 0.25s ease, transform 0.25s ease;
+/* ---------- glows ---------- */
+.isx-glow { pointer-events: none; border-radius: 50%; opacity: 0; transition: opacity 0.6s ease; }
+.isx-glow.is-core { left: 400px; top: 156px; width: 320px; height: 320px; opacity: 1; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0)); }
+.isx-glow.is-cafe { left: 260px; top: -70px; width: 600px; height: 260px; background: radial-gradient(closest-side, color-mix(in srgb, var(--cafe) 20%, transparent), transparent); }
+.isx-glow.is-supply { left: -120px; top: 180px; width: 640px; height: 460px; background: radial-gradient(closest-side, color-mix(in srgb, var(--supply) 16%, transparent), transparent); }
+.isx-glow.is-brand { left: 680px; top: 170px; width: 520px; height: 340px; background: radial-gradient(closest-side, color-mix(in srgb, var(--brand) 20%, transparent), transparent); }
+.isx[data-hover="cafe"] .isx-glow.is-cafe,
+.isx[data-hover="supply"] .isx-glow.is-supply,
+.isx[data-hover="brand"] .isx-glow.is-brand,
+.isx[data-hover="core"] .isx-glow { opacity: 1; }
+
+/* ---------- the core: a graphite processor package ---------- */
+@property --isx-edge { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@property --isx-pad { syntax: "<color>"; inherits: true; initial-value: rgba(205, 207, 212, 0.4); }
+
+.isx-core {
+  left: 492px;
+  top: 248px;
+  width: 136px;
+  height: 136px;
+  border-radius: 22px;
+  background: linear-gradient(150deg, #202125 0%, #0C0D0F 55%, #18191C 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.95),
+    0 0 0 6px rgba(255, 255, 255, 0.025),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+  transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s ease, border-color 0.35s ease;
+  cursor: default;
 }
-
-.attio-socket-port.is-active .attio-socket-inner-dot {
-  transform: scale(1.15);
+.isx-core:hover {
+  transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.26);
+  box-shadow:
+    0 40px 80px -24px rgba(0, 0, 0, 1),
+    0 0 60px -12px color-mix(in srgb, var(--cafe) 45%, transparent),
+    0 0 70px -10px color-mix(in srgb, var(--brand) 40%, transparent),
+    0 0 50px -14px color-mix(in srgb, var(--supply) 40%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
-
-.attio-socket-port.is-active {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.08);
-}
-
-.attio-socket-port.triple-port {
-  width: 12px;
-  height: 28px;
-  border-radius: 6px;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 2px 0;
-}
-
-.attio-socket-port.triple-port.is-top,
-.attio-socket-port.triple-port.is-bottom {
-  width: 28px;
-  height: 12px;
-  flex-direction: row;
-  padding: 0 2px;
-}
-
-/* ─── ATTIO BORDER BEAM & DRAWING RAY (MINIMAL & PRECISE) ─── */
-.attio-card-beam-svg {
+/* a bright edge that runs round the package while hovered */
+.isx-core::before {
+  content: "";
   position: absolute;
   inset: -1px;
-  width: calc(100% + 2px);
-  height: calc(100% + 2px);
-  z-index: 25;
-  pointer-events: none;
-  overflow: visible;
   border-radius: inherit;
-}
-
-/* Crisp solid border left behind by the ray */
-.attio-beam-solid-trace {
-  fill: none;
-  stroke-width: 1.4px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: opacity 0.3s ease;
-}
-
-/* Minimal traveling ray head */
-.attio-beam-ray-head {
-  fill: none;
-  stroke-width: 2.2px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* ─── ATTIO TRIGGER TAG (CAFÉ ONLY) ─── */
-.att-trigger-tag {
-  position: absolute;
-  top: -19px;
-  left: 0;
-  z-index: 0;
-  background-color: #E5483B;
-  color: #FFFFFF;
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 2.5px 8px;
-  border-radius: 6px 6px 0 0;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-/* ─── GENERAL CARD STYLES (MINIMAL & CRISP) ─── */
-.att-card {
-  position: absolute;
-  background: #FFFFFF;
-  border: 1px solid #EAE9E2;
-  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.25s ease;
-  z-index: 10;
-  will-change: transform;
-}
-
-.att-card.is-dimmed {
-  opacity: 0.7;
-}
-
-/* Subtle active elevation while beam is sweeping */
-.att-card.is-active-drawing {
-  transform: translateY(-2px) !important;
-  z-index: 20 !important;
-}
-
-/* Minimal persistent colored borders once ray completes */
-.att-card.is-colored-cafe {
-  border-color: rgba(229, 72, 59, 0.65) !important;
-  box-shadow: 0 4px 16px -2px rgba(229, 72, 59, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-.att-card.is-colored-supplier {
-  border-color: rgba(34, 197, 94, 0.65) !important;
-  box-shadow: 0 4px 16px -2px rgba(34, 197, 94, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-.att-card.is-colored-brand {
-  border-color: rgba(109, 40, 217, 0.65) !important;
-  box-shadow: 0 4px 16px -2px rgba(109, 40, 217, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-/* ─── PRIMARY CARDS (~260px) ─── */
-.att-card-primary {
-  width: 260px;
-  border-radius: 14px;
-}
-
-.att-card-cafe {
-  top: 25px;
-  left: 160px;
-}
-
-.att-card-cafe:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 12px 28px -4px rgba(229, 72, 59, 0.18), 0 2px 6px rgba(0, 0, 0, 0.03);
-  border-color: rgba(229, 72, 59, 0.85) !important;
-  z-index: 15;
-}
-
-.att-card-supplier {
-  bottom: 45px;
-  left: 140px;
-}
-
-.att-card-supplier:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 12px 28px -4px rgba(34, 197, 94, 0.18), 0 2px 6px rgba(0, 0, 0, 0.03);
-  border-color: rgba(34, 197, 94, 0.85) !important;
-  z-index: 15;
-}
-
-.att-card-brand {
-  bottom: 45px;
-  right: 140px;
-}
-
-.att-card-brand:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 12px 28px -4px rgba(109, 40, 217, 0.18), 0 2px 6px rgba(0, 0, 0, 0.03);
-  border-color: rgba(109, 40, 217, 0.85) !important;
-  z-index: 15;
-}
-
-/* Card Header */
-.att-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid #F4F3ED;
-}
-
-.att-card-header-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.att-card-icon-wrap {
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.att-card-icon-wrap.is-cafe {
-  background: #FEF2F2;
-  color: #E5483B;
-  border: 1px solid rgba(229, 72, 59, 0.15);
-}
-
-.att-card-icon-wrap.is-supplier {
-  background: #F0FDF4;
-  color: #22C55E;
-  border: 1px solid rgba(34, 197, 94, 0.15);
-}
-
-.att-card-icon-wrap.is-brand {
-  background: #F5F3FF;
-  color: #6D28D9;
-  border: 1px solid rgba(109, 40, 217, 0.15);
-}
-
-.att-card-title {
-  font-size: 13.5px;
-  font-weight: 650;
-  color: #171716;
-  letter-spacing: -0.01em;
-}
-
-/* Badges */
-.att-card-badge {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 2.5px 7px;
-  border-radius: 5px;
-}
-
-.att-card-badge.is-cafe {
-  background: #FEF2F2;
-  color: #E5483B;
-  border: 1px solid rgba(229, 72, 59, 0.25);
-}
-
-.att-card-badge.is-supplier {
-  background: #F0FDF4;
-  color: #22C55E;
-  border: 1px solid rgba(34, 197, 94, 0.25);
-}
-
-.att-card-badge.is-brand {
-  background: #F5F3FF;
-  color: #6D28D9;
-  border: 1px solid rgba(109, 40, 217, 0.25);
-}
-
-/* Card Body */
-.att-card-body {
-  padding: 3px 0 5px;
-  display: flex;
-  flex-direction: column;
-}
-
-.att-attr-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6.5px 14px;
-  border-bottom: 1px solid #F9F8F5;
-  font-size: 11.5px;
-  transition: background 0.15s ease;
-}
-
-.att-attr-row:hover {
-  background: #FAF9F5;
-}
-
-.att-attr-row.is-highlight-row {
-  background: rgba(0, 0, 0, 0.015);
-}
-
-.att-attr-label {
-  color: #7E7A71;
-  font-weight: 450;
-}
-
-.att-attr-val {
-  color: #1A1917;
-  font-weight: 500;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.att-attr-val.is-pulsed {
-  transform: scale(1.08);
-}
-
-/* Card Footer */
-.att-card-footer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-top: 1px solid #FAF9F5;
-  font-size: 10.5px;
-  color: #8F8B82;
-}
-
-.att-status-dot {
-  width: 5.5px;
-  height: 5.5px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.att-status-dot.is-cafe {
-  background: #E5483B;
-  box-shadow: 0 0 0 2px rgba(229, 72, 59, 0.2);
-}
-
-.att-status-dot.is-supplier {
-  background: #22C55E;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-}
-
-.att-status-dot.is-brand {
-  background: #6D28D9;
-  box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2);
-}
-
-.att-footer-text {
-  font-size: 10.5px;
-  font-weight: 500;
-}
-
-/* ─── SECONDARY INTERMEDIATE CARDS (~135-155px) ─── */
-.att-card-secondary {
-  border-radius: 10px;
-  padding: 9px 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.att-card-secondary:hover {
-  transform: translateY(-2.5px) !important;
-  box-shadow: 0 8px 20px -2px rgba(0, 0, 0, 0.08);
-  z-index: 15;
-}
-
-.att-sec-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.att-sec-label {
-  font-size: 9.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #9A958C;
-}
-
-.att-sec-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-}
-
-.att-sec-dot.is-cafe {
-  background: #E5483B;
-}
-
-.att-sec-dot.is-supplier {
-  background: #22C55E;
-}
-
-.att-sec-dot.is-brand {
-  background: #6D28D9;
-}
-
-.att-sec-metric {
-  font-size: 12.5px;
-  font-weight: 650;
-  color: #1E1D1B;
-  transition: transform 0.25s ease, color 0.25s ease;
-}
-
-.att-sec-metric.is-pulsed {
-  transform: scale(1.08);
-}
-
-/* ─── PRECISE EDGE ANCHORS FOR PORTS ─── */
-.att-port-anchor {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+  padding: 1px;
+  background: conic-gradient(from var(--isx-edge), transparent 0deg 250deg, rgba(255, 255, 255, 0.95) 300deg, transparent 330deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask-composite: exclude;
   opacity: 0;
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
+.isx-core:hover::before { opacity: 1; animation: isxEdge 2.6s linear infinite; }
+@keyframes isxEdge { to { --isx-edge: 360deg; } }
+/* a ring that answers each order arriving at the core */
+.isx-core-pulse { position: absolute; inset: -1px; border-radius: inherit; border: 1px solid rgba(255, 255, 255, 0.6); opacity: 0; animation: isxPulse 6.4s ease-out infinite; pointer-events: none; }
+@keyframes isxPulse { 0%, 32% { opacity: 0; transform: scale(1); } 34% { opacity: 0.85; transform: scale(1); } 52% { opacity: 0; transform: scale(1.2); } 100% { opacity: 0; } }
 
-.att-port-anchor.is-right {
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.isx-pads { position: absolute; pointer-events: none; transition: --isx-pad 0.4s ease; }
+.isx-pads.is-h {
+  inset: 4px 20px;
+  background:
+    repeating-linear-gradient(90deg, var(--isx-pad) 0 4px, transparent 4px 8px) top / 100% 2.5px no-repeat,
+    repeating-linear-gradient(90deg, var(--isx-pad) 0 4px, transparent 4px 8px) bottom / 100% 2.5px no-repeat;
 }
-
-.att-port-anchor.is-left {
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.isx-pads.is-v {
+  inset: 20px 4px;
+  background:
+    repeating-linear-gradient(180deg, var(--isx-pad) 0 4px, transparent 4px 8px) left / 2.5px 100% no-repeat,
+    repeating-linear-gradient(180deg, var(--isx-pad) 0 4px, transparent 4px 8px) right / 2.5px 100% no-repeat;
 }
+.isx-core:hover .isx-pads { --isx-pad: rgba(226, 190, 118, 0.9); }
 
-.att-port-anchor.is-top {
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.att-port-anchor.is-bottom {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Secondary Node Specific Placements */
-.att-node-orders {
-  top: 40px;
-  left: 470px;
-  width: 140px;
-}
-
-.att-node-demand {
-  top: 155px;
-  left: 560px;
-  width: 155px;
-}
-
-.att-node-routing {
-  top: 360px;
-  left: 240px;
-  width: 145px;
-}
-
-.att-node-inventory {
-  top: 260px;
-  left: 60px;
-  width: 145px;
-}
-
-.att-node-fulfillment {
-  bottom: 220px;
-  left: 40px;
-  width: 140px;
-}
-
-.att-node-dispatch {
-  bottom: 50px;
-  left: 450px;
-  width: 135px;
-}
-
-.att-node-signals {
-  top: 360px;
-  right: 240px;
-  width: 150px;
-}
-
-.att-node-adoption {
-  top: 260px;
-  right: 60px;
-  width: 140px;
-}
-
-.att-node-repeat {
-  bottom: 220px;
-  right: 40px;
-  width: 140px;
-}
-
-.att-node-gmv {
-  bottom: 50px;
-  right: 450px;
-  width: 145px;
-}
-
-/* ══════════════════════════════════════════════════════════════
-   CENTRAL GRABBIT NETWORK CORE (THE ROUTING ENGINE)
-   Linear + Attio Restrained Product Aesthetics
-   ══════════════════════════════════════════════════════════════ */
-
-.att-grabbit-chip {
+.isx-die {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 20;
-  width: 326px;
-  height: 64px;
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 14px;
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-  cursor: pointer;
-  user-select: none;
-}
-
-.att-grabbit-chip:hover,
-.att-grabbit-chip.is-hovered {
-  transform: translate(-50%, -50%) scale(1.015);
-  box-shadow: 0 14px 38px -4px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
-  border-color: rgba(38, 109, 240, 0.8) !important;
-}
-
-.att-grabbit-chip.is-colored-grabbit {
-  border-color: rgba(38, 109, 240, 0.8) !important;
-  box-shadow: 0 10px 34px -4px rgba(38, 109, 240, 0.2), 0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
-/* Grabbit Internal Layout */
-.att-chip-inner {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 16px;
-  gap: 14px;
-}
-
-.att-chip-mark-wrap {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.att-chip-divider {
-  width: 1px;
-  height: 34px;
-  background: #EFECE6;
-  flex-shrink: 0;
-}
-
-.att-chip-body {
-  flex: 1;
-  min-width: 0;
+  inset: 10px;
+  border-radius: 13px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-}
-
-.att-chip-primary-line {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 4px;
+  background:
+    radial-gradient(120% 90% at var(--mx, 30%) var(--my, 12%), rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(160deg, #2B2C30 0%, #141518 52%, #0B0B0D 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), inset 0 -12px 22px rgba(0, 0, 0, 0.55);
+}
+.isx-die::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 3px); pointer-events: none; }
+.isx-sheen { position: absolute; inset: -60%; background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.16) 50%, transparent 58%); transform: translateX(-55%); transition: transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1); pointer-events: none; }
+.isx-core:hover .isx-sheen { transform: translateX(55%); }
+.isx-die strong { position: relative; margin-top: 4px; font-family: "Instrument Sans", "Geist", sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -0.035em; color: #F7F8F8; line-height: 1; }
+.isx-die small { position: relative; font-family: "Geist Mono", ui-monospace, monospace; font-size: 8px; letter-spacing: 0.34em; padding-left: 0.34em; color: rgba(255, 255, 255, 0.48); }
+.isx-mark { position: relative; }
+.isx-arc { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke: rgba(255, 255, 255, 0.55); transition: stroke 0.35s ease; }
+.isx[data-hover="core"] .isx-arc.is-cafe, .isx[data-hover="cafe"] .isx-arc.is-cafe { stroke: var(--cafe); }
+.isx[data-hover="core"] .isx-arc.is-supply, .isx[data-hover="supply"] .isx-arc.is-supply { stroke: var(--supply); }
+.isx[data-hover="core"] .isx-arc.is-brand, .isx[data-hover="brand"] .isx-arc.is-brand { stroke: var(--brand); }
+
+/* ---------- small screens: the same story, stacked ---------- */
+.isx-stack { display: none; }
+@media (max-width: 860px) {
+  .isx-head { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+@media (max-width: 819px) {
+  .isx-diagram { display: none; }
+  .isx-stack { position: relative; z-index: 1; display: grid; gap: 12px; max-width: 440px; margin: 8px auto 0; }
+  .isx-stack-core { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 16px; background: linear-gradient(150deg, #202125, #0C0D0F 60%); border: 1px solid rgba(255, 255, 255, 0.14); }
+  .isx-stack-core strong { font-family: "Instrument Sans", "Geist", sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -0.03em; }
+  .isx-stack-group { padding: 16px; border-radius: 14px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.07); }
+  .isx-stack-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .isx-stack-pills .isx-pill { display: inline-grid; height: 34px; font-size: 14px; }
+  .isx-stack-group p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
 }
 
-.att-chip-brand {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #111110;
-  padding: 2px 60px;
-}
-
-.att-chip-signals-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 2px 7px;
-  background: #F7F6F2;
-  border-radius: 999px;
-  font-size: 10px;
-  color: #6E6A61;
-}
-
-.att-chip-status-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #22C55E;
-}
-
-.att-chip-status-dot.is-pulsing {
-  box-shadow: 0 0 8px #22C55E;
-}
-
-.att-chip-routing-track {
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  gap: 5px;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #A39E93;
-}
-
-.att-chip-track-node {
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.att-chip-track-node.is-active.is-cafe {
-  color: #E5483B;
-  text-shadow: 0 0 8px rgba(229, 72, 59, 0.4);
-}
-
-.att-chip-track-node.is-active.is-supplier {
-  color: #22C55E;
-  text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
-}
-
-.att-chip-track-node.is-active.is-brand {
-  color: #6D28D9;
-  text-shadow: 0 0 8px rgba(109, 40, 217, 0.4);
-}
-
-.att-chip-track-arrow {
-  color: #D6D2C8;
-}
-
-/* ─── ARRIVAL FLASH CORE ─── */
-.att-arrival-core-flash {
-  animation: attioCoreFlash 0.35s ease-out forwards;
-}
-
-@keyframes attioCoreFlash {
-  0% {
-    r: 2px;
-    opacity: 1;
-  }
-
-  100% {
-    r: 7px;
-    opacity: 0;
-  }
+@media (prefers-reduced-motion: reduce) {
+  .isx-comet, .isx-core-pulse { display: none; }
+  .isx-slot > span, .isx-tile svg { animation: none; }
+  .isx-core, .isx-core:hover { transform: none; }
 }

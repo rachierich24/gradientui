@@ -1,36 +1,35 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Across India Network Globe (components/landing/IndiaGlobe.tsx)
-   Pristine white background, centered India focus, chromatic point-cloud,
-   slow featherweight luminous energy streams, and live floating trade badges.
-   Aesthetic inspired by Attio typography & BVNK / Stripe borderless infrastructure.
+   Earth at night on black: the canvas draws stars, the sphere, city lights, the blue atmosphere
+   and the horizon line; the footer's vertical line drops out of that horizon in the same blue.
 ───────────────────────────────────────────────────────────────────────── */
 
 section.l-sec.ig {
   position: relative;
   width: 100%;
-  background: #FFFFFF;
-  color: #0F172A;
-  padding: clamp(64px, 7vw, 100px) 0 0;
+  background: #000000;
+  color: #EEF2FF;
+  padding: 0;
   overflow: hidden;
   font-family: var(--font-sans, "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
 }
 
-.ig-outer {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 0 clamp(16px, 3.5vw, 40px);
-}
-
-/* ---------- Centered Attio-inspired Header ---------- */
+/* ---------- Headline, laid over the sky at the top of the stage ---------- */
 .ig-header {
-  max-width: 860px;
-  margin: 0 auto clamp(36px, 4.5vw, 56px);
+  position: absolute;
+  z-index: 2;
+  top: clamp(32px, 6vh, 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(860px, calc(100% - 32px));
+  margin: 0;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  pointer-events: none;
 }
 
 .ig-badge {
@@ -39,9 +38,9 @@ section.l-sec.ig {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(99, 102, 241, 0.06);
-  border: 1px solid rgba(99, 102, 241, 0.18);
-  color: #4F46E5;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(160, 200, 255, 0.22);
+  color: #BFD6FF;
   font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
   font-size: 11.5px;
   font-weight: 600;
@@ -53,8 +52,8 @@ section.l-sec.ig {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #4F46E5;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.7);
+  background: #FFC970;
+  box-shadow: 0 0 10px rgba(255, 190, 90, 0.85);
   animation: igPulse 2s ease-in-out infinite;
 }
 
@@ -66,16 +65,16 @@ section.l-sec.ig {
 .ig-header h2 {
   margin: 0;
   font-family: "Instrument Sans", var(--font-sans), sans-serif;
-  font-size: clamp(34px, 4.4vw, 58px);
+  font-size: clamp(30px, 3.5vw, 50px);
   font-weight: 700;
   line-height: 1.06;
   letter-spacing: -0.035em;
-  color: #0F172A;
+  color: #FFFFFF;
   text-wrap: balance;
 }
 
 .ig-gradient-text {
-  background: linear-gradient(100deg, #4F46E5 0%, #7C3AED 35%, #E11D48 70%, #9333EA 100%);
+  background: linear-gradient(100deg, #9CC3FF 0%, #E6EEFF 45%, #FFE2A6 75%, #9CC3FF 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -85,9 +84,9 @@ section.l-sec.ig {
 .ig-subtitle {
   margin: 0;
   max-width: 62ch;
-  font-size: clamp(16px, 1.25vw, 18.5px);
-  line-height: 1.6;
-  color: #475569;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.55;
+  color: #98A2BC;
   text-wrap: pretty;
 }
 
@@ -101,9 +100,9 @@ section.l-sec.ig {
   margin-top: 10px;
   padding: 10px 24px;
   border-radius: 999px;
-  background: rgba(248, 250, 252, 0.9);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: none;
 }
 
 .ig-metric-chip {
@@ -115,7 +114,7 @@ section.l-sec.ig {
 .ig-metric-val {
   font-size: 15px;
   font-weight: 700;
-  color: #0F172A;
+  color: #FFFFFF;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -123,13 +122,13 @@ section.l-sec.ig {
 .ig-metric-lbl {
   font-size: 12.5px;
   font-weight: 500;
-  color: #64748B;
+  color: #8A94AE;
 }
 
 .ig-metric-div {
   width: 1px;
   height: 16px;
-  background: #E2E8F0;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* ---------- Unboxed Celestial Half-Globe Stage (NO BOX AROUND GLOBE) ---------- */
@@ -139,12 +138,14 @@ section.l-sec.ig {
   isolation: isolate;
   overflow: hidden;
   width: 100%;
-  height: clamp(560px, 66vh, 800px);
+  /* one screen: the headline and the globe are seen together */
+  height: min(100svh, 880px);
+  min-height: 620px;
   border-radius: 0;
-  background: #FFFFFF;
+  background: #000000;
   border: none;
   box-shadow: none;
-  cursor: grab;
+  cursor: pointer;
   touch-action: pan-y;
   outline: none;
 }
@@ -157,7 +158,7 @@ section.l-sec.ig {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 100% 120% at 50% 80%, rgba(243, 244, 246, 0.8) 0%, rgba(249, 240, 245, 0.3) 40%, rgba(255, 255, 255, 0) 70%);
+  background: radial-gradient(ellipse 70% 80% at 50% 100%, rgba(40, 80, 170, 0.18) 0%, rgba(20, 40, 90, 0.08) 45%, rgba(0, 0, 0, 0) 75%);
 }
 
 .ig-stage.is-live,
@@ -178,6 +179,16 @@ section.l-sec.ig {
   cursor: pointer;
 }
 
+.ig-canvas-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
 .ig-canvas {
   position: absolute;
   inset: 0;
@@ -186,7 +197,6 @@ section.l-sec.ig {
   height: 100%;
   display: block;
   transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.08));
 }
 
 
@@ -195,15 +205,15 @@ section.l-sec.ig {
   position: absolute;
   z-index: 3;
   right: clamp(20px, 3.5vw, 40px);
-  bottom: clamp(20px, 3.5vw, 40px);
+  bottom: clamp(24px, 4vw, 48px);
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(226, 232, 240, 0.95);
-  box-shadow: 0 12px 32px -10px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04);
+  background: rgba(14, 20, 38, 0.72);
+  border: 1px solid rgba(160, 200, 255, 0.18);
+  box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -251,7 +261,7 @@ section.l-sec.ig {
   border: 0;
   padding: 9px 18px 9px 14px;
   background: transparent;
-  color: #0F172A;
+  color: #E6EEFF;
   font-family: var(--font-mono, monospace);
   font-size: 12px;
   font-weight: 600;
@@ -261,14 +271,14 @@ section.l-sec.ig {
 }
 
 .ig-start:hover {
-  background: rgba(241, 245, 249, 0.8);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .ig-start svg {
   width: 14px;
   height: 14px;
   fill: none;
-  stroke: #4F46E5;
+  stroke: #FFC970;
   stroke-width: 1.6;
   stroke-linecap: round;
   animation: igSpin 6s linear infinite;
@@ -279,18 +289,22 @@ section.l-sec.ig {
 }
 
 
+/* ---------- Footer joins the horizon ---------- */
+.ig + .g365-footer .ft-wrap::before {
+  margin-top: 0;
+  background: linear-gradient(180deg, rgba(120, 175, 255, 0.8), rgba(120, 175, 255, 0));
+}
+
 /* ---------- Responsive adjustments ---------- */
 @media (max-width: 860px) {
-  section.l-sec.ig {
-    padding: 48px 0 0;
-  }
   .ig-stage,
   .ig-panel {
-    height: clamp(380px, 50vh, 520px);
+    height: min(100svh, 760px);
+    min-height: 600px;
     border-radius: 0;
   }
   .ig-header {
-    margin-bottom: 28px;
+    top: 28px;
   }
   .ig-metrics-strip {
     gap: 8px 16px;
@@ -320,4 +334,132 @@ section.l-sec.ig {
   .ig-badge-dot {
     animation: none;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   India explorer (components/landing/IndiaExplorer.tsx)
+   Dark glass to match the night Earth: India at night from orbit on the left, counts,
+   the selected hub and the hub list on the right. Gold marks India and the core.
+───────────────────────────────────────────────────────────────────────── */
+.igm {
+  --igm-ink: #EEF2FF;
+  --igm-soft: #98A2BD;
+  --igm-line: rgba(150, 180, 255, 0.12);
+  --igm-panel: #0A0E1C;
+  --igm-gold: #FFC870;
+  color-scheme: dark;
+  position: fixed; inset: 0; z-index: 1000;
+  display: grid; place-items: center;
+  padding: clamp(12px, 3vw, 40px);
+  background: radial-gradient(80% 70% at 50% 60%, rgba(8, 14, 34, 0.55), rgba(1, 2, 6, 0.82));
+  backdrop-filter: blur(12px) saturate(1.1); -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  animation: igmFade .28s ease both;
+  font-family: var(--font-sans);
+}
+.igm.is-closing { animation: igmFadeOut .26s ease both; }
+.igm-dialog {
+  position: relative;
+  width: min(1180px, 100%);
+  height: min(760px, calc(100dvh - 48px));
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  background: linear-gradient(180deg, #0C1122 0%, #070A14 100%);
+  border-radius: 28px;
+  border: 1px solid rgba(150, 190, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 60px 140px -30px rgba(0, 0, 0, 0.85),
+    0 0 120px -40px rgba(80, 140, 255, 0.35);
+  overflow: hidden;
+  animation: igmPop .5s cubic-bezier(.2, .9, .25, 1.12) both;
+  color: var(--igm-ink);
+}
+.igm.is-closing .igm-dialog { animation: igmPopOut .24s ease both; }
+@keyframes igmFade { from { opacity: 0; } }
+@keyframes igmFadeOut { to { opacity: 0; } }
+@keyframes igmPop { from { opacity: 0; transform: translateY(18px) scale(.94); } }
+@keyframes igmPopOut { to { opacity: 0; transform: translateY(10px) scale(.97); } }
+
+.igm-close {
+  position: absolute; z-index: 3; top: 16px; right: 16px;
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid var(--igm-line); background: rgba(255, 255, 255, 0.05);
+  color: var(--igm-ink); cursor: pointer; transition: background .2s, transform .2s;
+}
+.igm-close:hover { background: rgba(255, 255, 255, 0.1); transform: rotate(90deg); }
+.igm-close:focus-visible { outline: 2px solid var(--igm-gold); outline-offset: 2px; }
+.igm-close svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+.igm-map { position: relative; min-height: 0; background: #04060D; border-right: 1px solid var(--igm-line); }
+/* a hint of atmosphere along the top of the map */
+.igm-map::after {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 90px; pointer-events: none;
+  background: linear-gradient(180deg, rgba(90, 150, 255, 0.14), rgba(90, 150, 255, 0));
+}
+.igm-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.igm-map-cap {
+  position: absolute; z-index: 1; left: 20px; bottom: 18px;
+  font: 500 11px/1 var(--font-mono); letter-spacing: .06em; color: var(--igm-soft);
+  background: rgba(8, 11, 22, 0.8); border: 1px solid var(--igm-line); border-radius: 999px; padding: 8px 12px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+
+.igm-side {
+  min-height: 0; overflow-y: auto; padding: 40px 36px 28px; display: flex; flex-direction: column; gap: 22px;
+  overscroll-behavior: contain; scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+/* the column scrolls; its children keep their natural height instead of shrinking to fit */
+.igm-side > * { flex-shrink: 0; }
+.igm-eyebrow { font: 600 11px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--igm-gold); }
+.igm-side h2 { margin: -8px 0 0; font-size: clamp(24px, 2.4vw, 32px); line-height: 1.12; letter-spacing: -.03em; font-weight: 700; text-wrap: balance; padding-right: 36px; color: #FFFFFF; }
+
+.igm-counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--igm-line); border-radius: 16px; overflow: hidden; background: rgba(255, 255, 255, 0.02); }
+.igm-counts > div { padding: 14px 14px 12px; display: grid; gap: 6px; }
+.igm-counts > div + div { border-left: 1px solid var(--igm-line); }
+.igm-counts strong { font-size: 26px; font-weight: 700; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; color: #FFFFFF; }
+.igm-counts span { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--igm-soft); }
+.igm-counts i, .igm-tag i, .igm-list button i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); flex: none; }
+
+.igm-card {
+  position: relative; display: grid; gap: 8px; padding: 20px 22px;
+  border-radius: 18px; border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 60%),
+    rgba(255, 255, 255, 0.025);
+  animation: igmCard .35s cubic-bezier(.2, .9, .25, 1) both;
+}
+@keyframes igmCard { from { opacity: 0; transform: translateY(6px); } }
+.igm-tag { display: flex; align-items: center; gap: 7px; font: 600 10.5px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+.igm-card h3 { margin: 2px 0 0; font-size: 24px; font-weight: 700; letter-spacing: -.025em; color: #FFFFFF; }
+.igm-card p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--igm-soft); }
+.igm-card dl { margin: 6px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 12px; border-top: 1px solid var(--igm-line); }
+.igm-card dt { font: 600 10.5px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--igm-soft); }
+.igm-card dd { margin: 6px 0 0; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--igm-ink); }
+
+.igm-list { display: grid; gap: 16px; }
+.igm-list h4 { margin: 0 0 8px; font: 600 10.5px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--igm-soft); }
+.igm-list section > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.igm-list button {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: 500 13px/1 var(--font-sans); color: #E6EAF7;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid var(--igm-line); border-radius: 999px; padding: 8px 12px;
+  cursor: pointer; transition: background .2s, border-color .2s, transform .2s;
+}
+.igm-list button:hover { border-color: color-mix(in srgb, var(--c) 55%, transparent); background: rgba(255, 255, 255, 0.06); transform: translateY(-1px); }
+.igm-list button[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: #0A0D18; box-shadow: 0 0 22px -4px var(--c); }
+.igm-list button[aria-pressed="true"] i { background: #0A0D18; box-shadow: none; }
+.igm-list button:focus-visible { outline: 2px solid var(--igm-gold); outline-offset: 2px; }
+.igm-note { margin: auto 0 0; font-size: 12px; color: var(--igm-soft); }
+
+@media (max-width: 860px) {
+  .igm { padding: 0; place-items: end center; }
+  .igm-dialog { grid-template-columns: 1fr; grid-template-rows: 46% minmax(0, 1fr); height: 92dvh; border-radius: 24px 24px 0 0; }
+  .igm-map { border-right: 0; border-bottom: 1px solid var(--igm-line); }
+  .igm-side { padding: 24px 20px 24px; }
+  .igm-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .igm-counts > div:nth-child(3) { border-left: 0; }
+  .igm-counts > div:nth-child(n+3) { border-top: 1px solid var(--igm-line); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .igm, .igm-dialog, .igm-card { animation: none; }
 }

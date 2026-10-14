@@ -603,55 +603,61 @@ export function EcosystemShowcase() {
               Watch one order move from café to supplier to delivery — with every side of the ecosystem connected.
             </p>
 
-            {/* Interactive Ecosystem Flow Navigator */}
-            <div className="eco-flow-navigator" aria-label="Ecosystem order journey stages">
-              <button
-                type="button"
-                className={`eco-flow-pill ${activeVideoScreen === 'mobile' ? 'is-active is-mobile' : ''}`}
-                onClick={() => setActiveVideoScreen('mobile')}
-              >
-                <span className="eco-flow-dot eco-flow-dot-red" />
-                <span className="eco-flow-step">01</span>
-                <span className="eco-flow-label">Café Order</span>
-                {activeVideoScreen === 'mobile' && <span className="eco-flow-active-bar" />}
-              </button>
-
-              <div className="eco-flow-connector" aria-hidden="true">
-                <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                  <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              <button
-                type="button"
-                className={`eco-flow-pill ${activeVideoScreen === 'supplier' ? 'is-active is-supplier' : ''}`}
-                onClick={() => setActiveVideoScreen('supplier')}
-              >
-                <span className="eco-flow-dot eco-flow-dot-green" />
-                <span className="eco-flow-step">02</span>
-                <span className="eco-flow-label">Supplier Dispatch</span>
-                {activeVideoScreen === 'supplier' && <span className="eco-flow-active-bar" />}
-              </button>
-
-              <div className="eco-flow-connector" aria-hidden="true">
-                <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                  <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              <button
-                type="button"
-                className={`eco-flow-pill ${activeVideoScreen === 'brand' ? 'is-active is-brand' : ''}`}
-                onClick={() => setActiveVideoScreen('brand')}
-              >
-                <span className="eco-flow-dot eco-flow-dot-purple" />
-                <span className="eco-flow-step">03</span>
-                <span className="eco-flow-label">Brand Funnel</span>
-                {activeVideoScreen === 'brand' && <span className="eco-flow-active-bar" />}
-              </button>
-            </div>
           </motion.div>
         </div>
+
+        {/* Interactive ecosystem flow navigator, docked under the devices */}
+        <motion.div
+          className="eco-flow-dock"
+          style={isReduced ? { opacity: 1 } : { opacity: ecoTextOpacity }}
+        >
+          <div className="eco-flow-navigator" aria-label="Ecosystem order journey stages">
+            <button
+              type="button"
+              className={`eco-flow-pill ${activeVideoScreen === 'mobile' ? 'is-active is-mobile' : ''}`}
+              onClick={() => setActiveVideoScreen('mobile')}
+            >
+              <span className="eco-flow-dot eco-flow-dot-red" />
+              <span className="eco-flow-step">01</span>
+              <span className="eco-flow-label">Café Order</span>
+              {activeVideoScreen === 'mobile' && <span className="eco-flow-active-bar" />}
+            </button>
+
+            <div className="eco-flow-connector" aria-hidden="true">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+
+            <button
+              type="button"
+              className={`eco-flow-pill ${activeVideoScreen === 'supplier' ? 'is-active is-supplier' : ''}`}
+              onClick={() => setActiveVideoScreen('supplier')}
+            >
+              <span className="eco-flow-dot eco-flow-dot-green" />
+              <span className="eco-flow-step">02</span>
+              <span className="eco-flow-label">Supplier Dispatch</span>
+              {activeVideoScreen === 'supplier' && <span className="eco-flow-active-bar" />}
+            </button>
+
+            <div className="eco-flow-connector" aria-hidden="true">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+
+            <button
+              type="button"
+              className={`eco-flow-pill ${activeVideoScreen === 'brand' ? 'is-active is-brand' : ''}`}
+              onClick={() => setActiveVideoScreen('brand')}
+            >
+              <span className="eco-flow-dot eco-flow-dot-purple" />
+              <span className="eco-flow-step">03</span>
+              <span className="eco-flow-label">Brand Funnel</span>
+              {activeVideoScreen === 'brand' && <span className="eco-flow-active-bar" />}
+            </button>
+          </div>
+        </motion.div>
 
         {/* ─── CHAPTER 2: CAFÉ STORY FLANKING CONTENT (85-90% Neutral Cream · 10-15% Yellow Accents) ─── */}
         <motion.div
@@ -860,15 +866,6 @@ export function EcosystemShowcase() {
                 {/* Realistic Ambient Floating Drop Shadow behind phone */}
                 <div className="eco-phone-back-shadow" aria-hidden="true" />
                 <div className="eco-phone-chassis">
-                  <div className="eco-screen-ambient-glow glow-mobile" aria-hidden="true" />
-                  <ScreenBorderBeam
-                    color="#E5483B"
-                    radius={38}
-                    initialWidth={224}
-                    initialHeight={460}
-                    isActive={activeVideoScreen === 'mobile'}
-                    duration={3.4}
-                  />
                   {/* Physical Hardware Side Buttons */}
                   <div className="eco-phone-btn eco-btn-action" aria-hidden="true" />
                   <div className="eco-phone-btn eco-btn-vol-up" aria-hidden="true" />

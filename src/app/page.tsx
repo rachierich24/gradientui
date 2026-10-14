@@ -1,9 +1,4 @@
-import {
-  LNav, LLogos, LBento, LSteps,
-  LInteg, LStats, LQuotes, LPricing,
-  LProofStrip, LInlineCTA,
-} from '@/components/landing/sections'
-import { LScrollQuote } from '@/components/landing/ScrollQuote'
+import { LNav } from '@/components/landing/sections'
 import { SectionRail } from '@/components/landing/SectionRail'
 import { LandingUniverse } from '@/components/landing/LandingUniverse'
 import { EcosystemShowcase } from '@/components/landing/EcosystemShowcase'
@@ -27,16 +22,6 @@ export default function HomePage() {
       <SpotlightSection />
       <EcosystemCards />
       <Intersystem />
-      <LProofStrip />
-      <LLogos />
-      <LBento />
-      <LInlineCTA />
-      <LSteps />
-      <LInteg />
-      <LStats />
-      <LScrollQuote />
-      <LQuotes />
-      <LPricing />
       <IndiaGlobe />
       <G365Footer />
     </div>

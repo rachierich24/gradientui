@@ -7,7 +7,7 @@
   position: relative;
   width: 100%;
   padding: 100px 0 110px;
-  background-color: var(--hero-bg, #FFFCF3);
+  background-color: var(--hero-bg, #FFFFFF);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -92,9 +92,9 @@
 .eco-card {
   width: 100%;
   min-height: 575px;
-  background-color: #FAF9F5;
+  background-color: #FFFFFF;
   border-radius: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 20px -6px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
@@ -185,7 +185,7 @@
 
 .eco-preview-chrome {
   height: 28px;
-  background: #F4F3EE;
+  background: #F4F5F7;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
@@ -299,8 +299,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: #F8F7F4;
-  border: 1px solid #EFECE6;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 4px;
   padding: 2.5px 6px;
   font-size: 8px;
@@ -313,7 +313,7 @@
 }
 
 .mock-cafe-pill {
-  background: #F8F7F4;
+  background: #F1F5F9;
   border: 1px solid transparent;
   padding: 1.5px 6px;
   border-radius: 3px;
@@ -347,8 +347,8 @@
 }
 
 .mock-cafe-card {
-  background: #FAF9F6;
-  border: 1px solid #EFECE6;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -359,7 +359,7 @@
   position: relative;
   width: 100%;
   height: 64px;
-  background: #F1EFEA;
+  background: #F1F5F9;
   overflow: hidden;
 }
 
@@ -1149,7 +1149,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #FAF9F5;
+  background: #F8FAFC;
 }
 
 .eco-tab-header-strip {
