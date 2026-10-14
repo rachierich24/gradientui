@@ -7,7 +7,7 @@ const cache: Record<string, Promise<void>> = {};
 function inject(file: string) {
   return new Promise<void>((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = JS + file;
+    s.src = `${JS}${file}?t=${Date.now()}`;
     s.async = false;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error(`failed to load ${file}`));

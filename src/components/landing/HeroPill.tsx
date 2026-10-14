@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
 // Authentic Iconsax / FontAwesome styled vector SVG icons
 function IconCafe() {
@@ -77,7 +77,15 @@ export const ECOSYSTEM_SIDES: EcosystemSide[] = [
   },
 ];
 
-export function HeroPill() {
+// Unified Notion-grade spring physics for smooth moving away and coming together
+const NOTION_SPRING = {
+  type: 'spring' as const,
+  stiffness: 350,
+  damping: 28,
+  mass: 0.82,
+};
+
+export function HeroHeadline() {
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -92,53 +100,79 @@ export function HeroPill() {
   const current = ECOSYSTEM_SIDES[index];
 
   return (
-    <motion.span
-      layout
-      className={`hero-pill hero-pill--${current.id}`}
-      data-no-split="true"
-      style={{
-        backgroundColor: current.bg,
-        borderColor: current.border,
-        boxShadow: current.glow,
-      }}
-      transition={{
-        layout: { duration: 0.34, ease: [0.16, 1, 0.3, 1] },
-        backgroundColor: { duration: 0.38 },
-        borderColor: { duration: 0.38 },
-        boxShadow: { duration: 0.38 },
-      }}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onClick={() => setIndex((prev) => (prev + 1) % ECOSYSTEM_SIDES.length)}
-      title={`Click to switch ecosystem side (Currently: ${current.label})`}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          setIndex((prev) => (prev + 1) % ECOSYSTEM_SIDES.length);
-        }
-      }}
-    >
-      <span className="hero-pill-content-box">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={current.id}
-            className="hero-pill-content"
-            initial={{ y: 12, opacity: 0, filter: 'blur(3px)' }}
-            animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-            exit={{ y: -12, opacity: 0, filter: 'blur(3px)' }}
-            transition={{ duration: 0.30, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="hero-pill-icon" aria-hidden="true" style={{ color: current.textColor }}>
-              {current.icon}
-            </span>
-            <span className="hero-pill-word" style={{ color: current.textColor }}>
-              {current.label}
-            </span>
-          </motion.span>
-        </AnimatePresence>
+    <LayoutGroup id="notion-hero-headline-group">
+      <span className="hero-h1-line1">The operating system where</span>
+      <span className="hero-h1-line2">
+        <motion.span
+          layout="position"
+          className="hero-word-lead"
+          transition={NOTION_SPRING}
+        >
+          all
+        </motion.span>
+
+        <motion.span
+          layout
+          className={`hero-pill hero-pill--${current.id}`}
+          data-no-split="true"
+          style={{
+            backgroundColor: current.bg,
+            borderColor: current.border,
+            boxShadow: current.glow,
+          }}
+          transition={{
+            layout: NOTION_SPRING,
+            backgroundColor: { duration: 0.32 },
+            borderColor: { duration: 0.32 },
+            boxShadow: { duration: 0.32 },
+          }}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onClick={() => setIndex((prev) => (prev + 1) % ECOSYSTEM_SIDES.length)}
+          title={`Click to switch ecosystem side (Currently: ${current.label})`}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIndex((prev) => (prev + 1) % ECOSYSTEM_SIDES.length);
+            }
+          }}
+        >
+          <span className="hero-pill-content-box">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={current.id}
+                className="hero-pill-content"
+                initial={{ y: 15, opacity: 0, filter: 'blur(3px)' }}
+                animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                exit={{ y: -15, opacity: 0, filter: 'blur(3px)' }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <span className="hero-pill-icon" aria-hidden="true" style={{ color: current.textColor }}>
+                  {current.icon}
+                </span>
+                <span className="hero-pill-word" style={{ color: current.textColor }}>
+                  {current.label}
+                </span>
+              </motion.span>
+            </AnimatePresence>
+          </span>
+        </motion.span>
+
+        <motion.span
+          layout="position"
+          className="hero-word-trail"
+          transition={NOTION_SPRING}
+        >
+          are connected.
+        </motion.span>
       </span>
-    </motion.span>
+    </LayoutGroup>
   );
+}
+
+// Backward-compatible alias
+export function HeroPill() {
+  return <HeroHeadline />;
 }

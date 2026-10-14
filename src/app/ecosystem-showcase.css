@@ -77,25 +77,31 @@
 
 
 /* Section content container */
+/* Section content container - Centered modern header */
 .eco-container {
   position: relative;
   width: 100%;
-  max-width: 1620px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: clamp(16px, 2.5vh, 26px) clamp(24px, 4vw, 64px) 0 clamp(24px, 4vw, 64px);
+  padding: clamp(20px, 3vh, 36px) clamp(20px, 3vw, 48px) 0 clamp(20px, 3vw, 48px);
   display: flex;
   flex-direction: column;
+  align-items: center;
   z-index: 20;
   box-sizing: border-box;
   pointer-events: none;
 }
 
-/* ─── Left-aligned Text Composition ─────────────────────────────────── */
+/* ─── Centered Header Composition ─────────────────────────────────── */
 .eco-text-wrap {
   position: relative;
   width: 100%;
-  max-width: 310px;
-  margin-top: clamp(56px, 8vh, 76px);   /* clear of the fixed navbar, and narrow enough to stay left of the stream */
+  max-width: 820px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   z-index: 25;
   color: #0B0C0E;
   pointer-events: auto;
@@ -104,35 +110,60 @@
 .eco-eyebrow {
   display: inline-flex;
   align-items: center;
-  font-size: 10.5px;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(11, 12, 14, 0.62);
-  margin-bottom: 6px;
+  color: #475569;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.eco-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+  animation: ecoPulse 2s infinite ease-in-out;
 }
 
 .eco-headline {
-  font-size: clamp(20px, 1.75vw, 28px);
-  font-weight: 700;
-  line-height: 1.05;
+  font-size: clamp(26px, 2.5vw, 38px);
+  font-weight: 800;
+  line-height: 1.15;
   letter-spacing: -0.035em;
   color: #0B0C0E;
   margin: 0 0 8px 0;
   font-family: var(--font-sans);
+  text-align: center;
 }
 
-.eco-headline span {
+.eco-headline-main {
   display: block;
 }
 
+.eco-headline-highlight {
+  display: inline-block;
+  margin-left: 6px;
+  background: linear-gradient(135deg, #0F172A 30%, #64748B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .eco-body {
-  font-size: clamp(12.5px, 0.9vw, 14.5px);
-  line-height: 1.4;
-  color: rgba(11, 12, 14, 0.68);
-  margin: 0 0 16px 0;
-  max-width: 300px;
-  font-weight: 400;
+  font-size: clamp(13.5px, 1.0vw, 15px);
+  line-height: 1.5;
+  color: rgba(15, 23, 42, 0.65);
+  margin: 0 auto;
+  max-width: 640px;
+  font-weight: 450;
+  text-align: center;
 }
 
 .eco-cta-btn {
@@ -186,8 +217,8 @@
   perspective: 1800px;
   perspective-origin: 50% 50%;
   transform-style: preserve-3d;
-  padding-top: clamp(65px, 9vh, 95px);
-  padding-bottom: clamp(16px, 2.5vh, 28px);
+  padding-top: clamp(105px, 16vh, 155px);
+  padding-bottom: clamp(55px, 8vh, 75px);
   box-sizing: border-box;
 }
 
@@ -198,9 +229,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(20px, 2.5vw, 42px);
+  gap: clamp(16px, 2.4vw, 38px);
   padding: 0 16px;
-  margin-top: 14px;
+  margin-top: 10px;
   pointer-events: auto;
   transform-style: preserve-3d;
   box-sizing: border-box;
@@ -665,19 +696,25 @@
 /* ─── SIDE DASHBOARDS POSITIONING (Supplier Left · Brand Right) ─────── */
 .eco-screen-supplier {
   position: relative;
-  width: 490px;
-  max-width: 490px;
+  width: clamp(380px, 31vw, 470px);
+  max-width: 470px;
   aspect-ratio: 16 / 9;
   height: auto;
-  min-height: 275px;
+  min-height: 250px;
   flex-shrink: 0;
   left: auto;
   bottom: 0;
   z-index: 10;
   transform-origin: center right;
-  transform: perspective(1000px) rotateY(12deg);
+  transform: perspective(1200px) rotateY(10deg);
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.3s ease;
+}
+
+.eco-screen-supplier.is-video-active {
+  transform: perspective(1200px) rotateY(0deg) scale(1.03);
+  z-index: 35 !important;
 }
 
 .eco-window-supplier-active {
@@ -704,19 +741,25 @@
 
 .eco-screen-brand {
   position: relative;
-  width: 490px;
-  max-width: 490px;
+  width: clamp(380px, 31vw, 470px);
+  max-width: 470px;
   aspect-ratio: 16 / 9;
   height: auto;
-  min-height: 275px;
+  min-height: 250px;
   flex-shrink: 0;
   right: auto;
   bottom: 0;
   z-index: 10;
   transform-origin: center left;
-  transform: perspective(1000px) rotateY(-12deg);
+  transform: perspective(1200px) rotateY(-10deg);
   transform-style: preserve-3d;
   backface-visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.3s ease;
+}
+
+.eco-screen-brand.is-video-active {
+  transform: perspective(1200px) rotateY(0deg) scale(1.03);
+  z-index: 35 !important;
 }
 
 .eco-window-brand-active {
@@ -3121,7 +3164,7 @@
 .eco-flow-dock {
   position: absolute;
   left: 50%;
-  bottom: clamp(14px, 3.5vh, 36px);
+  bottom: clamp(16px, 3.2vh, 32px);
   transform: translateX(-50%);
   z-index: 30;
   pointer-events: auto;
@@ -3129,13 +3172,16 @@
 .eco-flow-dock .eco-flow-navigator {
   margin-top: 0;
   flex-wrap: nowrap;
-  padding: 5px;
+  padding: 6px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.3);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 @media (max-width: 860px) {
   .eco-flow-dock { position: relative; left: auto; bottom: auto; transform: none; display: flex; justify-content: center; margin-top: 16px; }

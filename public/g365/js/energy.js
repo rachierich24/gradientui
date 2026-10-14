@@ -40,8 +40,7 @@
     W = r.width; H = r.height - top; dpr = Math.min(window.devicePixelRatio || 1, 2);
     const stacked = matchMedia("(max-width: 860px)").matches;
     const rects = SIDES.map((s) => (s.target ? s.target.getBoundingClientRect() : null));
-    landing = !stacked && rects.every((b) => b && b.width > 0 && b.top - r.bottom < 900);
-    if (landing) H = Math.max(H, Math.max(...rects.map((b) => b.top - r.top - top)) + 260);
+    landing = false;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     canvas.style.width = W + "px"; canvas.style.height = H + "px"; canvas.style.top = top + "px";
     cx = W / 2;
@@ -52,27 +51,18 @@
     draw(lastT);
   }
 
-  // the devices move (hover, scroll-pinning), so the flare is re-fitted to them every frame
+  // the stream softly dissolves at the base of the hero stage without intruding on the ecosystem section
   function track() {
-    const cr = canvas.getBoundingClientRect();
-    SIDES.forEach((s) => {
-      if (landing && s.target) {
-        const b = s.target.getBoundingClientRect();
-        s.ex = b.left - cr.left + b.width * s.at; s.ey = b.top - cr.top;
-      } else { s.ex = W * s.slot; s.ey = H; }
-    });
-    yEnd = Math.max(y0 + 160, Math.min(...SIDES.map((s) => s.ey)) - 28);   // leave room for the lines down to the devices
-    spread = Math.min(W * 0.46, Math.max(160, (SIDES[2].ex - SIDES[0].ex) / 2 + 60));
-    const pinned = landing && eco ? Math.max(0, -eco.getBoundingClientRect().top) : 0;
-    fade = 1 - smooth(0, 180, pinned);
+    yEnd = y0 + 75;
+    spread = 0;
+    const pinned = eco ? Math.max(0, -eco.getBoundingClientRect().top) : 0;
+    fade = 1 - smooth(0, 140, pinned);
   }
 
-  // half-width of the stream at a height: a thin line, then a bell whose sides curve out ever faster
+  // half-width of the stream: a clean, elegant vertical laser beam
   function hwAt(y) {
     const lead = smooth(yO, yO + 36, y);                     // the line eases out of the gap
-    if (y <= y0) return STEM * (0.3 + 0.7 * lead);
-    const t = Math.min(1, (y - y0) / (yEnd - y0));
-    return STEM + spread * Math.pow(t, 2.4);
+    return STEM * (0.3 + 0.7 * lead);
   }
 
   /* ---------- state that shapes the drawing ---------- */
@@ -98,62 +88,45 @@
     for (let i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
     ctx.closePath();
 
-    // body: black in the line and through the flare, solid to its edge so the lines below read as part of it
-    const span = yEnd - yO;
+    // body: elegant dark stream that softly dissolves before the next section
+    const span = Math.max(1, yEnd - yO);
     const body = ctx.createLinearGradient(0, yO, 0, yEnd);
     body.addColorStop(0, "rgba(10,10,10,0.0)");
     body.addColorStop(Math.min(0.99, 40 / span), "rgba(10,10,10,0.95)");
     body.addColorStop(Math.max(0.05, (y0 - yO) / span), "rgba(14,14,14,0.95)");
-    body.addColorStop(0.78, "rgba(20,20,20,0.9)");
-    body.addColorStop(1, "rgba(24,24,24,0.92)");
+    body.addColorStop(0.75, "rgba(20,20,20,0.4)");
+    body.addColorStop(1, "rgba(24,24,24,0.0)");
     ctx.save();
-    ctx.shadowColor = "rgba(0,0,0,0.25)"; ctx.shadowBlur = 22;
+    ctx.shadowColor = "rgba(0,0,0,0.15)"; ctx.shadowBlur = 10;
     ctx.fillStyle = body; ctx.fill();
     ctx.restore();
 
     // everything below paints only inside the stream
     ctx.globalCompositeOperation = "source-atop";
     // a soft lit centre, like a rounded surface catching light
-    const sheenW = Math.max(40, spread);
+    const sheenW = 12;
     const gloss = ctx.createLinearGradient(cx - sheenW, 0, cx + sheenW, 0);
     gloss.addColorStop(0, "rgba(255,255,255,0)");
     gloss.addColorStop(0.5, `rgba(255,255,255,${(0.14 + 0.08 * boost).toFixed(3)})`);
     gloss.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = gloss; ctx.fillRect(cx - sheenW, yO, sheenW * 2, yEnd - yO);
-    // a darker rim, so the edges read crisp against the white page
-    const rim = ctx.createLinearGradient(cx - spread - STEM, 0, cx + spread + STEM, 0);
-    rim.addColorStop(0, "rgba(0,0,0,0.35)"); rim.addColorStop(0.12, "rgba(0,0,0,0)");
-    rim.addColorStop(0.88, "rgba(0,0,0,0)"); rim.addColorStop(1, "rgba(0,0,0,0.35)");
-    ctx.fillStyle = rim; ctx.fillRect(0, y0, W, yEnd - y0);
 
     // bands of light flowing down
-    const BANDS = 3, period = span + 160;
+    const BANDS = 3, period = span + 80;
     for (let i = 0; i < BANDS; i++) {
-      const yb = yO - 80 + ((Tn * 150 + (i * period) / BANDS) % period);
-      const g = ctx.createLinearGradient(0, yb - 70, 0, yb + 70);
+      const yb = yO - 40 + ((Tn * 150 + (i * period) / BANDS) % period);
+      const g = ctx.createLinearGradient(0, yb - 30, 0, yb + 30);
       g.addColorStop(0, "rgba(255,255,255,0)");
       g.addColorStop(0.5, `rgba(255,255,255,${(0.16 + 0.1 * boost).toFixed(3)})`);
       g.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.fillStyle = g; ctx.fillRect(0, yb - 70, W, 140);
+      ctx.fillStyle = g; ctx.fillRect(cx - 10, yb - 30, 20, 60);
     }
 
-    // pulses: a bright glint down the line that drifts toward its device inside the flare
-    for (const p of pulses) {
-      const s = SIDES.find((q) => q.key === p.side);
-      const y = yO + (s.ey - yO) * p.t;
-      if (y > yDraw || y > yEnd || p.t < 0) continue;
-      const f = y <= y0 ? 0 : Math.pow((y - y0) / (yEnd - y0), 1.4);
-      const x = cx + (s.ex - cx) * f;
-      const R = 26 + 70 * f;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, R);
-      g.addColorStop(0, "rgba(255,255,255,0.6)"); g.addColorStop(0.4, "rgba(220,220,220,0.28)"); g.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.fillStyle = g; ctx.fillRect(x - R, y - R, R * 2, R * 2);
-    }
     ctx.globalCompositeOperation = "source-over";
 
-    // the lines down to the devices, each ending in a small node where it touches down
+    // lines to devices only if landing is active
     const legs = smooth(0.92, 1, bootR);
-    if (legs > 0) {
+    if (landing && legs > 0) {
       ctx.globalAlpha = fade * legs;
       ctx.lineCap = "round";
       for (const s of SIDES) {

@@ -5,7 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
 import { loadG365, G365_LIBS } from './g365-scripts';
-import { HeroPill } from './HeroPill';
+import { HeroHeadline } from './HeroPill';
 
 // Runs inline during HTML parse, before first paint, so the hero starts blank and
 // switches itself on. A failsafe reveals everything after 5s regardless.
@@ -27,8 +27,7 @@ export function G365Hero() {
       <script dangerouslySetInnerHTML={{ __html: BOOT }} />
       <header className="hero">
         <h1>
-          The operating system from which<br className="hero-br" />
-          all <HeroPill /> are connected.
+          <HeroHeadline />
         </h1>
         <p className="hero-sub">
           Unifying procurement, catalog inventory, and daily supply chains into one connected network.

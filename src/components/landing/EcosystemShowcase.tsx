@@ -593,14 +593,16 @@ export function EcosystemShowcase() {
                 : { opacity: ecoTextOpacity, y: ecoTextY }
             }
           >
-            <div className="eco-eyebrow">ONE CONNECTED ECOSYSTEM</div>
+            <div className="eco-eyebrow">
+              <span className="eco-eyebrow-dot" aria-hidden="true" />
+              <span>ONE CONNECTED ECOSYSTEM</span>
+            </div>
             <h2 className="eco-headline">
-              <span>How your café</span>
-              <span>sources, orders &amp; tracks.</span>
-              <span>In real time.</span>
+              <span className="eco-headline-main">How your café sources, orders &amp; tracks.</span>
+              <span className="eco-headline-highlight">In real time.</span>
             </h2>
             <p className="eco-body">
-              Watch one order move from café to supplier to delivery — with every side of the ecosystem connected.
+              Watch one order move seamlessly from café to supplier to delivery — with every side of the ecosystem connected in real time.
             </p>
 
           </motion.div>
