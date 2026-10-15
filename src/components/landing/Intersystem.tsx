@@ -1,7 +1,7 @@
 'use client';
 // The Gradient intersystem — a system diagram in the manner of Stripe's. Café systems feed Gradient's
 // products, which route through one core chip out to suppliers, brands and fulfilment. Dotted connectors
-// carry comets of light in the order a real order moves; tray slots and tiles quietly come and go.
+// carry comets of light in the order a real order moves; supplier and brand tiles quietly come and go.
 // Monochrome at rest: hovering a side (or the core) brings its colour in and quiets the rest.
 // Everything is drawn on one fixed 1120×576 canvas and scaled to fit, so lines and boxes always meet.
 // Styles: app/intersystem.css
@@ -30,10 +30,10 @@ const ICON: Record<string, { label: string; d: ReactNode }> = {
 /* ---------- the diagram, in canvas coordinates ---------- */
 // connectors, each written in the direction the work flows; `delay` places its comet in the 6.4s story
 const PATHS: { d: string; side: Side; delay: number; ghost?: boolean }[] = [
-  { d: 'M434 72V122', side: 'cafe', delay: 0 },
-  { d: 'M434 160V214Q434 226 446 226H524Q536 226 536 238V248', side: 'cafe', delay: 0.9 },
-  { d: 'M686 72V122', side: 'cafe', delay: 0.45 },
-  { d: 'M686 160V214Q686 226 674 226H596Q584 226 584 238V248', side: 'cafe', delay: 1.35 },
+  { d: 'M473 72V122', side: 'cafe', delay: 0 },
+  { d: 'M473 160V214Q473 226 485 226H524Q536 226 536 238V248', side: 'cafe', delay: 0.9 },
+  { d: 'M684 72V122', side: 'cafe', delay: 0.45 },
+  { d: 'M684 160V214Q684 226 672 226H596Q584 226 584 238V248', side: 'cafe', delay: 1.35 },
   { d: 'M492 340H426', side: 'supply', delay: 2.3 },
   { d: 'M274 340H232', side: 'supply', delay: 3.2 },
   { d: 'M560 384V434', side: 'supply', delay: 2.3 },
@@ -53,7 +53,7 @@ const PILLS: { t: string; side: Side; left: number; top: number; w: number }[] =
   { t: 'Fulfilment', side: 'supply', left: 498, top: 434, w: 124 },
 ];
 
-const TRAY_W = [84, 124, 116, 124, 84];
+const TRAY_W = [118, 122, 84, 108, 88];
 const ENDS: { t: string | null; left: number; w: number }[] = [
   { t: null, left: 340, w: 96 },
   { t: 'Dispatch', left: 452, w: 104 },
@@ -98,7 +98,7 @@ export function Intersystem() {
   const linesRef = useRef<SVGSVGElement>(null);
   const [s, setS] = useState(1);
   const [hover, setHover] = useState<Hover>(null);
-  const [tray, setTray] = useState<(string | null)[]>([null, 'Order-ahead', 'Menu', 'Stock room', null]);
+  const tray = ['Pre-Ordering', 'Self Ordering', 'Billing', 'Inventory', 'Loyalty'];
   const [sup, setSup] = useState<(string | null)[]>([null, 'beans', 'milk', null, 'cups', 'syrup']);
   const [brd, setBrd] = useState<(string | null)[]>(['chart', 'pin', null, 'tag', 'megaphone', null]);
 
@@ -126,21 +126,17 @@ export function Intersystem() {
     });
   }, []);
 
-  // slots and tiles come and go, a little at a time
+  // supplier and brand tiles come and go, a little at a time (the café tray is fixed)
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const MID = ['Menu', 'Loyalty', 'Pickup', 'Kitchen', 'Table QR', 'Reorders'];
-    const END = ['Prep', 'Waste', 'Shifts', 'Tabs'];
     const SUP = ['beans', 'milk', 'cups', 'syrup', 'box', 'leaf'];
     const BRD = ['chart', 'pin', 'tag', 'megaphone', 'target', 'users'];
     const pick = <T,>(a: T[]) => a[(Math.random() * a.length) | 0];
     let n = 0;
     const iv = setInterval(() => {
-      const k = n++ % 4;
-      if (k === 0) setTray((t) => { const u = t.slice(); u[2] = pick(MID.filter((x) => x !== t[2])); return u; });
-      if (k === 1) setSup((t) => { const u = t.slice(); u[pick([1, 2, 4, 5])] = pick(SUP.filter((x) => !t.includes(x))); return u; });
-      if (k === 2) setTray((t) => { const u = t.slice(); const i = Math.random() < 0.5 ? 0 : 4; u[i] = u[i] ? null : pick(END.filter((x) => !t.includes(x))); return u; });
-      if (k === 3) setBrd((t) => { const u = t.slice(); u[pick([0, 1, 3, 4])] = pick(BRD.filter((x) => !t.includes(x))); return u; });
+      const k = n++ % 2;
+      if (k === 0) setSup((t) => { const u = t.slice(); u[pick([1, 2, 4, 5])] = pick(SUP.filter((x) => !t.includes(x))); return u; });
+      if (k === 1) setBrd((t) => { const u = t.slice(); u[pick([0, 1, 3, 4])] = pick(BRD.filter((x) => !t.includes(x))); return u; });
     }, 1700);
     return () => clearInterval(iv);
   }, []);
@@ -180,7 +176,7 @@ export function Intersystem() {
           <span className="isx-label" data-side="supply" style={{ left: 20, top: 245 }}>SUPPLIERS</span>
           <span className="isx-label" data-side="brand" style={{ left: 888, top: 245 }}>BRANDS</span>
 
-          <div className="isx-tray" data-side="cafe" data-hit="cafe" style={{ left: 274, top: 24 }}>
+          <div className="isx-tray" data-side="cafe" data-hit="cafe" style={{ left: 280, top: 24 }}>
             {tray.map((t, i) => (
               <div key={i} className={`isx-slot${t ? '' : ' is-ghost'}`} style={{ width: TRAY_W[i] }}>
                 {t && <span key={t}>{t}</span>}

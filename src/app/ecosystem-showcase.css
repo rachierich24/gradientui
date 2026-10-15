@@ -3186,3 +3186,13 @@
 @media (max-width: 860px) {
   .eco-flow-dock { position: relative; left: auto; bottom: auto; transform: none; display: flex; justify-content: center; margin-top: 16px; }
 }
+
+/* ─── devices on top, heading below them ─────────────────────────────
+   The hero's orders drop straight down into the devices, so nothing sits in their path; the
+   heading reads underneath, between the devices and the flow navigator. */
+@media (min-width: 861px) {
+  .eco-stage-viewport { align-items: flex-start; padding-top: clamp(96px, 12vh, 118px); box-sizing: border-box; }
+  .eco-screens-group { margin-top: 0; }
+  .eco-sticky-stage > .eco-container { position: absolute; left: 0; right: 0; top: auto; bottom: clamp(72px, 10vh, 100px); padding-top: 0; }
+  .eco-text-wrap .eco-headline { margin-bottom: 6px; }
+}

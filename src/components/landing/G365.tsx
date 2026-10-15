@@ -43,9 +43,15 @@ export function G365Hero() {
       <section className="stage" id="stage" aria-label="Scattered café supply becoming organised orders on Gradient 365">
         <div className="rows" id="rows"></div>
         <canvas id="riders" aria-hidden="true"></canvas>
-        {/* the ribbons reach past the stage and land on the phone and dashboards in the ecosystem section */}
-        <canvas className="energy" id="energy" aria-hidden="true"></canvas>
-        <div className="core" id="core" aria-hidden="true"></div>
+        {/* the core: each row lights its segment of the mark as a card passes through (energy.js) */}
+        <div className="core" id="core" aria-hidden="true">
+          <svg className="core-mark" viewBox="0 0 28 28">
+            <path className="arc is-cafe" d="M 7.68 8.31 A 8.5 8.5 0 0 1 20.32 8.31" />
+            <path className="arc is-brand" d="M 22.08 11.37 A 8.5 8.5 0 0 1 15.77 22.31" />
+            <path className="arc is-supply" d="M 12.23 22.31 A 8.5 8.5 0 0 1 5.92 11.37" />
+            <circle cx="14" cy="14" r="2.6" />
+          </svg>
+        </div>
       </section>
 
     </div>

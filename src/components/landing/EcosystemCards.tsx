@@ -505,6 +505,7 @@ const CARDS = [
     theme: 'cafe',
     color: '#E03527',
     desc: 'Run your café from sourcing to delivery.',
+    headline: 'Run your café from sourcing to delivery',
     expandedTitle: 'Everything your café needs to run smoothly.',
     expandedDesc:
       'Discover verified roasters and suppliers, order specialty beans and dairy, track real-time dispatches, and optimize procurement from a single dashboard.',
@@ -528,6 +529,7 @@ const CARDS = [
     theme: 'supplier',
     color: '#22C55E',
     desc: 'Receive wholesale orders and manage dispatch.',
+    headline: 'Receive wholesale orders and run dispatch',
     expandedTitle: 'Fulfill wholesale demand without paperwork chaos.',
     expandedDesc:
       'Receive inbound café purchase orders instantly, streamline fulfillment queues, route local delivery fleets, and guarantee 99%+ on-time SLAs.',
@@ -551,6 +553,7 @@ const CARDS = [
     theme: 'brand',
     color: '#6D28D9',
     desc: 'Understand café adoption and distribution.',
+    headline: 'See where café demand is growing',
     expandedTitle: 'See exactly where café demand is growing.',
     expandedDesc:
       'Gain real-time visibility into HORECA product adoption, monitor repeat reorder velocity across independent cafés, and track regional SKU market share.',
@@ -713,15 +716,19 @@ export function EcosystemCards() {
                   }}
                 >
                   <div className="eco-card-inner">
-                    {/* Top Tab Header */}
-                    <div className="eco-card-tab">
-                      <div className="eco-card-tab-label">
-                        <span className="eco-card-tab-idx">{card.index}</span> {card.title}
-                      </div>
-                      <div className={`eco-card-tab-line ${card.theme}-line`} />
+                    <div className="eco-bento-head">
+                      <span className="eco-bento-label"><i />{card.index} · {card.title}</span>
+                      <h3 className="eco-bento-title">{card.headline}</h3>
+                      <button
+                        type="button"
+                        className="eco-bento-expand"
+                        onClick={(e) => openCard(card.id, e)}
+                        aria-label={`Expand ${card.title} platform`}
+                      >
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" /></svg>
+                      </button>
                     </div>
 
-                    {/* Rich Mini UI Mockup */}
                     <div
                       className="eco-preview-container"
                       onClick={(e) => {
@@ -730,44 +737,19 @@ export function EcosystemCards() {
                       }}
                     >
                       {card.miniPreview(() => openCard(card.id))}
-
-                      {/* Floating tactile hover badge indicating tab expansion */}
-                      <div className="eco-card-hover-pill">
-                        <span className="eco-hover-icon">↗</span> Click to Expand Tab
-                      </div>
                     </div>
 
-                    {/* Bottom Metadata & Working Direct Platform Link */}
-                    <div className="eco-card-bottom">
-                      <h3 className="eco-card-title">{card.title}</h3>
-                      <p className="eco-card-desc">{card.desc}</p>
-
-                      <div className="eco-card-actions">
-                        {/* Direct link to that specific live platform website */}
-                        <a
-                          href={card.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`eco-card-cta ${card.theme}-cta`}
-                          onClick={(e) => e.stopPropagation()}
-                          title={`Go directly to ${card.title} platform website (${card.link})`}
-                        >
-                          {card.visitLabel || `VISIT ${card.title} PLATFORM`} <span className="arrow">↗</span>
-                        </a>
-
-                        {/* Secondary click badge to expand tab */}
-                        <button
-                          type="button"
-                          className="eco-card-preview-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openCard(card.id, e);
-                          }}
-                          title="Expand interactive tab"
-                        >
-                          <span>Expand Tab ↗</span>
-                        </button>
-                      </div>
+                    <div className="eco-bento-foot">
+                      <span className="eco-bento-domain">{card.link.replace('https://', '')}</span>
+                      <a
+                        href={card.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="eco-bento-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Visit platform <span aria-hidden="true">↗</span>
+                      </a>
                     </div>
                   </div>
                 </div>

@@ -54,7 +54,6 @@
 @keyframes g365Blip { from { opacity: .6; transform: scale(1); } to { opacity: 0; transform: scale(1.18); } }
 
 /* ═════════════════════════════ HERO ═════════════════════════════ */
-/* above the ecosystem section (z-index 10) so the ribbons can reach down onto its devices */
 .g365-hero { z-index: 11; isolation: isolate; overflow-x: clip; }
 .g365-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--grad-wash); pointer-events: none; }
 
@@ -417,8 +416,9 @@
 .g365-hero .metric span { font-size: 10px; color: var(--ink-soft); white-space: nowrap; }
 .g365-hero .metric em { font-style: normal; margin-left: 4px; font-family: var(--mono); font-size: 9px; color: var(--teal-ink); }
 
-/* a blank frosted tile on the line — reserved for what will sit here */
+/* the core: a frosted tile carrying the Gradient mark */
 .g365-hero .core { position: absolute; left: 50%; top: var(--cy, 220px); width: 88px; height: 88px; transform: translate(-50%, -50%); z-index: 4; border-radius: 25px;
+  display: grid; place-items: center;
   background: linear-gradient(160deg, rgba(255,255,255,.78), rgba(255,255,255,.5));
   -webkit-backdrop-filter: blur(12px) saturate(1.25); backdrop-filter: blur(12px) saturate(1.25);
   border: 1px solid rgba(0,0,0,.1);
@@ -426,10 +426,45 @@
 .g365-hero .core::after { content: ""; position: absolute; inset: -4px; border-radius: 29px; border: 1px solid rgba(0,0,0,.25); opacity: 0; }
 .g365-hero .core.blip::after { animation: g365Blip .9s ease-out; }
 
-/* three energies leave the core, twist once, and land on their cards */
-.g365-hero .energy { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+/* each row lights its own segment of the mark as a card passes through the core */
+.g365-hero .core-mark { width: 40px; height: 40px; overflow: visible; }
+.g365-hero .core-mark .arc { fill: none; stroke: #0A0A0A; stroke-width: 2.4; stroke-linecap: round; transition: stroke .6s ease, filter .6s ease; }
+.g365-hero .core-mark circle { fill: #0A0A0A; }
+.g365-hero .stage:hover .core.lit-cafe .arc.is-cafe { stroke: #E5483B; filter: drop-shadow(0 0 3px rgba(229,72,59,.55)); transition-duration: .1s; }
+.g365-hero .stage:hover .core.lit-supply .arc.is-supply { stroke: #16A34A; filter: drop-shadow(0 0 3px rgba(22,163,74,.55)); transition-duration: .1s; }
+.g365-hero .stage:hover .core.lit-brand .arc.is-brand { stroke: #7C4DDB; filter: drop-shadow(0 0 3px rgba(124,77,219,.55)); transition-duration: .1s; }
 
-/* a ribbon landing on a device in the ecosystem section: a ring in the ribbon's colour ripples off it
+/* one order, delivered to every side: chips that leave the core and land on the ecosystem's devices */
+.g365-deliveries { position: fixed; inset: 0; z-index: 40; pointer-events: none; }
+.g365-chip {
+  --lift: 0;
+  position: absolute; left: 0; top: 0;
+  display: flex; align-items: center; gap: 12px;
+  width: 256px; padding: 10px 14px 10px 10px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 calc(14px + 14px * var(--lift)) calc(30px + 22px * var(--lift)) -16px rgba(0, 0, 0, calc(0.22 + 0.12 * var(--lift)));
+  font-family: "Geist", ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.g365-chip::before { content: ""; position: absolute; left: 14px; right: 14px; top: -1px; height: 2px; border-radius: 0 0 2px 2px; background: var(--c); opacity: .85; }
+.g365-chip .ph { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #F3F4F6; overflow: hidden; }
+.g365-chip .ph img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); opacity: 0; transition: opacity .4s; }
+.g365-chip .ph img.ready { opacity: 1; }
+.g365-chip .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.g365-chip b { display: flex; align-items: center; gap: 5px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 9.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #8A8E95; white-space: nowrap; }
+.g365-chip b i { width: 5px; height: 5px; border-radius: 50%; background: var(--c); }
+.g365-chip strong { font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; color: #0A0A0A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g365-chip small { font-size: 11.5px; color: #6B6F76; white-space: nowrap; }
+.g365-chip em { align-self: flex-start; margin-top: 2px; flex: none; font-style: normal; font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; font-weight: 500; color: #0A0A0A; padding: 3px 6px; border-radius: 6px; background: #F3F4F6; }
+
+/* an order landing on a device in the ecosystem section: a ring in its side's colour ripples off it
    (outline follows the device's corner radius, so it doesn't fight its own shadows) */
 @keyframes g365Hit { from { outline-color: color-mix(in srgb, var(--g365-e) 70%, transparent); outline-offset: 2px; } to { outline-color: transparent; outline-offset: 16px; } }
 .g365-hit { outline: 2px solid transparent; animation: g365Hit .85s ease-out; }
@@ -466,3 +501,12 @@
 .g365-footer .ft-note a:hover { text-decoration: underline; }
 .g365-footer a:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
 @media (max-width: 640px) { .g365-footer .ft-side { align-items: flex-start; } }
+
+/* colour only on hover: the hero is black and white at rest; a card shows its colour while pointed at,
+   and the core's mark lights in colour only while the pointer is over the stage (grey blink otherwise) */
+/* only the accents go grey at rest (stripe, border, tint, growth figure); product images keep their colour */
+.g365-hero .card .face.full.s-cafe, .g365-hero .card .face.full.s-supply, .g365-hero .card .face.full.s-brand { --rc: #B4B8BE; }
+.g365-hero .card:hover .face.full.s-cafe { --rc: var(--e-cafe); }
+.g365-hero .card:hover .face.full.s-supply { --rc: var(--e-supply); }
+.g365-hero .card:hover .face.full.s-brand { --rc: var(--e-brand); }
+.g365-hero .core.lit-cafe .arc.is-cafe, .g365-hero .core.lit-supply .arc.is-supply, .g365-hero .core.lit-brand .arc.is-brand { stroke: #A3A7AE; transition-duration: .1s; }
