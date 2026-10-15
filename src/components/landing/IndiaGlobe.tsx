@@ -87,8 +87,8 @@ export function IndiaGlobe() {
               </div>
               <div className="ig-metric-div" />
               <div className="ig-metric-chip">
-                <span className="ig-metric-val">T+7</span>
-                <span className="ig-metric-lbl">Settlement SLA</span>
+                <span className="ig-metric-val">T+1</span>
+                <span className="ig-metric-lbl">Bank Payout</span>
               </div>
               <div className="ig-metric-div" />
               <div className="ig-metric-chip">

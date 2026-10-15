@@ -553,7 +553,7 @@ export function EcosystemShowcase() {
       className="eco-track"
       ref={trackRef}
       id="ecosystem"
-      aria-label="Grabbit Ecosystem and Café Workflow"
+      aria-label="Gradient Ecosystem and Café Workflow"
     >
       {/* Anchor for direct navigation to Café story */}
       <div id="for-cafes" className="eco-cafe-anchor" aria-hidden="true" />
@@ -806,7 +806,7 @@ export function EcosystemShowcase() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    <span>supplier.grabbit.io/live-orders</span>
+                    <span>app.gradient365.com/supplier</span>
                     <span className="eco-url-ping ping-supplier" />
                   </div>
                   <div className="eco-window-role-badge badge-supplier">
@@ -987,7 +987,7 @@ export function EcosystemShowcase() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    <span>brand.grabbit.io/campaigns/trials-funnel</span>
+                    <span>app.gradient365.com/brand</span>
                     <span className="eco-url-ping ping-brand" />
                   </div>
                   <div className="eco-window-role-badge badge-brand">

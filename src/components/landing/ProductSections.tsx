@@ -453,6 +453,9 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
   const [products, setProducts] = useState<SupplierProduct[]>(INITIAL_SUPPLIER_PRODUCTS);
   const [selectedProduct, setSelectedProduct] = useState<SupplierProduct>(INITIAL_SUPPLIER_PRODUCTS[0]);
   const [whatsappPOs, setWhatsappPOs] = useState<WhatsAppPO[]>(INITIAL_WHATSAPP_POS);
+  useEffect(() => {
+    if (mainScrollRef.current) mainScrollRef.current.scrollTop = 0;
+  }, []);
   const [selectedVan, setSelectedVan] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -462,28 +465,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Contained wheel scrolling: allows mouse wheel over dashboard to smoothly scroll the inner container without scrolling the landing page
-  useEffect(() => {
-    const el = mainScrollRef.current;
-    if (!el) return;
 
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-      const { scrollTop, scrollHeight, clientHeight } = el;
-      const canScrollDown = e.deltaY > 0 && scrollTop + clientHeight < scrollHeight - 1;
-      const canScrollUp = e.deltaY < 0 && scrollTop > 1;
-
-      if (canScrollDown || canScrollUp) {
-        e.preventDefault();
-        e.stopPropagation();
-        el.scrollTop += e.deltaY;
-        setHasScrolled(true);
-      }
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
 
   // Handle Escape key
   useEffect(() => {
@@ -720,6 +702,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                 <main
                   ref={mainScrollRef}
                   className="dashboard-main"
+                  data-lenis-prevent
                   tabIndex={0}
                   aria-label="Supplier operational workspace"
                 >
@@ -826,7 +809,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                       </div>
 
                       <div className="simple-order-list">
-                        {whatsappPOs.slice(0, 4).map((po) => (
+                        {whatsappPOs.slice(0, 2).map((po) => (
                           <div
                             key={po.id}
                             className="simple-order-card"
@@ -940,7 +923,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
             <div className="feature-list">
               <div
                 className={`feature-item ${activeFeature === 0 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(0); scrollToAnchor('sup-catalog-table', 'catalog'); }}
+                onClick={() => { setActiveFeature(0); showToast('Roast par schedule synced: 180kg scheduled'); }}
                 onMouseEnter={() => setActiveFeature(0)}
                 role="button"
                 tabIndex={0}
@@ -962,7 +945,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
 
               <div
                 className={`feature-item ${activeFeature === 1 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(1); scrollToAnchor('sup-whatsapp-section', 'whatsapp'); }}
+                onClick={() => { setActiveFeature(1); handleSimulateWhatsAppPO(); }}
                 onMouseEnter={() => setActiveFeature(1)}
                 role="button"
                 tabIndex={0}
@@ -984,7 +967,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
 
               <div
                 className={`feature-item ${activeFeature === 2 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(2); scrollToAnchor('sup-route-section', 'routes'); }}
+                onClick={() => { setActiveFeature(2); showToast('Morning van routes dispatched: 34 café deliveries'); }}
                 onMouseEnter={() => setActiveFeature(2)}
                 role="button"
                 tabIndex={0}
@@ -1209,6 +1192,9 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
   const [activeTab, setActiveTab] = useState<'campaigns' | 'telemetry' | 'funnel' | 'share'>('campaigns');
   const [selectedMetro, setSelectedMetro] = useState<'All' | 'Bangalore' | 'Mumbai' | 'Delhi-NCR'>('All');
   const [campaigns, setCampaigns] = useState<BrandCampaign[]>(INITIAL_BRAND_CAMPAIGNS);
+  useEffect(() => {
+    if (mainScrollRef.current) mainScrollRef.current.scrollTop = 0;
+  }, []);
   const [selectedCampaign, setSelectedCampaign] = useState<BrandCampaign>(INITIAL_BRAND_CAMPAIGNS[0]);
   const [baristaReviews, setBaristaReviews] = useState<BaristaReview[]>(INITIAL_BARISTA_REVIEWS);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -1219,28 +1205,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Contained wheel scrolling: allows mouse wheel over dashboard to smoothly scroll the inner container without scrolling the landing page
-  useEffect(() => {
-    const el = mainScrollRef.current;
-    if (!el) return;
 
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-      const { scrollTop, scrollHeight, clientHeight } = el;
-      const canScrollDown = e.deltaY > 0 && scrollTop + clientHeight < scrollHeight - 1;
-      const canScrollUp = e.deltaY < 0 && scrollTop > 1;
-
-      if (canScrollDown || canScrollUp) {
-        e.preventDefault();
-        e.stopPropagation();
-        el.scrollTop += e.deltaY;
-        setHasScrolled(true);
-      }
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
 
   // Handle Escape key
   useEffect(() => {
@@ -1335,7 +1300,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
             <div className="feature-list">
               <div
                 className={`feature-item ${activeFeature === 0 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(0); scrollToAnchor('brand-campaigns-table', 'campaigns'); }}
+                onClick={() => { setActiveFeature(0); showToast('Filtering 312 specialty cafés across BLR, BOM, DEL'); }}
                 onMouseEnter={() => setActiveFeature(0)}
                 role="button"
                 tabIndex={0}
@@ -1357,7 +1322,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
 
               <div
                 className={`feature-item ${activeFeature === 1 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(1); scrollToAnchor('brand-telemetry-section', 'telemetry'); }}
+                onClick={() => { setActiveFeature(1); setShowNewCampaignModal(true); }}
                 onMouseEnter={() => setActiveFeature(1)}
                 role="button"
                 tabIndex={0}
@@ -1379,7 +1344,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
 
               <div
                 className={`feature-item ${activeFeature === 2 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(2); scrollToAnchor('brand-funnel-section', 'funnel'); }}
+                onClick={() => { setActiveFeature(2); showToast('78% trial-to-PO conversion rate · Standing Net-15'); }}
                 onMouseEnter={() => setActiveFeature(2)}
                 role="button"
                 tabIndex={0}
@@ -1401,7 +1366,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
 
               <div
                 className={`feature-item ${activeFeature === 3 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(3); scrollToAnchor('brand-share-section', 'share'); }}
+                onClick={() => { setActiveFeature(3); showToast('Market velocity: 4,200L/month oat milk consumed'); }}
                 onMouseEnter={() => setActiveFeature(3)}
                 role="button"
                 tabIndex={0}
@@ -1559,6 +1524,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                   ref={mainScrollRef}
                   className="dashboard-main"
                   tabIndex={0}
+                  data-lenis-prevent
                   aria-label="Brand growth and telemetry workspace"
                 >
                   {/* Top Navigation */}
@@ -1665,7 +1631,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                       </div>
 
                       <div className="simple-flight-list">
-                        {campaigns.slice(0, 4).map((c) => (
+                        {campaigns.slice(0, 2).map((c) => (
                           <div
                             key={c.title}
                             className="simple-flight-card"

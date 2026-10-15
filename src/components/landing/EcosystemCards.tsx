@@ -666,7 +666,7 @@ export function EcosystemCards() {
   const activeCard = CARDS.find((c) => c.id === activeCardId) || CARDS[0];
 
   return (
-    <section className="eco-section" id="ecosystem-cards" aria-label="The Grabbit Ecosystem">
+    <section className="eco-section" id="ecosystem-cards" aria-label="The Gradient Ecosystem">
       <div className="eco-cards-container eco-container">
         {/* Section Header */}
         <motion.div
