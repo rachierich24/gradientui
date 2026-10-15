@@ -44,32 +44,31 @@ export interface EcosystemSide {
   dotColor: string;
 }
 
-// Notion palette values matching production tatami tokens:
-// Red: Tatami 200 = #fedddb, Tatami 500 = #eb5757
-// Green: Tatami 200 = #d0f4d8, Tatami 500 = #1aae39
-// Purple: Tatami 200 = #eadbfa, Tatami 500 = #9849e8
-// In Notion, text color is black (#0A0A0A) inherited from the title!
+// Platform ecosystem brand colors matching website main sections:
+// Red (Cafés): #E5483B / rgba(229, 72, 59, 0.24)
+// Green (Suppliers): #22C55E / rgba(34, 197, 94, 0.24)
+// Purple (Brands): #8B5CF6 / rgba(139, 92, 246, 0.26)
 export const ECOSYSTEM_SIDES: EcosystemSide[] = [
   {
     id: 'cafe',
     label: 'cafés',
     icon: <IconCafe />,
-    dotColor: '#eb5757',
-    bg: '#fedddb',
+    dotColor: '#E5483B',
+    bg: 'rgba(229, 72, 59, 0.24)',
   },
   {
     id: 'supplier',
     label: 'suppliers',
     icon: <IconSupplier />,
-    dotColor: '#1aae39',
-    bg: '#d0f4d8',
+    dotColor: '#16A34A',
+    bg: 'rgba(34, 197, 94, 0.24)',
   },
   {
     id: 'brand',
     label: 'brands',
     icon: <IconBrand />,
-    dotColor: '#9849e8',
-    bg: '#eadbfa',
+    dotColor: '#7C3AED',
+    bg: 'rgba(139, 92, 246, 0.26)',
   },
 ];
 
@@ -95,8 +94,8 @@ export function HeroHeadline() {
     const el = measureRef.current;
     if (!el) return;
     const update = () => {
-      // Add +3px breathing room so text never clips on right edge
-      setInlineSize(Math.ceil(el.scrollWidth) + 3);
+      // Add +5px breathing room so bold glyphs never clip on right edge
+      setInlineSize(Math.ceil(el.scrollWidth) + 5);
     };
     update();
     if (typeof ResizeObserver === 'undefined') {

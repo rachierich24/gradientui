@@ -1,136 +1,66 @@
 /* ==========================================================================
-   GRABBIT NAVBAR — REACT BITS CARDNAV + PREMIUM HOVER MEGA MENU
+   GRADIENT NAVBAR — NORMAL FIXED ON TOP + HOVER MEGA MENU
    Styling: Apple / Linear / Stripe inspired SaaS navigation
    ========================================================================== */
 
-.card-nav-header {
+.nav-header {
   position: fixed;
-  top: 16px;
+  top: 0;
   left: 0;
   right: 0;
   width: 100%;
   z-index: 999;
-  padding: 0;
-  background: transparent !important;
-  border: none !important;
-  border-bottom: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  pointer-events: none;
-  transition: top 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 18px 0;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card-nav-header.is-scrolled {
-  top: 12px;
-  padding: 0;
-  background: transparent !important;
-  border: none !important;
-  border-bottom: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+.nav-header.is-scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  padding: 12px 0;
 }
 
-.card-nav-container {
-  max-width: 1220px;
+.nav-container {
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 0 20px;
-  position: relative;
-  pointer-events: auto;
-  border: none !important;
-  border-bottom: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.card-nav-header::before,
-.card-nav-header::after,
-.card-nav-container::before,
-.card-nav-container::after {
-  display: none !important;
-  content: none !important;
-}
-
-/* ─── CARDNAV MAIN WRAPPER (OPAQUE SOLID FLOATING ISLAND) ─────────────────── */
-.card-nav {
-  position: relative;
-  display: block;
-  width: 100%;
-  border-radius: 20px;
-  background-color: #FFFFFF !important;
-  background: #FFFFFF !important;
-  border: 1px solid rgba(226, 222, 214, 0.95);
-  box-shadow: 0 10px 32px -5px rgba(15, 23, 42, 0.08),
-    0 2px 8px -2px rgba(15, 23, 42, 0.04);
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.card-nav-header.is-scrolled .card-nav {
-  background-color: #FFFFFF !important;
-  background: #FFFFFF !important;
-  border-color: rgba(220, 216, 208, 0.98);
-  box-shadow: 0 14px 40px -6px rgba(15, 23, 42, 0.12),
-    0 3px 10px -2px rgba(15, 23, 42, 0.04);
-}
-
-/* ─── TOP BAR ────────────────────────────────────────────────────────────── */
-.card-nav-top {
+  padding: 0 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
-  padding: 0 14px 0 20px;
   position: relative;
-  z-index: 10;
 }
 
-/* ─── BRAND LOGO ─────────────────────────────────────────────────────────── */
-.card-nav-brand-wrap {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.card-nav-brand {
+.card-nav-tab-wrapper {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  text-decoration: none;
-  cursor: pointer;
-  outline: none;
 }
 
-.card-nav-brand-flex {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
+.nav-pill-item .chev {
+  opacity: 0.55;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.16s ease;
 }
 
-.card-nav-brand-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: #0F172A;
-  color: #FFFFFF;
-  display: grid;
-  place-items: center;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+.nav-pill-item:hover .chev,
+.nav-pill-item.is-active .chev,
+.nav-pill-item.is-open .chev {
+  opacity: 0.9;
 }
 
-.card-nav-brand-name {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  color: #0F172A;
+.nav-pill-item .chev.is-flipped {
+  transform: translateY(1px) rotate(180deg);
 }
 
 .card-nav-logo-img {
-  height: 26px;
+  height: 28px;
   width: auto;
   display: block;
 }
@@ -282,12 +212,13 @@
 
 /* ─── SHARED CONTEXTUAL MEGA-MENU DROPDOWN (SOLID OPAQUE) ─────────────────── */
 .card-nav-dropdown {
-  display: none !important;
+  display: none;
   position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  right: 0;
-  width: 100%;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 48px);
+  max-width: 1140px;
   border-radius: 20px;
   background-color: #FFFFFF !important;
   background: #FFFFFF !important;
@@ -296,16 +227,27 @@
     0 6px 18px -2px rgba(15, 23, 42, 0.05);
   visibility: hidden;
   pointer-events: none;
-  z-index: 100;
+  z-index: 1000;
   overflow: hidden;
   transform-origin: top center;
   will-change: transform, opacity;
 }
 
+.card-nav-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: transparent;
+  pointer-events: auto;
+}
+
 .card-nav-dropdown.is-open {
-  display: block !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
+  display: block;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .card-nav-panels-container {

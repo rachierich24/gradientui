@@ -1180,7 +1180,7 @@
   100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* ── Main Dashboard Area (Optimized for 16:9 Display) ── */
+/* ── Main Dashboard Area (Optimized for 16:9 Display with Contained Scroll) ── */
 .dashboard-main {
   flex: 1;
   min-width: 0;
@@ -1188,23 +1188,39 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px 14px 14px 14px;
+  overscroll-behavior-y: contain;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 14px 20px 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   background: #FFFFFF;
   box-sizing: border-box;
+  position: relative;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.22) rgba(0, 0, 0, 0.02);
 }
 
 .dashboard-main::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
+}
+
+.dashboard-main::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 9999px;
 }
 
 .dashboard-main::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.20);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: background 0.15s ease;
+}
+
+.dashboard-main:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.38);
 }
 
 /* Top Navigation Bar */
@@ -1523,14 +1539,13 @@
   color: #737373;
 }
 
-/* ── Operational Data Tables (Refined Heights & Tabular Alignment) ── */
+/* ── Operational Data Tables (Natural Flow without Scroll Trapping) ── */
 .dashboard-table-container {
   width: 100%;
-  max-height: 180px;
-  overflow-y: auto;
+  max-height: none;
+  overflow-y: visible;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
 }
 
 .dashboard-table {
@@ -2078,6 +2093,293 @@
 .network-svg {
   width: 100%;
   height: 100%;
+}
+
+/* ── Interactive Category & Metro Filter Pills ── */
+.dash-filter-pill.active {
+  background: #171717;
+  color: #FFFFFF;
+  border-color: #171717;
+  font-weight: 600;
+}
+
+#for-suppliers .dash-filter-pill.active {
+  background: #15803D;
+  color: #FFFFFF;
+  border-color: #15803D;
+}
+
+#for-brands .dash-filter-pill.active {
+  background: #6D28D9;
+  color: #FFFFFF;
+  border-color: #6D28D9;
+}
+
+/* ── Interactive Navigation Quick Tabs ── */
+.dash-view-tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.dash-view-tabs::-webkit-scrollbar {
+  display: none;
+}
+.dash-tab-btn {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3.5px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(23, 23, 23, 0.08);
+  background: #FAFAFA;
+  color: #666666;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.dash-tab-btn:hover {
+  background: #FFFFFF;
+  color: #171717;
+  border-color: rgba(23, 23, 23, 0.16);
+}
+.dash-tab-btn.active {
+  background: #171717;
+  color: #FFFFFF;
+  border-color: #171717;
+}
+#for-suppliers .dash-tab-btn.active {
+  background: #166534;
+  color: #FFFFFF;
+  border-color: #166534;
+}
+#for-brands .dash-tab-btn.active {
+  background: #6D28D9;
+  color: #FFFFFF;
+  border-color: #6D28D9;
+}
+
+/* ── Floating Scroll Indicator Badge ── */
+.dash-scroll-prompt {
+  position: sticky;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0 auto;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.90);
+  backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+  z-index: 35;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  animation: promptBob 2s infinite ease-in-out;
+}
+@keyframes promptBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-3px); }
+}
+.dash-scroll-prompt.faded {
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  pointer-events: none;
+}
+
+/* ── Deep Moat Operational Cards & Sections ── */
+.dash-moat-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(23, 23, 23, 0.1);
+}
+
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dash-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #171717;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dash-section-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* WhatsApp PO Stream */
+.whatsapp-po-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.whatsapp-po-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: #F9FAFB;
+  border: 1px solid rgba(23, 23, 23, 0.06);
+  border-radius: 7px;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.whatsapp-po-card:hover {
+  background: #FFFFFF;
+  border-color: #22C55E;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.08);
+}
+
+.whatsapp-tag {
+  font-size: 9px;
+  font-weight: 700;
+  background: #DCFCE7;
+  color: #166534;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Route Dispatch Van Cards */
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.route-van-card {
+  padding: 8px 10px;
+  background: #FAFAFA;
+  border: 1px solid rgba(23, 23, 23, 0.06);
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.route-van-card:hover, .route-van-card.selected {
+  background: #FFFFFF;
+  border-color: #15803D;
+  box-shadow: 0 2px 8px rgba(21, 128, 61, 0.08);
+}
+
+/* Instant T+1 Ledger Card */
+.settlement-ledger-card {
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
+  border: 1px solid #BBF7D0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settlement-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+/* Barista Tasting Flight Telemetry */
+.barista-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.barista-quote-card {
+  padding: 8px 10px;
+  background: #FCFAFF;
+  border: 1px solid #E9D5FF;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+.barista-quote-card:hover {
+  background: #FFFFFF;
+  border-color: #8B5CF6;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+/* Conversion Funnel */
+.conversion-funnel-card {
+  padding: 10px 12px;
+  background: #FAF8FF;
+  border: 1px solid #DDD6FE;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.funnel-bar-step {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.funnel-bar-track {
+  width: 100%;
+  height: 5px;
+  background: #EDE9FE;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.funnel-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8B5CF6, #6D28D9);
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+/* Category Market Share */
+.market-share-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.market-share-item {
+  padding: 8px 10px;
+  background: #FAFAFA;
+  border: 1px solid rgba(23, 23, 23, 0.06);
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* ── Inline Action Toast Notification (Dismisses automatically) ── */

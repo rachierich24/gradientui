@@ -82,7 +82,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
     ],
     featured: {
       tag: 'CORE ENGINE',
-      title: 'Grabbit Signal Router',
+      title: 'Gradient Signal Router',
       desc: 'Sub-second order arbitration across cafes, local hubs, and primary roasters.',
       meta: '2,633 signals routed today · 14ms latency',
       href: '#ecosystem',
@@ -136,7 +136,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
     textColor: '#0F172A',
     links: [
       {
-        label: 'How Grabbit Works',
+        label: 'How Gradient Works',
         description: 'Deep dive into orthogonal routing and automated trade arbitration',
         href: '#ecosystem',
         icon: 'flow',
@@ -177,7 +177,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
     textColor: '#0F172A',
     links: [
       {
-        label: 'About Grabbit',
+        label: 'About Gradient',
         description: 'The story behind the team building India’s specialty café highway',
         href: '/about',
         icon: 'flag',
@@ -387,7 +387,7 @@ function ProductPreviewCard({ item }: { item: CardNavItem }) {
             </div>
             <div className="preview-node-connector">
               <span className="connector-line" />
-              <span className="connector-pill">grabbit engine</span>
+              <span className="connector-pill">gradient engine</span>
             </div>
             <div className="preview-nodes-bottom">
               <div className="preview-node node-supplier">
@@ -434,7 +434,7 @@ function ProductPreviewCard({ item }: { item: CardNavItem }) {
 // ─── MAIN REACT BITS CARDNAV COMPONENT ───────────────────────────────────────
 export function CardNav({
   logo,
-  logoAlt = 'Grabbit',
+  logoAlt = 'Gradient',
   items = defaultGrabbitNavItems,
   className = '',
   ease = 'power3.out',
@@ -487,6 +487,7 @@ export function CardNav({
         opacity: 0,
         y: -6,
         scale: 0.985,
+        xPercent: -50,
         duration: 0.16,
         ease: 'power2.in',
         onComplete: () => {
@@ -559,11 +560,13 @@ export function CardNav({
           opacity: 0,
           y: -8,
           scale: 0.985,
+          xPercent: -50,
         },
         {
           opacity: 1,
           y: 0,
           scale: 1,
+          xPercent: -50,
           duration: 0.24,
           ease: ease || 'power3.out',
           onComplete: () => {
@@ -761,122 +764,109 @@ export function CardNav({
 
   return (
     <header
-      className={`card-nav-header ${isScrolled ? 'is-scrolled' : ''} ${className}`}
+      className={`nav-header ${isScrolled ? 'is-scrolled' : ''} ${className}`}
       ref={navContainerRef}
+      onMouseEnter={cancelClose}
+      onMouseLeave={scheduleClose}
     >
-      <div className="card-nav-container">
-        {/* React Bits CardNav Core Bar */}
-        <nav
-          className="card-nav"
-          style={baseColor ? { backgroundColor: baseColor } : undefined}
-          aria-label="Main Navigation"
-        >
-          <div className="card-nav-top">
-            {/* Left: Brand / Logo */}
-            <div className="card-nav-brand-wrap">
-              <a href="/" className="card-nav-brand" aria-label="Grabbit Home">
-                {typeof logo === 'string' ? (
-                  <img src={logo} alt={logoAlt} className="card-nav-logo-img" />
-                ) : logo ? (
-                  logo
-                ) : (
-                  <div className="card-nav-brand-flex">
-                    <span className="card-nav-brand-mark">G</span>
-                    <span className="card-nav-brand-name">grabbit</span>
-                  </div>
-                )}
-              </a>
-            </div>
+      <div className="nav-container">
+        {/* Left: Brand / Logo */}
+        <div className="nav-brand-wrap">
+          <a href="/" className="nav-brand" aria-label="Gradient Home">
+            {typeof logo === 'string' ? (
+              <img src={logo} alt={logoAlt} className="card-nav-logo-img" />
+            ) : logo ? (
+              logo
+            ) : (
+              <>
+                <div className="mark">G</div>
+                <span className="brand-name">Gradient</span>
+              </>
+            )}
+          </a>
+        </div>
 
-            {/* Desktop Navigation Links (Always Visible on Desktop) */}
-            <div className="card-nav-desktop-tabs" role="tablist">
-              {items.map((item, idx) => {
-                const isActive = activeItemIndex === idx;
-                return (
-                  <div
-                    key={item.label}
-                    className="card-nav-tab-wrapper"
-                    onMouseEnter={() => handleButtonMouseEnter(idx)}
-                    onMouseLeave={handleButtonMouseLeave}
+        {/* Center: Floating Pill Navigation Capsule */}
+        <div className="nav-center">
+          <nav className="nav-pill" aria-label="Main Navigation">
+            {items.map((item, idx) => {
+              const isActive = activeItemIndex === idx;
+              return (
+                <div
+                  key={item.label}
+                  className="card-nav-tab-wrapper"
+                  onMouseEnter={() => handleButtonMouseEnter(idx)}
+                  onMouseLeave={handleButtonMouseLeave}
+                >
+                  <button
+                    id={`nav-pill-tab-${idx}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-expanded={isActive}
+                    aria-controls="card-nav-mega-dropdown"
+                    className={`nav-pill-item ${isActive ? 'is-active is-open' : ''}`}
+                    onFocus={() => handleButtonMouseEnter(idx)}
+                    onBlur={handleButtonMouseLeave}
+                    onKeyDown={(e) => handleKeyDown(e, idx)}
                   >
-                    <button
-                      id={`card-nav-tab-${idx}`}
-                      type="button"
-                      role="tab"
-                      aria-selected={isActive}
-                      aria-expanded={isActive}
-                      aria-controls="card-nav-mega-dropdown"
-                      className={`card-nav-tab-btn ${isActive ? 'is-active' : ''}`}
-                      onFocus={() => handleButtonMouseEnter(idx)}
-                      onBlur={handleButtonMouseLeave}
-                      onKeyDown={(e) => handleKeyDown(e, idx)}
+                    <span>{item.label}</span>
+                    <svg
+                      className={`chev ${isActive ? 'is-flipped' : ''}`}
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      <span>{item.label}</span>
-                      <svg
-                        className={`card-nav-tab-chevron ${isActive ? 'is-flipped' : ''}`}
-                        width="10"
-                        height="10"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
+          </nav>
+        </div>
 
-            {/* Right: CTA Button & Mobile Hamburger */}
-            <div className="card-nav-actions">
-              <a href="/login" className="card-nav-login-link">
-                Log in
-              </a>
-              <button
-                type="button"
-                className="card-nav-cta-button"
-                style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-                onClick={handleCta}
-              >
-                {ctaText}
-              </button>
-
-              {/* React Bits Mobile Hamburger (Restored for <= 768px) */}
-              <div
-                className={`hamburger-menu ${isMobileOpen ? 'open' : ''}`}
-                onClick={toggleMobileMenu}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleMobileMenu();
-                  }
-                }}
-                role="button"
-                aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={isMobileOpen}
-                tabIndex={0}
-                style={{ color: menuColor }}
-              >
-                <div className="hamburger-line" />
-                <div className="hamburger-line" />
-              </div>
-            </div>
-          </div>
-
-          {/* SHARED CONTEXTUAL MEGA-MENU DROPDOWN SURFACE (DESKTOP) */}
-          <div
-            id="card-nav-mega-dropdown"
-            ref={dropdownRef}
-            className={`card-nav-dropdown ${activeItemIndex !== null ? 'is-open' : ''}`}
-            style={{ display: activeItemIndex !== null ? 'block' : 'none' }}
-            onMouseEnter={cancelClose}
-            onMouseLeave={scheduleClose}
-            aria-hidden={activeItemIndex === null}
+        {/* Right: Actions */}
+        <div className="nav-right">
+          <a href="/login" className="nav-login">
+            Log in
+          </a>
+          <button
+            type="button"
+            className="nav-get-started"
+            style={buttonBgColor ? { backgroundColor: buttonBgColor, color: buttonTextColor } : undefined}
+            onClick={handleCta}
           >
+            {ctaText}
+          </button>
+
+          {/* Mobile Toggle Button */}
+          <button
+            type="button"
+            className="nav-mobile-toggle"
+            onClick={toggleMobileMenu}
+            aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileOpen}
+          >
+            {isMobileOpen ? '✕' : '☰'}
+          </button>
+        </div>
+
+        {/* SHARED CONTEXTUAL MEGA-MENU DROPDOWN SURFACE (DESKTOP) */}
+        <div
+          id="card-nav-mega-dropdown"
+          ref={dropdownRef}
+          className={`card-nav-dropdown ${activeItemIndex !== null ? 'is-open' : ''}`}
+          style={{ display: activeItemIndex !== null ? 'block' : 'none' }}
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+          aria-hidden={activeItemIndex === null}
+        >
             <div className="card-nav-panels-container">
               {items.map((cat, idx) => (
                 <div
@@ -970,47 +960,48 @@ export function CardNav({
               ))}
             </div>
           </div>
-        </nav>
 
-        {/* MOBILE MENU ACCORDION DRAWER (max-width: 768px) */}
-        <div ref={mobileMenuRef} className={`card-nav-mobile-drawer ${isMobileOpen ? 'is-open' : ''}`}>
-          <div className="card-nav-mobile-inner">
-            {items.map((cat) => (
-              <div key={cat.label} className="mobile-drawer-section">
-                <span className="mobile-section-heading">{cat.label}</span>
-                <div className="mobile-links-list">
-                  {cat.links.map((lk) => (
-                    <a
-                      key={lk.label}
-                      href={lk.href}
-                      className="mobile-link-item"
-                      onClick={() => setIsMobileOpen(false)}
-                    >
-                      <span className="mobile-link-icon">
-                        <NavIcon type={lk.icon} accent={lk.accent} />
-                      </span>
-                      <div className="mobile-link-copy">
-                        <span className="mobile-link-name">{lk.label}</span>
-                        {lk.description && <span className="mobile-link-sub">{lk.description}</span>}
-                      </div>
-                    </a>
-                  ))}
+          {/* MOBILE MENU ACCORDION DRAWER (max-width: 860px) */}
+          {isMobileOpen && (
+            <div ref={mobileMenuRef} className="nav-mobile-menu">
+              <div className="nav-mobile-inner">
+                {items.map((cat) => (
+                  <div key={cat.label} className="mobile-drawer-section">
+                    <span className="mobile-section-heading">{cat.label}</span>
+                    <div className="mobile-links-list">
+                      {cat.links.map((lk) => (
+                        <a
+                          key={lk.label}
+                          href={lk.href}
+                          className="mobile-link-item"
+                          onClick={() => setIsMobileOpen(false)}
+                        >
+                          <span className="mobile-link-icon">
+                            <NavIcon type={lk.icon} accent={lk.accent} />
+                          </span>
+                          <div className="mobile-link-copy">
+                            <span className="mobile-link-name">{lk.label}</span>
+                            {lk.description && <span className="mobile-link-sub">{lk.description}</span>}
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="mobile-drawer-footer">
+                  <a href="/login" className="mobile-login-btn" onClick={() => setIsMobileOpen(false)}>
+                    Log in
+                  </a>
+                  <button type="button" className="mobile-cta-btn" onClick={handleCta}>
+                    {ctaText}
+                  </button>
                 </div>
               </div>
-            ))}
-
-            <div className="mobile-drawer-footer">
-              <a href="/login" className="mobile-login-btn" onClick={() => setIsMobileOpen(false)}>
-                Log in
-              </a>
-              <button type="button" className="mobile-cta-btn" onClick={handleCta}>
-                {ctaText}
-              </button>
             </div>
-          </div>
+          )}
         </div>
-      </div>
-    </header>
+      </header>
   );
 }
 
