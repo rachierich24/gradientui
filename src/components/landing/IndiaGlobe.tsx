@@ -67,8 +67,8 @@ export function IndiaGlobe() {
         {/* Headline over the sky: the globe's curve starts just below it (measured by the engine) */}
           <div className="ig-header">
             <h2 id="ig-title">
-              <span className="ig-line1">Nationwide supply infrastructure, connected in real time.</span>
-              <span className="ig-line2 ig-white-text">Direct fulfillment from verified brands to local café counters.</span>
+              <span className="ig-line1">Nationwide supply, connected in real time.</span>
+              <span className="ig-line2 ig-white-text">Direct from source to café counter.</span>
             </h2>
 
             <p className="ig-subtitle">

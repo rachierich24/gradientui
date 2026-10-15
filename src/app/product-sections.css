@@ -2646,3 +2646,497 @@
     padding-bottom: 8px;
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════════
+   LINEAR & STRIPE ENHANCED DASHBOARD DESIGN SYSTEM
+   - Linear-grade operational density, command palettes, keyboard hints
+   - Stripe-grade financial transparency, real-time escrow, and credit lines
+   - Clean 4-stage core idea journey pipelines with interactive focus
+═════════════════════════════════════════════════════════════════════════ */
+
+/* ── Interactive Linear Core Journey Pipeline ── */
+.linear-core-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 8px;
+  background: #F8FAFC;
+  border-radius: 9px;
+  border: 1px solid rgba(23, 23, 23, 0.07);
+  box-sizing: border-box;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.linear-core-pipeline::-webkit-scrollbar {
+  display: none;
+}
+
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+.pipeline-stage:hover {
+  background: #FFFFFF;
+  border-color: rgba(23, 23, 23, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.pipeline-stage.active {
+  background: #FFFFFF;
+  border-color: rgba(23, 23, 23, 0.14);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.pipeline-step-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748B;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 2px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.pipeline-stage.active .pipeline-step-badge {
+  background: #171717;
+  color: #FFFFFF;
+}
+
+.pipeline-step-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.pipeline-step-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.pipeline-step-desc {
+  font-size: 9.5px;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipeline-step-proof {
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pipeline-arrow-separator {
+  color: #CBD5E1;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+/* ── Stripe Financial & Facility Banner ── */
+.stripe-financial-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #F8FAFC 0%, #F1F5F9 100%);
+  border: 1px solid rgba(23, 23, 23, 0.08);
+  font-size: 11px;
+}
+
+.stripe-financial-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.stripe-financial-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.stripe-lock-badge {
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 1.5px 5.5px;
+  border-radius: 4px;
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+}
+
+.stripe-financial-sub {
+  font-size: 10px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.stripe-facility-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 9.5px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.stripe-facility-fill {
+  height: 5px;
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.stripe-facility-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.stripe-facility-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #171717;
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stripe-facility-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stripe-meter-bar {
+  width: 72px;
+  height: 5px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.stripe-meter-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: #16A34A;
+}
+
+.stripe-facility-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.stripe-btn-action {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(23, 23, 23, 0.12);
+  background: #FFFFFF;
+  color: #0F172A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.stripe-btn-action:hover {
+  background: #F8FAFC;
+  border-color: rgba(23, 23, 23, 0.25);
+}
+
+.stripe-btn-action.primary {
+  background: #171717;
+  color: #FFFFFF;
+  border-color: #171717;
+}
+.stripe-btn-action.primary:hover {
+  background: #262626;
+}
+
+/* ── Linear Command Badge & Quick Actions ── */
+.linear-kbd-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 600;
+  color: #94A3B8;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  padding: 1px 4px;
+  line-height: 1;
+  user-select: none;
+}
+
+.table-hover-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: all 0.15s ease;
+}
+.dashboard-table-row:hover .table-hover-actions,
+.dashboard-table-row:focus-within .table-hover-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.table-action-btn {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #FFFFFF;
+  border: 1px solid rgba(23, 23, 23, 0.12);
+  color: #0F172A;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.12s ease;
+}
+.table-action-btn:hover {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-color: #0F172A;
+}
+
+/* ── Live IoT Cold-Chain & Driver Telemetry Gauge ── */
+.cold-chain-telemetry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+}
+
+.cold-chain-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 600;
+  color: #166534;
+}
+
+.temp-probe-reading {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.temp-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #15803D;
+  font-variant-numeric: tabular-nums;
+}
+
+.temp-unit {
+  font-size: 10px;
+  font-weight: 600;
+  color: #166534;
+}
+
+.temp-safe-pill {
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 99px;
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+
+/* ── Barista Cupping Sensory Telemetry Card ── */
+.sensory-cupping-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
+}
+
+.sensory-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10.5px;
+}
+
+.sensory-label {
+  color: #581C87;
+  font-weight: 600;
+  min-width: 85px;
+}
+
+.sensory-bar-track {
+  flex: 1;
+  height: 5px;
+  border-radius: 99px;
+  background: #EDE9FE;
+  overflow: hidden;
+}
+
+.sensory-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #9333EA, #7C3AED);
+}
+
+.sensory-score-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: #6D28D9;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── Production Batch Roasting Calculator ── */
+.batch-roast-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  font-size: 10.5px;
+}
+
+/* ── Simplified Minimal Dashboard Components ── */
+.simple-order-list,
+.simple-flight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.simple-order-card,
+.simple-flight-card {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #F8FAFC;
+  border: 1px solid rgba(23, 23, 23, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.simple-order-card:hover,
+.simple-flight-card:hover {
+  background: #FFFFFF;
+  border-color: rgba(23, 23, 23, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.simple-order-card.selected {
+  background: #FFFFFF;
+  border-color: #16A34A;
+  box-shadow: 0 0 0 1px #16A34A, 0 2px 8px rgba(22, 163, 74, 0.08);
+}
+
+#for-brands .simple-flight-card.selected {
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 1px #7C3AED, 0 2px 8px rgba(124, 58, 237, 0.08);
+}
+
+.simple-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.simple-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.simple-card-meta {
+  font-size: 9px;
+  color: #64748B;
+}
+
+.simple-card-body {
+  font-size: 10px;
+  color: #334155;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+.simple-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(23, 23, 23, 0.06);
+  font-size: 9.5px;
+}
+
+.simple-route-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #F8FAFC;
+  border: 1px solid rgba(23, 23, 23, 0.06);
+}
+
+.simple-route-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #334155;
+}
+

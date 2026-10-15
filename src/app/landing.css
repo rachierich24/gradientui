@@ -894,6 +894,84 @@ button { font-family: inherit; cursor: pointer; }
 .cmd-locks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .cmd-locks span { padding: 6px 9px; border-radius: 99px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.82); font-size: 11px; font-weight: 600; }
 
+/* Linear & Stripe touches for Hero Dashboard */
+.cmd-persona-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  margin-bottom: 2px;
+}
+.cmd-persona-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.cmd-persona-btn:hover {
+  color: var(--ink);
+}
+.cmd-persona-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+
+.cmd-core-flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.cmd-core-flow span.flow-active {
+  color: var(--ink);
+  font-weight: 600;
+}
+.cmd-core-flow .flow-arrow {
+  color: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.cmd-kbd {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  color: var(--ink-soft);
+  margin-left: auto;
+}
+
+.cmd-metric-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.cmd-metric-delta.pos { color: var(--c-green); }
+.cmd-metric-delta.warn { color: var(--c-orange); }
+
 /* ─── Section primitives ────────────────────────────────────────────── */
 section.l-sec { padding: var(--section-y) 0; position: relative; }
 section.l-sec.tight { padding: 80px 0; }

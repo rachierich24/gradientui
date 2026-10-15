@@ -308,810 +308,6 @@ export function ProductSections() {
   );
 }
 
-/* ═════════════════════════════════════════════════════════════════════════
-   SECTION 01: CAFÉ PRODUCT
-   Workflow: DISCOVER → ORDER → TRACK → RECEIVE → ANALYZE
-═════════════════════════════════════════════════════════════════════════ */
-interface CafeOrder {
-  id: string;
-  supplier: string;
-  itemsCount: string;
-  amount: string;
-  status: 'In transit' | 'Processing' | 'Delivered' | 'Delayed';
-  expected: string;
-  timeline: {
-    time: string;
-    label: string;
-    sub: string;
-    status: 'completed' | 'active' | 'upcoming';
-  }[];
-}
-
-const CAFE_ORDERS_DATA: CafeOrder[] = [
-  {
-    id: '#GRB-1048',
-    supplier: 'Blue Tokai',
-    itemsCount: '8 items',
-    amount: '₹4,280',
-    status: 'In transit',
-    expected: 'Today, 12:05',
-    timeline: [
-      { time: '09:12', label: 'Order placed', sub: 'Confirmed by Barista', status: 'completed' },
-      { time: '09:14', label: 'Supplier confirmed', sub: 'Blue Tokai Roastery', status: 'completed' },
-      { time: '09:18', label: 'Packed', sub: 'Batch #BT-992', status: 'completed' },
-      { time: '10:42', label: 'In transit', sub: 'Assigned: Express Fleet #4', status: 'active' },
-      { time: '12:05', label: 'Expected delivery', sub: 'Estimated arrival in 18m', status: 'upcoming' },
-    ],
-  },
-  {
-    id: '#GRB-1047',
-    supplier: 'Roastery House',
-    itemsCount: '12 items',
-    amount: '₹7,840',
-    status: 'Processing',
-    expected: 'Today, 16:30',
-    timeline: [
-      { time: '08:45', label: 'Order placed', sub: 'Auto-replenish order', status: 'completed' },
-      { time: '09:10', label: 'Supplier confirmed', sub: 'Roastery House Central', status: 'completed' },
-      { time: '10:15', label: 'Processing & Roast', sub: 'Medium dark batch', status: 'active' },
-      { time: '14:00', label: 'Ready for dispatch', sub: 'Scheduled pickup', status: 'upcoming' },
-      { time: '16:30', label: 'Expected delivery', sub: 'Afternoon slot', status: 'upcoming' },
-    ],
-  },
-  {
-    id: '#GRB-1046',
-    supplier: 'Third Wave',
-    itemsCount: '5 items',
-    amount: '₹2,150',
-    status: 'Delivered',
-    expected: 'Yesterday',
-    timeline: [
-      { time: 'Yesterday 11:00', label: 'Order placed', sub: 'Specialty lot', status: 'completed' },
-      { time: 'Yesterday 11:20', label: 'Packed', sub: 'Third Wave Roastery', status: 'completed' },
-      { time: 'Yesterday 13:40', label: 'In transit', sub: 'Direct delivery', status: 'completed' },
-      { time: 'Yesterday 15:10', label: 'Delivered', sub: 'Signed by Store Lead', status: 'completed' },
-    ],
-  },
-  {
-    id: '#GRB-1045',
-    supplier: 'KC Roasters',
-    itemsCount: '9 items',
-    amount: '₹5,620',
-    status: 'Delivered',
-    expected: 'Yesterday',
-    timeline: [
-      { time: 'Yesterday 09:30', label: 'Order placed', sub: 'Filter SKUs', status: 'completed' },
-      { time: 'Yesterday 10:00', label: 'Packed', sub: 'KC Roasters Bandra', status: 'completed' },
-      { time: 'Yesterday 12:15', label: 'In transit', sub: 'Local logistics', status: 'completed' },
-      { time: 'Yesterday 14:00', label: 'Delivered', sub: 'Stocked in pantry', status: 'completed' },
-    ],
-  },
-];
-
-function CafeSection({ isMobile }: { isMobile: boolean }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'center 48%'],
-  });
-
-  // Right to Left scroll-driven entrance:
-  // As user moves and scrolls down, screen glides from right to left (+220px -> 0) into display
-  const rawX = useTransform(scrollYProgress, [0, 1], [isMobile ? 70 : 220, 0]);
-  const rawOpacity = useTransform(scrollYProgress, [0, 0.25, 0.88], [0, 0.4, 1]);
-  const rawScale = useTransform(scrollYProgress, [0, 1], [0.94, 1]);
-
-  const springConfig = { stiffness: 90, damping: 20, mass: 0.35 };
-  const cafeX = useSpring(rawX, springConfig);
-  const cafeOpacity = useSpring(rawOpacity, springConfig);
-  const cafeScale = useSpring(rawScale, springConfig);
-
-  // Desktop 3D Mouse Parallax (Refined ~4.5° Y, 3.5° X tilt with cursor tracking)
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const mouseSpring = { stiffness: 140, damping: 24, mass: 0.2 };
-  const smoothMouseX = useSpring(mouseX, mouseSpring);
-  const smoothMouseY = useSpring(mouseY, mouseSpring);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (isMobile || shouldReduceMotion) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(xPct * 3.6);
-    mouseY.set(-yPct * 2.4);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
-  const cafeRotateY = useTransform(smoothMouseX, (val) => -4.5 + val);
-  const cafeRotateX = useTransform(smoothMouseY, (val) => 3.5 + val);
-
-  // Google-Style Product Motion Workflow Simulation (~9.5s cycle)
-  const [motionStep, setMotionStep] = useState(0);
-  const [isMotionPlaying, setIsMotionPlaying] = useState(true);
-  const [isUserInteracting, setIsUserInteracting] = useState(false);
-
-  useEffect(() => {
-    if (!isMotionPlaying || isUserInteracting) return;
-    const timer = setInterval(() => {
-      setMotionStep((prev) => (prev + 1) % 3);
-    }, 3200);
-    return () => clearInterval(timer);
-  }, [isMotionPlaying, isUserInteracting]);
-
-  const handleUserInteract = () => {
-    setIsUserInteracting(true);
-    const timeout = setTimeout(() => setIsUserInteracting(false), 4500);
-    return () => clearTimeout(timeout);
-  };
-
-  const cafeCursorCoords = [
-    { x: '78%', y: '155px', label: 'Auto-Replenish' },
-    { x: '45%', y: '335px', label: 'PO Confirmed' },
-    { x: '82%', y: '295px', label: 'Fleet in Transit' },
-  ];
-
-  const [activeFeature, setActiveFeature] = useState(0);
-  const [selectedOrder, setSelectedOrder] = useState<CafeOrder>(CAFE_ORDERS_DATA[0]);
-  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [supplierFilter, setSupplierFilter] = useState('All');
-
-  // Handle Escape key for modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowNewOrderModal(false);
-    };
-    if (showNewOrderModal) window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showNewOrderModal]);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 2500);
-  };
-
-  const filteredOrders = CAFE_ORDERS_DATA.filter((o) => {
-    const matchesSearch = o.supplier.toLowerCase().includes(searchQuery.toLowerCase()) || o.id.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSupplier = supplierFilter === 'All' || o.supplier.toLowerCase().includes(supplierFilter.toLowerCase());
-    return matchesSearch && matchesSupplier;
-  });
-
-  return (
-    <section
-      ref={sectionRef}
-      className="product-story-section"
-      id="for-cafes"
-      role="region"
-      aria-label="Café Operations Section"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="product-ambient-glow" aria-hidden="true" />
-      <div className="product-story-container">
-        <div className="product-grid-cafe">
-
-          {/* Left: Minimal, Typographic Editorial */}
-          <motion.div
-            className="product-text-column"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="section-eyebrow">FOR CAFÉS</span>
-            <h2 className="section-title">
-              Everything your café<br />
-              needs, in one place.
-            </h2>
-            <p className="section-description">
-              Order supplies, manage inventory, track deliveries and understand your operations from one platform.
-            </p>
-
-            <div className="feature-list">
-              <div
-                className={`feature-item ${activeFeature === 0 ? 'active' : ''}`}
-                onClick={() => setActiveFeature(0)}
-                onMouseEnter={() => setActiveFeature(0)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setActiveFeature(0);
-                  }
-                }}
-                aria-pressed={activeFeature === 0}
-              >
-                <span className="feature-num">01</span>
-                <div className="feature-content">
-                  <span className="feature-heading">Track every order.</span>
-                  <span className="feature-text">Compare suppliers and monitor live shipments.</span>
-                </div>
-              </div>
-
-              <div
-                className={`feature-item ${activeFeature === 1 ? 'active' : ''}`}
-                onClick={() => setActiveFeature(1)}
-                onMouseEnter={() => setActiveFeature(1)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setActiveFeature(1);
-                  }
-                }}
-                aria-pressed={activeFeature === 1}
-              >
-                <span className="feature-num">02</span>
-                <div className="feature-content">
-                  <span className="feature-heading">Know what&apos;s arriving.</span>
-                  <span className="feature-text">Real-time timeline tracking with verified ETAs.</span>
-                </div>
-              </div>
-
-              <div
-                className={`feature-item ${activeFeature === 2 ? 'active' : ''}`}
-                onClick={() => setActiveFeature(2)}
-                onMouseEnter={() => setActiveFeature(2)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setActiveFeature(2);
-                  }
-                }}
-                aria-pressed={activeFeature === 2}
-              >
-                <span className="feature-num">03</span>
-                <div className="feature-content">
-                  <span className="feature-heading">Stay ahead of inventory.</span>
-                  <span className="feature-text">Automated replenishment alerts before stock outs.</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Dynamic 3D Tilted Product Interface with Google-Style Motion Workflow */}
-          <div className="product-stage">
-            <motion.div
-              className="product-frame"
-              style={{
-                x: shouldReduceMotion ? 0 : cafeX,
-                opacity: shouldReduceMotion ? 1 : cafeOpacity,
-                scale: shouldReduceMotion ? 1 : cafeScale,
-                rotateY: shouldReduceMotion || isMobile ? 0 : cafeRotateY,
-                rotateX: shouldReduceMotion || isMobile ? 0 : cafeRotateX,
-              }}
-              onMouseEnter={handleUserInteract}
-              onClick={handleUserInteract}
-            >
-              {/* Google-Style Product Motion Vignette Chrome */}
-              <MotionTimelineBar
-                currentStep={motionStep}
-                totalSteps={3}
-                stepLabels={['Stock Alert', 'Instant PO', 'Live Fleet']}
-                isPlaying={isMotionPlaying && !isUserInteracting}
-                onTogglePlay={() => setIsMotionPlaying(!isMotionPlaying)}
-                accentColor="#EAB308"
-              />
-
-              <AnimatedCursor
-                x={cafeCursorCoords[motionStep].x}
-                y={cafeCursorCoords[motionStep].y}
-                isClicking={isMotionPlaying && !isUserInteracting}
-                label={cafeCursorCoords[motionStep].label}
-                accentColor="#EAB308"
-              />
-              {/* Browser Chrome */}
-              <div className="browser-top-bar">
-                <div className="browser-dots" aria-hidden="true">
-                  <span className="browser-dot" />
-                  <span className="browser-dot" />
-                  <span className="browser-dot" />
-                </div>
-                <div className="browser-url-pill">
-                  <svg className="browser-url-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                  <span>app.gradient365.com/cafe/orders</span>
-                </div>
-                <div className="browser-actions">
-                  <span className="browser-status-tag">Connected</span>
-                  <div className="browser-user-badge">
-                    <span className="browser-avatar">TC</span>
-                    <span>The Corner Café</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Shared SaaS Dashboard UI */}
-              <div className="dashboard-layout">
-                {/* Toast Notification */}
-                {toastMessage && (
-                  <div className="dash-toast-banner" role="status">
-                    <span>✓</span> {toastMessage}
-                  </div>
-                )}
-
-                {/* Unified Gradient Sidebar */}
-                <aside className="dashboard-sidebar" aria-label="Café Dashboard Navigation">
-                  <div>
-                    <div className="sidebar-brand-header">
-                      <div className="sidebar-grabbit-logo">
-                        <span className="grabbit-mark">G</span>
-                        <span className="grabbit-name">Gradient</span>
-                      </div>
-                      <span className="sidebar-org-sub">Café OS</span>
-                    </div>
-
-                    <div className="sidebar-nav-section-label">Operations</div>
-                    <nav className="sidebar-nav">
-                      <button type="button" className="sidebar-item">
-                        <SvgIcons.Overview />
-                        <span>Overview</span>
-                      </button>
-                      <button type="button" className="sidebar-item active">
-                        <SvgIcons.Orders />
-                        <span>Orders</span>
-                        <span className="sidebar-badge-count">48</span>
-                      </button>
-                      <button type="button" className="sidebar-item">
-                        <SvgIcons.Inventory />
-                        <span>Inventory</span>
-                      </button>
-                      <button type="button" className="sidebar-item">
-                        <SvgIcons.Menu />
-                        <span>Menu</span>
-                      </button>
-                      <button type="button" className="sidebar-item">
-                        <SvgIcons.Suppliers />
-                        <span>Suppliers</span>
-                      </button>
-                      <button type="button" className="sidebar-item">
-                        <SvgIcons.Payments />
-                        <span>Payments</span>
-                      </button>
-                      <button type="button" className="sidebar-item">
-                        <SvgIcons.Analytics />
-                        <span>Analytics</span>
-                      </button>
-                    </nav>
-                  </div>
-
-                  <div className="sidebar-footer">
-                    <button type="button" className="sidebar-item">
-                      <SvgIcons.Help />
-                      <span>Help</span>
-                    </button>
-                    <button type="button" className="sidebar-item">
-                      <SvgIcons.Settings />
-                      <span>Settings</span>
-                    </button>
-                    <div className="sidebar-pill-status">
-                      <span className="status-dot-pulse" aria-hidden="true" />
-                      <span>Live Sync · 3s</span>
-                    </div>
-                  </div>
-                </aside>
-
-                {/* Main Operations Area */}
-                <main className={`dashboard-main ${activeFeature !== null ? 'has-active-feature' : ''}`}>
-                  {/* Top Navigation */}
-                  <div className="dashboard-top-nav">
-                    <div className="dashboard-heading-group">
-                      <div className="dashboard-title-row">
-                        <h3 className="dashboard-page-title">Orders</h3>
-                        <span className="dash-date-indicator">Today · 27 Sep 2026</span>
-                      </div>
-                      <span className="dashboard-page-subtitle">Manage café purchasing and incoming deliveries</span>
-                    </div>
-
-                    <div className="dashboard-top-nav-right">
-                      <button type="button" className="dash-icon-btn" title="Search Orders" aria-label="Search Orders">
-                        <SvgIcons.Search />
-                      </button>
-                      <button type="button" className="dash-icon-btn" title="Notifications" aria-label="Notifications (1 unread)">
-                        <SvgIcons.Bell />
-                        <span className="dash-notif-dot" />
-                      </button>
-                      <button
-                        type="button"
-                        className="dash-btn-primary"
-                        onClick={() => setShowNewOrderModal(true)}
-                      >
-                        <span>+</span>
-                        <span>New Order</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Overview Metrics (Cards 01, 02, 03) */}
-                  <div className="dashboard-overview-row">
-                    <div className="dashboard-stat">
-                      <span className="stat-label">Orders today</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={48} />
-                      </div>
-                      <div className="stat-trend positive">
-                        <span>↑ 12.4%</span>
-                        <span className="stat-context">vs yesterday</span>
-                      </div>
-                    </div>
-
-                    <div className="dashboard-stat">
-                      <span className="stat-label">Pending orders</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={6} />
-                      </div>
-                      <div className="stat-trend warning">
-                        <span>● 3 arriving today</span>
-                        <span className="stat-context">on schedule</span>
-                      </div>
-                    </div>
-
-                    <div className="dashboard-stat">
-                      <span className="stat-label">Monthly spend</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={12.4} prefix="₹" suffix="K" decimals={1} />
-                      </div>
-                      <div className="stat-trend positive">
-                        <span>↑ 8.2%</span>
-                        <span className="stat-context">vs last month</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Attio-Style Workflow Automation Showcase */}
-                  <div className="dash-workflow-showcase dash-dot-grid">
-                    <WorkflowNode
-                      title="⚡ Auto-Restock Trigger"
-                      subtitle="Rule: Oat Milk inventory < 12 units"
-                      badgeText="Automated Sequence"
-                      accentColor="#E03527"
-                    />
-                    <AnimatedBezierCable
-                      startX={190}
-                      startY={25}
-                      endX={340}
-                      endY={25}
-                      accentColor="#E03527"
-                    />
-                    <div className="workflow-target-card">
-                      <div
-                        className="workflow-target-badge"
-                        style={{
-                          color: motionStep === 0 ? '#B91C1C' : '#15803D',
-                          background: motionStep === 0 ? '#FEE2E2' : '#DCFCE7',
-                          borderColor: motionStep === 0 ? '#FECACA' : '#BBF7D0',
-                        }}
-                      >
-                        <span className="motion-live-dot" style={{ background: motionStep === 0 ? '#E03527' : '#16A34A' }} />
-                        <span>
-                          {motionStep === 0
-                            ? 'Trigger Fired: Reorder 16 cs'
-                            : motionStep === 1
-                            ? 'PO #GRB-1048 Issued'
-                            : 'Express Fleet #4 En Route'}
-                        </span>
-                      </div>
-                      <span className="workflow-target-time">
-                        {motionStep === 0
-                          ? 'Threshold reached at 09:15'
-                          : motionStep === 1
-                          ? 'Supplier Confirmed (0.4s)'
-                          : 'ETA 18 min · Live GPS Active'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Order Control Bar */}
-                  <div className="dashboard-controls-bar">
-                    <div className="dash-search-box">
-                      <SvgIcons.Search />
-                      <input
-                        type="text"
-                        placeholder="Search orders, suppliers..."
-                        className="dash-search-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        aria-label="Filter orders by supplier or ID"
-                      />
-                    </div>
-
-                    <div className="dash-filter-group">
-                      <button
-                        type="button"
-                        className="dash-filter-pill"
-                        onClick={() => setSupplierFilter(supplierFilter === 'All' ? 'Blue' : 'All')}
-                      >
-                        <span>Supplier: {supplierFilter}</span>
-                      </button>
-                      <span className="dash-filter-pill">Date: Today</span>
-                      <span className="dash-filter-pill">Status: All</span>
-                    </div>
-                  </div>
-
-                  {/* Bento Arrangement: Left Table + Bottom Modules | Right Live Timeline */}
-                  <div className="dashboard-bento">
-                    {/* Left Column: Orders Table & Supporting Modules */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      <div className={`dashboard-card ${activeFeature === 0 ? 'highlight-active-cafe' : ''}`} style={{ padding: '10px 12px' }}>
-                        <div className="card-header">
-                          <span className="card-title">Recent Purchases</span>
-                          <span className="card-subtitle">Click row to inspect live fulfillment</span>
-                        </div>
-
-                        <div className="dashboard-table-container">
-                          <table className="dashboard-table" role="table" aria-label="Café recent orders">
-                            <thead>
-                              <tr>
-                                <th scope="col">Supplier</th>
-                                <th scope="col">Order</th>
-                                <th scope="col">Items</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Expected</th>
-                                <th scope="col" style={{ textAlign: 'right' }}>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {filteredOrders.map((o) => (
-                                <tr
-                                  key={o.id}
-                                  className={`dashboard-table-row ${selectedOrder.id === o.id ? 'selected' : ''}`}
-                                  onClick={() => setSelectedOrder(o)}
-                                  tabIndex={0}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                      e.preventDefault();
-                                      setSelectedOrder(o);
-                                    }
-                                  }}
-                                  role="button"
-                                  aria-pressed={selectedOrder.id === o.id}
-                                  aria-label={`Select order ${o.id} from ${o.supplier}`}
-                                >
-                                  <td className="table-cell-bold">{o.supplier}</td>
-                                  <td className="table-cell-sub">{o.id}</td>
-                                  <td>{o.itemsCount}</td>
-                                  <td className="table-cell-num">{o.amount}</td>
-                                  <td>
-                                    <span className={`status-pill status-${o.status === 'In transit' ? 'transit' : o.status === 'Processing' ? 'processing' : 'delivered'}`}>
-                                      <span className="status-dot" aria-hidden="true" />
-                                      {o.status}
-                                    </span>
-                                  </td>
-                                  <td className="table-cell-sub">{o.expected}</td>
-                                  <td style={{ textAlign: 'right' }}>
-                                    <span className="table-action-arrow" aria-hidden="true">
-                                      <SvgIcons.ArrowRight />
-                                    </span>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-
-                      {/* Supporting Micro-Bento: Inventory Health + Spending Module */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                        {/* Inventory Module */}
-                        <div className={`dashboard-card ${activeFeature === 2 ? 'highlight-active-cafe' : ''}`}>
-                          <div className="card-header">
-                            <span className="card-title">Inventory health</span>
-                            <span className="card-subtitle">Bar items</span>
-                          </div>
-                          <div className="inventory-list">
-                            <div className="inventory-row">
-                              <div className="inventory-row-header">
-                                <span className="inventory-item-name">Arabica Beans</span>
-                                <span style={{ color: '#166534', fontWeight: 600 }}>82%</span>
-                              </div>
-                              <div className="inventory-bar-bg">
-                                <div className="inventory-bar-fill" style={{ width: '82%' }} />
-                              </div>
-                            </div>
-
-                            <div className="inventory-row">
-                              <div className="inventory-row-header">
-                                <span className="inventory-item-name">Oat Milk</span>
-                                <span style={{ color: '#166534', fontWeight: 600 }}>64%</span>
-                              </div>
-                              <div className="inventory-bar-bg">
-                                <div className="inventory-bar-fill" style={{ width: '64%' }} />
-                              </div>
-                            </div>
-
-                            <div className="inventory-row">
-                              <div className="inventory-row-header">
-                                <span className="inventory-item-name">Takeaway Cups</span>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <span style={{ color: '#B91C1C', fontWeight: 700, fontSize: '9.5px' }}>43% Low</span>
-                                  <button
-                                    type="button"
-                                    className="btn-reorder-micro"
-                                    onClick={() => showToast('Reorder PO queued for Takeaway Cups (1,000 pk)')}
-                                  >
-                                    Reorder
-                                  </button>
-                                </div>
-                              </div>
-                              <div className="inventory-bar-bg">
-                                <div className="inventory-bar-fill warning" style={{ width: '43%' }} />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Monthly Spending Module with Interactive Tooltips */}
-                        <div className={`dashboard-card ${activeFeature === 2 ? 'highlight-active-cafe' : ''}`}>
-                          <div className="card-header">
-                            <span className="card-title">Monthly spend</span>
-                            <span style={{ fontSize: '11px', fontWeight: 700, color: '#171717' }}>₹12.4K</span>
-                          </div>
-                          <div className="spend-chart-container">
-                            <div className="spend-chart-bars">
-                              <div className="spend-col" tabIndex={0}>
-                                <div className="chart-tooltip">May: ₹5.6K</div>
-                                <div className="spend-bar" style={{ height: '45%' }} />
-                                <span className="spend-col-label">May</span>
-                              </div>
-                              <div className="spend-col" tabIndex={0}>
-                                <div className="chart-tooltip">Jun: ₹7.8K</div>
-                                <div className="spend-bar" style={{ height: '62%' }} />
-                                <span className="spend-col-label">Jun</span>
-                              </div>
-                              <div className="spend-col" tabIndex={0}>
-                                <div className="chart-tooltip">Jul: ₹9.8K</div>
-                                <div className="spend-bar" style={{ height: '78%' }} />
-                                <span className="spend-col-label">Jul</span>
-                              </div>
-                              <div className="spend-col" tabIndex={0}>
-                                <div className="chart-tooltip">Aug: ₹8.9K</div>
-                                <div className="spend-bar" style={{ height: '70%' }} />
-                                <span className="spend-col-label">Aug</span>
-                              </div>
-                              <div className="spend-col" tabIndex={0}>
-                                <div className="chart-tooltip">Sep: ₹12.4K (Target)</div>
-                                <div className="spend-bar active" style={{ height: '94%' }} />
-                                <span className="spend-col-label">Sep</span>
-                              </div>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#737373', marginTop: '2px' }}>
-                              <span>+8.2% vs last month</span>
-                              <span style={{ fontWeight: 600, color: '#166534' }}>On Budget</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Column: Live Operational Timeline & Order Detail */}
-                    <div className={`dashboard-card order-detail-card timeline-card ${activeFeature === 1 ? 'highlight-active-cafe' : ''}`}>
-                      <div className="order-detail-header">
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span className="order-detail-id">{selectedOrder.id}</span>
-                          <span className={`status-pill status-${selectedOrder.status === 'In transit' ? 'transit' : selectedOrder.status === 'Processing' ? 'processing' : 'delivered'}`}>
-                            <span className="status-dot" aria-hidden="true" />
-                            {selectedOrder.status.toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="order-detail-supplier">{selectedOrder.supplier}</div>
-                        <div className="order-detail-meta">
-                          <span>{selectedOrder.itemsCount}</span>
-                          <span style={{ fontWeight: 700, color: '#171717' }}>{selectedOrder.amount}</span>
-                        </div>
-                      </div>
-
-                      {/* Live Timeline with pulsing node */}
-                      <div style={{ fontSize: '10px', fontWeight: 700, color: '#525252', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        Operational Timeline
-                      </div>
-
-                      <div className="timeline-vertical">
-                        <div className="timeline-v-line" />
-                        <div
-                          className="timeline-v-line-progress"
-                          style={{
-                            height: selectedOrder.status === 'Delivered' ? '100%' : selectedOrder.status === 'In transit' ? '74%' : '48%',
-                          }}
-                        />
-
-                        {selectedOrder.timeline.map((step, idx) => (
-                          <div key={idx} className={`timeline-v-item ${step.status}`}>
-                            <div className="timeline-v-node" aria-hidden="true" />
-                            <div className="timeline-v-content">
-                              <span className="timeline-v-label">{step.label}</span>
-                              <span className="timeline-v-sub">{step.sub}</span>
-                            </div>
-                            <span className="timeline-v-time">{step.time}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid rgba(23, 23, 23, 0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', color: '#737373' }}>
-                        <span>ETA: {selectedOrder.expected}</span>
-                        <button
-                          type="button"
-                          style={{ background: 'transparent', border: 'none', color: '#854D0E', fontWeight: 600, cursor: 'pointer', padding: 0 }}
-                          onClick={() => showToast(`Invoice #${selectedOrder.id} downloaded.`)}
-                        >
-                          View Invoice →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Accessible Quick Add Order Modal */}
-                  {showNewOrderModal && (
-                    <div className="dash-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-cafe-order-title">
-                      <div className="dash-modal-card">
-                        <div className="dash-modal-header">
-                          <h4 className="dash-modal-title" id="modal-cafe-order-title">New Café Purchase Order</h4>
-                          <button
-                            type="button"
-                            className="dash-modal-close"
-                            onClick={() => setShowNewOrderModal(false)}
-                            aria-label="Close modal"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                        <div className="dash-form-row">
-                          <label className="dash-form-label" htmlFor="cafe-supplier-select">Select Verified Supplier</label>
-                          <select className="dash-form-select" id="cafe-supplier-select">
-                            <option>Blue Tokai Roastery</option>
-                            <option>Roastery House</option>
-                            <option>Third Wave Coffee</option>
-                            <option>KC Roasters</option>
-                          </select>
-                        </div>
-                        <div className="dash-form-row">
-                          <label className="dash-form-label" htmlFor="cafe-sku-input">Primary SKU & Quantity</label>
-                          <input type="text" id="cafe-sku-input" className="dash-form-input" defaultValue="Attikan Estate Blend · 10 kg" />
-                        </div>
-                        <div className="dash-form-row">
-                          <label className="dash-form-label" htmlFor="cafe-slot-input">Delivery Slot</label>
-                          <input type="text" id="cafe-slot-input" className="dash-form-input" defaultValue="Today, Morning 09:00 - 12:00" />
-                        </div>
-                        <div className="dash-modal-actions">
-                          <button type="button" className="dash-btn-ghost" onClick={() => setShowNewOrderModal(false)}>Cancel</button>
-                          <button
-                            type="button"
-                            className="dash-btn-primary"
-                            onClick={() => {
-                              setShowNewOrderModal(false);
-                              showToast('PO #GRB-1049 dispatched to Blue Tokai Roastery');
-                            }}
-                          >
-                            Dispatch PO
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </main>
-              </div>
-            </motion.div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ═════════════════════════════════════════════════════════════════════════
    SECTION 02: SUPPLIER PRODUCT
@@ -1245,9 +441,9 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
   };
 
   const supplierCursorCoords = [
-    { x: '52%', y: '160px', label: 'Parse WhatsApp PO' },
-    { x: '42%', y: '335px', label: 'Auto Batch Allocated' },
-    { x: '75%', y: '315px', label: 'Dispatch Morning Fleet' },
+    { x: '35%', y: '230px', label: 'Parse WhatsApp PO' },
+    { x: '75%', y: '190px', label: 'Roast Batch #4 (180kg)' },
+    { x: '75%', y: '295px', label: 'Dispatch Morning Fleet' },
   ];
 
   // Interactive UI State
@@ -1523,587 +719,202 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                 {/* Main Operations Area (Contained Smooth Scrolling) */}
                 <main
                   ref={mainScrollRef}
-                  className={`dashboard-main ${activeFeature !== null ? 'has-active-feature' : ''}`}
-                  onScroll={() => setHasScrolled(true)}
+                  className="dashboard-main"
                   tabIndex={0}
-                  aria-label="Scrollable supplier operational workspace"
+                  aria-label="Supplier operational workspace"
                 >
-                  {/* Floating Scroll Prompt */}
-                  <div className={`dash-scroll-prompt ${hasScrolled ? 'faded' : ''}`}>
-                    ↕ Scroll down to view dispatch &amp; settlements
-                  </div>
-
-                  {/* Top Navigation */}
+                  {/* Top Navigation Bar */}
                   <div className="dashboard-top-nav">
                     <div className="dashboard-heading-group">
                       <div className="dashboard-title-row">
                         <h3 className="dashboard-page-title">Wholesale Operations</h3>
                         <span className="dash-date-indicator">Today · 27 Sep 2026</span>
                       </div>
-                      <span className="dashboard-page-subtitle">Aggregated café demand, route dispatch, and automated T+1 settlements</span>
+                      <span className="dashboard-page-subtitle">RoastSupply & Dairy Co. · Bangalore Indiranagar Hub</span>
                     </div>
 
                     <div className="dashboard-top-nav-right">
-                      <button
-                        type="button"
-                        className="dash-icon-btn"
-                        title="Search Catalogue"
-                        aria-label="Search Catalogue"
-                        onClick={() => showToast('Search focused. Type below to filter SKUs.')}
-                      >
-                        <SvgIcons.Search />
-                      </button>
-                      <button
-                        type="button"
-                        className="dash-icon-btn"
-                        title="Notifications"
-                        aria-label="Notifications"
-                        onClick={() => showToast('34 WhatsApp orders processed for tomorrow morning')}
-                      >
-                        <SvgIcons.Bell />
-                        <span className="dash-notif-dot" />
-                      </button>
+                      <span className="status-pill status-available">
+                        <span className="status-dot" aria-hidden="true" />
+                        34 Orders Synced
+                      </span>
                       <button
                         type="button"
                         className="dash-btn-primary"
-                        onClick={() => setShowAddProductModal(true)}
-                      >
-                        <span>+</span>
-                        <span>Add SKU</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Moat View Navigation Tabs */}
-                  <div className="dash-view-tabs" role="tablist" aria-label="Operational views">
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'catalog' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('sup-catalog-table', 'catalog')}
-                    >
-                      📦 Catalog &amp; Par ({products.length})
-                    </button>
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'whatsapp' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('sup-whatsapp-section', 'whatsapp')}
-                    >
-                      ⚡ WhatsApp POs ({whatsappPOs.length})
-                    </button>
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'routes' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('sup-route-section', 'routes')}
-                    >
-                      🚚 Morning Dispatch (3 Vans)
-                    </button>
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'settlement' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('sup-settlement-section', 'settlement')}
-                    >
-                      💳 T+1 Payout (₹1.84L)
-                    </button>
-                  </div>
-
-                  {/* Supplier Moat Metrics Row */}
-                  <div className={`dashboard-overview-row ${activeFeature === 1 ? 'highlight-active-supplier' : ''}`}>
-                    <div
-                      className="dashboard-stat"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => scrollToAnchor('sup-whatsapp-section', 'whatsapp')}
-                      title="Click to view aggregated orders"
-                    >
-                      <span className="stat-label">Orders Today (34 Cafés)</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={34} />
-                      </div>
-                      <div className="stat-trend positive">
-                        <span>↑ 18.4% volume</span>
-                        <span className="stat-context">₹1.84L GMV</span>
-                      </div>
-                    </div>
-
-                    <div
-                      className="dashboard-stat"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => scrollToAnchor('sup-settlement-section', 'settlement')}
-                      title="Click to view T+1 settlement ledger"
-                    >
-                      <span className="stat-label">T+1 Bank Settlement</span>
-                      <div className="stat-value" style={{ color: '#15803D' }}>
-                        <span>₹1.84L</span>
-                      </div>
-                      <div className="stat-trend positive">
-                        <span>● Settled HDFC</span>
-                        <span className="stat-context">Zero bad debt</span>
-                      </div>
-                    </div>
-
-                    <div
-                      className="dashboard-stat"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => scrollToAnchor('sup-catalog-table', 'catalog')}
-                      title="Click to view inventory health"
-                    >
-                      <span className="stat-label">Par Telemetry</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={121} />
-                        <span style={{ fontSize: '12px', color: '#737373', fontWeight: 500 }}>/ 130 SKUs</span>
-                      </div>
-                      <div className="stat-trend warning">
-                        <span>● 7 Low stock</span>
-                        <span className="stat-context">auto-par reorder</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Attio-Style Workflow Automation Showcase */}
-                  <div className="dash-workflow-showcase dash-dot-grid">
-                    <WorkflowNode
-                      title="⚙️ Autonomous Batch Allocator"
-                      subtitle="Wholesale Order Auto-Batching"
-                      badgeText="Smart Allocation"
-                      accentColor="#22C55E"
-                    />
-                    <AnimatedBezierCable
-                      startX={190}
-                      startY={25}
-                      endX={340}
-                      endY={25}
-                      accentColor="#22C55E"
-                    />
-                    <div className="workflow-target-card">
-                      <div
-                        className="workflow-target-badge"
-                        style={{
-                          color: '#15803D',
-                          background: '#DCFCE7',
-                          borderColor: '#BBF7D0',
-                        }}
-                      >
-                        <span className="motion-live-dot" style={{ background: '#22C55E' }} />
-                        <span>
-                          {motionStep === 0
-                            ? 'Incoming WhatsApp PO: Third Wave (₹34,200)'
-                            : motionStep === 1
-                            ? 'Pallet Stock Reserved (Batch #ROAST-402)'
-                            : 'Van #1 Indiranagar Loop Dispatched'}
-                        </span>
-                      </div>
-                      <span className="workflow-target-time">
-                        {motionStep === 0
-                          ? 'Auto-parsed in 3s · No manual typing'
-                          : motionStep === 1
-                          ? 'Par level deducted: 82kg remaining'
-                          : '14 Café drops queued before 7:30 AM'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Control Bar: Search & Category Filter Pills */}
-                  <div className="dashboard-controls-bar" id="sup-catalog-table">
-                    <div className="dash-search-box">
-                      <SvgIcons.Search />
-                      <input
-                        type="text"
-                        placeholder="Filter by SKU or category..."
-                        className="dash-search-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        aria-label="Filter products or SKUs"
-                      />
-                      {searchQuery && (
-                        <button
-                          type="button"
-                          onClick={() => setSearchQuery('')}
-                          style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '10px' }}
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Clickable Category Pills */}
-                    <div className="dash-filter-group" role="radiogroup" aria-label="Category filters">
-                      {['All', 'Specialty Coffee', 'Plant & Dairy', 'Packaging', 'Syrups & Bases'].map((cat) => (
-                        <button
-                          key={cat}
-                          type="button"
-                          className={`dash-filter-pill ${selectedCategory === cat ? 'active' : ''}`}
-                          onClick={() => setSelectedCategory(cat)}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Asymmetrical Bento: Products Table + Inventory Health / Weekly Demand */}
-                  <div className="dashboard-bento">
-                    {/* Left: Products Table with Clickable Rows */}
-                    <div className={`dashboard-card ${activeFeature === 0 ? 'highlight-active-supplier' : ''}`} style={{ padding: '10px 12px' }}>
-                      <div className="card-header">
-                        <div>
-                          <span className="card-title">Live Wholesale Catalog</span>
-                          <span className="card-subtitle">Showing {filteredProducts.length} verified cafe wholesale lines</span>
-                        </div>
-                        <span className="status-pill status-available">
-                          <span className="status-dot" aria-hidden="true" />
-                          Interactive Catalog
-                        </span>
-                      </div>
-
-                      <div className="dashboard-table-container">
-                        <table className="dashboard-table" role="table" aria-label="Supplier wholesale catalog">
-                          <thead>
-                            <tr>
-                              <th scope="col">Product SKU</th>
-                              <th scope="col">Category</th>
-                              <th scope="col">Price</th>
-                              <th scope="col">Stock</th>
-                              <th scope="col">Orders</th>
-                              <th scope="col">Status</th>
-                              <th scope="col" style={{ textAlign: 'right' }}>Select</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {filteredProducts.map((p) => {
-                              const isSelected = selectedProduct.name === p.name;
-                              return (
-                                <tr
-                                  key={p.name}
-                                  className={`dashboard-table-row ${isSelected ? 'selected' : ''}`}
-                                  onClick={() => setSelectedProduct(p)}
-                                  tabIndex={0}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                      e.preventDefault();
-                                      setSelectedProduct(p);
-                                    }
-                                  }}
-                                  role="button"
-                                  aria-pressed={isSelected}
-                                  aria-label={`Select product ${p.name}`}
-                                >
-                                  <td className="table-cell-bold">
-                                    <div>{p.name}</div>
-                                    <div style={{ fontSize: '9px', color: '#888', fontWeight: 400 }}>{p.batch}</div>
-                                  </td>
-                                  <td className="table-cell-sub">{p.category}</td>
-                                  <td className="table-cell-num">{p.price}</td>
-                                  <td>
-                                    <span style={{ fontWeight: 600 }}>{p.stock}</span>
-                                    <span style={{ fontSize: '9px', color: '#999', marginLeft: '4px' }}>/ par {p.par}</span>
-                                  </td>
-                                  <td className="table-cell-num">{p.orders}</td>
-                                  <td>
-                                    <span className={`status-pill status-${p.status === 'Available' ? 'available' : 'low'}`}>
-                                      <span className="status-dot" aria-hidden="true" />
-                                      {p.status}
-                                    </span>
-                                  </td>
-                                  <td style={{ textAlign: 'right' }}>
-                                    <span className="table-action-arrow" aria-hidden="true">
-                                      <SvgIcons.ArrowRight />
-                                    </span>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Selected SKU Action Strip */}
-                      <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(23, 23, 23, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                        <div>
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, color: '#171717' }}>Selected: {selectedProduct.name}</span>
-                          <div style={{ fontSize: '9.5px', color: '#737373' }}>{selectedProduct.batch} · {selectedProduct.orders} café orders in queue</div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '6px' }}>
-                          <button
-                            type="button"
-                            className="dash-tab-btn"
-                            style={{ background: '#DCFCE7', color: '#166534', borderColor: '#BBF7D0' }}
-                            onClick={handleAllocateBatch}
-                          >
-                            + Allocate Batch (+10kg)
-                          </button>
-                          <button
-                            type="button"
-                            className="dash-tab-btn"
-                            onClick={() => showToast(`e-POD route manifest generated for ${selectedProduct.name}`)}
-                          >
-                            Print ePOD Slip
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: Supporting Modules (Inventory Distribution & Weekly Analytics) */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {/* Inventory Health Module */}
-                      <div className="dashboard-card">
-                        <div className="card-header">
-                          <span className="card-title">Inventory Health</span>
-                          <span className="card-subtitle">130 Total SKUs</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '10.5px', marginBottom: '6px' }}>
-                          <span style={{ color: '#166534', fontWeight: 600 }}>Safe Par: 121</span>
-                          <span style={{ color: '#D97706', fontWeight: 600 }}>Low: 7</span>
-                          <span style={{ color: '#B91C1C', fontWeight: 600 }}>Critical: 2</span>
-                        </div>
-                        <div style={{ width: '100%', height: '5px', borderRadius: '9999px', background: '#F3F4F6', display: 'flex', overflow: 'hidden' }}>
-                          <div style={{ width: '88%', background: '#22C55E' }} title="Healthy: 121" />
-                          <div style={{ width: '9%', background: '#F59E0B' }} title="Low Stock: 7" />
-                          <div style={{ width: '3%', background: '#EF4444' }} title="Out of Stock: 2" />
-                        </div>
-                        <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#737373' }}>
-                          <span>Top: <strong>Arabica Beans</strong> (+24%)</span>
-                          <span>Low: <strong>Matcha</strong> (4 kg)</span>
-                        </div>
-                      </div>
-
-                      {/* Orders by Week Analytics with Tooltips */}
-                      <div className="dashboard-card">
-                        <div className="card-header">
-                          <span className="card-title">Weekly Café Reorders</span>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#166534' }}>+18.4% Vol</span>
-                        </div>
-                        <div className="spend-chart-container">
-                          <div className="spend-chart-bars">
-                            <div className="spend-col" tabIndex={0} onClick={() => showToast('Week 1: 18 café reorders (₹98K GMV)')}>
-                              <div className="chart-tooltip">W1: 18 orders</div>
-                              <div className="spend-bar" style={{ height: '48%' }} />
-                              <span className="spend-col-label">W1</span>
-                            </div>
-                            <div className="spend-col" tabIndex={0} onClick={() => showToast('Week 2: 24 café reorders (₹1.32L GMV)')}>
-                              <div className="chart-tooltip">W2: 24 orders</div>
-                              <div className="spend-bar" style={{ height: '64%' }} />
-                              <span className="spend-col-label">W2</span>
-                            </div>
-                            <div className="spend-col" tabIndex={0} onClick={() => showToast('Week 3: 29 café reorders (₹1.61L GMV)')}>
-                              <div className="chart-tooltip">W3: 29 orders</div>
-                              <div className="spend-bar" style={{ height: '82%' }} />
-                              <span className="spend-col-label">W3</span>
-                            </div>
-                            <div className="spend-col" tabIndex={0} onClick={() => showToast('Week 4: 34 café reorders (₹1.84L GMV)')}>
-                              <div className="chart-tooltip">W4: 34 orders (+18.4%)</div>
-                              <div className="spend-bar active" style={{ height: '96%' }} />
-                              <span className="spend-col-label">W4</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── SCROLL DOWN MOAT SECTION 1: WhatsApp Ingest Feed ── */}
-                  <div className="dash-moat-section" id="sup-whatsapp-section">
-                    <div className="dash-section-header">
-                      <div className="dash-section-title">
-                        <span>⚡ WhatsApp PO Ingest Engine</span>
-                        <span className="dash-section-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>Zero Retyping</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="dash-tab-btn"
-                        style={{ background: '#22C55E', color: '#FFFFFF', borderColor: '#16A34A' }}
                         onClick={handleSimulateWhatsAppPO}
                       >
-                        + Simulate Incoming WhatsApp PO
+                        <span>+</span>
+                        <span>Simulate WhatsApp PO</span>
                       </button>
                     </div>
-                    <span style={{ fontSize: '10px', color: '#737373' }}>
-                      Gradient AI automatically converts unorganized WhatsApp messages & voice notes from café baristas into verified purchase orders.
-                    </span>
+                  </div>
 
-                    <div className="whatsapp-po-stream">
-                      {whatsappPOs.map((po) => (
-                        <div key={po.id} className="whatsapp-po-card" tabIndex={0} onClick={() => showToast(`Opening order audit thread for ${po.cafe}`)}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span className="whatsapp-tag">WA Auto</span>
-                            <div>
-                              <div style={{ fontSize: '11px', fontWeight: 700, color: '#171717' }}>
-                                {po.cafe} <span style={{ fontWeight: 400, color: '#737373', fontSize: '9.5px' }}>· {po.location}</span>
-                              </div>
-                              <div style={{ fontSize: '9.5px', color: '#525252', fontStyle: 'italic' }}>{po.rawText}</div>
+                  {/* Linear Core Journey Pipeline (Clean & Minimal) */}
+                  <div className="linear-core-pipeline" role="region" aria-label="Wholesale Lifecycle Pipeline">
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge">01 Ingest</span>
+                      <span className="pipeline-step-title">WhatsApp POs</span>
+                      <span className="pipeline-step-proof">34 Auto-Parsed</span>
+                    </div>
+                    <span className="pipeline-arrow-separator">➔</span>
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge">02 Production</span>
+                      <span className="pipeline-step-title">Roast Batching</span>
+                      <span className="pipeline-step-proof">180kg Scheduled</span>
+                    </div>
+                    <span className="pipeline-arrow-separator">➔</span>
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge">03 Dispatch</span>
+                      <span className="pipeline-step-title">Morning Routes</span>
+                      <span className="pipeline-step-proof">3 Vans · 07:30 Cutoff</span>
+                    </div>
+                    <span className="pipeline-arrow-separator">➔</span>
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge">04 Settlement</span>
+                      <span className="pipeline-step-title">T+1 Bank Payout</span>
+                      <span className="pipeline-step-proof">₹1.84L HDFC</span>
+                    </div>
+                  </div>
+
+                  {/* Three High-Signal Metrics */}
+                  <div className="dashboard-overview-row">
+                    <div className="dashboard-stat">
+                      <span className="stat-label">Today's Demand (34 Cafés)</span>
+                      <div className="stat-value">₹1.84L</div>
+                      <div className="stat-trend positive">
+                        <span>↑ 18.4% volume</span>
+                        <span className="stat-context">100% WhatsApp auto-parsed</span>
+                      </div>
+                    </div>
+
+                    <div className="dashboard-stat">
+                      <span className="stat-label">Batch Roast #4 Scheduled</span>
+                      <div className="stat-value">180 kg</div>
+                      <div className="stat-trend positive">
+                        <span>● 06:00 AM Roaster 1</span>
+                        <span className="stat-context">Arabica Medium Roast</span>
+                      </div>
+                    </div>
+
+                    <div className="dashboard-stat">
+                      <span className="stat-label">T+1 Automated Settlement</span>
+                      <div className="stat-value" style={{ color: '#15803D' }}>₹1.84L</div>
+                      <div className="stat-trend positive">
+                        <span>✓ HDFC Disbursed</span>
+                        <span className="stat-context">Zero bad debt guarantee</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Clean 2-Column Bento Workspace */}
+                  <div className="dashboard-bento">
+                    {/* Left: Live WhatsApp PO Stream */}
+                    <div className="dashboard-card" style={{ padding: '10px 12px' }}>
+                      <div className="card-header">
+                        <div>
+                          <span className="card-title">Live WhatsApp PO Stream</span>
+                          <span className="card-subtitle">AI converts voice & text orders into verified POs</span>
+                        </div>
+                        <button
+                          type="button"
+                          className="table-action-btn"
+                          style={{ background: '#DCFCE7', color: '#166534', borderColor: '#BBF7D0' }}
+                          onClick={handleSimulateWhatsAppPO}
+                        >
+                          + Simulate Incoming PO
+                        </button>
+                      </div>
+
+                      <div className="simple-order-list">
+                        {whatsappPOs.slice(0, 4).map((po) => (
+                          <div
+                            key={po.id}
+                            className="simple-order-card"
+                            onClick={() => showToast(`Order manifest opened for ${po.cafe} (${po.amount})`)}
+                          >
+                            <div className="simple-card-header">
+                              <span className="simple-card-title">{po.cafe}</span>
+                              <span className={`status-pill status-${po.status === 'Picked' ? 'processing' : po.status === 'In Van #1' ? 'transit' : 'available'}`}>
+                                <span className="status-dot" aria-hidden="true" />
+                                {po.status}
+                              </span>
+                            </div>
+                            <div className="simple-card-meta">{po.location} · {po.time}</div>
+                            <div className="simple-card-body">{po.rawText}</div>
+                            <div className="simple-card-footer">
+                              <span style={{ color: '#166534', fontWeight: 600 }}>➔ {po.parsedSummary}</span>
+                              <span style={{ fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono, monospace)' }}>{po.amount}</span>
                             </div>
                           </div>
-                          <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                            <div style={{ fontSize: '11px', fontWeight: 700, color: '#166534' }}>{po.amount}</div>
-                            <div style={{ fontSize: '9px', color: '#888' }}>{po.status} · {po.time}</div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Right: Production Roasting & Van Route Dispatch */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {/* Batch Roasting Card */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }}>
+                        <div className="card-header">
+                          <span className="card-title">⚡ Batch Roast #4</span>
+                          <span style={{ fontSize: '9.5px', color: '#166534', fontWeight: 700 }}>180 kg Arabica</span>
+                        </div>
+                        <div style={{ fontSize: '9.5px', color: '#64748B', marginBottom: '6px' }}>
+                          Consolidated across 34 café POs · Scheduled 05:00 AM
+                        </div>
+                        <div style={{ height: '5px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden', marginBottom: '8px' }}>
+                          <div style={{ width: '82%', height: '100%', background: '#16A34A', borderRadius: '99px' }} />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155' }}>
+                          <span>Roasted: <strong>148 kg</strong></span>
+                          <span>Finishing: <strong>32 kg</strong></span>
+                        </div>
+                      </div>
+
+                      {/* Morning Route Dispatch */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }}>
+                        <div className="card-header">
+                          <span className="card-title">🚚 Morning Fleet Clusters</span>
+                          <span className="status-pill status-transit">07:30 Cutoff</span>
+                        </div>
+                        <div className="simple-route-strip">
+                          <div className="simple-route-row">
+                            <span><strong>Van #1</strong> (Driver: Ramesh)</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>14 Drops · Indiranagar</span>
+                          </div>
+                          <div className="simple-route-row">
+                            <span><strong>Van #2</strong> (Driver: Suresh)</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>11 Drops · Koramangala</span>
+                          </div>
+                          <div className="simple-route-row">
+                            <span><strong>Van #3</strong> (Driver: Imran)</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>9 Drops · CBD & Lavelle</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* ── SCROLL DOWN MOAT SECTION 2: Morning Van Route Optimization ── */}
-                  <div className="dash-moat-section" id="sup-route-section">
-                    <div className="dash-section-header">
-                      <div className="dash-section-title">
-                        <span>🚚 Morning Fleet Route Dispatch</span>
-                        <span className="dash-section-badge" style={{ background: '#E0F2FE', color: '#0369A1' }}>3 Vans Active</span>
-                      </div>
-                      <span style={{ fontSize: '9.5px', color: '#737373' }}>Delivery cutoff: 07:30 AM before café morning peak</span>
-                    </div>
-
-                    <div className="route-grid">
-                      <div
-                        className={`route-van-card ${selectedVan === 0 ? 'selected' : ''}`}
-                        onClick={() => { setSelectedVan(0); showToast('Van #1 Route Selected: Indiranagar Loop (14 Stops)'); }}
-                        tabIndex={0}
-                        role="button"
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 700, fontSize: '11px', color: '#171717' }}>Van #1 · Indiranagar</span>
-                          <span className="status-pill status-available" style={{ fontSize: '8.5px', padding: '1px 5px' }}>85% Done</span>
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: '#737373' }}>Driver: Ramesh · 14 Drops</div>
-                        <div className="delivery-prog-bar" style={{ width: '100%', height: '4px' }}>
-                          <div className="delivery-prog-fill" style={{ width: '85%' }} />
-                        </div>
-                        <div style={{ fontSize: '9px', color: '#166534', fontWeight: 600 }}>Next: Third Wave (ETA 8m)</div>
                       </div>
 
-                      <div
-                        className={`route-van-card ${selectedVan === 1 ? 'selected' : ''}`}
-                        onClick={() => { setSelectedVan(1); showToast('Van #2 Route Selected: Koramangala Hub (12 Stops)'); }}
-                        tabIndex={0}
-                        role="button"
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 700, fontSize: '11px', color: '#171717' }}>Van #2 · Koramangala</span>
-                          <span className="status-pill status-transit" style={{ fontSize: '8.5px', padding: '1px 5px' }}>50% Done</span>
+                      {/* Stripe Automated Bank Settlement Card */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px', background: '#F0FDF4', borderColor: '#BBF7D0' }}>
+                        <div className="card-header" style={{ marginBottom: '2px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#14532D' }}>T+1 Automated Bank Settlement</span>
+                          <span style={{ fontSize: '9px', color: '#166534', fontWeight: 600 }}>UTR: HDFC-99281048</span>
                         </div>
-                        <div style={{ fontSize: '9.5px', color: '#737373' }}>Driver: Suresh · 12 Drops</div>
-                        <div className="delivery-prog-bar" style={{ width: '100%', height: '4px' }}>
-                          <div className="delivery-prog-fill" style={{ width: '50%' }} />
+                        <div style={{ fontSize: '9.5px', color: '#166534', lineHeight: 1.4 }}>
+                          <strong>₹1,84,200.00</strong> auto-disbursed at 06:00 AM IST directly to HDFC Bank account.
                         </div>
-                        <div style={{ fontSize: '9px', color: '#B45309', fontWeight: 600 }}>Next: Blue Tokai (ETA 14m)</div>
-                      </div>
-
-                      <div
-                        className={`route-van-card ${selectedVan === 2 ? 'selected' : ''}`}
-                        onClick={() => { setSelectedVan(2); showToast('Van #3 Route Selected: Whitefield Hub (8 Stops)'); }}
-                        tabIndex={0}
-                        role="button"
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 700, fontSize: '11px', color: '#171717' }}>Van #3 · Whitefield</span>
-                          <span className="status-pill status-scheduled" style={{ fontSize: '8.5px', padding: '1px 5px' }}>Loading</span>
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: '#737373' }}>Driver: Manjunath · 8 Drops</div>
-                        <div className="delivery-prog-bar" style={{ width: '100%', height: '4px' }}>
-                          <div className="delivery-prog-fill" style={{ width: '15%', background: '#8B5CF6' }} />
-                        </div>
-                        <div style={{ fontSize: '9px', color: '#6D28D9', fontWeight: 600 }}>Departs 06:30 AM</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── SCROLL DOWN MOAT SECTION 3: T+1 Automated Settlements ── */}
-                  <div className="dash-moat-section" id="sup-settlement-section" style={{ paddingBottom: '16px' }}>
-                    <div className="dash-section-header">
-                      <div className="dash-section-title">
-                        <span>💳 Instant T+1 Settlement &amp; Invoicing Ledger</span>
-                        <span className="dash-section-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>Zero Bad Debt</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="dash-tab-btn"
-                        onClick={() => showToast('GST reconciliation ledger exported to Tally / Zoho Books')}
-                      >
-                        Export GST Ledger (Tally Sync)
-                      </button>
-                    </div>
-
-                    <div className="settlement-ledger-card">
-                      <div className="settlement-stat-row">
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#525252', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 700 }}>Settled Today to HDFC Bank</span>
-                          <div style={{ fontSize: '18px', fontWeight: 800, color: '#166534' }}>₹1,84,200.00</div>
-                          <span style={{ fontSize: '9.5px', color: '#737373' }}>UTR: HDFC-99281048 · Disbursed 06:00 AM IST</span>
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '9.5px', color: '#525252', fontWeight: 600 }}>Transit Escrow: ₹45,300</span>
-                          <div style={{ fontSize: '11px', fontWeight: 700, color: '#171717' }}>Bad Debt: ₹0.00</div>
-                          <span style={{ fontSize: '9px', color: '#16A34A', fontWeight: 600 }}>✓ Gradient Escrow Guaranteed</span>
-                        </div>
-                      </div>
-                      <div style={{ fontSize: '9.5px', color: '#525252', borderTop: '1px solid #DCFCE7', paddingTop: '6px', display: 'flex', justifyContent: 'space-between' }}>
-                        <span>34 Verified Café B2B e-Invoices Auto-Generated</span>
-                        <span style={{ fontWeight: 600, color: '#166534' }}>All Payments Secured Before Delivery</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Add Product Modal */}
-                  {showAddProductModal && (
-                    <div className="dash-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-supplier-product-title">
-                      <div className="dash-modal-card">
-                        <div className="dash-modal-header">
-                          <h4 className="dash-modal-title" id="modal-supplier-product-title">Publish Wholesale Product</h4>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #DCFCE7' }}>
+                          <span style={{ fontSize: '9px', color: '#15803D', fontWeight: 700 }}>✓ Zero Bad Debt Escrow</span>
                           <button
                             type="button"
-                            className="dash-modal-close"
-                            onClick={() => setShowAddProductModal(false)}
-                            aria-label="Close modal"
+                            className="table-action-btn"
+                            style={{ fontSize: '9px', padding: '2px 6px' }}
+                            onClick={() => showToast('GST reconciliation ledger exported to Tally')}
                           >
-                            ✕
+                            Tally GST Sync
                           </button>
                         </div>
-                        <form onSubmit={handleCreateProduct}>
-                          <div className="dash-form-row">
-                            <label className="dash-form-label" htmlFor="supplier-product-name">Product Name</label>
-                            <input
-                              type="text"
-                              id="supplier-product-name"
-                              className="dash-form-input"
-                              placeholder="e.g. Single Origin Cold Brew Concentrate"
-                              value={newProductName}
-                              onChange={(e) => setNewProductName(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="dash-form-row" style={{ marginTop: '8px' }}>
-                            <label className="dash-form-label" htmlFor="supplier-category-select">Category</label>
-                            <select
-                              className="dash-form-select"
-                              id="supplier-category-select"
-                              value={newProductCategory}
-                              onChange={(e) => setNewProductCategory(e.target.value)}
-                            >
-                              <option>Specialty Coffee</option>
-                              <option>Plant & Dairy</option>
-                              <option>Packaging</option>
-                              <option>Syrups & Bases</option>
-                              <option>Beverage Bases</option>
-                            </select>
-                          </div>
-                          <div className="dash-form-row" style={{ marginTop: '8px' }}>
-                            <label className="dash-form-label" htmlFor="supplier-price-input">Wholesale Price (per unit/kg)</label>
-                            <input
-                              type="text"
-                              id="supplier-price-input"
-                              className="dash-form-input"
-                              value={newProductPrice}
-                              onChange={(e) => setNewProductPrice(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="dash-modal-actions" style={{ marginTop: '12px' }}>
-                            <button type="button" className="dash-btn-ghost" onClick={() => setShowAddProductModal(false)}>Cancel</button>
-                            <button type="submit" className="dash-btn-primary">
-                              Save &amp; Publish SKU
-                            </button>
-                          </div>
-                        </form>
                       </div>
                     </div>
-                  )}
+                  </div>
                 </main>
               </div>
             </motion.div>
@@ -2388,9 +1199,9 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
   };
 
   const brandCursorCoords = [
-    { x: '55%', y: '165px', label: 'Filter 150 Specialty Cafés' },
-    { x: '68%', y: '260px', label: 'Deploy Barista Sampling Kits' },
-    { x: '45%', y: '345px', label: '94% Barista Approval Score' },
+    { x: '35%', y: '235px', label: 'Deploy Barista Sampling Flight' },
+    { x: '75%', y: '190px', label: '94.2% SCA Cupping Score' },
+    { x: '75%', y: '330px', label: 'Convert to Net-15 Standing PO' },
   ];
 
   // Interactive UI State
@@ -2746,513 +1557,210 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                 {/* Main Operations Area (Contained Smooth Scrolling) */}
                 <main
                   ref={mainScrollRef}
-                  className={`dashboard-main ${activeFeature !== null ? 'has-active-feature' : ''}`}
-                  onScroll={() => setHasScrolled(true)}
+                  className="dashboard-main"
                   tabIndex={0}
-                  aria-label="Scrollable brand telemetry workspace"
+                  aria-label="Brand growth and telemetry workspace"
                 >
-                  {/* Floating Scroll Prompt */}
-                  <div className={`dash-scroll-prompt ${hasScrolled ? 'faded' : ''}`}>
-                    ↕ Scroll down to view barista feedback &amp; conversion funnel
-                  </div>
-
                   {/* Top Navigation */}
                   <div className="dashboard-top-nav">
                     <div className="dashboard-heading-group">
                       <div className="dashboard-title-row">
-                        <h3 className="dashboard-page-title">Brand Growth &amp; Telemetry</h3>
+                        <h3 className="dashboard-page-title">Brand OS Telemetry</h3>
                         <span className="dash-date-indicator">Q3 · Active Distribution</span>
                       </div>
-                      <span className="dashboard-page-subtitle">Direct café consumption telemetry, barista tasting flights, and recurring contracts</span>
+                      <span className="dashboard-page-subtitle">Origins Beverage &amp; Oat Co. · Specialty Café Distribution</span>
                     </div>
 
                     <div className="dashboard-top-nav-right">
-                      <button
-                        type="button"
-                        className="dash-icon-btn"
-                        title="Search Campaigns"
-                        aria-label="Search Campaigns"
-                        onClick={() => showToast('Search focused. Filter flights by name.')}
-                      >
-                        <SvgIcons.Search />
-                      </button>
-                      <button
-                        type="button"
-                        className="dash-icon-btn"
-                        title="Notifications"
-                        aria-label="Notifications"
-                        onClick={() => showToast('141 barista tasting scorecards logged across 3 cities')}
-                      >
-                        <SvgIcons.Bell />
-                        <span className="dash-notif-dot" />
-                      </button>
+                      <span className="status-pill" style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}>
+                        <span className="status-dot" style={{ background: '#7C3AED' }} aria-hidden="true" />
+                        312 Cafés Reached
+                      </span>
                       <button
                         type="button"
                         className="dash-btn-primary"
+                        style={{ background: '#7C3AED' }}
                         onClick={() => setShowNewCampaignModal(true)}
                       >
                         <span>+</span>
-                        <span>New Flight</span>
+                        <span>Deploy Sampling Flight</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Moat View Navigation Tabs */}
-                  <div className="dash-view-tabs" role="tablist" aria-label="Brand views">
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'campaigns' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('brand-campaigns-table', 'campaigns')}
-                    >
-                      🚀 Active Flights ({campaigns.length})
-                    </button>
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'telemetry' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('brand-telemetry-section', 'telemetry')}
-                    >
-                      ☕ Barista Scorecards (141)
-                    </button>
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'funnel' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('brand-funnel-section', 'funnel')}
-                    >
-                      📊 Conversion Funnel (78%)
-                    </button>
-                    <button
-                      type="button"
-                      className={`dash-tab-btn ${activeTab === 'share' ? 'active' : ''}`}
-                      onClick={() => scrollToAnchor('brand-share-section', 'share')}
-                    >
-                      📈 Market Share (44%)
-                    </button>
+                  {/* Linear Core Journey Pipeline */}
+                  <div className="linear-core-pipeline" role="region" aria-label="Brand Distribution Lifecycle Pipeline">
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>01 Seed</span>
+                      <span className="pipeline-step-title">Sampling Flights</span>
+                      <span className="pipeline-step-proof">312 Cafés</span>
+                    </div>
+                    <span className="pipeline-arrow-separator">➔</span>
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>02 Cupping</span>
+                      <span className="pipeline-step-title">Barista Feedback</span>
+                      <span className="pipeline-step-proof">94.2% Approval</span>
+                    </div>
+                    <span className="pipeline-arrow-separator">➔</span>
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>03 Convert</span>
+                      <span className="pipeline-step-title">Standing POs</span>
+                      <span className="pipeline-step-proof">78% Reorder Rate</span>
+                    </div>
+                    <span className="pipeline-arrow-separator">➔</span>
+                    <div className="pipeline-stage">
+                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>04 Velocity</span>
+                      <span className="pipeline-step-title">Direct Telemetry</span>
+                      <span className="pipeline-step-proof">₹4.82L/mo MRR</span>
+                    </div>
                   </div>
 
-                  {/* Brand Moat KPI Area */}
+                  {/* Three High-Signal Metrics */}
                   <div className="dashboard-overview-row">
-                    <div
-                      className="dashboard-stat"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => scrollToAnchor('brand-telemetry-section', 'telemetry')}
-                      title="Click to view verified café telemetry"
-                    >
-                      <span className="stat-label">Cafés Reached</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={312} />
-                      </div>
+                    <div className="dashboard-stat">
+                      <span className="stat-label">Active Specialty Cafés</span>
+                      <div className="stat-value" style={{ color: '#6D28D9' }}>312</div>
                       <div className="stat-trend positive">
-                        <span>↑ +34 this month</span>
-                        <span className="stat-context">2,410L daily sell-through</span>
+                        <span>↑ 28 New this month</span>
+                        <span className="stat-context">Bangalore, Mumbai, Delhi</span>
                       </div>
                     </div>
 
-                    <div
-                      className="dashboard-stat"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => scrollToAnchor('brand-telemetry-section', 'telemetry')}
-                      title="Click to view barista approval"
-                    >
-                      <span className="stat-label">Barista Approval Rating</span>
-                      <div className="stat-value" style={{ color: '#6D28D9' }}>
-                        <span>94.2%</span>
-                        <span style={{ fontSize: '11px', color: '#888', fontWeight: 500, marginLeft: '4px' }}>4.9★</span>
-                      </div>
+                    <div className="dashboard-stat">
+                      <span className="stat-label">Barista Sensory Approval</span>
+                      <div className="stat-value">94.2%</div>
                       <div className="stat-trend positive">
-                        <span>● 141 Tastings</span>
-                        <span className="stat-context">zero curdling in light roast</span>
+                        <span>★ 4.9 / 5.0 (SCA scale)</span>
+                        <span className="stat-context">141 Cupping reviews logged</span>
                       </div>
                     </div>
 
-                    <div
-                      className="dashboard-stat"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => scrollToAnchor('brand-funnel-section', 'funnel')}
-                      title="Click to view recurring reorder conversion"
-                    >
-                      <span className="stat-label">Trial-to-Reorder Rate</span>
-                      <div className="stat-value">
-                        <AnimatedCounter value={78} suffix="%" />
-                      </div>
+                    <div className="dashboard-stat">
+                      <span className="stat-label">Recurring Wholesale GMV</span>
+                      <div className="stat-value" style={{ color: '#15803D' }}>₹4.82L</div>
                       <div className="stat-trend positive">
-                        <span>↑ ₹4.8L recurring</span>
-                        <span className="stat-context">110 cafés on auto-cart</span>
+                        <span>✓ 78% Trial Reorder</span>
+                        <span className="stat-context">Standing weekly Net-15 POs</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Attio-Style Workflow Automation Showcase */}
-                  <div className="dash-workflow-showcase dash-dot-grid">
-                    <WorkflowNode
-                      title="🎯 Sampling Flight Targeter"
-                      subtitle="Filter: Top 150 Specialty Cafés"
-                      badgeText="Audience Sequence"
-                      accentColor="#9333EA"
-                    />
-                    <AnimatedBezierCable
-                      startX={190}
-                      startY={25}
-                      endX={340}
-                      endY={25}
-                      accentColor="#9333EA"
-                    />
-                    <div className="workflow-target-card">
-                      <div
-                        className="workflow-target-badge"
-                        style={{
-                          color: '#6D28D9',
-                          background: '#EDE9FE',
-                          borderColor: '#DDD6FE',
-                        }}
-                      >
-                        <span className="motion-live-dot" style={{ background: '#9333EA' }} />
-                        <span>
-                          {motionStep === 0
-                            ? '142 Cafés Targeted (Tier-1 Specialty)'
-                            : motionStep === 1
-                            ? '1,500 Sample Kits Deployed to Baristas'
-                            : '94% Barista Approval · 78% Reorder Conversion'}
-                        </span>
-                      </div>
-                      <span className="workflow-target-time">
-                        {motionStep === 0
-                          ? 'Bangalore Indiranagar & Mumbai Bandra'
-                          : motionStep === 1
-                          ? 'Seeded with digital tasting scorecards'
-                          : '110 Cafés placed weekly recurring wholesale orders'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Control Bar: Search & Metro Filter Pills */}
-                  <div className="dashboard-controls-bar" id="brand-campaigns-table">
-                    <div className="dash-search-box">
-                      <SvgIcons.Search />
-                      <input
-                        type="text"
-                        placeholder="Filter campaigns or products..."
-                        className="dash-search-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        aria-label="Filter campaigns or products"
-                      />
-                      {searchQuery && (
-                        <button
-                          type="button"
-                          onClick={() => setSearchQuery('')}
-                          style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '10px' }}
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Clickable Metro Pills */}
-                    <div className="dash-filter-group" role="radiogroup" aria-label="Metro filters">
-                      {(['All', 'Bangalore', 'Mumbai', 'Delhi-NCR'] as const).map((m) => (
-                        <button
-                          key={m}
-                          type="button"
-                          className={`dash-filter-pill ${selectedMetro === m ? 'active' : ''}`}
-                          onClick={() => setSelectedMetro(m)}
-                        >
-                          {m === 'All' ? 'All Metros (312)' : `${m} Hub`}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Asymmetrical Bento: Campaigns Table + Detail/Analytics + Network & Adoption */}
+                  {/* Clean 2-Column Bento Workspace */}
                   <div className="dashboard-bento">
-                    {/* Left: Campaigns Table with Clickable Rows */}
-                    <div className={`dashboard-card ${activeFeature === 1 ? 'highlight-active-brand' : ''}`} style={{ padding: '10px 12px' }}>
+                    {/* Left: Active Sampling Flights */}
+                    <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                       <div className="card-header">
                         <div>
-                          <span className="card-title">Targeted Sampling Campaigns</span>
-                          <span className="card-subtitle">Showing {filteredCampaigns.length} active brand flights</span>
+                          <span className="card-title">Active Sampling Flights</span>
+                          <span className="card-subtitle">Direct seeding to verified barista stations</span>
                         </div>
-                        <span className="status-pill status-active">
-                          <span className="status-dot" aria-hidden="true" />
-                          Live Flights
-                        </span>
-                      </div>
-
-                      <div className="dashboard-table-container">
-                        <table className="dashboard-table" role="table" aria-label="Brand active campaigns">
-                          <thead>
-                            <tr>
-                              <th scope="col">Campaign Flight</th>
-                              <th scope="col">Cafés</th>
-                              <th scope="col">Product</th>
-                              <th scope="col">Status</th>
-                              <th scope="col">Adoption</th>
-                              <th scope="col" style={{ textAlign: 'right' }}>Select</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {filteredCampaigns.map((c) => {
-                              const isSelected = selectedCampaign.title === c.title;
-                              return (
-                                <tr
-                                  key={c.title}
-                                  className={`dashboard-table-row ${isSelected ? 'selected' : ''}`}
-                                  onClick={() => setSelectedCampaign(c)}
-                                  tabIndex={0}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                      e.preventDefault();
-                                      setSelectedCampaign(c);
-                                    }
-                                  }}
-                                  role="button"
-                                  aria-pressed={isSelected}
-                                  aria-label={`Select campaign ${c.title}`}
-                                >
-                                  <td className="table-cell-bold">
-                                    <div>{c.title}</div>
-                                    <div style={{ fontSize: '9px', color: '#888', fontWeight: 400 }}>{c.metro} · {c.period}</div>
-                                  </td>
-                                  <td>{c.cafes}</td>
-                                  <td className="table-cell-sub">{c.product}</td>
-                                  <td>
-                                    <span className={`status-pill status-${c.status === 'Active' ? 'active' : c.status === 'Scheduled' ? 'scheduled' : 'completed'}`}>
-                                      <span className="status-dot" aria-hidden="true" />
-                                      {c.status}
-                                    </span>
-                                  </td>
-                                  <td className="table-cell-num" style={{ color: '#6D28D9', fontWeight: 700 }}>{c.performance}</td>
-                                  <td style={{ textAlign: 'right' }}>
-                                    <span className="table-action-arrow" aria-hidden="true">
-                                      <SvgIcons.ArrowRight />
-                                    </span>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Selected Campaign Detail Panel */}
-                      <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(23, 23, 23, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                        <div>
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, color: '#171717' }}>Selected Flight: {selectedCampaign.title}</span>
-                          <div style={{ fontSize: '9.5px', color: '#737373' }}>
-                            {selectedCampaign.reach} · Orders: {selectedCampaign.orders} · Reorder: {selectedCampaign.reorderRate}
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '6px' }}>
-                          <button
-                            type="button"
-                            className="dash-tab-btn"
-                            style={{ background: '#EDE9FE', color: '#5B21B6', borderColor: '#DDD6FE' }}
-                            onClick={handleSeedMoreKits}
-                          >
-                            + Seed Next Flight (+20 Cafés)
-                          </button>
-                          <button
-                            type="button"
-                            className="dash-tab-btn"
-                            onClick={() => showToast(`141 barista sensory evaluations exported for ${selectedCampaign.title}`)}
-                          >
-                            Export Scorecards
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: Abstract Café Network & Product Adoption */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {/* Abstract Café Reach Cluster */}
-                      <div className={`dashboard-card ${activeFeature === 0 ? 'highlight-active-brand' : ''}`}>
-                        <div className="card-header">
-                          <span className="card-title">Café Distribution Mesh</span>
-                          <span className="card-subtitle">312 verified nodes</span>
-                        </div>
-                        <div className="network-viz-container">
-                          <svg className="network-svg" viewBox="0 0 200 64" aria-label="Abstract network graph connecting Brand to 312 cafes">
-                            <line x1="100" y1="32" x2="35" y2="18" stroke="#DDD6FE" strokeWidth="1.2" strokeDasharray="2,2" />
-                            <line x1="100" y1="32" x2="45" y2="48" stroke="#DDD6FE" strokeWidth="1.2" strokeDasharray="2,2" />
-                            <line x1="100" y1="32" x2="155" y2="20" stroke="#DDD6FE" strokeWidth="1.2" strokeDasharray="2,2" />
-                            <line x1="100" y1="32" x2="165" y2="46" stroke="#DDD6FE" strokeWidth="1.2" strokeDasharray="2,2" />
-                            <line x1="100" y1="32" x2="100" y2="12" stroke="#DDD6FE" strokeWidth="1.2" strokeDasharray="2,2" />
-                            <line x1="100" y1="32" x2="100" y2="52" stroke="#DDD6FE" strokeWidth="1.2" strokeDasharray="2,2" />
-
-                            <circle cx="35" cy="18" r="4" fill="#C4B5FD" />
-                            <circle cx="45" cy="48" r="4.5" fill="#A78BFA" />
-                            <circle cx="155" cy="20" r="4" fill="#C4B5FD" />
-                            <circle cx="165" cy="46" r="5" fill="#A78BFA" />
-                            <circle cx="100" cy="12" r="3.5" fill="#DDD6FE" />
-                            <circle cx="100" cy="52" r="4" fill="#DDD6FE" />
-
-                            <circle cx="100" cy="32" r="8" fill="#6D28D9" />
-                            <circle cx="100" cy="32" r="12" fill="none" stroke="#6D28D9" strokeWidth="1" opacity="0.3" />
-                          </svg>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#6B5E87', marginTop: '6px' }}>
-                          <span>78% active weekly reorders</span>
-                          <span style={{ fontWeight: 600, color: '#2E1065' }}>+34 venues this month</span>
-                        </div>
-                      </div>
-
-                      {/* Product Adoption Breakdown */}
-                      <div className={`dashboard-card ${activeFeature === 2 ? 'highlight-active-brand' : ''}`}>
-                        <div className="card-header">
-                          <span className="card-title">Consumption Velocity</span>
-                          <span className="card-subtitle">Daily Café Liters</span>
-                        </div>
-                        <div className="inventory-list">
-                          <div className="inventory-row">
-                            <div className="inventory-row-header">
-                              <span className="inventory-item-name">Barista Oat Milk</span>
-                              <span style={{ color: '#5B21B6', fontWeight: 600 }}>1,840 L/day (84%)</span>
-                            </div>
-                            <div className="inventory-bar-bg">
-                              <div className="inventory-bar-fill" style={{ width: '84%', background: '#6D28D9' }} />
-                            </div>
-                          </div>
-
-                          <div className="inventory-row">
-                            <div className="inventory-row-header">
-                              <span className="inventory-item-name">Nitro Cold Brew</span>
-                              <span style={{ color: '#7C3AED', fontWeight: 600 }}>380 L/day (72%)</span>
-                            </div>
-                            <div className="inventory-bar-bg">
-                              <div className="inventory-bar-fill" style={{ width: '72%', background: '#9333EA' }} />
-                            </div>
-                          </div>
-
-                          <div className="inventory-row">
-                            <div className="inventory-row-header">
-                              <span className="inventory-item-name">Craft Syrups</span>
-                              <span style={{ color: '#5B21B6', fontWeight: 600 }}>190 Btl/day (64%)</span>
-                            </div>
-                            <div className="inventory-bar-bg">
-                              <div className="inventory-bar-fill" style={{ width: '64%', background: '#A78BFA' }} />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── SCROLL DOWN MOAT SECTION 1: Verified Barista Station Tasting Notes ── */}
-                  <div className="dash-moat-section" id="brand-telemetry-section">
-                    <div className="dash-section-header">
-                      <div className="dash-section-title">
-                        <span>☕ Verified Barista Tasting Telemetry</span>
-                        <span className="dash-section-badge" style={{ background: '#EDE9FE', color: '#6D28D9' }}>141 Submissions</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="dash-tab-btn"
-                        style={{ background: '#7C3AED', color: '#FFFFFF', borderColor: '#6D28D9' }}
-                        onClick={handleSeedMoreKits}
-                      >
-                        + Seed Flight to 20 New Cafés
-                      </button>
-                    </div>
-                    <span style={{ fontSize: '10px', color: '#737373' }}>
-                      Real, unfiltered feedback logged directly by head baristas during structured tasting flights on Gradient.
-                    </span>
-
-                    <div className="barista-reviews-grid">
-                      {baristaReviews.map((rev) => (
-                        <div
-                          key={rev.id}
-                          className="barista-quote-card"
-                          onClick={() => showToast(`Full sensory scorecard opened for ${rev.cafe}`)}
-                          tabIndex={0}
-                          role="button"
+                        <button
+                          type="button"
+                          className="table-action-btn"
+                          style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}
+                          onClick={() => setShowNewCampaignModal(true)}
                         >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 700, fontSize: '10.5px', color: '#171717' }}>{rev.cafe}</span>
-                            <span style={{ color: '#F59E0B', fontSize: '10px', fontWeight: 700 }}>★★★★★ {rev.rating}</span>
+                          + New Flight
+                        </button>
+                      </div>
+
+                      <div className="simple-flight-list">
+                        {campaigns.slice(0, 4).map((c) => (
+                          <div
+                            key={c.title}
+                            className="simple-flight-card"
+                            onClick={() => showToast(`Telemetry view opened for ${c.title} (${c.approval})`)}
+                          >
+                            <div className="simple-card-header">
+                              <span className="simple-card-title">{c.title}</span>
+                              <span className="status-pill" style={{ background: '#F5F3FF', color: '#6D28D9' }}>
+                                <span className="status-dot" style={{ background: '#7C3AED' }} aria-hidden="true" />
+                                {c.status}
+                              </span>
+                            </div>
+                            <div className="simple-card-meta">{c.metro} · {c.cafes} · {c.period}</div>
+                            <div className="simple-card-body">{c.product} — seeded directly to espresso stations</div>
+                            <div className="simple-card-footer">
+                              <span style={{ color: '#6D28D9', fontWeight: 600 }}>★ {c.approval} ({c.reorderRate} reorder)</span>
+                              <span style={{ fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono, monospace)' }}>{c.revenue} GMV</span>
+                            </div>
                           </div>
-                          <div style={{ fontSize: '9px', color: '#737373' }}>{rev.barista} · {rev.metro}</div>
-                          <p style={{ margin: '2px 0', fontSize: '9.5px', color: '#333333', fontStyle: 'italic', lineHeight: 1.35 }}>
-                            &ldquo;{rev.comment}&rdquo;
-                          </p>
-                          <div style={{ fontSize: '9px', color: '#15803D', fontWeight: 600, borderTop: '1px dashed #EDE9FE', paddingTop: '4px' }}>
-                            ✓ {rev.outcome}
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Right: Barista Scorecard & Wholesale Conversion Engine */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {/* Barista Sensory Scorecard */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }}>
+                        <div className="card-header">
+                          <span className="card-title">☕ Barista Cupping Scorecard</span>
+                          <span style={{ fontSize: '9.5px', color: '#7C3AED', fontWeight: 700 }}>94.2% (SCA Standard)</span>
+                        </div>
+                        <div style={{ fontSize: '9.5px', color: '#64748B', marginBottom: '8px' }}>
+                          Aggregated from 141 blind cupping trials across 3 metros
+                        </div>
+
+                        {/* Attribute progress bars */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '10px' }}>
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
+                              <span>Microfoam Gloss &amp; Texture</span>
+                              <strong>9.8 / 10</strong>
+                            </div>
+                            <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
+                              <div style={{ width: '98%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
+                              <span>Steam Stability (Past 65°C)</span>
+                              <strong>9.6 / 10</strong>
+                            </div>
+                            <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
+                              <div style={{ width: '96%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
+                              <span>Acidity Balance in Light Roasts</span>
+                              <strong>9.4 / 10</strong>
+                            </div>
+                            <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
+                              <div style={{ width: '94%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
+                            </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
 
-                  {/* ── SCROLL DOWN MOAT SECTION 2: Trial-to-Wholesale Conversion Funnel ── */}
-                  <div className="dash-moat-section" id="brand-funnel-section">
-                    <div className="dash-section-header">
-                      <div className="dash-section-title">
-                        <span>📊 Trial-to-Wholesale Recurring Funnel</span>
-                        <span className="dash-section-badge" style={{ background: '#DCFCE7', color: '#15803D' }}>78% Reorder Conversion</span>
-                      </div>
-                      <span style={{ fontSize: '9.5px', color: '#737373' }}>Every liked trial converts into an automated weekly wholesale cart lead</span>
-                    </div>
-
-                    <div className="conversion-funnel-card">
-                      <div className="funnel-bar-step">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                          <span style={{ fontWeight: 600, color: '#171717' }}>1. Targeted Barista Sampling Kits Seeded</span>
-                          <span style={{ fontWeight: 700, color: '#6D28D9' }}>150 Cafés (100%)</span>
+                        {/* Recent Barista quote */}
+                        <div style={{ padding: '6px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid rgba(23, 23, 23, 0.05)', fontSize: '9px', color: '#475569', fontStyle: 'italic', lineHeight: 1.35 }}>
+                          &ldquo;Microfoam holds glossy latte art past 65°C with zero curdling in high-acidity roasts.&rdquo;
+                          <div style={{ fontStyle: 'normal', fontWeight: 600, color: '#1E293B', marginTop: '3px' }}>
+                            — Head Barista Vikram, Third Wave Coffee
+                          </div>
                         </div>
-                        <div className="funnel-bar-track"><div className="funnel-bar-fill" style={{ width: '100%' }} /></div>
                       </div>
 
-                      <div className="funnel-bar-step">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                          <span style={{ fontWeight: 600, color: '#171717' }}>2. Verified Barista Tasting Scorecards Logged</span>
-                          <span style={{ fontWeight: 700, color: '#6D28D9' }}>141 Cafés (94%)</span>
+                      {/* Standing Wholesale Reorder Engine */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px', background: '#FAF5FF', borderColor: '#E9D5FF' }}>
+                        <div className="card-header" style={{ marginBottom: '2px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#581C87' }}>Wholesale Conversion Engine</span>
+                          <span style={{ fontSize: '9px', color: '#7C3AED', fontWeight: 600 }}>Net-15 Auto-Debit</span>
                         </div>
-                        <div className="funnel-bar-track"><div className="funnel-bar-fill" style={{ width: '94%' }} /></div>
-                      </div>
-
-                      <div className="funnel-bar-step">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                          <span style={{ fontWeight: 600, color: '#171717' }}>3. Café Blackboard &amp; Menu Listing Approved</span>
-                          <span style={{ fontWeight: 700, color: '#6D28D9' }}>124 Cafés (88%)</span>
+                        <div style={{ fontSize: '9.5px', color: '#6B21A8', lineHeight: 1.4 }}>
+                          <strong>78% of approved tastings</strong> automatically convert to weekly recurring wholesale orders.
                         </div>
-                        <div className="funnel-bar-track"><div className="funnel-bar-fill" style={{ width: '88%' }} /></div>
-                      </div>
-
-                      <div className="funnel-bar-step">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                          <span style={{ fontWeight: 600, color: '#15803D' }}>4. Weekly Recurring Wholesale Replenishment</span>
-                          <span style={{ fontWeight: 800, color: '#15803D' }}>110 Cafés (78% Converted!)</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #F3E8FF' }}>
+                          <span style={{ fontSize: '9px', color: '#7C3AED', fontWeight: 700 }}>₹4.82L Active Monthly GMV</span>
+                          <button
+                            type="button"
+                            className="table-action-btn"
+                            style={{ fontSize: '9px', padding: '2px 6px' }}
+                            onClick={() => showToast('Dispatched 20 additional barista tasting flights')}
+                          >
+                            + Seed 20 Cafés
+                          </button>
                         </div>
-                        <div className="funnel-bar-track"><div className="funnel-bar-fill" style={{ width: '78%', background: '#16A34A' }} /></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ── SCROLL DOWN MOAT SECTION 3: Regional Market Share Benchmarks ── */}
-                  <div className="dash-moat-section" id="brand-share-section" style={{ paddingBottom: '16px' }}>
-                    <div className="dash-section-header">
-                      <div className="dash-section-title">
-                        <span>📈 Regional Specialty Category Share</span>
-                        <span className="dash-section-badge" style={{ background: '#EDE9FE', color: '#6D28D9' }}>Category Leader</span>
-                      </div>
-                      <span style={{ fontSize: '9.5px', color: '#737373' }}>Benchmark: Specialty Cafés in Bangalore, Mumbai &amp; Delhi NCR</span>
-                    </div>
-
-                    <div className="market-share-grid">
-                      <div className="market-share-item">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 700, fontSize: '11px', color: '#171717' }}>Origins Barista Oat</span>
-                          <span style={{ color: '#6D28D9', fontWeight: 800, fontSize: '11px' }}>44% Share</span>
-                        </div>
-                        <div className="funnel-bar-track"><div className="funnel-bar-fill" style={{ width: '44%' }} /></div>
-                        <div style={{ fontSize: '9px', color: '#15803D', fontWeight: 600 }}>↑ +14% growth vs traditional dairy</div>
-                      </div>
-
-                      <div className="market-share-item">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 700, fontSize: '11px', color: '#171717' }}>Commercial Cow Dairy</span>
-                          <span style={{ color: '#737373', fontWeight: 800, fontSize: '11px' }}>32% Share</span>
-                        </div>
-                        <div className="funnel-bar-track"><div className="funnel-bar-fill" style={{ width: '32%', background: '#A3A3A3' }} /></div>
-                        <div style={{ fontSize: '9px', color: '#991B1B' }}>↓ -8% declining in third-wave cafés</div>
                       </div>
                     </div>
                   </div>

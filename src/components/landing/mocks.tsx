@@ -1,6 +1,6 @@
 'use client';
 // Mock UI fragments used inside hero/showcase - ported from Figma Make export 0005.js
-import { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import {
   motion, MotionConfig, useInView, useReducedMotion,
   animate, useMotionValue, useMotionValueEvent,
@@ -123,7 +123,92 @@ const FUNNEL = [
   { step: 'Ordered', n: 31, h: 58 },
 ];
 
+// Data definitions for the 3 ecosystem personas
+const ROLE_DATA = {
+  cafe: {
+    portal: 'Café OS',
+    kicker: 'Today / Bengaluru Café Network',
+    title: 'One-Cart Sourcing & Morning Dispatch',
+    desc: 'Managing 8 verified specialty roasters and cold-chain dairy deliveries in a single Net-15 cart.',
+    pipeline: [
+      { step: '01', title: 'Multi-Vendor Cart', proof: '8 Roasters' },
+      { step: '02', title: 'Single Net-15 Statement', proof: 'Auto-Split PO' },
+      { step: '03', title: 'Cold-Chain Dispatch', proof: '3.8°C IoT Probe' },
+      { step: '04', title: 'Par Auto-Replenish', proof: 'PO Queued' },
+    ],
+    metrics: [
+      { lab: "Today's deliveries", value: 8, suffix: ' arriving', d: 'across 12 carriers', delta: '↑ 12.4%', cls: 'pos', spark: [4, 6, 5, 7, 6, 8] },
+      { lab: 'Net-15 line used', value: 85.4, prefix: '₹', suffix: 'K', d: 'due Oct 10 · 1 invoice', delta: '42% limit', cls: 'pos', spark: [60, 68, 72, 78, 82, 85] },
+      { lab: 'Cold-chain probe', value: 3.8, suffix: '°C', d: 'Van #04 · ETA 18m', delta: '● Optimal (2-5°C)', cls: 'pos', spark: [3.9, 4.0, 3.8, 3.7, 3.8, 3.8] },
+      { lab: 'Auto-reorder items', value: 3, suffix: ' SKUs', d: 'oat milk & cups low', delta: 'Auto-triggered', cls: 'warn', spark: [6, 5, 5, 4, 4, 3] },
+    ],
+    orders: [
+      { cafe: 'Blue Tokai / Indiranagar', supplier: 'Dairycraft', value: '₹38,400', status: 'In transit', cls: 'active', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
+      { cafe: 'Subko / Bandra', supplier: 'Urban Platter', value: '₹71,920', status: 'Cold Dispatch', cls: 'info', img: '/logos/subko.png', co: 'var(--c-orange)' },
+      { cafe: 'Third Wave / Koramangala', supplier: 'Araku Estates', value: '₹22,180', status: 'Scheduled', cls: 'pending', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
+      { cafe: 'Sleepy Owl / Powai', supplier: 'KC Roasters', value: '₹54,600', status: 'In transit', cls: 'active', img: '/logos/sleepy-owl.png', co: 'var(--c-blue)' },
+    ],
+    sideNoteTitle: 'Consolidated Billing',
+    sideNoteDesc: '8 vendor deliveries unified into 1 monthly Net-15 statement. Zero WhatsApp voice notes.',
+  },
+  supplier: {
+    portal: 'Wholesale Hub',
+    kicker: 'Live Ops / Wholesale Fulfilment',
+    title: 'Automated Demand & T+1 Settlement',
+    desc: '34 café orders aggregated into 3 morning delivery loops with instant escrow payouts.',
+    pipeline: [
+      { step: '01', title: 'WhatsApp PO Ingest', proof: '34 Cafés' },
+      { step: '02', title: 'Batch Roast #4', proof: '180kg Locked' },
+      { step: '03', title: 'Multi-Drop Route', proof: '3 Vans Active' },
+      { step: '04', title: 'T+1 HDFC Payout', proof: '₹1.84L Disbursed' },
+    ],
+    metrics: [
+      { lab: 'Demands aggregated', value: 34, suffix: ' cafés', d: 'all midnight POs parsed', delta: '↑ 18.4% vol', cls: 'pos', spark: [20, 24, 26, 30, 31, 34] },
+      { lab: 'T+1 Bank payout', value: 1.84, prefix: '₹', suffix: 'L', d: 'HDFC **4821 at 06:00', delta: 'Settled today', cls: 'pos', spark: [1.1, 1.3, 1.4, 1.6, 1.7, 1.84] },
+      { lab: 'Roast batch volume', value: 180, suffix: ' kg', d: 'Arabica medium profile', delta: 'Batch #4 locked', cls: 'pos', spark: [110, 130, 145, 160, 170, 180] },
+      { lab: 'On-time fleet rate', value: 98.4, suffix: '%', d: 'morning cutoff 07:30', delta: '● Zero late drops', cls: 'pos', spark: [96, 97, 98, 97, 98, 98.4] },
+    ],
+    orders: [
+      { cafe: 'Third Wave (5 Outlets)', supplier: 'Batch #ROAST-402', value: '₹48,200', status: 'Loaded Van 1', cls: 'active', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
+      { cafe: 'Blue Tokai Hub', supplier: 'Single Origin Lot', value: '₹62,400', status: 'In transit', cls: 'info', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
+      { cafe: 'Subko Specialty', supplier: 'Barista Oat Milk', value: '₹34,800', status: 'Delivered', cls: 'pos', img: '/logos/subko.png', co: 'var(--c-orange)' },
+      { cafe: 'Araku Flagship', supplier: 'Ripple Cups 12oz', value: '₹18,500', status: 'Van 2 Route', cls: 'active', img: '/logos/araku.png', co: 'var(--c-green)' },
+    ],
+    sideNoteTitle: 'Zero Bad Debt',
+    sideNoteDesc: '100% payments guaranteed via Gradient Escrow before vans leave the roastery.',
+  },
+  brand: {
+    portal: 'Brand OS',
+    kicker: 'Growth & Telemetry / Q3 Flights',
+    title: 'Verified Barista Trials & Conversion',
+    desc: 'Track 141 direct barista cupping evaluations and 78% transition into recurring weekly orders.',
+    pipeline: [
+      { step: '01', title: 'Targeted Flights', proof: '180 Seeded' },
+      { step: '02', title: 'Barista Cupping', proof: '141 Notes' },
+      { step: '03', title: 'Recurring Wholesale', proof: '78% Converted' },
+      { step: '04', title: 'Category Share', proof: '44% Blind' },
+    ],
+    metrics: [
+      { lab: 'Cafés reached', value: 312, suffix: ' venues', d: 'across BLR & BOM hubs', delta: '↑ +34 this mo', cls: 'pos', spark: [210, 240, 265, 280, 298, 312] },
+      { lab: 'Barista cupping score', value: 94.2, suffix: '%', d: '141 tasting scorecards', delta: '4.9★ rating', cls: 'pos', spark: [90, 91, 93, 92, 94, 94.2] },
+      { lab: 'Recurring volume', value: 2410, suffix: ' L/day', d: 'daily oat milk consumption', delta: '↑ ₹4.8L ARR', cls: 'pos', spark: [1400, 1650, 1890, 2100, 2250, 2410] },
+      { lab: 'Category share', value: 44, suffix: '%', d: 'plant milk category leader', delta: 'Blind telemetry', cls: 'pos', spark: [28, 32, 35, 38, 41, 44] },
+    ],
+    orders: [
+      { cafe: 'Subko Specialty / Bandra', supplier: 'Barista Oat Trial', value: 'Converted', status: 'Weekly 120L', cls: 'active', img: '/logos/subko.png', co: 'var(--c-orange)' },
+      { cafe: 'Blue Tokai / Koramangala', supplier: 'Matcha Uji Lot', value: 'Cupped', status: '4.9★ Score', cls: 'info', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
+      { cafe: 'Third Wave / Indiranagar', supplier: 'Vanilla Syrup 750ml', value: 'Converted', status: 'Weekly 24 Btl', cls: 'active', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
+      { cafe: 'Araku / Lavelle Rd', supplier: 'Organic Cascara', value: 'Sampling', status: 'In Review', cls: 'pending', img: '/logos/araku.png', co: 'var(--c-green)' },
+    ],
+    sideNoteTitle: 'Privacy Wall Enforced',
+    sideNoteDesc: 'Competitors cannot see your cafe accounts or pricing. All benchmarking is blind and aggregated.',
+  },
+};
+
 export function HeroDashboard() {
+  const [role, setRole] = useState<'cafe' | 'supplier' | 'brand'>('cafe');
+  const cur = ROLE_DATA[role];
+
   return (
     <MotionConfig reducedMotion="user">
       <div className="cmd">
@@ -135,10 +220,12 @@ export function HeroDashboard() {
           viewport={{ once: true, margin: '-8%' }}
         >
           <motion.div className="cmd-workspace" variants={drop}>
-            <div className="cmd-mark">G</div>
+            <div className="cmd-mark" style={{ background: role === 'supplier' ? '#15803D' : role === 'brand' ? '#6D28D9' : 'var(--ink)' }}>
+              {role === 'supplier' ? 'S' : role === 'brand' ? 'B' : 'G'}
+            </div>
             <div>
               <strong>Gradient</strong>
-              <span>Café portal</span>
+              <span>{cur.portal}</span>
             </div>
           </motion.div>
           {SIDE_NAV.map((it) => (
@@ -149,19 +236,75 @@ export function HeroDashboard() {
             </motion.div>
           ))}
           <motion.div className="cmd-side-note" variants={drop}>
-            <span>Data boundary</span>
-            <strong>Brands only see their own SKUs and conversion.</strong>
+            <span>{cur.sideNoteTitle}</span>
+            <strong>{cur.sideNoteDesc}</strong>
           </motion.div>
         </motion.aside>
 
         <main className="cmd-main">
+          {/* Linear / Stripe Role Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div className="cmd-persona-bar" role="tablist" aria-label="Ecosystem Stakeholder Perspectives">
+              <button
+                type="button"
+                className={`cmd-persona-btn ${role === 'cafe' ? 'active' : ''}`}
+                onClick={() => setRole('cafe')}
+              >
+                <span>☕</span>
+                <span>Café Operations</span>
+              </button>
+              <button
+                type="button"
+                className={`cmd-persona-btn ${role === 'supplier' ? 'active' : ''}`}
+                onClick={() => setRole('supplier')}
+              >
+                <span>🚚</span>
+                <span>Supplier Wholesale</span>
+              </button>
+              <button
+                type="button"
+                className={`cmd-persona-btn ${role === 'brand' ? 'active' : ''}`}
+                onClick={() => setRole('brand')}
+              >
+                <span>✨</span>
+                <span>Brand Telemetry</span>
+              </button>
+            </div>
+
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--ink-soft)' }}>
+              <span className="cmd-live-dot" />
+              <span>Live Network Sync</span>
+            </div>
+          </div>
+
+          {/* Minimal Linear-Style Core Idea Pipeline */}
+          <div className="cmd-core-flow">
+            <span style={{ fontSize: 9.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-soft)' }}>CORE PIPELINE:</span>
+            {cur.pipeline.map((p, idx) => (
+              <React.Fragment key={p.step}>
+                <span className="flow-active">
+                  <strong style={{ opacity: 0.6, marginRight: 3 }}>{p.step}</strong>
+                  {p.title}
+                  <small style={{ marginLeft: 4, padding: '1px 5px', borderRadius: 4, background: 'rgba(0,0,0,0.05)', fontSize: 9.5, fontWeight: 700 }}>
+                    {p.proof}
+                  </small>
+                </span>
+                {idx < cur.pipeline.length - 1 && <span className="flow-arrow">➔</span>}
+              </React.Fragment>
+            ))}
+          </div>
+
           <div className="cmd-top">
             <div>
-              <span className="cmd-kicker">Today / Bengaluru network</span>
-              <h2>Orders overview</h2>
-              <p>Managing 1,284 active shipments across 12 carriers.</p>
+              <span className="cmd-kicker">{cur.kicker}</span>
+              <h2>{cur.title}</h2>
+              <p>{cur.desc}</p>
             </div>
-            <div className="cmd-search"><Icon.Search size={14}/> <AskTyper /></div>
+            <div className="cmd-search">
+              <Icon.Search size={14}/>
+              <AskTyper />
+              <span className="cmd-kbd">⌘K</span>
+            </div>
           </div>
 
           <motion.div
@@ -170,11 +313,12 @@ export function HeroDashboard() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-8%' }}
+            key={role}
           >
-            {METRICS.map((s) => (
+            {cur.metrics.map((s) => (
               <motion.div className="cmd-metric" key={s.lab} variants={rise}>
                 <span>{s.lab}</span>
-                <strong><CountNum value={s.value} suffix={s.suffix} /></strong>
+                <strong><CountNum value={s.value} prefix={(s as any).prefix || ''} suffix={s.suffix} decimals={(s as any).prefix ? 1 : (s.suffix.includes('%') || s.suffix.includes('°C') ? 1 : 0)} /></strong>
                 <div className="cmd-spark">
                   {s.spark.map((v, i) => (
                     <motion.i
@@ -183,11 +327,14 @@ export function HeroDashboard() {
                       initial={{ scaleY: 0, opacity: 0 }}
                       whileInView={{ scaleY: 1, opacity: 1 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.35 + i * 0.07, ease: [0.22, 0.61, 0.36, 1] }}
+                      transition={{ duration: 0.4, delay: 0.2 + i * 0.05, ease: [0.22, 0.61, 0.36, 1] }}
                     />
                   ))}
                 </div>
-                <small>{s.d}</small>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                  <small>{s.d}</small>
+                  <span className={`cmd-metric-delta ${s.cls}`}>{s.delta}</span>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -201,17 +348,17 @@ export function HeroDashboard() {
           >
             <motion.section className="cmd-panel wide" variants={rise}>
               <div className="cmd-panel-head">
-                <strong>Orders routed by supplier</strong>
-                <span className="cmd-live"><span className="cmd-live-dot" />Live split PO</span>
+                <strong>{role === 'supplier' ? 'Morning Dispatch Manifest' : role === 'brand' ? 'Trial & Flight Conversions' : 'Orders routed by supplier'}</strong>
+                <span className="cmd-live"><span className="cmd-live-dot" />{role === 'supplier' ? 'T+1 Escrow Ready' : role === 'brand' ? 'Verified Cuppings' : 'Live split PO'}</span>
               </div>
-              {ORDERS.map((row, i) => (
+              {cur.orders.map((row, i) => (
                 <motion.div
                   className="cmd-row"
                   key={row.cafe}
                   initial={{ opacity: 0, x: -8 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: 0.25 + i * 0.12, ease: [0.22, 0.61, 0.36, 1] }}
+                  transition={{ duration: 0.45, delay: 0.15 + i * 0.08, ease: [0.22, 0.61, 0.36, 1] }}
                 >
                   <div className="cmd-row-name">
                     <RowAvatar name={row.cafe} img={row.img} co={row.co} />
@@ -228,8 +375,8 @@ export function HeroDashboard() {
 
             <motion.section className="cmd-panel" variants={rise}>
               <div className="cmd-panel-head">
-                <strong>Brand trial funnel</strong>
-                <span>Own products only</span>
+                <strong>{role === 'supplier' ? 'T+1 Settlement Velocity' : 'Brand trial funnel'}</strong>
+                <span>{role === 'supplier' ? 'HDFC Bank Auto' : 'Own products only'}</span>
               </div>
               <div className="cmd-funnel">
                 {FUNNEL.map((f, i) => (
@@ -238,7 +385,7 @@ export function HeroDashboard() {
                     initial={{ height: 40, opacity: 0 }}
                     whileInView={{ height: f.h, opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.3 + i * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
+                    transition={{ duration: 0.6, delay: 0.2 + i * 0.08, ease: [0.22, 0.61, 0.36, 1] }}
                   >
                     <span>{f.step}</span>
                     <strong><CountNum value={f.n} /></strong>
@@ -249,14 +396,14 @@ export function HeroDashboard() {
 
             <motion.section className="cmd-panel dark" variants={rise}>
               <div className="cmd-panel-head">
-                <strong>Privacy wall</strong>
+                <strong>Privacy &amp; Escrow Wall</strong>
                 <span>Enforced</span>
               </div>
-              <p>Competitor pricing, negotiated cafe deals, and other brands' sales never enter the brand workspace.</p>
+              <p>Competitor pricing, negotiated cafe deals, and other brands&apos; sales never enter competitor workspaces.</p>
               <div className="cmd-locks">
                 <span>SKU scope</span>
                 <span>Cafe identity</span>
-                <span>Supplier inventory</span>
+                <span>Escrow locked</span>
               </div>
             </motion.section>
           </motion.div>

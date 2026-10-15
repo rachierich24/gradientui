@@ -65,10 +65,10 @@ section.l-sec.ig {
 .ig-header h2 {
   margin: 0;
   font-family: "Instrument Sans", var(--font-sans), sans-serif;
-  font-size: clamp(24px, 2.8vw, 42px);
-  font-weight: 700;
-  line-height: 1.18;
-  letter-spacing: -0.035em;
+  font-size: clamp(19px, 1.75vw, 28px);
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
   color: #FFFFFF;
 }
 
@@ -95,10 +95,10 @@ section.l-sec.ig {
 .ig-subtitle {
   margin: 0;
   max-width: 62ch;
-  font-size: clamp(15px, 1.1vw, 17px);
-  line-height: 1.55;
+  font-size: clamp(13.5px, 0.95vw, 15px);
+  line-height: 1.5;
   color: #FFFFFF !important;
-  opacity: 0.92;
+  opacity: 0.85;
   text-wrap: pretty;
 }
 
