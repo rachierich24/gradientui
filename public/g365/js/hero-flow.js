@@ -55,7 +55,7 @@
       : { cw: Math.max(262, Math.min(304, W * 0.19)), ch: 62, gap: 28, rowGap: 102, s: 0.18, c: 340, cy: 226 };
     geo.pitch = geo.cw + geo.gap;
     geo.ph = geo.ch - 18;
-    geo.half = 44;
+    geo.half = 0;   // cards resolve exactly at the core's centre line
     stage.style.setProperty("--cw", geo.cw + "px"); stage.style.setProperty("--ch", geo.ch + "px"); stage.style.setProperty("--ph", geo.ph + "px");
     stage.style.setProperty("--cy", geo.cy + "px");
     if (window.G365 && G365.energy) G365.energy.layout(geo.cy);

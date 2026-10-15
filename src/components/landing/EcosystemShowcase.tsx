@@ -8,6 +8,7 @@ import {
   useSpring,
   useReducedMotion,
   useMotionValueEvent,
+  useMotionValue,
 } from 'framer-motion';
 import { Icon } from './icons';
 
@@ -517,14 +518,35 @@ export function EcosystemShowcase() {
   const brandOpacity = useTransform(smoothProgress, [0.0, 0.10, 0.34], [1, 1, 0]);
 
   // 4. Central Phone Protagonist:
-  // Starts slightly elevated in Chapter 1 (-16px), then glides DOWN smoothly into place (+6px)
-  // while scaling into prominent, commanding hero display (1.00 -> 1.44).
-  // Remains at scale 1.44 throughout and after the transition.
-  const phoneY = useTransform(
-    smoothProgress,
-    [0.0, 0.12, 0.44, 1.0],
-    [-16, -16, 6, 6]
-  );
+  // Starts slightly elevated in Chapter 1 (-16px), then glides DOWN while scaling into the hero
+  // display (1.00 -> 1.44), landing with its centre midway between the nav and the bottom of the
+  // screen. The drop is measured from the phone's place in the pinned stage (see the effect below),
+  // so it lands centred on any screen height. Remains at scale 1.44 after the transition.
+  const phoneRef = useRef<HTMLDivElement>(null);
+  const phoneDrop = useMotionValue(6);
+  useEffect(() => {
+    const NAV = 72;
+    const measure = () => {
+      const el = phoneRef.current, stage = el?.closest<HTMLElement>('.eco-sticky-stage');
+      if (!el || !stage || window.innerWidth <= 860) { phoneDrop.set(6); return; }
+      let top = 0, n: HTMLElement | null = el;
+      while (n && n !== stage) { top += n.offsetTop; n = n.offsetParent as HTMLElement | null; }
+      if (n !== stage) return;
+      const centre = top + el.offsetHeight / 2, target = NAV + (stage.clientHeight - NAV) / 2;
+      phoneDrop.set(target - centre);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (phoneRef.current) ro.observe(phoneRef.current);
+    window.addEventListener('resize', measure);
+    return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
+  }, [phoneDrop]);
+  const phoneY = useTransform([smoothProgress, phoneDrop], ([p, drop]: number[]) => {
+    if (p <= 0.12) return -16;
+    if (p >= 0.44) return drop;
+    const k = (p - 0.12) / 0.32, e = k * k * (3 - 2 * k);
+    return -16 + (drop + 16) * e;
+  });
   const phoneScale = useTransform(
     smoothProgress,
     [0.0, 0.12, 0.44, 1.0],
@@ -593,10 +615,6 @@ export function EcosystemShowcase() {
                 : { opacity: ecoTextOpacity, y: ecoTextY }
             }
           >
-            <div className="eco-eyebrow">
-              <span className="eco-eyebrow-dot" aria-hidden="true" />
-              <span>ONE CONNECTED ECOSYSTEM</span>
-            </div>
             <h2 className="eco-headline">
               <span className="eco-headline-main">Connecting cafés, suppliers &amp; brands.</span>
               <span className="eco-headline-highlight">Food supply made easy.</span>
@@ -607,59 +625,6 @@ export function EcosystemShowcase() {
 
           </motion.div>
         </div>
-
-        {/* Interactive ecosystem flow navigator, docked under the devices */}
-        <motion.div
-          className="eco-flow-dock"
-          style={isReduced ? { opacity: 1 } : { opacity: ecoTextOpacity }}
-        >
-          <div className="eco-flow-navigator" aria-label="Ecosystem order journey stages">
-            <button
-              type="button"
-              className={`eco-flow-pill ${activeVideoScreen === 'mobile' ? 'is-active is-mobile' : ''}`}
-              onClick={() => setActiveVideoScreen('mobile')}
-            >
-              <span className="eco-flow-dot eco-flow-dot-red" />
-              <span className="eco-flow-step">01</span>
-              <span className="eco-flow-label">Café Order</span>
-              {activeVideoScreen === 'mobile' && <span className="eco-flow-active-bar" />}
-            </button>
-
-            <div className="eco-flow-connector" aria-hidden="true">
-              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-
-            <button
-              type="button"
-              className={`eco-flow-pill ${activeVideoScreen === 'supplier' ? 'is-active is-supplier' : ''}`}
-              onClick={() => setActiveVideoScreen('supplier')}
-            >
-              <span className="eco-flow-dot eco-flow-dot-green" />
-              <span className="eco-flow-step">02</span>
-              <span className="eco-flow-label">Supplier Dispatch</span>
-              {activeVideoScreen === 'supplier' && <span className="eco-flow-active-bar" />}
-            </button>
-
-            <div className="eco-flow-connector" aria-hidden="true">
-              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                <path d="M1 5H11M11 5L7 1M11 5L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-
-            <button
-              type="button"
-              className={`eco-flow-pill ${activeVideoScreen === 'brand' ? 'is-active is-brand' : ''}`}
-              onClick={() => setActiveVideoScreen('brand')}
-            >
-              <span className="eco-flow-dot eco-flow-dot-purple" />
-              <span className="eco-flow-step">03</span>
-              <span className="eco-flow-label">Brand Funnel</span>
-              {activeVideoScreen === 'brand' && <span className="eco-flow-active-bar" />}
-            </button>
-          </div>
-        </motion.div>
 
         {/* ─── CHAPTER 2: CAFÉ STORY FLANKING CONTENT (85-90% Neutral Cream · 10-15% Yellow Accents) ─── */}
         <motion.div
@@ -840,6 +805,7 @@ export function EcosystemShowcase() {
                 Remains front-facing & stationary across Chapter 1 & 2!
             ─────────────────────────────────────────────────────────── */}
             <motion.div
+              ref={phoneRef}
               className={`eco-screen-mobile ${
                 activeVideoScreen === 'mobile' ? 'is-video-active' : ''
               } ${
