@@ -577,7 +577,8 @@
 .sup-hero-content {
   position: relative;
   z-index: 10;
-  max-width: 920px;
+  max-width: 1080px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
   padding: 36px 20px 24px;
@@ -595,10 +596,10 @@
 }
 
 .sup-hero-headline {
-  font-size: clamp(38px, 5.2vw, 68px);
+  font-size: clamp(30px, 4.1vw, 56px);
   font-weight: 850;
-  line-height: 1.08;
-  letter-spacing: -0.04em;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
   color: #0C0A09;
   margin: 0 0 20px 0;
 }
@@ -625,6 +626,7 @@
   width: 100%;
   color: inherit;
   margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .ghost-type-slot {
@@ -636,6 +638,7 @@
   text-align: center;
   color: inherit;
   overflow: visible;
+  white-space: nowrap !important;
 }
 
 .ghost-type-completion-animated {
@@ -643,6 +646,7 @@
   align-items: baseline;
   justify-content: center;
   will-change: transform, opacity, filter;
+  white-space: nowrap !important;
 }
 
 .ghost-type-root,
@@ -657,12 +661,14 @@
   align-items: baseline;
   color: inherit;
   transition: opacity 0.15s ease;
+  white-space: nowrap !important;
 }
 
 .ghost-type-accepted {
   color: inherit;
   font-style: normal !important;
   transition: all 0.3s ease;
+  white-space: nowrap !important;
 }
 
 .ghost-type-selected {
