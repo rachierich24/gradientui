@@ -635,9 +635,14 @@
   will-change: transform, opacity, filter;
 }
 
+.ghost-type-root,
+.ghost-type-root * {
+  font-style: normal !important;
+}
+
 .ghost-type-ghost {
   opacity: 0.42;
-  font-style: normal;
+  font-style: normal !important;
   display: inline-flex;
   align-items: baseline;
   color: inherit;
@@ -646,6 +651,7 @@
 
 .ghost-type-accepted {
   color: inherit;
+  font-style: normal !important;
   transition: all 0.3s ease;
 }
 
@@ -745,6 +751,13 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.sup-btn-hero-secondary > * {
+  position: relative;
+  z-index: 2;
 }
 
 .sup-btn-hero-secondary:hover {

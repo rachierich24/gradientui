@@ -303,9 +303,10 @@ export function GhostType({
             /* Accepted Text with Green Sweep confirmation */
             <span
               className={cn(
-                'ghost-type-accepted font-inherit',
+                'ghost-type-accepted font-inherit not-italic',
                 isSweeping && 'relative inline-block'
               )}
+              style={{ fontStyle: 'normal' }}
             >
               {currentCompletion}
               {isSweeping && (
@@ -322,9 +323,10 @@ export function GhostType({
           ) : (
             /* Ghost Autocomplete Streaming Prediction */
             <span
-              className="ghost-type-ghost font-inherit"
+              className="ghost-type-ghost font-inherit not-italic"
               style={{
                 opacity: ghostOpacity,
+                fontStyle: 'normal',
               }}
             >
               {streamedGhost}

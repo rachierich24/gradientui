@@ -250,13 +250,6 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
               onClick={onJoinClick}
               className="sup-btn-hero-primary"
             >
-              <BorderBeam
-                size={48}
-                duration={4}
-                borderWidth={1.5}
-                colorFrom="#86efac"
-                colorTo="#ffffff"
-              />
               <span>Join as a Supplier</span>
               <span aria-hidden="true">→</span>
             </button>
@@ -271,6 +264,13 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
               }}
               className="sup-btn-hero-secondary"
             >
+              <BorderBeam
+                size={48}
+                duration={4}
+                borderWidth={1.5}
+                colorFrom="#15803D"
+                colorTo="#86efac"
+              />
               <span>See how it works</span>
               <span aria-hidden="true">↓</span>
             </button>
