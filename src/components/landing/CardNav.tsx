@@ -106,7 +106,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
       {
         label: 'For Suppliers',
         description: 'Turn demand into fulfillment. Automated purchase orders & instant payout.',
-        href: '#for-suppliers',
+        href: '/supplier',
         accent: '#22C55E',
         badge: '340+ Suppliers',
         icon: 'supplier',
