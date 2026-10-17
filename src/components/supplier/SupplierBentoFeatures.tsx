@@ -40,12 +40,34 @@ export function SupplierBentoFeatures() {
             <span className="sup-bento-heading-muted">Agents for every workflow, working 24/7.</span>
           </h2>
           <div className="sup-bento-cta-row">
-            <a href="#join" className="sup-bento-btn-primary">
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('join') || document.getElementById('onboarding');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                } else if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('open-supplier-modal'));
+                }
+              }}
+              className="sup-bento-btn-primary"
+            >
               Switch in days, not months
-            </a>
-            <a href="#demo" className="sup-bento-btn-secondary">
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('order-workspace') || document.getElementById('demo');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.scrollTo({ top: 850, behavior: 'smooth' });
+                }
+              }}
+              className="sup-bento-btn-secondary"
+            >
               View Demo
-            </a>
+            </button>
           </div>
         </motion.div>
 

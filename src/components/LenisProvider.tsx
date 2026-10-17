@@ -18,11 +18,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     // alone does NOT stop Lenis - its virtual scroll keeps running.
     (window as unknown as { lenis?: Lenis }).lenis = lenis;
 
-    // Synchronize Lenis scroll updates with native window scroll event so
-    // Framer Motion useScroll and GSAP ScrollTrigger track smoothly at 60fps
-    lenis.on('scroll', () => {
-      window.dispatchEvent(new Event('scroll'));
-    });
+
 
     let rafId: number;
     function raf(time: number) {

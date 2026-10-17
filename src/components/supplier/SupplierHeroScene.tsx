@@ -274,6 +274,9 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
           }}
           id="order-workspace"
         >
+          {/* Target anchor for #demo */}
+          <div id="demo" style={{ position: 'absolute', top: '-100px', pointerEvents: 'none' }} aria-hidden="true" />
+
           {/* Green Cutting Mat Sheet framing the Dashboard */}
           <div className="sup-stage-cutting-mat">
             {/* ─── UNIFIED RELUME-STYLE MASTER TOOLBAR ATOP THE CUTTING MAT ─── */}
