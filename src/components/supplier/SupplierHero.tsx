@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PackagingScene } from './PackagingScene';
+import DotGrid from '@/components/ui/DotGrid';
 
 interface SupplierHeroProps {
   onJoinClick?: () => void;
@@ -43,6 +44,29 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
     <section className="sup-hero-section" id="hero" aria-label="Grabbit Supplier Portal Hero">
       {/* Precision Technical Grid Lines (Relume aesthetic) */}
       <div className="sup-hero-grid-lines" aria-hidden="true" />
+
+      {/* ─── REACT BITS DOTGRID BACKGROUND (WebGL2 Interactive Physics) ─── */}
+      <div className="sup-hero-dotgrid-wrap" aria-hidden="true">
+        <DotGrid
+          dotSize={1.3}
+          gap={11}
+          baseColor="#94A3B8"
+          activeColor="#1FA952"
+          radius={160}
+          force={12}
+          spring={0.018}
+          damping={0.82}
+          rippleSpeed={420}
+          rippleWidth={500}
+          rippleF={11}
+          rippleDecay={2.2}
+          ambientRipples={true}
+          opacity={0.85}
+          intro={true}
+          mouseInteraction={true}
+          clickShock={true}
+        />
+      </div>
 
       {/* 3D Supplier Packaging Scene (Left cartons, right crates) */}
       <PackagingScene />

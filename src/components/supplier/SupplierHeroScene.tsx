@@ -6,6 +6,7 @@ import { ThreePackagingScene } from './ThreePackagingScene';
 import { OrderWorkflowDemo, WorkflowStage } from './OrderWorkflowDemo';
 import { GhostType } from '@/components/ui/ghost-type';
 import { BorderBeam } from '@/components/ui/border-beam';
+import DotGrid from '@/components/ui/DotGrid';
 
 interface OrderItem {
   id: string;
@@ -101,11 +102,11 @@ export function SupplierHeroScene({ onJoinClick }: SupplierHeroSceneProps) {
 
 
   // 3. Dashboard Rising Stage choreography:
-  // Starts with master toolbar peeking at bottom of viewport (78vh), then rises into dead center (0vh)
+  // Starts with master toolbar & cutting mat peeking higher at bottom of viewport (64vh), then rises into dead center (0vh)
   const dashboardY = useTransform(
     smoothProgress,
     [0, 0.48, 0.86, 1],
-    isReduced ? ['0vh', '0vh', '0vh', '0vh'] : ['78vh', '0vh', '0vh', '-10vh']
+    isReduced ? ['0vh', '0vh', '0vh', '0vh'] : ['64vh', '0vh', '0vh', '-10vh']
   );
   const dashboardScale = useTransform(
     smoothProgress,
@@ -179,6 +180,29 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
     >
       {/* ─── Pinned Sticky Stage (Occupies 100vh during the 240vh scroll scrub) ─── */}
       <div className="sup-sticky-stage">
+        {/* ─── REACT BITS DOTGRID BACKGROUND (WebGL2 Interactive Physics) ─── */}
+        <div className="sup-hero-dotgrid-wrap" aria-hidden="true">
+          <DotGrid
+            dotSize={1.3}
+            gap={11}
+            baseColor="#94A3B8"
+            activeColor="#1FA952"
+            radius={160}
+            force={12}
+            spring={0.018}
+            damping={0.82}
+            rippleSpeed={420}
+            rippleWidth={500}
+            rippleF={11}
+            rippleDecay={2.2}
+            ambientRipples={true}
+            opacity={0.85}
+            intro={true}
+            mouseInteraction={true}
+            clickShock={true}
+          />
+        </div>
+
         {/* ─── REAL-TIME THREE.JS 3D ISOMETRIC GRID STRUCTURES ─── */}
         <ThreePackagingScene scrollProgress={scrollP} />
 

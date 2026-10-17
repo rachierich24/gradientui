@@ -10,11 +10,14 @@ export function SupplierBentoFeatures() {
   // Tile 1 interactive state
   const [activeBubble, setActiveBubble] = useState<number>(1);
 
-  // Tile 4 interactive state: workflow step
-  const [activeWorkflowStep, setActiveWorkflowStep] = useState<number>(2);
+  // Tile 2 interactive approval toggle
+  const [autoApproveActive, setAutoApproveActive] = useState<boolean>(true);
 
-  // Tile 5 interactive state: selected stock alert
-  const [selectedStock, setSelectedStock] = useState<string>('arabica');
+  // Tile 4 interactive payout simulated trigger
+  const [payoutTriggered, setPayoutTriggered] = useState<boolean>(false);
+
+  // Tile 5 active integration tooltip/hover
+  const [activeIntegration, setActiveIntegration] = useState<string>('petpooja');
 
   return (
     <section
@@ -23,7 +26,7 @@ export function SupplierBentoFeatures() {
       aria-label="Core Supplier Capabilities"
     >
       <div className="sup-container">
-        {/* ─── A. SECTION INTRODUCTION (Ramp Two-Tone Style) ─── */}
+        {/* ─── A. SECTION INTRODUCTION (Ramp Two-Tone Headline & Dual CTAs) ─── */}
         <motion.div
           className="sup-bento-intro"
           initial={isReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
@@ -71,13 +74,13 @@ export function SupplierBentoFeatures() {
           </div>
         </motion.div>
 
-        {/* ─── B. FIVE-TILE ASYMMETRIC BENTO GRID ─── */}
+        {/* ─── B. FIVE-TILE ASYMMETRIC BENTO GRID (Ramp Exact 2-Top + 3-Bottom Layout) ─── */}
         <div className="sup-bento-grid-wrapper">
           {/* ══════════════════════════════════════════════════════════════
-              TOP ROW: 2 Prominent Cards (Tile 1 ~60% | Tile 2 ~40%)
+              TOP ROW: 2 Prominent Cards (Tile 1: ~60% | Tile 2: ~40%)
              ══════════════════════════════════════════════════════════════ */}
           <div className="sup-bento-row sup-bento-top-row">
-            {/* ─── TILE 1: ORDER MANAGEMENT (~60% width) ─── */}
+            {/* ─── TILE 1: CARDS & ORDERS THAT HANDLE THEMSELVES ─── */}
             <motion.article
               className="sup-bento-card sup-bento-card-order"
               initial={isReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -92,13 +95,16 @@ export function SupplierBentoFeatures() {
                     Cards &amp; Orders <span className="text-hushed">that handle themselves</span>
                   </h3>
                   <div className="sup-bento-arrow-affordance" aria-hidden="true">
-                    <span>↗</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
                   </div>
                 </div>
 
-                {/* ─── Miniature Interface Preview: Physical Card + Floating Dialogue ─── */}
+                {/* Miniature Interface Preview: Physical Card + Floating Dialogue (Ramp Element) */}
                 <div className="sup-bento-preview-container sup-preview-card-canvas">
-                  {/* Subtle Background Pattern & Dark Grabbit Card */}
+                  {/* Subtle Background Particle Grid & Dark Grabbit Fleet Card */}
                   <div className="sup-dispatch-card-graphic" aria-hidden="true">
                     <div className="sup-card-graphic-top">
                       <div className="sup-card-logo">
@@ -107,12 +113,22 @@ export function SupplierBentoFeatures() {
                       </div>
                       <span className="sup-card-tier-badge">PRIME SUPPLIER</span>
                     </div>
-                    <div className="sup-card-chip">
-                      <div className="sup-card-chip-lines" />
+
+                    <div className="sup-card-chip-row">
+                      <div className="sup-card-chip">
+                        <div className="sup-card-chip-lines" />
+                      </div>
+                      {/* Contactless waves icon */}
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round">
+                        <path d="M8.5 16.5a5 5 0 0 1 0-7" />
+                        <path d="M12 19a8.5 8.5 0 0 1 0-12" />
+                        <path d="M15.5 21.5a12 12 0 0 1 0-17" />
+                      </svg>
                     </div>
+
                     <div className="sup-card-graphic-bottom">
                       <span className="sup-card-num">•••• 2048</span>
-                      <span className="sup-card-label">DISPATCH TERMINAL #02</span>
+                      <span className="sup-card-label">BLUE TOKAI ROASTERY HUB</span>
                     </div>
                   </div>
 
@@ -124,7 +140,9 @@ export function SupplierBentoFeatures() {
                     <div className="sup-bubble-icon">☕</div>
                     <div className="sup-bubble-content">
                       <div className="sup-bubble-title">₹18,400 at Blue Tokai Café</div>
-                      <div className="sup-bubble-sub">We&apos;re matching your inventory... no action needed!</div>
+                      <div className="sup-bubble-sub">
+                        <span className="sup-bubble-sub-highlight">🟢 Matched to Inventory</span> · Bay 02 · No manual entry
+                      </div>
                     </div>
                   </div>
 
@@ -135,9 +153,9 @@ export function SupplierBentoFeatures() {
                   >
                     <div className="sup-bubble-check">✓</div>
                     <div className="sup-bubble-content">
-                      <div className="sup-bubble-title">Order #GR-2048 verified &amp; dispatched</div>
+                      <div className="sup-bubble-title">Order #GRB-2048 verified &amp; dispatched</div>
                       <div className="sup-bubble-sub">
-                        <span className="sup-bubble-sub-highlight">📦 Matched to &quot;Morning Shift Priority&quot;</span> · Bay 02
+                        <span className="sup-bubble-sub-highlight">⚡ Escrow Released in 24h</span> · Driver: Rajesh K.
                       </div>
                     </div>
                   </div>
@@ -145,9 +163,9 @@ export function SupplierBentoFeatures() {
               </div>
             </motion.article>
 
-            {/* ─── TILE 2: CATALOGUE BUILDING (~40% width) ─── */}
+            {/* ─── TILE 2: PROCURE TO PAY WITHOUT CHASING APPROVALS ─── */}
             <motion.article
-              className="sup-bento-card sup-bento-card-catalogue"
+              className="sup-bento-card sup-bento-card-procure"
               initial={isReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
@@ -157,78 +175,90 @@ export function SupplierBentoFeatures() {
                 {/* Header */}
                 <div className="sup-bento-card-header">
                   <h3 className="sup-bento-title">
-                    Wholesale catalogue <span className="text-hushed">ready for business</span>
+                    Procure to pay <span className="text-hushed">without chasing approvals</span>
                   </h3>
                   <div className="sup-bento-arrow-affordance" aria-hidden="true">
-                    <span>↗</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
                   </div>
                 </div>
 
-                {/* ─── Miniature Interface Preview: macOS App Window (Catalogue) ─── */}
-                <div className="sup-bento-preview-container sup-mac-window">
-                  {/* macOS Window Top Bar */}
-                  <div className="sup-mac-header">
-                    <div className="sup-mac-dots" aria-hidden="true">
-                      <span className="dot dot-red" />
-                      <span className="dot dot-yellow" />
-                      <span className="dot dot-green" />
+                {/* Visual Stage: 3-Way Match & Multi-Level Approval Engine (Ramp Element) */}
+                <div className="sup-bento-preview-container sup-procure-stage">
+                  {/* Miniature Purchase Order Card */}
+                  <div className="sup-procure-po-card">
+                    <div className="sup-procure-po-header">
+                      <div className="sup-procure-buyer-meta">
+                        <span className="sup-procure-cafe-dot" />
+                        <span className="sup-procure-cafe-name">Araku Specialty Roastery</span>
+                      </div>
+                      <span className="sup-procure-po-id">#PO-8941</span>
                     </div>
-                    <div className="sup-mac-address-bar">
-                      <span>grabbit.app/catalogue</span>
+
+                    <div className="sup-procure-items">
+                      <div className="sup-procure-item-row">
+                        <span className="item-name">Arabica AA Estate (25kg)</span>
+                        <span className="item-val">₹20,500</span>
+                      </div>
+                      <div className="sup-procure-item-row">
+                        <span className="item-name">Barista Oat Milk (10 cases)</span>
+                        <span className="item-val">₹9,600</span>
+                      </div>
                     </div>
-                    <div className="sup-mac-action">
-                      <span className="sup-mac-pill-btn">+ SKU</span>
+
+                    <div className="sup-procure-po-footer">
+                      <div className="sup-procure-tier-pill">
+                        <span>🔒 Tier-1 Rate: -15% Applied</span>
+                      </div>
+                      <div className="sup-procure-total">
+                        <span className="total-lbl">Total:</span>
+                        <span className="total-amount">₹30,100</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Window Content: Clean Catalogue List */}
-                  <div className="sup-mac-content">
-                    <div className="sup-cat-table">
-                      {/* Product Row 1 */}
-                      <div className="sup-cat-line-item">
-                        <span className="sup-cat-idx">01</span>
-                        <div className="sup-cat-meta">
-                          <span className="sup-cat-title">Specialty Arabica AA</span>
-                          <span className="sup-cat-spec">1 kg valve bag · Whole bean</span>
-                        </div>
-                        <div className="sup-cat-numbers">
-                          <span className="sup-cat-price">₹820</span>
-                          <span className="sup-cat-stock-pill in-stock">140 kg</span>
-                        </div>
+                  {/* 3-Way Match Automated Verification Steps */}
+                  <div className="sup-procure-steps-card">
+                    <div className="sup-procure-step-item done">
+                      <span className="step-circle">✓</span>
+                      <div className="step-details">
+                        <span className="step-title">PO vs Inventory Match</span>
+                        <span className="step-sub">35 units reserved · Bay 02</span>
                       </div>
-
-                      {/* Product Row 2 */}
-                      <div className="sup-cat-line-item">
-                        <span className="sup-cat-idx">02</span>
-                        <div className="sup-cat-meta">
-                          <span className="sup-cat-title">Barista Oat Milk</span>
-                          <span className="sup-cat-spec">Case of 12 · 1 L cartons</span>
-                        </div>
-                        <div className="sup-cat-numbers">
-                          <span className="sup-cat-price">₹2,880</span>
-                          <span className="sup-cat-stock-pill in-stock">68 cases</span>
-                        </div>
-                      </div>
-
-                      {/* Product Row 3 */}
-                      <div className="sup-cat-line-item">
-                        <span className="sup-cat-idx">03</span>
-                        <div className="sup-cat-meta">
-                          <span className="sup-cat-title">Cold Brew Concentrate</span>
-                          <span className="sup-cat-spec">2 L single origin jug</span>
-                        </div>
-                        <div className="sup-cat-numbers">
-                          <span className="sup-cat-price">₹1,150</span>
-                          <span className="sup-cat-stock-pill in-stock">42 units</span>
-                        </div>
-                      </div>
+                      <span className="step-time">0.2s</span>
                     </div>
 
-                    {/* Private Wholesale Rates Bar */}
-                    <div className="sup-private-rate-bar">
-                      <span className="rate-lock-icon">🔒</span>
-                      <span>Private Pricing: Cafés only see their approved contract rates</span>
+                    <div className="sup-procure-step-item done">
+                      <span className="step-circle">✓</span>
+                      <div className="step-details">
+                        <span className="step-title">Contract Rate Verified</span>
+                        <span className="step-sub">Pre-negotiated wholesale price</span>
+                      </div>
+                      <span className="step-time">0.1s</span>
                     </div>
+
+                    <div className={`sup-procure-step-item ${autoApproveActive ? 'done' : 'active'}`}>
+                      <span className="step-circle">{autoApproveActive ? '⚡' : '●'}</span>
+                      <div className="step-details">
+                        <span className="step-title">Escrow Locked &amp; Dispatched</span>
+                        <span className="step-sub">₹30,100 secured in Gradient Vault</span>
+                      </div>
+                      <span className="step-time">Instant</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Autonomous Verification Badge */}
+                  <div
+                    className="sup-procure-autobadge"
+                    onClick={() => setAutoApproveActive(!autoApproveActive)}
+                    role="button"
+                    tabIndex={0}
+                    title="Toggle autonomous approval"
+                  >
+                    <span className="auto-icon">🟢</span>
+                    <span className="auto-text">100% Autonomous Match Enabled · 0 min manual entry</span>
                   </div>
                 </div>
               </div>
@@ -239,9 +269,9 @@ export function SupplierBentoFeatures() {
               BOTTOM ROW: 3 Balanced Cards (Tile 3 | Tile 4 | Tile 5)
              ══════════════════════════════════════════════════════════════ */}
           <div className="sup-bento-row sup-bento-bottom-row">
-            {/* ─── TILE 3: NEW SUPPLIER VISIBILITY (1/3 width) ─── */}
+            {/* ─── TILE 3: ACCOUNTING AUTOMATION ELIMINATES MONTH-END MADNESS ─── */}
             <motion.article
-              className="sup-bento-card sup-bento-card-visibility"
+              className="sup-bento-card sup-bento-card-ledger"
               initial={isReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
@@ -251,75 +281,77 @@ export function SupplierBentoFeatures() {
                 {/* Header */}
                 <div className="sup-bento-card-header">
                   <h3 className="sup-bento-title">
-                    New café visibility <span className="text-hushed">where buyers search</span>
+                    Accounting automation <span className="text-hushed">eliminates month-end madness</span>
                   </h3>
                   <div className="sup-bento-arrow-affordance" aria-hidden="true">
-                    <span>↗</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
                   </div>
                 </div>
 
-                {/* ─── Miniature Interface Preview: macOS App Window (Buyer Matches) ─── */}
-                <div className="sup-bento-preview-container sup-mac-window">
-                  {/* macOS Header */}
-                  <div className="sup-mac-header">
-                    <div className="sup-mac-dots" aria-hidden="true">
-                      <span className="dot dot-red" />
-                      <span className="dot dot-yellow" />
-                      <span className="dot dot-green" />
-                    </div>
-                    <div className="sup-mac-search-bar">
-                      <span>🔍 Filter 300+ cafés...</span>
-                    </div>
-                    <span className="sup-verified-badge">✓ Verified</span>
+                {/* Visual Stage: Streaming General Ledger with Category Tags & Fade Masks (Ramp Element) */}
+                <div className="sup-bento-preview-container sup-ledger-stage">
+                  <div className="sup-ledger-table-header">
+                    <span>TRANSACTION</span>
+                    <span>CATEGORY</span>
+                    <span>SYNC</span>
                   </div>
 
-                  {/* Window Content: Matched Cafés Table */}
-                  <div className="sup-mac-content">
-                    <div className="sup-vis-match-list">
-                      {/* Match 1 */}
-                      <div className="sup-vis-match-row">
-                        <div className="sup-vis-cafe-avatar">SB</div>
-                        <div className="sup-vis-cafe-info">
-                          <span className="sup-vis-cafe-name">Subko Specialty</span>
-                          <span className="sup-vis-cafe-query">Looking for Arabica AA</span>
-                        </div>
-                        <span className="sup-vis-match-badge high">98% match</span>
+                  <div className="sup-ledger-stream">
+                    <div className="sup-ledger-row">
+                      <div className="sup-ledger-col-trans">
+                        <span className="trans-title">Arabica AA Estate (10kg)</span>
+                        <span className="trans-amount">₹8,200</span>
                       </div>
-
-                      {/* Match 2 */}
-                      <div className="sup-vis-match-row">
-                        <div className="sup-vis-cafe-avatar">DG</div>
-                        <div className="sup-vis-cafe-info">
-                          <span className="sup-vis-cafe-name">The Daily Grind</span>
-                          <span className="sup-vis-cafe-query">Bulk Oat Milk · 5 outlets</span>
-                        </div>
-                        <span className="sup-vis-match-badge high">95% match</span>
-                      </div>
-
-                      {/* Match 3 */}
-                      <div className="sup-vis-match-row">
-                        <div className="sup-vis-cafe-avatar">AK</div>
-                        <div className="sup-vis-cafe-info">
-                          <span className="sup-vis-cafe-name">Araku Roasters</span>
-                          <span className="sup-vis-cafe-query">Cold Brew Concentrate</span>
-                        </div>
-                        <span className="sup-vis-match-badge med">92% match</span>
-                      </div>
+                      <span className="sup-ledger-pill cogs">COGS: Coffee</span>
+                      <span className="sup-ledger-sync">🟢 Petpooja</span>
                     </div>
 
-                    {/* Weekly Reach Banner */}
-                    <div className="sup-vis-weekly-banner">
-                      <span className="sup-vis-eye-icon">👁</span>
-                      <span><strong>38 specialty cafés</strong> viewed catalogue this week</span>
+                    <div className="sup-ledger-row">
+                      <div className="sup-ledger-col-trans">
+                        <span className="trans-title">Barista Oat Milk (12x)</span>
+                        <span className="trans-amount">₹2,880</span>
+                      </div>
+                      <span className="sup-ledger-pill inv">Inventory</span>
+                      <span className="sup-ledger-sync">🟢 Tally Prime</span>
                     </div>
+
+                    <div className="sup-ledger-row">
+                      <div className="sup-ledger-col-trans">
+                        <span className="trans-title">Cold Brew Concentrate (5L)</span>
+                        <span className="trans-amount">₹2,400</span>
+                      </div>
+                      <span className="sup-ledger-pill base">Beverage Base</span>
+                      <span className="sup-ledger-sync">🟢 Zoho Books</span>
+                    </div>
+
+                    <div className="sup-ledger-row">
+                      <div className="sup-ledger-col-trans">
+                        <span className="trans-title">V60 Paper Filters (500x)</span>
+                        <span className="trans-amount">₹950</span>
+                      </div>
+                      <span className="sup-ledger-pill supplies">Supplies</span>
+                      <span className="sup-ledger-sync">🟢 QuickBooks</span>
+                    </div>
+                  </div>
+
+                  {/* Ramp Signature Fade Masks */}
+                  <div className="sup-ledger-fade-bottom" aria-hidden="true" />
+                  <div className="sup-ledger-fade-right" aria-hidden="true" />
+
+                  {/* Live sync metric tag */}
+                  <div className="sup-ledger-sync-footer">
+                    <span>🟢 100% GST Invoices &amp; E-Way Bills Auto-Filed</span>
                   </div>
                 </div>
               </div>
             </motion.article>
 
-            {/* ─── TILE 4: WHATSAPP WORKFLOW AUTOMATION (1/3 width) ─── */}
+            {/* ─── TILE 4: ESCROW & BANKING THAT FLOWS MONEY TO HIGHEST RETURN ─── */}
             <motion.article
-              className="sup-bento-card sup-bento-card-whatsapp"
+              className="sup-bento-card sup-bento-card-banking"
               initial={isReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
@@ -329,72 +361,83 @@ export function SupplierBentoFeatures() {
                 {/* Header */}
                 <div className="sup-bento-card-header">
                   <h3 className="sup-bento-title">
-                    Turn chats <span className="text-hushed">into automated workflows</span>
+                    Escrow &amp; Banking <span className="text-hushed">that flows money to the highest return</span>
                   </h3>
                   <div className="sup-bento-arrow-affordance" aria-hidden="true">
-                    <span>↗</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
                   </div>
                 </div>
 
-                {/* ─── Miniature Interface Preview: macOS App Window (WhatsApp Gateway) ─── */}
-                <div className="sup-bento-preview-container sup-mac-window">
-                  {/* macOS Header */}
-                  <div className="sup-mac-header">
-                    <div className="sup-mac-dots" aria-hidden="true">
-                      <span className="dot dot-red" />
-                      <span className="dot dot-yellow" />
-                      <span className="dot dot-green" />
+                {/* Visual Stage: Real-Time Treasury & Cash Flow Velocity Graph (Ramp Element) */}
+                <div className="sup-bento-preview-container sup-banking-stage">
+                  <div className="sup-bank-balance-card">
+                    <div className="sup-bank-label-row">
+                      <span className="sup-bank-label">ESCROW SETTLEMENT VAULT</span>
+                      <span className="sup-bank-yield-pill">+4.8% APY</span>
                     </div>
-                    <div className="sup-mac-address-bar">
-                      <span>grabbit.app/whatsapp-gateway</span>
+                    <div className="sup-bank-amount-row">
+                      <span className="sup-bank-currency">₹</span>
+                      <span className="sup-bank-amount">4,82,500</span>
+                      <span className="sup-bank-cents">.00</span>
                     </div>
-                    <span className="sup-wa-connected-badge">🟢 24/7 Agent</span>
                   </div>
 
-                  {/* Window Content: Conversation + Pipeline */}
-                  <div className="sup-mac-content">
-                    {/* Chat Messages */}
-                    <div className="sup-wa-thread-ramp">
-                      <div className="sup-wa-msg incoming">
-                        <div className="sup-wa-msg-sender">Priya · Araku Flagship (08:14 AM)</div>
-                        <div className="sup-wa-msg-body">
-                          &quot;Need 15kg Arabica AA + 4 crates Oat Milk by 11 AM tomorrow.&quot;
-                        </div>
-                      </div>
+                  {/* Sparkline Cash Velocity SVG */}
+                  <div className="sup-bank-chart-container" aria-hidden="true">
+                    <svg viewBox="0 0 300 68" className="sup-bank-sparkline" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="supBankGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#1FA952" stopOpacity="0.28" />
+                          <stop offset="100%" stopColor="#1FA952" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d="M0,58 C45,54 75,44 110,48 C145,52 175,28 210,32 C245,36 270,12 300,10 L300,68 L0,68 Z"
+                        fill="url(#supBankGradient)"
+                      />
+                      <path
+                        d="M0,58 C45,54 75,44 110,48 C145,52 175,28 210,32 C245,36 270,12 300,10"
+                        fill="none"
+                        stroke="#1FA952"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                      {/* Active glowing node */}
+                      <circle cx="300" cy="10" r="4" fill="#1FA952" />
+                      <circle cx="300" cy="10" r="8" fill="#1FA952" fillOpacity="0.25" />
+                    </svg>
+                  </div>
 
-                      <div className="sup-wa-msg outgoing">
-                        <div className="sup-wa-msg-sender">Grabbit Autonomous Agent (08:15 AM · ✓✓)</div>
-                        <div className="sup-wa-msg-body">
-                          <strong>PO #GR-2051</strong> logged &amp; verified. Invoiced ₹18,400 with contract rate applied. Delivery: 10:30 AM.
-                        </div>
-                      </div>
+                  {/* Next Automated Disbursement Progress */}
+                  <div className="sup-bank-disburse-card">
+                    <div className="sup-bank-disburse-top">
+                      <span className="disburse-title">Next Auto-Disbursement</span>
+                      <span className="disburse-timing">Today · 12:00 PM</span>
                     </div>
-
-                    {/* Pipeline Stage Tracker */}
-                    <div className="sup-wa-pipeline-ramp">
-                      <div className={`sup-pipe-stage ${activeWorkflowStep >= 1 ? 'done' : ''}`}>
-                        <span className="sup-pipe-icon">✓</span>
-                        <span className="sup-pipe-text">Received</span>
-                      </div>
-                      <span className="sup-pipe-divider" />
-                      <div className={`sup-pipe-stage ${activeWorkflowStep >= 2 ? 'done' : ''}`}>
-                        <span className="sup-pipe-icon">✓</span>
-                        <span className="sup-pipe-text">Invoiced</span>
-                      </div>
-                      <span className="sup-pipe-divider" />
-                      <div className={`sup-pipe-stage ${activeWorkflowStep >= 3 ? 'done' : 'active'}`}>
-                        <span className="sup-pipe-icon">●</span>
-                        <span className="sup-pipe-text">Bay Dispatch</span>
-                      </div>
+                    <div className="sup-bank-progress-track">
+                      <div className="sup-bank-progress-fill" style={{ width: payoutTriggered ? '100%' : '84%' }} />
+                    </div>
+                    <div className="sup-bank-disburse-footer">
+                      <span className="guarantee-text">🔒 24-Hour Settlement Guarantee · ₹0 Bad Debts</span>
+                      <button
+                        type="button"
+                        className="sup-bank-payout-btn"
+                        onClick={() => setPayoutTriggered(!payoutTriggered)}
+                      >
+                        {payoutTriggered ? 'Disbursed ✓' : 'Instant ⚡'}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </motion.article>
 
-            {/* ─── TILE 5: EARLY STOCK-OUT ALERTS (1/3 width) ─── */}
+            {/* ─── TILE 5: 20+ INTEGRATIONS TO THE TOOLS YOU ALREADY USE ─── */}
             <motion.article
-              className="sup-bento-card sup-bento-card-alerts"
+              className="sup-bento-card sup-bento-card-integrations"
               initial={isReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
@@ -404,65 +447,100 @@ export function SupplierBentoFeatures() {
                 {/* Header */}
                 <div className="sup-bento-card-header">
                   <h3 className="sup-bento-title">
-                    Stock alerts <span className="text-hushed">before depletion happens</span>
+                    20+ Integrations <span className="text-hushed">to the tools you already use</span>
                   </h3>
                   <div className="sup-bento-arrow-affordance" aria-hidden="true">
-                    <span>↗</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
                   </div>
                 </div>
 
-                {/* ─── Miniature Interface Preview: macOS App Window (Inventory Telemetry) ─── */}
-                <div className="sup-bento-preview-container sup-mac-window">
-                  {/* macOS Header */}
-                  <div className="sup-mac-header">
-                    <div className="sup-mac-dots" aria-hidden="true">
-                      <span className="dot dot-red" />
-                      <span className="dot dot-yellow" />
-                      <span className="dot dot-green" />
+                {/* Visual Stage: Radial Masked Ecosystem Constellation (Ramp Element) */}
+                <div className="sup-bento-preview-container sup-integrations-stage">
+                  <div className="sup-orbit-constellation">
+                    {/* Concentric Orbital Rings */}
+                    <div className="sup-orbit-ring ring-1" aria-hidden="true" />
+                    <div className="sup-orbit-ring ring-2" aria-hidden="true" />
+                    <div className="sup-orbit-ring ring-3" aria-hidden="true" />
+
+                    {/* Central Gradient Hub */}
+                    <div className="sup-orbit-center-hub" title="Gradient Core Wholesale Engine">
+                      <span className="hub-g">G</span>
+                      <span className="hub-pulse" />
                     </div>
-                    <div className="sup-mac-address-bar">
-                      <span>grabbit.app/telemetry</span>
+
+                    {/* Orbiting Partner Badge: Petpooja (POS) */}
+                    <div
+                      className={`sup-orbit-chip chip-petpooja ${activeIntegration === 'petpooja' ? 'active' : ''}`}
+                      onClick={() => setActiveIntegration('petpooja')}
+                      title="Petpooja Restaurant POS"
+                    >
+                      <span className="chip-badge-icon" style={{ background: '#FF5722' }}>P</span>
+                      <span className="chip-label">Petpooja</span>
+                      <span className="chip-status-dot" />
                     </div>
-                    <span className="sup-alert-status-pill">⚠️ 1 Low Stock</span>
+
+                    {/* Orbiting Partner Badge: Tally Prime (Accounting) */}
+                    <div
+                      className={`sup-orbit-chip chip-tally ${activeIntegration === 'tally' ? 'active' : ''}`}
+                      onClick={() => setActiveIntegration('tally')}
+                      title="Tally Prime ERP"
+                    >
+                      <span className="chip-badge-icon" style={{ background: '#0284C7' }}>T</span>
+                      <span className="chip-label">Tally</span>
+                      <span className="chip-status-dot" />
+                    </div>
+
+                    {/* Orbiting Partner Badge: WhatsApp Business API */}
+                    <div
+                      className={`sup-orbit-chip chip-whatsapp ${activeIntegration === 'whatsapp' ? 'active' : ''}`}
+                      onClick={() => setActiveIntegration('whatsapp')}
+                      title="WhatsApp Autonomous Order Gateway"
+                    >
+                      <span className="chip-badge-icon" style={{ background: '#25D366' }}>W</span>
+                      <span className="chip-label">WhatsApp</span>
+                      <span className="chip-status-dot" />
+                    </div>
+
+                    {/* Orbiting Partner Badge: Zoho Books */}
+                    <div
+                      className={`sup-orbit-chip chip-zoho ${activeIntegration === 'zoho' ? 'active' : ''}`}
+                      onClick={() => setActiveIntegration('zoho')}
+                      title="Zoho Books Automated GST Invoicing"
+                    >
+                      <span className="chip-badge-icon" style={{ background: '#E11D48' }}>Z</span>
+                      <span className="chip-label">Zoho</span>
+                      <span className="chip-status-dot" />
+                    </div>
+
+                    {/* Orbiting Partner Badge: UrbanPiper */}
+                    <div
+                      className={`sup-orbit-chip chip-urbanpiper ${activeIntegration === 'urbanpiper' ? 'active' : ''}`}
+                      onClick={() => setActiveIntegration('urbanpiper')}
+                      title="UrbanPiper Café Aggregator Sync"
+                    >
+                      <span className="chip-badge-icon" style={{ background: '#8B5CF6' }}>U</span>
+                      <span className="chip-label">UrbanPiper</span>
+                      <span className="chip-status-dot" />
+                    </div>
+
+                    {/* Orbiting Partner Badge: QuickBooks */}
+                    <div
+                      className={`sup-orbit-chip chip-quickbooks ${activeIntegration === 'quickbooks' ? 'active' : ''}`}
+                      onClick={() => setActiveIntegration('quickbooks')}
+                      title="QuickBooks Online"
+                    >
+                      <span className="chip-badge-icon" style={{ background: '#10B981' }}>Q</span>
+                      <span className="chip-label">QuickBooks</span>
+                      <span className="chip-status-dot" />
+                    </div>
                   </div>
 
-                  {/* Window Content: Depletion Telemetry */}
-                  <div className="sup-mac-content">
-                    <div className="sup-stock-telemetry-list">
-                      {/* Stock Item 1: Urgent Alert */}
-                      <div
-                        className={`sup-stock-item-ramp ${selectedStock === 'arabica' ? 'selected' : ''}`}
-                        onClick={() => setSelectedStock('arabica')}
-                      >
-                        <div className="sup-stock-header-row">
-                          <span className="sup-stock-title">Arabica Beans AA</span>
-                          <span className="sup-stock-urgency-badge warning">8 kg left · 1.2d</span>
-                        </div>
-                        <div className="sup-stock-progress-track">
-                          <div className="sup-stock-progress-fill warning" style={{ width: '18%' }} />
-                        </div>
-                        <div className="sup-stock-action-inline">
-                          <span>⚡ 1-Click Auto-Draft PO (50 kg) →</span>
-                        </div>
-                      </div>
-
-                      {/* Stock Item 2: Healthy */}
-                      <div
-                        className={`sup-stock-item-ramp ${selectedStock === 'oat' ? 'selected' : ''}`}
-                        onClick={() => setSelectedStock('oat')}
-                      >
-                        <div className="sup-stock-header-row">
-                          <span className="sup-stock-title">Barista Oat Milk</span>
-                          <span className="sup-stock-urgency-badge healthy">24 cases · 4.8d</span>
-                        </div>
-                        <div className="sup-stock-progress-track">
-                          <div className="sup-stock-progress-fill healthy" style={{ width: '68%' }} />
-                        </div>
-                        <div className="sup-stock-info-inline">
-                          <span>Buffer healthy · Next café cutoff in 14 hrs</span>
-                        </div>
-                      </div>
-                    </div>
+                  {/* Footnote */}
+                  <div className="sup-integrations-footer">
+                    <span>Plug &amp; Play · Real-time 2-way sync across all café outlets</span>
                   </div>
                 </div>
               </div>

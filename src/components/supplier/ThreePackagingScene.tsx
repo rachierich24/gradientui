@@ -155,9 +155,9 @@ export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneP
         leftRootGroup.position.set(-999, -999, 0);
         rightRootGroup.position.set(999, 999, 0);
       } else {
-        // Positioned cleanly in the hero flanks, framing the central copy without overlap
-        const xOffset = currentWidth >= 1440 ? 6.1 : currentWidth >= 1200 ? 5.6 : 5.1;
-        const yOffset = currentWidth < 1180 ? -1.45 : -1.25;
+        // Positioned cleanly in the hero flanks, lowered down to frame the central copy without overlap
+        const xOffset = currentWidth >= 1440 ? 6.5 : currentWidth >= 1200 ? 6.0 : 5.4;
+        const yOffset = currentWidth < 1180 ? -2.15 : -1.85;
         const scale = currentWidth < 1050 ? 0.65 : currentWidth < 1280 ? 0.78 : 0.98;
 
         leftRootGroup.scale.set(scale, scale, scale);
