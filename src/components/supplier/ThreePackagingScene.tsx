@@ -112,7 +112,7 @@ export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneP
     const foodGeo = new THREE.PlaneGeometry(foodWidth, foodHeight, 16, 16);
     disposables.push(foodGeo);
 
-    const foodTexture = textureLoader.load('/supplier/cafe_food_cutout.png', (tex) => {
+    const foodTexture = textureLoader.load('/supplier/cafe_raw_materials_cutout.png', (tex) => {
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.minFilter = THREE.LinearMipmapLinearFilter;
       tex.magFilter = THREE.LinearFilter;
