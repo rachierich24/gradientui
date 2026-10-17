@@ -143,7 +143,7 @@ export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneP
 
     const allMaterials = [coffeeMat, foodMat];
 
-    // ─── 5. Positioning & Responsive Layout ───
+    // ─── 5. Positioning & Responsive Layout (Relume-Style Edge Bleed & Framing) ───
     function updateLayoutPositions() {
       const currentWidth = container?.clientWidth || window.innerWidth;
       const currentHeight = container?.clientHeight || window.innerHeight;
@@ -154,23 +154,40 @@ export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneP
         // Offscreen on mobile to preserve 100% clean typography
         leftRootGroup.position.set(-999, -999, 0);
         rightRootGroup.position.set(999, 999, 0);
-      } else {
-        // Positioned cleanly in the hero flanks, lowered down to frame the central copy without overlap
-        const xOffset = currentWidth >= 1440 ? 6.5 : currentWidth >= 1200 ? 6.0 : 5.4;
-        const yOffset = currentWidth < 1180 ? -2.15 : -1.85;
-        const scale = currentWidth < 1050 ? 0.65 : currentWidth < 1280 ? 0.78 : 0.98;
-
-        leftRootGroup.scale.set(scale, scale, scale);
-        rightRootGroup.scale.set(scale, scale, scale);
-
-        leftRootGroup.userData.baseX = -xOffset;
-        leftRootGroup.userData.baseY = yOffset;
-        leftRootGroup.userData.baseZ = 0;
-
-        rightRootGroup.userData.baseX = xOffset;
-        rightRootGroup.userData.baseY = yOffset;
-        rightRootGroup.userData.baseZ = 0;
+        return;
       }
+
+      // Compute exact visible camera frustum half-width and half-height at Z = 0
+      const aspect = currentWidth / currentHeight;
+      const dist = camera.position.z; // 14.8
+      const vHalfHeight = dist * Math.tan((camera.fov * Math.PI) / 360);
+      const vHalfWidth = vHalfHeight * aspect;
+
+      // Tasteful, refined scale: smaller physical packaging presence
+      const scale = currentWidth < 1050 ? 0.62 : currentWidth < 1360 ? 0.74 : 0.86;
+
+      leftRootGroup.scale.set(scale, scale, scale);
+      rightRootGroup.scale.set(scale, scale, scale);
+
+      // Relume edge alignment:
+      // Coffee half-width is ~2.95 * scale, food half-width is ~3.2 * scale.
+      // Position center so it hugs the flank with ~25-30% edge tuck
+      const leftHalfW = 2.95 * scale;
+      const rightHalfW = 3.2 * scale;
+
+      const baseXLeft = -vHalfWidth + leftHalfW * 0.45;
+      const baseXRight = vHalfWidth - rightHalfW * 0.45;
+
+      // Lowered down vertically to frame the center headline and flank the rising cutting mat
+      const baseY = currentWidth < 1180 ? -2.05 : -1.82;
+
+      leftRootGroup.userData.baseX = baseXLeft;
+      leftRootGroup.userData.baseY = baseY;
+      leftRootGroup.userData.baseZ = 0;
+
+      rightRootGroup.userData.baseX = baseXRight;
+      rightRootGroup.userData.baseY = baseY;
+      rightRootGroup.userData.baseZ = 0;
     }
 
     updateLayoutPositions();
