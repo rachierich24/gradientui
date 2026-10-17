@@ -26,6 +26,11 @@ http.get('http://localhost:9222/json', (res) => {
       });
     }
 
+    await send('Runtime.evaluate', {
+      expression: 'window.lenis ? window.lenis.scrollTo(0, { immediate: true }) : window.scrollTo(0, 0)'
+    });
+    await new Promise(r => setTimeout(r, 600));
+
     const clipRes = await send('Runtime.evaluate', {
       expression: '(() => { const r = document.querySelector(".sup-hero-btn-group").getBoundingClientRect(); return { x: r.x - 20, y: r.y - 20, width: r.width + 40, height: r.height + 40, scale: 2 }; })()',
       returnByValue: true

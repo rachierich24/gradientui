@@ -4,6 +4,7 @@ import React from 'react';
 import {
   SupplierNavbar,
   SupplierHeroScene,
+  SupplierBentoFeatures,
   SupplierLogos,
   SupplierOperationPath,
   SupplierBenefits,
@@ -43,7 +44,10 @@ export default function SupplierPortalPage() {
       {/* ─── 02 & 03. Relume-Inspired Hero Scene: 3D Packaging, Editorial Typography, Input Card & Pinned Rising Dashboard on Green Cutting Mat ─── */}
       <SupplierHeroScene onJoinClick={handleJoinClick} />
 
-      {/* ─── 04. Relume-Style Partner Logo Ticker (Section Immediately after Dashboard) ─── */}
+      {/* ─── 04. Five-Tile Asymmetric Bento Feature Section (Core Supplier Capabilities) ─── */}
+      <SupplierBentoFeatures />
+
+      {/* ─── 05. Relume-Style Partner Logo Ticker (Section Immediately after Dashboard) ─── */}
       <SupplierLogos />
 
       {/* ─── 05. Relume-Style 'Choose Your Operation' Path (Fleet vs Own Logistics) ─── */}

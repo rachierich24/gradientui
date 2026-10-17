@@ -132,33 +132,19 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
   6: 3600, // Completed & Escrow Payout
 };
 
-  // Autoplay loop timer (18 seconds cycle)
-  // Only autoplays when dashboard is visible in viewport (scrollP >= 0.18 or reduced motion)
-  // Holds on Stage 6 (Completed & Escrow) without endless looping
+  // Autoplay loop timer (continuous perpetual loop through all 6 stages)
   useEffect(() => {
-    const isDashboardVisible = scrollP >= 0.18 || isReduced;
-    if (!isPlaying || !isDashboardVisible) return;
-
-    if (currentStage === 6) {
-      setIsPlaying(false);
-      return;
-    }
+    if (!isPlaying) return;
 
     const timer = setTimeout(() => {
-      setCurrentStage((prev) => {
-        if (prev === 6) {
-          setIsPlaying(false);
-          return 6;
-        }
-        return (prev + 1) as WorkflowStage;
-      });
+      setCurrentStage((prev) => (prev === 6 ? 1 : ((prev + 1) as WorkflowStage)));
     }, STAGE_DURATIONS[currentStage]);
     return () => clearTimeout(timer);
-  }, [isPlaying, currentStage, scrollP, isReduced]);
+  }, [isPlaying, currentStage]);
 
   const handleStageSelect = (stage: WorkflowStage) => {
     setCurrentStage(stage);
-    setIsPlaying(false);
+    setIsPlaying(true);
   };
   const handleTogglePlay = () => setIsPlaying(!isPlaying);
   const handleReset = () => {
@@ -510,7 +496,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
                                 onClick={() => {
                                   if (isTarget) {
                                     setCurrentStage(2);
-                                    setIsPlaying(false);
+                                    setIsPlaying(true);
                                   }
                                 }}
                               >
@@ -537,7 +523,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
                                         if (currentStage === 1) setCurrentStage(2);
                                         else if (currentStage === 2) setCurrentStage(3);
                                         else setCurrentStage(4);
-                                        setIsPlaying(false);
+                                        setIsPlaying(true);
                                       }}
                                     >
                                       <span>
