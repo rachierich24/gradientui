@@ -1,5 +1,6 @@
 export { SupplierNavbar } from './SupplierNavbar';
 export { SupplierHeroScene } from './SupplierHeroScene';
+export { SupplierChaosFlow } from './SupplierChaosFlow';
 export { SupplierHero } from './SupplierHero';
 export { PackagingScene } from './PackagingScene';
 export { SupplierWorkspace } from './SupplierWorkspace';

@@ -4,6 +4,7 @@ import React from 'react';
 import {
   SupplierNavbar,
   SupplierHeroScene,
+  SupplierChaosFlow,
   SupplierBentoFeatures,
   SupplierLogos,
   SupplierOperationPath,
@@ -43,6 +44,9 @@ export default function SupplierPortalPage() {
 
       {/* ─── 02 & 03. Relume-Inspired Hero Scene: 3D Packaging, Editorial Typography, Input Card & Pinned Rising Dashboard on Green Cutting Mat ─── */}
       <SupplierHeroScene onJoinClick={handleJoinClick} />
+
+      {/* ─── 03b. Before Gradient → one truck: the WhatsApp-and-spreadsheet chaos gathered into one delivery run ─── */}
+      <SupplierChaosFlow />
 
       {/* ─── 04. Five-Tile Asymmetric Bento Feature Section (Core Supplier Capabilities) ─── */}
       <SupplierBentoFeatures />

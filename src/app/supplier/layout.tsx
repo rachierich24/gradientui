@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './supplier.css';
+import './supplier-flow.css';
 
 export const metadata: Metadata = {
   title: 'Gradient Supplier Portal — Every Café Order. Ready to Fulfill.',
