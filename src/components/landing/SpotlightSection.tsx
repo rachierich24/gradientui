@@ -634,7 +634,7 @@ export function SpotlightSection() {
                           width={352}
                           height={244}
                           sizes="180px"
-                          loading={idx < 20 ? 'eager' : 'lazy'}
+                          loading="lazy"
                           className="spotlight-image"
                           draggable={false}
                         />
@@ -666,7 +666,7 @@ export function SpotlightSection() {
                           width={352}
                           height={244}
                           sizes="180px"
-                          loading={idx < 20 ? 'eager' : 'lazy'}
+                          loading="lazy"
                           className="spotlight-image"
                           draggable={false}
                         />
