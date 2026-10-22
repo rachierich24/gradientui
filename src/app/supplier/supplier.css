@@ -4958,3 +4958,17 @@
     transform: none !important;
   }
 }
+
+/* ─── Footer (shared G365Footer) in supplier green: wordmark, its sheen and link hovers ─── */
+.supplier-portal-root .g365-footer {
+  --sup-ft-ink: #1FA952;
+  --light: linear-gradient(100deg, #1FA952 0%, #1FA952 41%, #5FCB86 47%, #A7E3BC 50%, #5FCB86 53%, #1FA952 59%, #1FA952 100%);
+}
+.supplier-portal-root .g365-footer #ftEnergy stop { stop-color: #1FA952; }
+.supplier-portal-root .g365-footer #ftEnergy stop:nth-child(3),
+.supplier-portal-root .g365-footer #ftEnergy stop:nth-child(5) { stop-color: #5FCB86; }
+.supplier-portal-root .g365-footer #ftEnergy stop:nth-child(4) { stop-color: #A7E3BC; }
+.supplier-portal-root .g365-footer .ft-lines * { stroke: var(--sup-ft-ink); }
+.supplier-portal-root .g365-footer .ft-dots circle { fill: var(--sup-ft-ink); }
+.supplier-portal-root .g365-footer .ft-guides * { stroke: rgba(31, 169, 82, 0.2); }
+.supplier-portal-root .g365-footer .ft-wrap::before { background: linear-gradient(180deg, rgba(31, 169, 82, 0), rgba(31, 169, 82, 0.55)); }
