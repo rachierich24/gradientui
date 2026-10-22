@@ -5000,3 +5000,11 @@
   .sup-btn-cta { padding: 8px 11px; font-size: 13px; white-space: nowrap; }
   .sup-hero-headline { font-size: clamp(24px, 7.2vw, 34px); }
 }
+
+/* phones: hero order table cells collided ("Araku CoffeeJubilee ₹7,400COMPLETED"); let cells shrink and truncate */
+@media (max-width: 768px) {
+  .sup-table-head > div,
+  .sup-table-row > div { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
+  .sup-table-head,
+  .sup-table-row { grid-template-columns: 58px minmax(0, 1.5fr) 58px 82px; column-gap: 4px; padding-left: 10px; padding-right: 10px; }
+}

@@ -243,8 +243,11 @@
   .sfl-in, .sfl-links path, .sfl-screen .live i { animation: none; }
 }
 @media (max-width: 760px) {
-  .sfl { height: 300vh; }
-  /* the scaled-down diagram sat in the top third with the rest of the screen empty; centre it */
-  .sfl-stage { padding-top: 84px; justify-content: center; }
-  .sfl-copy p { display: none; }
+  /* The before/after film is a 1200px canvas pinned for 300vh; scaled to a phone its text is ~4px.
+     Show the two statements as plain stacked copy instead, no pinning, no canvas. */
+  .sfl { height: auto; }
+  .sfl-stage { position: static; height: auto; overflow: visible; justify-content: flex-start; padding: 64px 20px 56px; }
+  .sfl-head { display: flex; flex-direction: column; gap: 40px; }
+  .sfl-copy, .sfl-copy.is-after { grid-area: auto; opacity: 1 !important; transform: none !important; }
+  .sfl-diagram { display: none; }
 }
