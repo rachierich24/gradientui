@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import React, { useEffect, useRef } from 'react'
 
 interface SpotlightCardItem {
@@ -627,9 +628,12 @@ export function SpotlightSection() {
                   >
                     <div className="spotlight-card-inner">
                       <div className="spotlight-image-box">
-                        <img
+                        <Image
                           src={card.image}
                           alt={card.alt}
+                          width={352}
+                          height={244}
+                          sizes="180px"
                           loading={idx < 20 ? 'eager' : 'lazy'}
                           className="spotlight-image"
                           draggable={false}
@@ -656,9 +660,12 @@ export function SpotlightSection() {
                   >
                     <div className="spotlight-card-inner">
                       <div className="spotlight-image-box">
-                        <img
+                        <Image
                           src={card.image}
                           alt={card.alt}
+                          width={352}
+                          height={244}
+                          sizes="180px"
                           loading={idx < 20 ? 'eager' : 'lazy'}
                           className="spotlight-image"
                           draggable={false}

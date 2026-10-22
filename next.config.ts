@@ -33,9 +33,21 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   experimental: {},
+  images: { formats: ['image/avif', 'image/webp'] },
   devIndicators: false,
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }]
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      // public/ files are unhashed; default is max-age=0 (revalidate every view).
+      {
+        source: '/:path*/:file(.+\\.(?:svg|jpg|jpeg|png|webp|avif|mp4|js|bin))',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
+      },
+      {
+        source: '/:path*/:file(.+\\.woff2)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+    ]
   },
 }
 

@@ -787,7 +787,7 @@ export function EcosystemShowcase() {
                     src="/suppliers.mp4"
                     playsInline
                     muted
-                    preload="auto"
+                    preload="metadata"
                     className="eco-dashboard-video"
                     onEnded={handleSupplierEnded}
                     onError={(e) => {
@@ -882,7 +882,7 @@ export function EcosystemShowcase() {
                         src="/cafe.mp4"
                         playsInline
                         muted
-                        preload="auto"
+                        preload="metadata"
                         className="eco-mobile-video"
                         onEnded={handleMobileEnded}
                         onError={(e) => {
@@ -969,7 +969,7 @@ export function EcosystemShowcase() {
                     src="/brands.mp4"
                     playsInline
                     muted
-                    preload="auto"
+                    preload="metadata"
                     className="eco-dashboard-video"
                     onEnded={handleBrandEnded}
                     onError={(e) => {
