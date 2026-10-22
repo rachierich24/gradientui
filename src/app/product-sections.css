@@ -422,7 +422,7 @@
 
 .product-frame {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10; /* laptop display proportion (MacBook 16:10) */
   max-width: 980px;
   background: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.45);
@@ -1188,8 +1188,8 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  overscroll-behavior: contain;
+  /* auto (not contain): once the dashboard hits its end, further scroll continues the page */
+  overscroll-behavior: auto;
   scroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
   padding: 10px 14px 20px 14px;
@@ -2558,8 +2558,13 @@
   .product-grid-cafe,
   .product-grid-supplier,
   .product-grid-brand {
-    grid-template-columns: 1fr;
+    /* minmax(0,1fr): plain 1fr lets min-content (the dashboard frame) widen the column past the viewport */
+    grid-template-columns: minmax(0, 1fr);
     gap: 44px;
+  }
+  .product-stage,
+  .product-text-column {
+    min-width: 0;
   }
 
   /* Keep Supplier & Brand text on top on tablet / mobile for clear narrative */
@@ -2601,6 +2606,9 @@
 
   .product-frame {
     border-radius: 12px;
+    /* phones: let the frame grow so the dashboard is readable instead of a 16:10 sliver */
+    aspect-ratio: auto;
+    min-height: 560px;
   }
 
   .dashboard-layout {
@@ -3288,7 +3296,40 @@
 /* Ensure native smooth momentum trackpad scrolling without artificial latency */
 .dashboard-main {
   scroll-behavior: auto !important;
-  overscroll-behavior-y: contain !important;
+  overscroll-behavior-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-y !important;
+}
+
+/* ── Simplified product dashboards: fewer words, larger type, one idea per card ──
+   Beats the compact `!important` layer above by id specificity. */
+:is(#for-suppliers, #for-brands) .dashboard-main { padding: 12px 14px 14px !important; gap: 10px !important; }
+:is(#for-suppliers, #for-brands) .dashboard-page-title { font-size: 16px !important; }
+:is(#for-suppliers, #for-brands) .dash-btn-primary { font-size: 11px !important; padding: 0 10px !important; }
+:is(#for-suppliers, #for-brands) .dashboard-overview-row { gap: 8px !important; }
+:is(#for-suppliers, #for-brands) .dashboard-stat { padding: 9px 11px !important; gap: 3px !important; border-radius: 9px !important; }
+:is(#for-suppliers, #for-brands) .stat-label { font-size: 9.5px !important; }
+:is(#for-suppliers, #for-brands) .stat-value { font-size: 23px !important; line-height: 1.1; }
+:is(#for-suppliers, #for-brands) .stat-trend { font-size: 10px !important; }
+:is(#for-suppliers, #for-brands) .dashboard-bento { gap: 8px !important; }
+:is(#for-suppliers, #for-brands) .dashboard-card { padding: 10px 12px !important; }
+:is(#for-suppliers, #for-brands) .card-title,
+:is(#for-suppliers, #for-brands) .simple-card-title { font-size: 12px !important; }
+:is(#for-suppliers, #for-brands) .simple-flight-card,
+:is(#for-suppliers, #for-brands) .simple-order-card { padding: 7px 9px !important; gap: 4px !important; }
+:is(#for-suppliers, #for-brands) .simple-card-body,
+:is(#for-suppliers, #for-brands) .simple-card-footer { font-size: 10.5px !important; }
+:is(#for-suppliers, #for-brands) .simple-route-strip { padding: 6px 8px !important; gap: 5px !important; }
+:is(#for-suppliers, #for-brands) .simple-route-row { font-size: 11px !important; }
+:is(#for-suppliers, #for-brands) .status-pill { font-size: 10px !important; }
+:is(#for-suppliers, #for-brands) .table-action-btn { font-size: 10px !important; }
+
+/* Right-hand list: only the selected item shows its description */
+:is(#for-suppliers, #for-brands) .feature-item:not(.active) .feature-text { display: none; }
+
+/* ─── phones: drop dashboard chrome that has no room (cursor label overlays the copy, badge overflows) ─── */
+@media (max-width: 768px) {
+  .product-frame .animated-virtual-cursor,
+  .product-frame .browser-user-badge { display: none !important; }
+  .product-frame .browser-url-pill { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }

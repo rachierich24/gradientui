@@ -4958,3 +4958,45 @@
     transform: none !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PHONES / TABLETS: stack the two-to-four column sections that only had desktop grids,
+   so nothing is squeezed into a 90px column or pushed past the viewport.
+───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sup-path-header-row,
+  .sup-path-showcase-grid,
+  .sup-inv-grid,
+  .sup-logistics-grid,
+  .sup-analytics-chart-row,
+  .sup-closing-cta-card,
+  .sup-complete-layout,
+  .sup-packaging-layout,
+  .sup-bento-grid,
+  .sup-steps-grid,
+  .sup-integrations-grid,
+  .sup-trust-grid,
+  .sup-decision-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sup-path-header-row { gap: 20px; margin-bottom: 32px; }
+  .sup-path-showcase-grid { gap: 20px; }
+  .sup-analytics-kpi-row,
+  .sup-telemetry-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sup-wa-transformer { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .sup-inv-table { display: block; max-width: 100%; overflow-x: auto; }
+  .sup-stage-cutting-mat { overflow: hidden; }
+  .sup-cockpit-main { min-width: 0; max-width: 100%; }
+  .sup-mat-stage-pills { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .sup-mat-actions-right,
+  .sup-subbar-status-chip { display: none; }
+  .sup-subbar-filters { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+}
+
+@media (max-width: 480px) {
+  .sup-badge-portal { display: none; }
+  .sup-nav-right { gap: 4px; }
+  .sup-btn-login { padding: 8px; font-size: 14px; white-space: nowrap; }
+  .sup-btn-cta { padding: 8px 11px; font-size: 13px; white-space: nowrap; }
+  .sup-hero-headline { font-size: clamp(24px, 7.2vw, 34px); }
+}

@@ -28,11 +28,6 @@ export function MotionTimelineBar({
 }: MotionEngineControlsProps) {
   return (
     <div className="motion-timeline-bar" aria-label="Workflow motion demonstration progress">
-      <div className="motion-timeline-badge">
-        <span className="motion-live-dot" style={{ backgroundColor: accentColor }} />
-        <span>LIVE MOTION DEMO</span>
-      </div>
-
       <div className="motion-steps-list">
         {stepLabels.map((label, idx) => {
           const isActive = currentStep === idx;

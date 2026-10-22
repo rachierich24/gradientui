@@ -606,7 +606,6 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                   <span>app.gradient365.com/supplier/wholesale</span>
                 </div>
                 <div className="browser-actions">
-                  <span className="browser-status-tag" style={{ background: '#ECFDF5', color: '#047857', borderColor: '#A7F3D0' }}>Wholesale Live · BLR Hub</span>
                   <div className="browser-user-badge">
                     <span className="browser-avatar" style={{ background: '#064E3B' }}>RS</span>
                     <span>RoastSupply & Dairy Co.</span>
@@ -711,9 +710,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                     <div className="dashboard-heading-group">
                       <div className="dashboard-title-row">
                         <h3 className="dashboard-page-title">Wholesale Operations</h3>
-                        <span className="dash-date-indicator">Today · 27 Sep 2026</span>
                       </div>
-                      <span className="dashboard-page-subtitle">RoastSupply & Dairy Co. · Bangalore Indiranagar Hub</span>
                     </div>
 
                     <div className="dashboard-top-nav-right">
@@ -731,60 +728,29 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                       </button>
                     </div>
                   </div>
-
-                  {/* Linear Core Journey Pipeline (Clean & Minimal) */}
-                  <div className="linear-core-pipeline" role="region" aria-label="Wholesale Lifecycle Pipeline">
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">01 Ingest</span>
-                      <span className="pipeline-step-title">WhatsApp POs</span>
-                      <span className="pipeline-step-proof">34 Auto-Parsed</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">02 Production</span>
-                      <span className="pipeline-step-title">Roast Batching</span>
-                      <span className="pipeline-step-proof">180kg Scheduled</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">03 Dispatch</span>
-                      <span className="pipeline-step-title">Morning Routes</span>
-                      <span className="pipeline-step-proof">3 Vans · 07:30 Cutoff</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">04 Settlement</span>
-                      <span className="pipeline-step-title">T+1 Bank Payout</span>
-                      <span className="pipeline-step-proof">₹1.84L HDFC</span>
-                    </div>
-                  </div>
-
                   {/* Three High-Signal Metrics */}
                   <div className="dashboard-overview-row">
                     <div className="dashboard-stat">
-                      <span className="stat-label">Today's Demand (34 Cafés)</span>
+                      <span className="stat-label">Demand today</span>
                       <div className="stat-value">₹1.84L</div>
                       <div className="stat-trend positive">
                         <span>↑ 18.4% volume</span>
-                        <span className="stat-context">100% WhatsApp auto-parsed</span>
                       </div>
                     </div>
 
                     <div className="dashboard-stat">
-                      <span className="stat-label">Batch Roast #4 Scheduled</span>
+                      <span className="stat-label">Next roast</span>
                       <div className="stat-value">180 kg</div>
                       <div className="stat-trend positive">
-                        <span>● 06:00 AM Roaster 1</span>
-                        <span className="stat-context">Arabica Medium Roast</span>
+                        <span>● 06:00 AM · Roaster 1</span>
                       </div>
                     </div>
 
                     <div className="dashboard-stat">
-                      <span className="stat-label">T+1 Automated Settlement</span>
+                      <span className="stat-label">Payout</span>
                       <div className="stat-value" style={{ color: '#15803D' }}>₹1.84L</div>
                       <div className="stat-trend positive">
                         <span>✓ HDFC Disbursed</span>
-                        <span className="stat-context">Zero bad debt guarantee</span>
                       </div>
                     </div>
                   </div>
@@ -795,8 +761,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                     <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                       <div className="card-header">
                         <div>
-                          <span className="card-title">Live WhatsApp PO Stream</span>
-                          <span className="card-subtitle">AI converts voice & text orders into verified POs</span>
+                          <span className="card-title">WhatsApp orders</span>
                         </div>
                         <button
                           type="button"
@@ -804,7 +769,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                           style={{ background: '#DCFCE7', color: '#166534', borderColor: '#BBF7D0' }}
                           onClick={handleSimulateWhatsAppPO}
                         >
-                          + Simulate Incoming PO
+                          + Simulate order
                         </button>
                       </div>
 
@@ -822,7 +787,6 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                                 {po.status}
                               </span>
                             </div>
-                            <div className="simple-card-meta">{po.location} · {po.time}</div>
                             <div className="simple-card-body">{po.rawText}</div>
                             <div className="simple-card-footer">
                               <span style={{ color: '#166534', fontWeight: 600 }}>➔ {po.parsedSummary}</span>
@@ -841,9 +805,6 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                           <span className="card-title">⚡ Batch Roast #4</span>
                           <span style={{ fontSize: '9.5px', color: '#166534', fontWeight: 700 }}>180 kg Arabica</span>
                         </div>
-                        <div style={{ fontSize: '9.5px', color: '#64748B', marginBottom: '6px' }}>
-                          Consolidated across 34 café POs · Scheduled 05:00 AM
-                        </div>
                         <div style={{ height: '5px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden', marginBottom: '8px' }}>
                           <div style={{ width: '82%', height: '100%', background: '#16A34A', borderRadius: '99px' }} />
                         </div>
@@ -856,47 +817,24 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                       {/* Morning Route Dispatch */}
                       <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                         <div className="card-header">
-                          <span className="card-title">🚚 Morning Fleet Clusters</span>
+                          <span className="card-title">🚚 Morning routes</span>
                           <span className="status-pill status-transit">07:30 Cutoff</span>
                         </div>
                         <div className="simple-route-strip">
                           <div className="simple-route-row">
-                            <span><strong>Van #1</strong> (Driver: Ramesh)</span>
+                            <span><strong>Van #1</strong></span>
                             <span style={{ color: '#166534', fontWeight: 600 }}>14 Drops · Indiranagar</span>
                           </div>
                           <div className="simple-route-row">
-                            <span><strong>Van #2</strong> (Driver: Suresh)</span>
+                            <span><strong>Van #2</strong></span>
                             <span style={{ color: '#166534', fontWeight: 600 }}>11 Drops · Koramangala</span>
                           </div>
                           <div className="simple-route-row">
-                            <span><strong>Van #3</strong> (Driver: Imran)</span>
+                            <span><strong>Van #3</strong></span>
                             <span style={{ color: '#166534', fontWeight: 600 }}>9 Drops · CBD & Lavelle</span>
                           </div>
                         </div>
-                      </div>
-
-                      {/* Stripe Automated Bank Settlement Card */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px', background: '#F0FDF4', borderColor: '#BBF7D0' }}>
-                        <div className="card-header" style={{ marginBottom: '2px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#14532D' }}>T+1 Automated Bank Settlement</span>
-                          <span style={{ fontSize: '9px', color: '#166534', fontWeight: 600 }}>UTR: HDFC-99281048</span>
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: '#166534', lineHeight: 1.4 }}>
-                          <strong>₹1,84,200.00</strong> auto-disbursed at 06:00 AM IST directly to HDFC Bank account.
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #DCFCE7' }}>
-                          <span style={{ fontSize: '9px', color: '#15803D', fontWeight: 700 }}>✓ Zero Bad Debt Escrow</span>
-                          <button
-                            type="button"
-                            className="table-action-btn"
-                            style={{ fontSize: '9px', padding: '2px 6px' }}
-                            onClick={() => showToast('GST reconciliation ledger exported to Tally')}
-                          >
-                            Tally GST Sync
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                      </div>                    </div>
                   </div>
                 </main>
               </div>
@@ -917,7 +855,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               Manage less.
             </h2>
             <p className="section-description">
-              Auto-aggregate café demand from WhatsApp, batch roast par levels, dispatch morning van fleets, and receive guaranteed T+1 payouts without credit risk.
+              Take orders from WhatsApp, plan your roast, dispatch vans, and get paid the next day.
             </p>
 
             <div className="feature-list">
@@ -938,8 +876,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">01</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Manage inventory &amp; roast par.</span>
-                  <span className="feature-text">Real-time SKU availability, roast-date batch control, and automated par alerts.</span>
+                  <span className="feature-heading">Know your stock and roast plan.</span>
+                  <span className="feature-text">Live inventory and roast batches, with alerts before you run low.</span>
                 </div>
               </div>
 
@@ -960,8 +898,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">02</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Auto-parse WhatsApp orders.</span>
-                  <span className="feature-text">AI converts voice notes and chats into structured digital POs in 3 seconds.</span>
+                  <span className="feature-heading">Turn WhatsApp into orders.</span>
+                  <span className="feature-text">Voice notes and chats become clean purchase orders in seconds.</span>
                 </div>
               </div>
 
@@ -982,8 +920,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">03</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Morning route dispatch &amp; T+1 payout.</span>
-                  <span className="feature-text">Clustered delivery runs with digital ePOD and next-morning bank settlement.</span>
+                  <span className="feature-heading">Dispatch and get paid next day.</span>
+                  <span className="feature-text">Plan van routes and receive bank settlement the next morning.</span>
                 </div>
               </div>
             </div>
@@ -1294,7 +1232,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               Grow distribution across India’s best cafés.
             </h2>
             <p className="section-description">
-              Eliminate distributor blindness. Seed tasting flights directly to verified barista stations, measure real-time café consumption telemetry, and convert trials into weekly recurring wholesale orders.
+              Put your product in front of verified baristas, see what they use, and turn trials into weekly orders.
             </p>
 
             <div className="feature-list">
@@ -1315,8 +1253,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">01</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Target verified cafés by tier.</span>
-                  <span className="feature-text">Filter high-volume specialty coffee bars across Bangalore, Mumbai, and Delhi NCR.</span>
+                  <span className="feature-heading">Find the right cafés.</span>
+                  <span className="feature-text">Filter verified specialty cafés by city and volume.</span>
                 </div>
               </div>
 
@@ -1337,8 +1275,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">02</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Seed barista sampling flights.</span>
-                  <span className="feature-text">Collect live sensory feedback, microfoam performance, and taste scorecards.</span>
+                  <span className="feature-heading">Send samples.</span>
+                  <span className="feature-text">Baristas test your product and score it.</span>
                 </div>
               </div>
 
@@ -1359,8 +1297,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">03</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Convert trials into recurring GMV.</span>
-                  <span className="feature-text">78% of approved trials convert into weekly automatic wholesale replenishment.</span>
+                  <span className="feature-heading">Turn trials into repeat orders.</span>
+                  <span className="feature-text">78% of approved trials reorder every week.</span>
                 </div>
               </div>
 
@@ -1381,8 +1319,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">04</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Direct consumption &amp; shelf share.</span>
-                  <span className="feature-text">Track daily liters consumed, city velocity, and market share vs competing products.</span>
+                  <span className="feature-heading">See what sells.</span>
+                  <span className="feature-text">Daily usage and market share, by city.</span>
                 </div>
               </div>
             </div>
@@ -1435,7 +1373,6 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                   <span>app.gradient365.com/brand/telemetry</span>
                 </div>
                 <div className="browser-actions">
-                  <span className="browser-status-tag" style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}>Direct Telemetry · Active</span>
                   <div className="browser-user-badge">
                     <span className="browser-avatar" style={{ background: '#6D28D9' }}>OB</span>
                     <span>Origins Beverage &amp; Oat Co.</span>
@@ -1532,16 +1469,10 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                     <div className="dashboard-heading-group">
                       <div className="dashboard-title-row">
                         <h3 className="dashboard-page-title">Brand OS Telemetry</h3>
-                        <span className="dash-date-indicator">Q3 · Active Distribution</span>
                       </div>
-                      <span className="dashboard-page-subtitle">Origins Beverage &amp; Oat Co. · Specialty Café Distribution</span>
                     </div>
 
                     <div className="dashboard-top-nav-right">
-                      <span className="status-pill" style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}>
-                        <span className="status-dot" style={{ background: '#7C3AED' }} aria-hidden="true" />
-                        312 Cafés Reached
-                      </span>
                       <button
                         type="button"
                         className="dash-btn-primary"
@@ -1553,60 +1484,29 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                       </button>
                     </div>
                   </div>
-
-                  {/* Linear Core Journey Pipeline */}
-                  <div className="linear-core-pipeline" role="region" aria-label="Brand Distribution Lifecycle Pipeline">
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>01 Seed</span>
-                      <span className="pipeline-step-title">Sampling Flights</span>
-                      <span className="pipeline-step-proof">312 Cafés</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>02 Cupping</span>
-                      <span className="pipeline-step-title">Barista Feedback</span>
-                      <span className="pipeline-step-proof">94.2% Approval</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>03 Convert</span>
-                      <span className="pipeline-step-title">Standing POs</span>
-                      <span className="pipeline-step-proof">78% Reorder Rate</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>04 Velocity</span>
-                      <span className="pipeline-step-title">Direct Telemetry</span>
-                      <span className="pipeline-step-proof">₹4.82L/mo MRR</span>
-                    </div>
-                  </div>
-
                   {/* Three High-Signal Metrics */}
                   <div className="dashboard-overview-row">
                     <div className="dashboard-stat">
-                      <span className="stat-label">Active Specialty Cafés</span>
+                      <span className="stat-label">Active cafés</span>
                       <div className="stat-value" style={{ color: '#6D28D9' }}>312</div>
                       <div className="stat-trend positive">
                         <span>↑ 28 New this month</span>
-                        <span className="stat-context">Bangalore, Mumbai, Delhi</span>
                       </div>
                     </div>
 
                     <div className="dashboard-stat">
-                      <span className="stat-label">Barista Sensory Approval</span>
+                      <span className="stat-label">Barista approval</span>
                       <div className="stat-value">94.2%</div>
                       <div className="stat-trend positive">
                         <span>★ 4.9 / 5.0 (SCA scale)</span>
-                        <span className="stat-context">141 Cupping reviews logged</span>
                       </div>
                     </div>
 
                     <div className="dashboard-stat">
-                      <span className="stat-label">Recurring Wholesale GMV</span>
+                      <span className="stat-label">Repeat orders</span>
                       <div className="stat-value" style={{ color: '#15803D' }}>₹4.82L</div>
                       <div className="stat-trend positive">
                         <span>✓ 78% Trial Reorder</span>
-                        <span className="stat-context">Standing weekly Net-15 POs</span>
                       </div>
                     </div>
                   </div>
@@ -1617,8 +1517,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                     <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                       <div className="card-header">
                         <div>
-                          <span className="card-title">Active Sampling Flights</span>
-                          <span className="card-subtitle">Direct seeding to verified barista stations</span>
+                          <span className="card-title">Sampling flights</span>
                         </div>
                         <button
                           type="button"
@@ -1631,7 +1530,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                       </div>
 
                       <div className="simple-flight-list">
-                        {campaigns.slice(0, 2).map((c) => (
+                        {campaigns.slice(0, 3).map((c) => (
                           <div
                             key={c.title}
                             className="simple-flight-card"
@@ -1644,8 +1543,6 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                                 {c.status}
                               </span>
                             </div>
-                            <div className="simple-card-meta">{c.metro} · {c.cafes} · {c.period}</div>
-                            <div className="simple-card-body">{c.product} — seeded directly to espresso stations</div>
                             <div className="simple-card-footer">
                               <span style={{ color: '#6D28D9', fontWeight: 600 }}>★ {c.approval} ({c.reorderRate} reorder)</span>
                               <span style={{ fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono, monospace)' }}>{c.revenue} GMV</span>
@@ -1660,11 +1557,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                       {/* Barista Sensory Scorecard */}
                       <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                         <div className="card-header">
-                          <span className="card-title">☕ Barista Cupping Scorecard</span>
-                          <span style={{ fontSize: '9.5px', color: '#7C3AED', fontWeight: 700 }}>94.2% (SCA Standard)</span>
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: '#64748B', marginBottom: '8px' }}>
-                          Aggregated from 141 blind cupping trials across 3 metros
+                          <span className="card-title">☕ Barista scores</span>
+                          <span style={{ fontSize: '9.5px', color: '#7C3AED', fontWeight: 700 }}>94.2%</span>
                         </div>
 
                         {/* Attribute progress bars */}
@@ -1696,39 +1590,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                               <div style={{ width: '94%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
                             </div>
                           </div>
-                        </div>
-
-                        {/* Recent Barista quote */}
-                        <div style={{ padding: '6px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid rgba(23, 23, 23, 0.05)', fontSize: '9px', color: '#475569', fontStyle: 'italic', lineHeight: 1.35 }}>
-                          &ldquo;Microfoam holds glossy latte art past 65°C with zero curdling in high-acidity roasts.&rdquo;
-                          <div style={{ fontStyle: 'normal', fontWeight: 600, color: '#1E293B', marginTop: '3px' }}>
-                            — Head Barista Vikram, Third Wave Coffee
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Standing Wholesale Reorder Engine */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px', background: '#FAF5FF', borderColor: '#E9D5FF' }}>
-                        <div className="card-header" style={{ marginBottom: '2px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#581C87' }}>Wholesale Conversion Engine</span>
-                          <span style={{ fontSize: '9px', color: '#7C3AED', fontWeight: 600 }}>Net-15 Auto-Debit</span>
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: '#6B21A8', lineHeight: 1.4 }}>
-                          <strong>78% of approved tastings</strong> automatically convert to weekly recurring wholesale orders.
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #F3E8FF' }}>
-                          <span style={{ fontSize: '9px', color: '#7C3AED', fontWeight: 700 }}>₹4.82L Active Monthly GMV</span>
-                          <button
-                            type="button"
-                            className="table-action-btn"
-                            style={{ fontSize: '9px', padding: '2px 6px' }}
-                            onClick={() => showToast('Dispatched 20 additional barista tasting flights')}
-                          >
-                            + Seed 20 Cafés
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                        </div>                      </div>                    </div>
                   </div>
 
                   {/* Accessible New Campaign Modal */}

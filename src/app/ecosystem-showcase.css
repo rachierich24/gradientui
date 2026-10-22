@@ -3196,3 +3196,17 @@
   .eco-sticky-stage > .eco-container { position: absolute; left: 0; right: 0; top: auto; bottom: clamp(72px, 10vh, 100px); padding-top: 0; }
   .eco-text-wrap .eco-headline { margin-bottom: 6px; }
 }
+
+/* ─── phones: the café chapter is a plain stacked layout, not a scroll-driven film ───
+   On desktop the story copy fades in and the phone video zooms with scroll progress. On a phone the
+   sticky stage is off, so those scroll-driven states left a blank gap and a cropped, 1.4x zoomed video. */
+@media (max-width: 768px) {
+  .eco-track { height: auto; }
+  /* its copy is white-on-red and only readable once the scroll-driven red background is in; hide it here */
+  .eco-cafe-story-wrap {
+    display: none !important;
+  }
+  .eco-mobile-video {
+    transform: none !important;
+  }
+}

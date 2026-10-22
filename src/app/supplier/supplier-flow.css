@@ -244,6 +244,7 @@
 }
 @media (max-width: 760px) {
   .sfl { height: 300vh; }
-  .sfl-stage { padding-top: 84px; }
+  /* the scaled-down diagram sat in the top third with the rest of the screen empty; centre it */
+  .sfl-stage { padding-top: 84px; justify-content: center; }
   .sfl-copy p { display: none; }
 }
