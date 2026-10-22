@@ -649,7 +649,7 @@ export function EcosystemShowcase() {
               delivery.
             </h2>
             <p className="eco-cafe-body">
-              Discover products, place orders, track fulfilment, and keep your inventory moving — all from one place.
+              Find suppliers, place orders, track deliveries and keep stock up to date, all in one place.
             </p>
           </div>
 
@@ -664,7 +664,7 @@ export function EcosystemShowcase() {
                 <h5 className="eco-cafe-step-title">Discover suppliers</h5>
               </div>
               <p className="eco-cafe-step-desc">
-                Direct access to verified specialty roasters, dairy partners, and bar supplies with transparent wholesale rates.
+                Browse verified suppliers with clear wholesale prices.
               </p>
             </div>
 
@@ -677,7 +677,7 @@ export function EcosystemShowcase() {
                 <h5 className="eco-cafe-step-title">Order in seconds</h5>
               </div>
               <p className="eco-cafe-step-desc">
-                One consolidated Net-15 basket across every roaster and vendor. Zero manual WhatsApp PO errors.
+                One basket across every supplier. No WhatsApp mix-ups.
               </p>
             </div>
 
@@ -690,7 +690,7 @@ export function EcosystemShowcase() {
                 <h5 className="eco-cafe-step-title">Track every delivery</h5>
               </div>
               <p className="eco-cafe-step-desc">
-                Live dispatch timeline with driver details, cold-chain temperature verification, and guaranteed delivery SLA.
+                Live route, driver and cold-chain temperature.
               </p>
             </div>
 
@@ -700,10 +700,10 @@ export function EcosystemShowcase() {
             >
               <div className="eco-cafe-step-header">
                 <span className="eco-cafe-step-num">04</span>
-                <h5 className="eco-cafe-step-title">Keep inventory moving</h5>
+                <h5 className="eco-cafe-step-title">Keep stock in sync</h5>
               </div>
               <p className="eco-cafe-step-desc">
-                Automated digital stock reconciliation the instant the barista signs the delivery manifest.
+                Stock updates the moment a delivery is signed for.
               </p>
             </div>
           </div>
