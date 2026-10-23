@@ -153,10 +153,10 @@ export function SupplierBillSyncAudit() {
       prefersReduced
         ? { opacity: 0 }
         : {
-            x: dir * 36,
-            opacity: 0,
-            scale: 0.97,
-          },
+          x: dir * 36,
+          opacity: 0,
+          scale: 0.97,
+        },
     center: {
       x: 0,
       opacity: 1,
@@ -171,15 +171,15 @@ export function SupplierBillSyncAudit() {
       prefersReduced
         ? { opacity: 0 }
         : {
-            x: -dir * 36,
-            opacity: 0,
-            scale: 0.97,
-            transition: {
-              x: { duration: 0.11, ease: [0.32, 0, 0.67, 0] },
-              scale: { duration: 0.11, ease: [0.32, 0, 0.67, 0] },
-              opacity: { duration: 0.09 },
-            },
+          x: -dir * 36,
+          opacity: 0,
+          scale: 0.97,
+          transition: {
+            x: { duration: 0.11, ease: [0.32, 0, 0.67, 0] },
+            scale: { duration: 0.11, ease: [0.32, 0, 0.67, 0] },
+            opacity: { duration: 0.09 },
           },
+        },
   };
 
   return (
@@ -207,7 +207,7 @@ export function SupplierBillSyncAudit() {
             </span>
           </h2>
           <p className="sup-billsync-desc">
-            Gradient AI automatically reconciles café bills with bank debits and GSTR-2B, delivering airtight audit reports to your CA in one click.
+            Gradient automatically reconciles café bills with bank debits and GSTR-2B, delivering airtight audit reports to your CA in one click.
           </p>
         </div>
 
