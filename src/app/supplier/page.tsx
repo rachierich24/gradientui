@@ -6,8 +6,8 @@ import {
   SupplierHeroScene,
   SupplierChaosFlow,
   SupplierBentoFeatures,
+  SupplierBillSyncAudit,
   SupplierLogos,
-  SupplierOperationPath,
   SupplierBenefits,
   SupplierWorkflowSteps,
   SupplierInventory,
@@ -17,9 +17,9 @@ import {
   SupplierTrust,
   SupplierFaq,
   SupplierCta,
-  SupplierFooter,
 } from '@/components/supplier';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
+import { G365Footer } from '@/components/landing/G365';
 
 export default function SupplierPortalPage() {
   const handleJoinClick = () => {
@@ -51,11 +51,11 @@ export default function SupplierPortalPage() {
       {/* ─── 04. Five-Tile Asymmetric Bento Feature Section (Core Supplier Capabilities) ─── */}
       <SupplierBentoFeatures />
 
+      {/* ─── 04b. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
+      <SupplierBillSyncAudit />
+
       {/* ─── 05. Relume-Style Partner Logo Ticker (Section Immediately after Dashboard) ─── */}
       <SupplierLogos />
-
-      {/* ─── 05. Relume-Style 'Choose Your Operation' Path (Fleet vs Own Logistics) ─── */}
-      <SupplierOperationPath onJoinClick={handleJoinClick} />
 
       {/* ─── 06. Operational Benefits (Interactive Bento Grid) ─── */}
       <SupplierBenefits />
@@ -84,8 +84,8 @@ export default function SupplierPortalPage() {
       {/* ─── 14. High-Impact Conversion CTA (Quick Onboarding Card) ─── */}
       <SupplierCta onJoinClick={handleJoinClick} />
 
-      {/* ─── 15. Comprehensive Directory Footer ─── */}
-      <SupplierFooter />
+      {/* ─── 15. Footer: the same animated gradient wordmark as the main site ─── */}
+      <G365Footer />
     </div>
   );
 }
