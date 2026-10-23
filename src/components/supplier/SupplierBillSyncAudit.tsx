@@ -201,15 +201,13 @@ export function SupplierBillSyncAudit() {
             <span>SMART BILL SYNC &amp; GST AUDIT</span>
           </div>
           <h2 className="sup-billsync-heading">
-            Every bill paid. Scanned, synced, and CA-ready.<br />
+            Every bill paid.<br />
             <span className="sup-billsync-heading-muted">
-              Arranged in one place. Handed to your CA in one click.
+              Scanned, synced, and CA-ready.
             </span>
           </h2>
           <p className="sup-billsync-desc">
-            No more lost paper slips, missed Input Tax Credit, or WhatsApp chaos.
-            Gradient AI scans every café payment, cross-matches bank debits with government GSTR-2B,
-            and compiles an airtight audit report your Chartered Accountant can inspect with ease.
+            Gradient AI automatically reconciles café bills with bank debits and GSTR-2B, delivering airtight audit reports to your CA in one click.
           </p>
         </div>
 
