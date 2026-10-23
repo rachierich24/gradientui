@@ -12,167 +12,6 @@ import {
 } from 'framer-motion';
 import { Icon } from './icons';
 
-/* ─── SCREEN BORDER BEAM (Apple / Attio style traveling perimeter ray) ─── */
-function ScreenBorderBeam({
-  color,
-  radius = 16,
-  isActive,
-  initialWidth,
-  initialHeight,
-  duration = 3.4,
-}: {
-  color: string;
-  radius?: number;
-  isActive: boolean;
-  initialWidth?: number;
-  initialHeight?: number;
-  duration?: number;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dims, setDims] = useState<{ w: number; h: number }>({
-    w: initialWidth || 0,
-    h: initialHeight || 0,
-  });
-
-  useEffect(() => {
-    const parent = containerRef.current?.parentElement;
-    if (!parent) return;
-
-    const measure = () => {
-      // Use offsetWidth and offsetHeight for untransformed local coordinates
-      if (parent.offsetWidth > 0 && parent.offsetHeight > 0) {
-        setDims({
-          w: parent.offsetWidth,
-          h: parent.offsetHeight,
-        });
-      }
-    };
-
-    measure();
-
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const target = entry.target as HTMLElement;
-        if (target.offsetWidth > 0 && target.offsetHeight > 0) {
-          setDims({
-            w: target.offsetWidth,
-            h: target.offsetHeight,
-          });
-        }
-      }
-    });
-
-    ro.observe(parent);
-    return () => ro.disconnect();
-  }, []);
-
-  const w = dims.w || initialWidth || 400;
-  const h = dims.h || initialHeight || 250;
-
-  // Inset stroke by 1px so it travels precisely centered along the perimeter bezel
-  const strokeInset = 1;
-  const pLeft = strokeInset;
-  const pTop = strokeInset;
-  const pRight = w - strokeInset;
-  const pBottom = h - strokeInset;
-  const safeR = Math.max(0, Math.min(radius - strokeInset, (w - 2 * strokeInset) / 2, (h - 2 * strokeInset) / 2));
-
-  // Build exact rounded rectangle SVG path (Clockwise from top center)
-  // Top center -> Top right corner -> Right edge -> Bottom right corner -> Bottom edge -> Bottom left corner -> Left edge -> Top left corner -> Close
-  const pathD = `M ${w / 2} ${pTop} ` +
-    `L ${pRight - safeR} ${pTop} ` +
-    `A ${safeR} ${safeR} 0 0 1 ${pRight} ${pTop + safeR} ` +
-    `L ${pRight} ${pBottom - safeR} ` +
-    `A ${safeR} ${safeR} 0 0 1 ${pRight - safeR} ${pBottom} ` +
-    `L ${pLeft + safeR} ${pBottom} ` +
-    `A ${safeR} ${safeR} 0 0 1 ${pLeft} ${pBottom - safeR} ` +
-    `L ${pLeft} ${pTop + safeR} ` +
-    `A ${safeR} ${safeR} 0 0 1 ${pLeft + safeR} ${pTop} ` +
-    `Z`;
-
-  return (
-    <div
-      ref={containerRef}
-      className={`eco-border-beam-container ${isActive ? 'is-active' : ''}`}
-      style={{ borderRadius: radius }}
-      aria-hidden="true"
-    >
-      <svg
-        className="eco-border-beam-svg"
-        viewBox={`0 0 ${w} ${h}`}
-        fill="none"
-      >
-        {/* Subtle permanent track outlining the card */}
-        <path
-          d={pathD}
-          fill="none"
-          stroke={color}
-          strokeWidth="1.2"
-          strokeOpacity={isActive ? 0.35 : 0.12}
-          className="eco-beam-track"
-        />
-
-        {isActive && (
-          <>
-            {/* 1. Ethereal ambient bloom aura trailing the comet */}
-            <path
-              d={pathD}
-              fill="none"
-              stroke={color}
-              strokeWidth="5.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              pathLength={1000}
-              strokeDasharray="180 820"
-              className="eco-beam-glow-trace"
-              style={{
-                stroke: color,
-                animationDuration: `${duration}s`,
-                filter: `drop-shadow(0 0 8px ${color}) drop-shadow(0 0 18px ${color})`,
-              }}
-            />
-
-            {/* 2. Vibrant core laser ray */}
-            <path
-              d={pathD}
-              fill="none"
-              stroke={color}
-              strokeWidth="2.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              pathLength={1000}
-              strokeDasharray="110 890"
-              className="eco-beam-core-ray"
-              style={{
-                stroke: color,
-                animationDuration: `${duration}s`,
-                filter: `drop-shadow(0 0 4px ${color})`,
-              }}
-            />
-
-            {/* 3. Pure white spark nucleus leading the charge */}
-            <path
-              d={pathD}
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              pathLength={1000}
-              strokeDasharray="24 976"
-              className="eco-beam-spark-tip"
-              style={{
-                animationDuration: `${duration}s`,
-                filter: `drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px ${color})`,
-              }}
-            />
-          </>
-        )}
-      </svg>
-    </div>
-  );
-}
-
 /* ─────────────────────────────────────────────────────────────────────────
    GRABBIT ECOSYSTEM → CAFÉ STORY CONTINUOUS SHOWCASE
 ───────────────────────────────────────────────────────────────────────── */
@@ -185,18 +24,16 @@ export type CafeFilmState =
   | 'TRACK'
   | 'DELIVER';
 
-interface FilmStep {
-  state: CafeFilmState;
-  duration: number; // in milliseconds
-  chapter: string;
-}
-
-const CAFE_FILM_STEPS: FilmStep[] = [
-  { state: 'TRACK', duration: 8000, chapter: '03 / 04 · TRACK' },
-  { state: 'DELIVER', duration: 5000, chapter: '04 / 04 · DELIVER' },
-  { state: 'DISCOVER', duration: 5000, chapter: '01 / 04 · DISCOVER' },
-  { state: 'ORDER', duration: 5000, chapter: '02 / 04 · ORDER' },
+// Café chapter start times inside /cafe.mp4, in seconds. The highlighted step follows the video.
+const CAFE_VIDEO_CHAPTERS: { state: CafeFilmState; start: number }[] = [
+  { state: 'DISCOVER', start: 0 },
+  { state: 'ORDER', start: 5 },
+  { state: 'TRACK', start: 11 },
+  { state: 'DELIVER', start: 16 },
 ];
+
+// How long a side portal takes to glide to the centre before its video starts.
+const FOCUS_MS = 600;
 
 export function EcosystemShowcase() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -272,13 +109,16 @@ export function EcosystemShowcase() {
   // Hover Focus State for Chapter 1 (Supplier Left · Phone Center · Brand Right)
   const [hoveredScreen, setHoveredScreen] = useState<'supplier' | 'mobile' | 'brand' | null>(null);
 
+  // True while Chapter 1 sits at rest (before the user scrolls on); side-portal focus needs it
+  const [isAtRest, setIsAtRest] = useState(true);
+
   // Subtle Pointer-Response Parallax State (Requirement 17)
   const [pointerOffset, setPointerOffset] = useState({ x: 0, y: 0 });
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Time-based Product Film State Machine (Active only in Chapter 2)
-  const [filmIndex, setFilmIndex] = useState(0);
+  // Café step highlighted in Chapter 2, driven by the phone video's playback time
+  const [cafeState, setCafeState] = useState<CafeFilmState>('DISCOVER');
 
   // Active Video Tour Stage: 'mobile' -> 'supplier' -> 'brand' -> 'mobile'
   const [activeVideoScreen, setActiveVideoScreen] = useState<'mobile' | 'supplier' | 'brand'>('mobile');
@@ -331,10 +171,23 @@ export function EcosystemShowcase() {
     });
   }, []);
 
-  // Video ended handlers
+  // Video ended handlers. In the café chapter the phone video loops instead of handing off.
   const handleMobileEnded = useCallback(() => {
+    if (isCafeActive) {
+      const v = mobileVideoRef.current;
+      if (v) {
+        try { v.currentTime = 0; } catch {}
+        safePlay(v);
+      }
+      return;
+    }
     setActiveVideoScreen('supplier');
-  }, []);
+  }, [isCafeActive, safePlay]);
+
+  // The café chapter only shows the phone, so it always owns playback there
+  useEffect(() => {
+    if (isCafeActive) setActiveVideoScreen('mobile');
+  }, [isCafeActive]);
 
   const handleSupplierEnded = useCallback(() => {
     setActiveVideoScreen('brand');
@@ -374,7 +227,9 @@ export function EcosystemShowcase() {
       try { vBrand.currentTime = 0; } catch {}
 
       try { vSupp.currentTime = 0; } catch {}
-      safePlay(vSupp);
+      // Play once the window has glided to the centre
+      const t = setTimeout(() => safePlay(vSupp), FOCUS_MS);
+      return () => clearTimeout(t);
     } else if (activeVideoScreen === 'brand') {
       safePause(vMob);
       try { vMob.currentTime = 0; } catch {}
@@ -382,18 +237,26 @@ export function EcosystemShowcase() {
       try { vSupp.currentTime = 0; } catch {}
 
       try { vBrand.currentTime = 0; } catch {}
-      safePlay(vBrand);
+      const t = setTimeout(() => safePlay(vBrand), FOCUS_MS);
+      return () => clearTimeout(t);
     }
   }, [activeVideoScreen, isVisible, isTabVisible, safePlay, safePause]);
 
-  // Safety fallback timer (advances if onEnded is delayed or dropped, only when tab is active)
+  // Safety fallback timer (advances if onEnded is delayed or dropped, only when tab is active).
+  // Sized from the active video's own length; the café chapter loops the phone instead.
   useEffect(() => {
-    if (!isVisible || !isTabVisible) return;
+    if (!isVisible || !isTabVisible || isCafeActive) return;
+    const v =
+      activeVideoScreen === 'mobile' ? mobileVideoRef.current
+      : activeVideoScreen === 'supplier' ? supplierVideoRef.current
+      : brandVideoRef.current;
+    const seconds = v && Number.isFinite(v.duration) ? v.duration : 10;
+    const delay = activeVideoScreen === 'mobile' ? 0 : FOCUS_MS;
     const timer = setTimeout(() => {
       advanceToNext();
-    }, 10500);
+    }, seconds * 1000 + delay + 500);
     return () => clearTimeout(timer);
-  }, [activeVideoScreen, isVisible, isTabVisible, advanceToNext]);
+  }, [activeVideoScreen, isVisible, isTabVisible, isCafeActive, advanceToNext]);
 
   // IntersectionObserver for viewport awareness
   useEffect(() => {
@@ -430,7 +293,7 @@ export function EcosystemShowcase() {
     const active = latest >= 0.32;
     setIsCafeActive(active);
     if (!active && latest < 0.32) {
-      setFilmIndex(0); // Reset to first frame when returning to ecosystem
+      setCafeState('DISCOVER'); // Reset to the first step when returning to ecosystem
     } else if (active) {
       setHoveredScreen(null); // Clear hover in Café section
     }
@@ -439,6 +302,8 @@ export function EcosystemShowcase() {
     if (latest > 0.08) {
       setHoveredScreen(null);
     }
+    // Side-portal focus only holds while the section sits at rest; scrolling on releases it
+    setIsAtRest(latest <= 0.08);
 
     // Requirement 18: Disable / neutralize pointer parallax immediately during scroll
     setIsScrolling(true);
@@ -463,21 +328,25 @@ export function EcosystemShowcase() {
     setPointerOffset({ x: 0, y: 0 });
   };
 
-  // Independent Time-Driven Product Film Loop (runs ONLY when isCafeActive && isVisible)
-  useEffect(() => {
-    if (!isCafeActive || !isVisible || isReduced) return;
+  // The highlighted café step follows the phone video's chapters
+  const handleMobileTimeUpdate = useCallback((e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const t = e.currentTarget.currentTime;
+    let state = CAFE_VIDEO_CHAPTERS[0].state;
+    for (const c of CAFE_VIDEO_CHAPTERS) if (t >= c.start) state = c.state;
+    setCafeState(state);
+  }, []);
 
-    const currentStep = CAFE_FILM_STEPS[filmIndex];
+  // Clicking a step jumps the phone video to that chapter
+  const seekCafeChapter = useCallback((state: CafeFilmState) => {
+    const v = mobileVideoRef.current;
+    const chapter = CAFE_VIDEO_CHAPTERS.find((c) => c.state === state);
+    if (!v || !chapter) return;
+    try { v.currentTime = chapter.start; } catch {}
+    setCafeState(state);
+    safePlay(v);
+  }, [safePlay]);
 
-    const timer = setTimeout(() => {
-      setFilmIndex((prev) => (prev + 1) % CAFE_FILM_STEPS.length);
-    }, currentStep.duration);
-
-    return () => clearTimeout(timer);
-  }, [isCafeActive, isVisible, filmIndex, isReduced]);
-
-  const currentStep = CAFE_FILM_STEPS[filmIndex];
-  const currentState = isCafeActive ? currentStep.state : 'DISCOVER';
+  const currentState = isCafeActive ? cafeState : 'DISCOVER';
 
   // ─── Continuous Scroll Interpolations (Smooth, Paced & Tangible Downward Motion) ───
   
@@ -519,40 +388,89 @@ export function EcosystemShowcase() {
 
   // 4. Central Phone Protagonist:
   // Starts slightly elevated in Chapter 1 (-16px), then glides DOWN while scaling into the hero
-  // display (1.00 -> 1.44), landing with its centre midway between the nav and the bottom of the
-  // screen. The drop is measured from the phone's place in the pinned stage (see the effect below),
-  // so it lands centred on any screen height. Remains at scale 1.44 after the transition.
+  // display (1.00 -> up to 1.44), landing with its centre midway between the nav and the bottom of the
+  // screen. The drop and the final scale are measured from the pinned stage (see the effect below),
+  // so it lands centred and clear of the copy on any screen size.
   const phoneRef = useRef<HTMLDivElement>(null);
   const phoneDrop = useMotionValue(6);
+  // The café chapter's phone scale: 1.44 where it fits, smaller where the copy columns or the screen
+  // height would otherwise collide with it.
+  const phoneMaxScale = useMotionValue(1.44);
   useEffect(() => {
-    const NAV = 72;
+    const NAV = 72, GUTTER = 24;
     const measure = () => {
       const el = phoneRef.current, stage = el?.closest<HTMLElement>('.eco-sticky-stage');
-      if (!el || !stage || window.innerWidth <= 860) { phoneDrop.set(6); return; }
+      if (!el || !stage || window.innerWidth <= 860) { phoneDrop.set(6); phoneMaxScale.set(1.44); return; }
       let top = 0, n: HTMLElement | null = el;
       while (n && n !== stage) { top += n.offsetTop; n = n.offsetParent as HTMLElement | null; }
       if (n !== stage) return;
       const centre = top + el.offsetHeight / 2, target = NAV + (stage.clientHeight - NAV) / 2;
       phoneDrop.set(target - centre);
+      const left = stage.querySelector('.eco-cafe-left-panel')?.getBoundingClientRect();
+      const right = stage.querySelector('.eco-cafe-right-panel')?.getBoundingClientRect();
+      const r = el.getBoundingClientRect(), cx = r.left + r.width / 2;
+      const half = left && right ? Math.min(cx - left.right, right.left - cx) - GUTTER : Infinity;
+      const fitW = (2 * half) / el.offsetWidth;
+      const fitH = (stage.clientHeight - NAV - 2 * GUTTER) / el.offsetHeight;
+      phoneMaxScale.set(Math.max(1, Math.min(1.44, fitW, fitH)));
     };
     measure();
     const ro = new ResizeObserver(measure);
     if (phoneRef.current) ro.observe(phoneRef.current);
     window.addEventListener('resize', measure);
     return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
-  }, [phoneDrop]);
+  }, [phoneDrop, phoneMaxScale]);
   const phoneY = useTransform([smoothProgress, phoneDrop], ([p, drop]: number[]) => {
     if (p <= 0.12) return -16;
     if (p >= 0.44) return drop;
     const k = (p - 0.12) / 0.32, e = k * k * (3 - 2 * k);
     return -16 + (drop + 16) * e;
   });
-  const phoneScale = useTransform(
-    smoothProgress,
-    [0.0, 0.12, 0.44, 1.0],
-    [1.00, 1.00, 1.44, 1.44]
-  );
+  const phoneScale = useTransform([smoothProgress, phoneMaxScale], ([p, max]: number[]) => {
+    if (p <= 0.12) return 1;
+    if (p >= 0.44) return max;
+    return 1 + (max - 1) * ((p - 0.12) / 0.32);
+  });
   const phoneOpacity = useTransform(smoothProgress, [0.0, 1.0], [1, 1]);
+
+  // Side portal focus: while its video plays, a side window glides to the centre of the stage and
+  // scales up in front of the phone. Measured from layout (offsets ignore transforms), desktop only.
+  const supplierWinRef = useRef<HTMLDivElement>(null);
+  const brandWinRef = useRef<HTMLDivElement>(null);
+  const [focus, setFocus] = useState({ supplier: { x: 0, s: 1 }, brand: { x: 0, s: 1 } });
+  useEffect(() => {
+    const measure = () => {
+      const sup = supplierWinRef.current, brand = brandWinRef.current;
+      const group = sup?.parentElement;
+      if (!sup || !brand || !group || window.innerWidth <= 860) {
+        setFocus({ supplier: { x: 0, s: 1 }, brand: { x: 0, s: 1 } });
+        return;
+      }
+      const centre = group.clientWidth / 2;
+      const target = Math.min(group.clientWidth * 0.68, 820);
+      const of = (el: HTMLElement) => ({
+        x: Math.round(centre - (el.offsetLeft + el.offsetWidth / 2)),
+        s: +Math.min(1.75, target / el.offsetWidth).toFixed(3),
+      });
+      setFocus({ supplier: of(sup), brand: of(brand) });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+  const sideFocused = isAtRest && !isCafeActive && activeVideoScreen !== 'mobile' && focus.supplier.s > 1;
+  // Focus offsets reach the CSS only while focused, so a playing window never fades out in the centre
+  const focusVars = (side: 'supplier' | 'brand') =>
+    sideFocused && activeVideoScreen === side
+      ? { ['--focus-x' as any]: `${focus[side].x}px`, ['--focus-scale' as any]: focus[side].s }
+      : {};
+
+  // Hovering a side portal brings it to the centre and plays its video
+  const focusSide = useCallback((side: 'supplier' | 'brand') => {
+    if (isCafeActive) return;
+    setHoveredScreen(side);
+    setActiveVideoScreen(side);
+  }, [isCafeActive]);
 
   // 5. Chapter 2 Café story flanking content (Headline left + 4 narrative cards right):
   // Glides smoothly UP from below (+70px -> 0px) over a generous, comfortable scroll window
@@ -568,7 +486,9 @@ export function EcosystemShowcase() {
     [0, 0, 1, 1]
   );
 
-  const stageBg = isReduced ? '#FFFFFF' : 'var(--universe-bg, #FFFFFF)';
+  // Paint from this section's own colour, not the shared --universe-bg: the product sections below
+  // write that as soon as they enter the viewport, which turned the café green.
+  const stageBg = isReduced ? '#FFFFFF' : containerBg;
 
   return (
     <section
@@ -657,7 +577,7 @@ export function EcosystemShowcase() {
           <div className="eco-cafe-right-panel">
             <div
               className={`eco-cafe-step ${currentState === 'DISCOVER' ? 'is-active-step' : ''}`}
-              onClick={() => setFilmIndex(2)}
+              onClick={() => seekCafeChapter('DISCOVER')}
             >
               <div className="eco-cafe-step-header">
                 <span className="eco-cafe-step-num">01</span>
@@ -670,7 +590,7 @@ export function EcosystemShowcase() {
 
             <div
               className={`eco-cafe-step ${currentState === 'ORDER' ? 'is-active-step' : ''}`}
-              onClick={() => setFilmIndex(3)}
+              onClick={() => seekCafeChapter('ORDER')}
             >
               <div className="eco-cafe-step-header">
                 <span className="eco-cafe-step-num">02</span>
@@ -683,7 +603,7 @@ export function EcosystemShowcase() {
 
             <div
               className={`eco-cafe-step ${currentState === 'TRACK' ? 'is-active-step' : ''}`}
-              onClick={() => setFilmIndex(0)}
+              onClick={() => seekCafeChapter('TRACK')}
             >
               <div className="eco-cafe-step-header">
                 <span className="eco-cafe-step-num">03</span>
@@ -696,7 +616,7 @@ export function EcosystemShowcase() {
 
             <div
               className={`eco-cafe-step ${currentState === 'DELIVER' ? 'is-active-step' : ''}`}
-              onClick={() => setFilmIndex(1)}
+              onClick={() => seekCafeChapter('DELIVER')}
             >
               <div className="eco-cafe-step-header">
                 <span className="eco-cafe-step-num">04</span>
@@ -717,12 +637,13 @@ export function EcosystemShowcase() {
             ['--py' as any]: `${pointerOffset.y}px`,
           }}
         >
-          <div className="eco-screens-group">
+          <div className={`eco-screens-group ${sideFocused ? 'has-side-focus' : ''}`}>
             {/* ─────────────────────────────────────────────────────────
                 LEFT SCREEN: SUPPLIER DESKTOP DASHBOARD (16:9 Aspect Ratio)
                 Visible in Chapter 1 · Recedes into Chapter 2
             ─────────────────────────────────────────────────────────── */}
             <motion.div
+              ref={supplierWinRef}
               className={`eco-browser-window eco-screen-supplier ${
                 activeVideoScreen === 'supplier' ? 'is-video-active' : ''
               } ${
@@ -732,7 +653,7 @@ export function EcosystemShowcase() {
                   ? 'is-dimmed'
                   : ''
               }`}
-              onMouseEnter={() => !isCafeActive && setHoveredScreen('supplier')}
+              onMouseEnter={() => focusSide('supplier')}
               onMouseMove={handlePointerMove}
               onMouseLeave={handlePointerLeave}
               onClick={() => setActiveVideoScreen('supplier')}
@@ -749,16 +670,8 @@ export function EcosystemShowcase() {
                     }
               }
             >
-              <div className="eco-device-scaler" style={{ position: 'relative' }}>
+              <div className="eco-device-scaler" style={{ position: 'relative', ...focusVars('supplier') }}>
                 <div className="eco-screen-ambient-glow glow-supplier" aria-hidden="true" />
-                <ScreenBorderBeam
-                  color="#22C55E"
-                  radius={14}
-                  initialWidth={490}
-                  initialHeight={276}
-                  isActive={activeVideoScreen === 'supplier'}
-                  duration={3.4}
-                />
                 {/* Chrome Top Bar */}
                 <div className="eco-chrome">
                   <div className="eco-chrome-dots">
@@ -885,6 +798,7 @@ export function EcosystemShowcase() {
                         preload="metadata"
                         className="eco-mobile-video"
                         onEnded={handleMobileEnded}
+                        onTimeUpdate={handleMobileTimeUpdate}
                         onError={(e) => {
                           try {
                             e.currentTarget.pause();
@@ -905,6 +819,7 @@ export function EcosystemShowcase() {
                 Visible in Chapter 1 · Recedes into Chapter 2
             ─────────────────────────────────────────────────────────── */}
             <motion.div
+              ref={brandWinRef}
               className={`eco-browser-window eco-screen-brand ${
                 activeVideoScreen === 'brand' ? 'is-video-active' : ''
               } ${
@@ -914,7 +829,7 @@ export function EcosystemShowcase() {
                   ? 'is-dimmed'
                   : ''
               }`}
-              onMouseEnter={() => !isCafeActive && setHoveredScreen('brand')}
+              onMouseEnter={() => focusSide('brand')}
               onMouseMove={handlePointerMove}
               onMouseLeave={handlePointerLeave}
               onClick={() => setActiveVideoScreen('brand')}
@@ -931,16 +846,8 @@ export function EcosystemShowcase() {
                     }
               }
             >
-              <div className="eco-device-scaler" style={{ position: 'relative' }}>
+              <div className="eco-device-scaler" style={{ position: 'relative', ...focusVars('brand') }}>
                 <div className="eco-screen-ambient-glow glow-brand" aria-hidden="true" />
-                <ScreenBorderBeam
-                  color="#8B5CF6"
-                  radius={14}
-                  initialWidth={490}
-                  initialHeight={276}
-                  isActive={activeVideoScreen === 'brand'}
-                  duration={3.4}
-                />
                 {/* Chrome Top Bar */}
                 <div className="eco-chrome">
                   <div className="eco-chrome-dots">

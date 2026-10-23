@@ -39,8 +39,9 @@ const nextConfig: NextConfig = {
     return [
       { source: '/:path*', headers: securityHeaders },
       // public/ files are unhashed; default is max-age=0 (revalidate every view).
+      // Skip /_next: Next sets its own headers there, and caching dev chunks served stale code.
       {
-        source: '/:path*/:file(.+\\.(?:svg|jpg|jpeg|png|webp|avif|mp4|js|bin))',
+        source: '/:file((?!_next/).+\\.(?:svg|jpg|jpeg|png|webp|avif|mp4|js|bin))',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
       },
       {

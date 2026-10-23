@@ -233,7 +233,8 @@
   padding: 0 16px;
   margin-top: 10px;
   pointer-events: auto;
-  transform-style: preserve-3d;
+  /* flat, so z-index decides which device is in front (a shared 3D context depth-sorts them instead) */
+  transform-style: flat;
   box-sizing: border-box;
 }
 
@@ -698,9 +699,7 @@
   position: relative;
   width: clamp(380px, 31vw, 470px);
   max-width: 470px;
-  aspect-ratio: 16 / 9;
   height: auto;
-  min-height: 250px;
   flex-shrink: 0;
   left: auto;
   bottom: 0;
@@ -743,9 +742,7 @@
   position: relative;
   width: clamp(380px, 31vw, 470px);
   max-width: 470px;
-  aspect-ratio: 16 / 9;
   height: auto;
-  min-height: 250px;
   flex-shrink: 0;
   right: auto;
   bottom: 0;
@@ -2818,7 +2815,9 @@
 .eco-video-body {
   position: relative;
   width: 100%;
-  height: calc(100% - 30px);
+  /* the window's height follows the video, so object-fit: cover never crops it */
+  height: auto;
+  aspect-ratio: 1824 / 900;
   background: #0B0D13;
   overflow: hidden;
   border-radius: 0 0 14px 14px;
@@ -2848,16 +2847,12 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: scale(1.39) translateY(6.0%);
-  transform-origin: 50% 50%;
   background: #FFFFFF;
 }
 
-/* Hide duplicate HTML statusbar, dynamic island, and home indicator so the video's native app interface fills the phone mockup seamlessly */
-.eco-screen-mobile .eco-phone-statusbar,
-.eco-screen-mobile .eco-phone-island,
-.eco-screen-mobile .eco-phone-home-indicator {
-  display: none;
+/* The video is screen content only; the mockup's own status bar sits above it */
+.eco-screen-mobile .eco-phone-statusbar {
+  position: relative;
 }
 
 .eco-screen-mobile .eco-phone-glass-glare {
@@ -2865,11 +2860,23 @@
 }
 
 /* ─── Active Screen Transitions, 3D Elevation & Ambient Halo Glows ─── */
+/* The playing side portal glides to the centre and scales up; --focus-x/--focus-scale are measured in JS */
 .eco-browser-window.is-video-active .eco-device-scaler {
   filter: none !important;
   opacity: 1 !important;
-  transform: scale(1.025) translateY(-6px) !important;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s ease;
+  transform: translateX(var(--focus-x, 0px)) translateY(-6px) scale(var(--focus-scale, 1.025)) !important;
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s ease;
+}
+
+/* While a side portal has the centre, the phone steps back */
+.eco-screens-group .eco-screen-mobile .eco-device-scaler {
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.6s ease, filter 0.6s ease !important;
+}
+
+.eco-screens-group.has-side-focus .eco-screen-mobile .eco-device-scaler {
+  transform: scale(0.9) !important;
+  opacity: 0.5 !important;
+  filter: blur(2px) saturate(85%) !important;
 }
 
 .eco-browser-window.eco-screen-supplier.is-video-active .eco-device-scaler {
@@ -2935,56 +2942,6 @@
 .eco-screen-mobile:not(.is-video-active):not(:hover) .eco-phone-chassis {
   opacity: 0.88;
   filter: saturate(94%);
-}
-
-/* ─── Traveling Border Beam Ray Animations ─── */
-.eco-border-beam-container {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 55;
-  overflow: visible;
-  transition: opacity 0.4s ease;
-}
-
-.eco-border-beam-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  display: block;
-}
-
-.eco-beam-track {
-  transition: stroke-opacity 0.4s ease;
-}
-
-@keyframes ecoRayCirculate {
-  0% {
-    stroke-dashoffset: 1000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-.eco-beam-glow-trace {
-  animation: ecoRayCirculate 3.4s linear infinite;
-  opacity: 0.85;
-}
-
-.eco-beam-core-ray {
-  animation: ecoRayCirculate 3.4s linear infinite;
-  opacity: 1;
-}
-
-.eco-beam-spark-tip {
-  animation: ecoRayCirculate 3.4s linear infinite;
-  opacity: 1;
 }
 
 /* ─── Ecosystem Interactive Flow Navigator ─── */
@@ -3205,8 +3162,5 @@
   /* its copy is white-on-red and only readable once the scroll-driven red background is in; hide it here */
   .eco-cafe-story-wrap {
     display: none !important;
-  }
-  .eco-mobile-video {
-    transform: none !important;
   }
 }

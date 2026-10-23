@@ -3333,3 +3333,100 @@
   .product-frame .browser-user-badge { display: none !important; }
   .product-frame .browser-url-pill { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
+
+/* Dense sidebar for the supplier / brand mocks: grouped nav with live counts plus data modules */
+.sidebar-dense { width: 172px; padding: 9px 7px; }
+.sidebar-dense .sidebar-brand-header { margin-bottom: 6px; }
+.sidebar-dense .sidebar-nav-section-label { padding: 6px 6px 2px; }
+.sidebar-dense .sidebar-nav { gap: 0; }
+.sidebar-dense .sidebar-item { padding: 3.5px 7px; font-size: 11px; }
+.sidebar-dense .sidebar-item .sidebar-badge-count { margin-left: auto; }
+.sidebar-workspace,
+.sidebar-user { display: flex; align-items: center; gap: 7px; }
+.sidebar-workspace { border: 1px solid rgba(23, 23, 23, 0.08); border-radius: 8px; padding: 5px 6px; background: #fff; margin-bottom: 2px; }
+.sidebar-workspace-mark,
+.sidebar-user-avatar { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+.sidebar-user-avatar { border-radius: 50%; background: #E5E7EB; color: #6B7280; }
+.sidebar-workspace-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.sidebar-workspace-text strong { font-size: 10.5px; font-weight: 600; color: #171717; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-workspace-text small { font-size: 9px; color: #737373; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user { padding: 6px 4px 0; border-top: 1px solid rgba(23, 23, 23, 0.06); margin-top: 4px; }
+.sidebar-today { border: 1px solid rgba(23, 23, 23, 0.08); border-radius: 8px; padding: 6px 7px; background: #fff; margin-bottom: 4px; }
+.sidebar-today-head { display: flex; justify-content: space-between; font-size: 8.5px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #737373; }
+.sidebar-today-row { display: flex; justify-content: space-between; font-size: 10px; color: #404040; margin-top: 3px; }
+.sidebar-today-row strong { font-weight: 600; color: #171717; }
+.sidebar-today-bar { height: 4px; border-radius: 99px; background: #F1F5F9; overflow: hidden; margin-top: 5px; }
+.sidebar-today-bar i { display: block; height: 100%; border-radius: 99px; }
+
+/* Unscaled (mobile) frames: the canvas just fills the frame like before */
+.product-frame-canvas { display: flex; flex-direction: column; position: relative; width: 100%; height: 100%; }
+.sidebar-dense { width: 184px; }
+.sidebar-dense .sidebar-item > span:not(.sidebar-badge-count) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.dashboard-overview-row--four { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 768px) {
+  .dashboard-overview-row--four { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Café -> supplier -> brand hand-off: travelling order card + consumption ping, colour floods ── */
+.product-universe-flood {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.courier {
+  position: absolute;
+  z-index: 45;
+  pointer-events: none;
+  translate: -50% -50%;
+  will-change: left, top, transform, opacity;
+}
+
+.courier-order {
+  width: 300px; /* ORDER_CARD_W */
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22), 0 2px 6px rgba(15, 23, 42, 0.08);
+  font-size: 11px;
+  color: #0F172A;
+}
+
+.courier-order-head span { color: #64748B; font-weight: 500; }
+.courier-order-body { margin: 4px 0 6px; color: #334155; }
+.courier-order-foot { display: flex; justify-content: space-between; color: #166534; font-weight: 600; }
+.courier-order-foot b { color: #0F172A; font-family: var(--font-mono, monospace); }
+
+.courier-ping {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1px solid #DDD6FE;
+  box-shadow: 0 12px 28px rgba(76, 29, 149, 0.25);
+  font-size: 11px;
+  font-weight: 600;
+  color: #4C1D95;
+  white-space: nowrap;
+}
+
+.courier-ping-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7C3AED;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2);
+}
+
+/* The row a courier docks into stays invisible (layout kept) until it lands, then settles in with a flash */
+.dock-target { opacity: 0; transition: opacity 0.35s ease; }
+.dock-target.is-docked { opacity: 1; animation: dock-flash 1.6s ease-out; }
+
+@keyframes dock-flash {
+  0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.45); }
+  100% { box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
+}

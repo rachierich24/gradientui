@@ -3,7 +3,7 @@
 // `fresh` scripts run again on every call because they build DOM for the section that mounted.
 const JS = '/g365/js/';
 // Bump when public/g365/js changes so browsers refetch; otherwise the files cache normally.
-const BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID ?? '1';
+const BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID ?? '3';
 const cache: Record<string, Promise<void>> = {};
 
 function inject(file: string) {

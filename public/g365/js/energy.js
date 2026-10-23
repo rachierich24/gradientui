@@ -28,7 +28,7 @@
   // lands lowest (mid-phone); the other two turn off above it, so no two paths ever cross.
   const SIDES = [
     { key: "cafe", color: "#E5483B", sel: ".eco-screen-mobile .eco-phone-chassis", ax: 0.5, ay: 0.42, from: 0.03, to: 0.84,
-      tag: "Café · Grabbit", title: "Oat Milk · 12 L", line: "Order placed", meta: "₹2,520" },
+      tag: "Café app", title: "Oat Milk · 12 L", line: "Order placed", meta: "₹2,520" },
     { key: "supply", color: "#16A34A", sel: ".eco-screen-supplier .eco-device-scaler", ax: 0.5, ay: 0.3, from: 0.06, to: 0.88,
       tag: "Supplier portal", title: "PO #4821", line: "Received · dispatch 12:05", meta: "12 L" },
     { key: "brand", color: "#7C4DDB", sel: ".eco-screen-brand .eco-device-scaler", ax: 0.5, ay: 0.3, from: 0.09, to: 0.92,
@@ -77,6 +77,8 @@
     const end = eco.getBoundingClientRect().top + scrollY - 40;
     const p = end > 0 ? scrollY / end : 0;
     if (p > 1.2) { SIDES.forEach((s) => { s.prev = 1; hide(s); }); return; }
+    // a side portal centred and playing its video in front: keep the cards off it
+    if (eco.querySelector(".has-side-focus")) { SIDES.forEach(hide); return; }
     if (!haveThumb) thumb();
     const c = core.getBoundingClientRect();
     const sx = c.left + c.width / 2, sy = c.bottom - 12;
