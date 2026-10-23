@@ -381,7 +381,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 28px 28px;
+  padding: 24px 28px 36px;
   min-height: 480px;
   overflow: hidden;
 }
@@ -1115,58 +1115,6 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Terminal Bottom Telemetry Footer
-   ───────────────────────────────────────────────────────────────────────── */
-.sup-terminal-bottom {
-  position: relative;
-  z-index: 10;
-  padding: 14px 32px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(31, 169, 82, 0.08);
-}
-
-.sup-telemetry-left {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.sup-ai-status-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: ui-monospace, "DM Mono", monospace;
-  font-size: 10.5px;
-  font-weight: 750;
-  color: var(--sup-text-primary, #111813);
-  letter-spacing: 0.08em;
-}
-
-.sup-ai-green-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--sup-primary, #1FA952);
-  box-shadow: 0 0 0 3px rgba(31, 169, 82, 0.2);
-}
-
-.sup-ai-version-text {
-  font-family: ui-monospace, "DM Mono", monospace;
-  font-size: 9.5px;
-  color: var(--sup-text-muted, #94A397);
-  letter-spacing: 0.04em;
-}
-
-.sup-telemetry-right {
-  font-family: ui-monospace, "DM Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--sup-text-muted, #94A397);
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
    5-Step Selector Controller (Minimal Pill Bar Below Terminal)
    ───────────────────────────────────────────────────────────────────────── */
 .sup-phase-pills-bar {
@@ -1337,11 +1285,5 @@
   .sup-terminal-top-right {
     right: 18px;
     top: 16px;
-  }
-  .sup-terminal-bottom {
-    padding: 12px 18px 14px;
-  }
-  .sup-telemetry-right {
-    font-size: 9px;
   }
 }

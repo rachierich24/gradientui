@@ -824,23 +824,6 @@ export function SupplierBillSyncAudit() {
               )}
             </AnimatePresence>
           </div>
-
-          {/* Bottom Telemetry Footer */}
-          <div className="sup-terminal-bottom">
-            <div className="sup-telemetry-left">
-              <div className="sup-ai-status-row">
-                <span className="sup-ai-green-dot" />
-                <span>GRADIENT AI ENGINE</span>
-              </div>
-              <div className="sup-ai-version-text">
-                Version: 2.4-STABLE &bull; Model: GR-9000-OCR
-              </div>
-            </div>
-
-            <div className="sup-telemetry-right">
-              SESSION: OUIWB67523-SIJB3190 &bull; SECURE 256-BIT GST VAULT
-            </div>
-          </div>
         </div>
 
         {/* ─── 5-Step Selector Controller (Minimal Pill Bar Below Terminal) ─── */}
