@@ -1,153 +1,206 @@
 'use client';
-// Sales growth: a supplier's year on one curve. Flat and grey before joining Gradient, green and climbing after,
-// with the moment they joined marked on the chart. Sales / Cafés / Orders switch on their own (the curve morphs
-// from one to the next) until the visitor picks one; hovering the chart reads any month.
-import { useEffect, useId, useMemo, useState } from 'react';
+// Supplier's growth in the past 30 days — Bento Grid card.
+// Relevant to Gradient Wholesale Supplier Portal: café order volume, wholesale dispatch revenue,
+// capacity fulfillment meter, and 28-day daily dispatches bar chart styled in Gradient green.
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { EASE, GradientMark, Window, monotone, useCountUp, useScript } from './shared';
 
-const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-const JOIN = 3; // joined Gradient in July
-const METRICS = {
-  sales: {
-    tab: 'Sales', label: 'Monthly sales', series: [2.1, 2.3, 2.2, 2.4, 3.1, 3.8, 4.6, 5.4, 6.2, 7.1, 8.0, 8.9],
-    fmt: (v: number) => `₹${v.toFixed(1)}L`,
-  },
-  cafes: {
-    tab: 'Cafés', label: 'Cafés served', series: [38, 40, 39, 42, 61, 83, 104, 122, 141, 158, 173, 186],
-    fmt: (v: number) => `${Math.round(v)}`,
-  },
-  orders: {
-    tab: 'Orders', label: 'Orders a month', series: [210, 224, 218, 236, 318, 402, 486, 571, 650, 742, 821, 904],
-    fmt: (v: number) => Math.round(v).toLocaleString('en-IN'),
-  },
-} as const;
-type Metric = keyof typeof METRICS;
-const ORDER: Metric[] = ['sales', 'cafes', 'orders'];
-const GROWTH_SCRIPT = [['scrub', 2900], ['rest', 1700], ['next', 900]] as const;
-const before = (s: readonly number[]) => s.slice(0, JOIN + 1).reduce((a, b) => a + b, 0) / (JOIN + 1);
+interface GrowthCardProps {
+  run: boolean;
+  still: boolean;
+}
 
-export function GrowthCard({ run, still }: { run: boolean; still: boolean }) {
-  const uid = useId().replace(/:/g, '');
-  const { phase } = useScript(GROWTH_SCRIPT, run);
-  const [metric, setMetric] = useState<Metric>('sales');
-  const [picked, setPicked] = useState(false);
-  const [hoverF, setHoverF] = useState<number | null>(null);
-  const [scrubF, setScrubF] = useState(1);
-  const m = METRICS[metric];
-  const last = m.series[m.series.length - 1];
-  const shown = useCountUp(last, run);
-  const drawn = run || still;
+// 28-day dispatches matching real café reorder rhythms in Indian wholesale coffee supply
+const BARS_DATA = [
+  { pct: 18, val: 18400, orders: 4, label: 'Day 1' },
+  { pct: 24, val: 24500, orders: 6, label: 'Day 2' },
+  { pct: 20, val: 21000, orders: 5, label: 'Day 3' },
+  { pct: 32, val: 33800, orders: 8, label: 'Day 4' },
+  { pct: 38, val: 40200, orders: 9, label: 'Day 5' },
+  { pct: 54, val: 56900, orders: 14, label: 'Day 6' },
+  { pct: 44, val: 46200, orders: 11, label: 'Day 7' },
+  { pct: 30, val: 31500, orders: 7, label: 'Day 8' },
+  { pct: 36, val: 38000, orders: 9, label: 'Day 9' },
+  { pct: 28, val: 29400, orders: 7, label: 'Day 10' },
+  { pct: 45, val: 47800, orders: 12, label: 'Day 11' },
+  { pct: 40, val: 42100, orders: 10, label: 'Day 12' },
+  { pct: 52, val: 54600, orders: 13, label: 'Day 13' },
+  { pct: 60, val: 63200, orders: 15, label: 'Day 14' },
+  { pct: 68, val: 71500, orders: 17, label: 'Day 15' },
+  { pct: 82, val: 86400, orders: 21, label: 'Day 16' },
+  { pct: 100, val: 104800, orders: 26, label: 'Day 17 (Peak)' },
+  { pct: 58, val: 61200, orders: 15, label: 'Day 18' },
+  { pct: 46, val: 48900, orders: 12, label: 'Day 19' },
+  { pct: 52, val: 55100, orders: 14, label: 'Day 20' },
+  { pct: 48, val: 51200, orders: 13, label: 'Day 21' },
+  { pct: 56, val: 59400, orders: 15, label: 'Day 22' },
+  { pct: 72, val: 76200, orders: 19, label: 'Day 23' },
+  { pct: 84, val: 88900, orders: 22, label: 'Day 24' },
+  { pct: 94, val: 99400, orders: 25, label: 'Day 25' },
+  { pct: 78, val: 82600, orders: 20, label: 'Day 26' },
+  { pct: 64, val: 67800, orders: 17, label: 'Day 27' },
+  { pct: 80, val: 84500, orders: 21, label: 'Day 28' },
+];
 
+const TARGET_REVENUE = 1842850;
+
+function formatINR(v: number): string {
+  return '₹' + v.toLocaleString('en-IN');
+}
+
+export function GrowthCard({ run, still }: GrowthCardProps) {
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [revenue, setRevenue] = useState<number>(still ? TARGET_REVENUE : 0);
+
+  // Animated count-up effect
   useEffect(() => {
-    if (phase === 'next' && !picked) setMetric((k) => ORDER[(ORDER.indexOf(k) + 1) % ORDER.length]);
-  }, [phase, picked]);
-
-  // after the curve settles, a marker reads along it from the month they joined to today
-  useEffect(() => {
-    if (phase !== 'scrub') { setScrubF(1); return; }
+    if (still || !run) {
+      setRevenue(TARGET_REVENUE);
+      return;
+    }
     let raf = 0;
-    const t0 = performance.now(), D = 2500, f0 = JOIN / (MONTHS.length - 1);
-    const tick = (t: number) => {
-      const k = Math.min(1, (t - t0) / D), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-      setScrubF(f0 + (1 - f0) * e);
-      if (k < 1) raf = requestAnimationFrame(tick);
+    const startTime = performance.now();
+    const duration = 1500;
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setRevenue(Math.round(TARGET_REVENUE * ease));
+      if (progress < 1) {
+        raf = requestAnimationFrame(tick);
+      }
     };
+
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [phase]);
+  }, [run, still]);
 
-  const W = 600, H = 170;
-  const { curve, pts, joinX } = useMemo(() => {
-    const hi = Math.max(...m.series) * 1.14;
-    const p = m.series.map((v, i) => [(i / (m.series.length - 1)) * W, H - (v / hi) * H] as [number, number]);
-    return { curve: monotone(p), pts: p, joinX: p[JOIN][0] };
-  }, [m]);
-  const f = hoverF ?? (phase === 'scrub' ? scrubF : 1);
-  const tip = hoverF !== null || phase === 'scrub';
-  const idx = Math.round(f * (MONTHS.length - 1));
-  const mx = hoverF !== null ? pts[idx][0] : f * W, my = curve.at(mx);
-  const ratio = m.series[idx] / before(m.series);
-  const growth = last / before(m.series);
+  const activeBar = hoverIdx !== null ? BARS_DATA[hoverIdx] : null;
 
   return (
-    <Window title="Gradient · Insights">
-      <div className="sbx-body">
-        <div className="sbx-gr">
-          <div className="sbx-gr-top">
-            <div>
-              <small>{m.label} · March</small>
-              <div className="sbx-gr-big">{m.fmt(shown)}</div>
-              <div className="sbx-gr-delta"><b>{growth.toFixed(1)}×</b> since joining Gradient</div>
-            </div>
-            <div className="sbx-seg" role="tablist" aria-label="Metric">
-              {ORDER.map((k) => (
-                <button key={k} type="button" role="tab" aria-selected={k === metric} className={k === metric ? 'is-on' : ''} onClick={() => { setMetric(k); setPicked(true); }}>
-                  {k === metric && <motion.span layoutId={`${uid}-thumb`} className="sbx-seg-thumb" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
-                  <span>{METRICS[k].tab}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div
-            className="sbx-gr-plot"
-            onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setHoverF(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width))); }}
-            onPointerLeave={() => setHoverF(null)}
-          >
-            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+    <div className="sup-growth-stage">
+      {/* ─── Top Floating Card: Roastery Tier & Capacity Meter ─── */}
+      <motion.div
+        className="sup-tier-card"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="sup-tier-top">
+          <div className="sup-tier-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="5" strokeWidth="1.8" stroke="url(#supGreenGrad)" />
+              <path d="M7.5 12h9M12 7.5v9" strokeWidth="2" strokeLinecap="round" stroke="#1FA952" />
               <defs>
-                <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#1FA952" stopOpacity="0.2" />
-                  <stop offset="1" stopColor="#1FA952" stopOpacity="0" />
+                <linearGradient id="supGreenGrad" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#1FA952" />
+                  <stop offset="1" stopColor="#34D399" />
                 </linearGradient>
-                <clipPath id={`${uid}-reveal`}><motion.rect x="0" y="-20" height={H + 40} initial={{ width: still ? W : 0 }} animate={{ width: drawn ? W : 0 }} transition={{ duration: still ? 0 : 1.5, ease: EASE }} /></clipPath>
-                <clipPath id={`${uid}-pre`}><rect x="0" y="-20" width={joinX} height={H + 40} /></clipPath>
-                <clipPath id={`${uid}-post`}><rect x={joinX} y="-20" width={W - joinX} height={H + 40} /></clipPath>
               </defs>
-              {[0.25, 0.5, 0.75].map((g) => <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} className="sbx-gridline" />)}
-              <g clipPath={`url(#${uid}-reveal)`}>
-                <g clipPath={`url(#${uid}-post)`}>
-                  <motion.path initial={false} animate={{ d: `${curve.d} L${W} ${H} L0 ${H} Z` }} transition={{ duration: 0.8, ease: EASE }} fill={`url(#${uid}-area)`} />
-                  <motion.path initial={false} animate={{ d: curve.d }} transition={{ duration: 0.8, ease: EASE }} className="sbx-gr-line" />
-                </g>
-                <g clipPath={`url(#${uid}-pre)`}>
-                  <motion.path initial={false} animate={{ d: curve.d }} transition={{ duration: 0.8, ease: EASE }} className="sbx-gr-pre" />
-                </g>
-              </g>
-              <line x1={joinX} x2={joinX} y1="0" y2={H} className="sbx-gr-join" />
-              {tip && <line className="sbx-hair" x1={mx} x2={mx} y1="0" y2={H} />}
             </svg>
-            <motion.span
-              className="sbx-gr-pin"
-              style={{ left: `${(joinX / W) * 100}%` }}
-              initial={{ opacity: 0, y: 6 }}
-              animate={drawn ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
-              transition={{ duration: 0.45, delay: still ? 0 : 0.55 }}
-            >
-              <GradientMark size={11} /> Joined Gradient
-            </motion.span>
-            <span className="sbx-gr-dot is-join" style={{ left: `${(joinX / W) * 100}%`, top: `${(curve.at(joinX) / H) * 100}%`, opacity: drawn ? 1 : 0 }} />
-            <span className={`sbx-mk${tip ? '' : ' is-rest'}`} style={{ left: `${(mx / W) * 100}%`, top: `${(my / H) * 100}%`, opacity: drawn ? 1 : 0 }} />
-            {tip && (
-              <span className={`sbx-tt${mx / W > 0.62 ? ' is-left' : ''}`} style={{ left: `${(mx / W) * 100}%`, top: `${(my / H) * 100}%` }}>
-                <small>{MONTHS[idx]}</small>
-                <b>{m.fmt(m.series[idx])}</b>
-                <em>{idx <= JOIN ? 'before Gradient' : `${ratio.toFixed(1)}× vs before Gradient`}</em>
-              </span>
-            )}
           </div>
-          <div className="sbx-gr-axis" aria-hidden="true">
-            {MONTHS.map((mo, i) => <span key={mo} className={i === JOIN ? 'is-join' : ''}>{i % 3 === 0 || i === MONTHS.length - 1 ? mo : ''}</span>)}
+          <div className="sup-tier-meta">
+            <div className="sup-tier-title">Roastery Wholesale Tier</div>
+            <div className="sup-tier-sub">Weekly T+1 escrow settlement</div>
           </div>
+          <div className="sup-tier-pill">Active</div>
+        </div>
 
-          <div className="sbx-gr-tiles">
-            <div><small>Repeat orders</small><b>78%</b><em>reorder every month</em></div>
-            <div><small>New cafés</small><b>+144</b><em>found you on Gradient</em></div>
-            <div><small>Payouts</small><b>T+7</b><em>settled to your bank</em></div>
+        <div className="sup-tier-metric">
+          <span className="sup-metric-label">Monthly café dispatch target</span>
+          <span className="sup-metric-rate">₹22,00,000 quota · 48 partner cafés</span>
+        </div>
+
+        <div className="sup-meter-wrap">
+          <div className="sup-meter-head">
+            <div className="sup-meter-tag">
+              <svg className="sup-meter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M12 4a8 8 0 100 16 8 8 0 000-16z" strokeWidth="1.8" />
+                <path d="M12 12l3.2-3.2" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+              </svg>
+              <span>Capacity & fulfillment meter</span>
+            </div>
+            <span className="sup-meter-pct">84% achieved</span>
+          </div>
+          <div className="sup-meter-track" role="progressbar" aria-valuenow={84} aria-valuemin={0} aria-valuemax={100}>
+            <motion.div
+              className="sup-meter-bar"
+              initial={{ width: 0 }}
+              animate={{ width: '84%' }}
+              transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            />
           </div>
         </div>
-      </div>
-    </Window>
+      </motion.div>
+
+      {/* ─── Bottom Floating Card: 30-Day Growth & Green Bar Chart ─── */}
+      <motion.div
+        className="sup-graph-card"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="sup-graph-header">
+          <div className="sup-graph-sub">Supplier&apos;s growth in the past 30 days</div>
+          <div className="sup-graph-row">
+            <div className="sup-graph-big" aria-label="Rupees 18 lakh 42 thousand 850">
+              {formatINR(revenue)}
+            </div>
+            <div className="sup-delta-badge">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M2.5 8.5L9.5 1.5M9.5 1.5H4.5M9.5 1.5V6.5" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span>+4.7× vs before Gradient</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="sup-chart-wrap" aria-label="30-day dispatches bar chart">
+          <div className="sup-bars-row">
+            {BARS_DATA.map((bar, i) => {
+              const isActive = hoverIdx === i;
+              const isDim = hoverIdx !== null && !isActive;
+              return (
+                <div
+                  key={i}
+                  className={`sup-bar-col ${isActive ? 'is-active' : ''} ${isDim ? 'is-dim' : ''}`}
+                  onPointerEnter={() => setHoverIdx(i)}
+                  onPointerLeave={() => setHoverIdx(null)}
+                  role="presentation"
+                >
+                  <motion.div
+                    className="sup-bar-fill"
+                    initial={{ height: 0 }}
+                    animate={{ height: `${bar.pct}%` }}
+                    transition={{
+                      duration: still ? 0 : 0.65,
+                      delay: still ? 0 : 0.06 + i * 0.015,
+                      ease: [0.34, 1.35, 0.64, 1],
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Interactive Tooltip on Bar Hover */}
+          {activeBar && hoverIdx !== null && (
+            <div
+              className="sup-tooltip"
+              style={{
+                left: `${(hoverIdx / (BARS_DATA.length - 1)) * 100}%`,
+              }}
+              role="tooltip"
+            >
+              <span className="sup-tt-date">{activeBar.label}</span>
+              <span className="sup-tt-val">{formatINR(activeBar.val)}</span>
+              <span className="sup-tt-sub">{activeBar.orders} café orders</span>
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
   );
 }

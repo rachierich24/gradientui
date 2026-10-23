@@ -6,6 +6,7 @@ import {
   SupplierHeroScene,
   SupplierChaosFlow,
   SupplierBentoFeatures,
+  SupplierBillSyncAudit,
   SupplierLogos,
   SupplierBenefits,
   SupplierWorkflowSteps,
@@ -49,6 +50,9 @@ export default function SupplierPortalPage() {
 
       {/* ─── 04. Five-Tile Asymmetric Bento Feature Section (Core Supplier Capabilities) ─── */}
       <SupplierBentoFeatures />
+
+      {/* ─── 04b. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
+      <SupplierBillSyncAudit />
 
       {/* ─── 05. Relume-Style Partner Logo Ticker (Section Immediately after Dashboard) ─── */}
       <SupplierLogos />

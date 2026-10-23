@@ -29,9 +29,9 @@ const CARDS: CardDef[] = [
     render: (run) => <OrdersCard run={run} />,
   },
   {
-    area: 'growth', label: 'Sales growth', title: 'Sales growth', muted: 'from your first month on Gradient',
-    desc: 'Suppliers on Gradient reach more cafés from the first month. New cafés find you in the marketplace, reorders come in without a sales call, and sales, cafés and orders sit together in one view.',
-    points: ['Discovered by 340+ cafés from day one', 'Reorders that arrive without a sales call', 'Sales, cafés and order trends in one view', 'Know which products are winning, week by week'],
+    area: 'growth', label: "Supplier's growth in the past 30 days", title: "Supplier's growth", muted: 'in the past 30 days',
+    desc: 'Suppliers on Gradient reach more cafés from the first month. Real-time sales analytics, reorders without sales calls, and automated inventory sync across 340+ cafés.',
+    points: ['Daily order volume and roast dispatch tracking', 'Automated reorders from 340+ verified cafés', 'Live billing and T+1 escrow settlement sync', 'Predictive demand trends for every wholesale SKU'],
     render: (run, still) => <GrowthCard run={run} still={still} />,
   },
   {
@@ -90,7 +90,7 @@ function Card({ def, reduce, paused, onExpand }: { def: CardDef; reduce: boolean
     >
       {glow && <span className="sbx-glow" aria-hidden="true" />}
       <header className="sbx-head">
-        <h3>{def.title} <span>{def.muted}</span></h3>
+        <h3>{def.title}{def.muted ? <span> {def.muted}</span> : null}</h3>
         <button type="button" className="sbx-arrow" onClick={onExpand} aria-label={`Expand: ${def.label}`} aria-haspopup="dialog">{ARROW}</button>
       </header>
       <div className="sbx-stage">{def.render(onScreen && !reduce && !paused, reduce)}</div>
@@ -130,7 +130,7 @@ function Expanded({ def, still, onClose }: { def: CardDef; still: boolean; onClo
         transition={{ type: 'spring', stiffness: 230, damping: 30 }}
       >
         <header className="sbx-head">
-          <h3>{def.title} <span>{def.muted}</span></h3>
+          <h3>{def.title}{def.muted ? <span> {def.muted}</span> : null}</h3>
           <button ref={closeRef} type="button" className="sbx-arrow sbx-close" onClick={onClose} aria-label="Close">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
           </button>

@@ -17,6 +17,7 @@ export { SupplierIntegrations } from './SupplierIntegrations';
 export { SupplierTrust } from './SupplierTrust';
 export { SupplierFaq } from './SupplierFaq';
 export { SupplierCta } from './SupplierCta';
+export { SupplierBillSyncAudit } from './SupplierBillSyncAudit';
 export { FutureSection, SupplierCtaSection } from './FutureSection';
 export { SupplierFooter } from './SupplierFooter';
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './supplier.css';
 import './bento.css';
+import './bill-sync.css';
 import './supplier-flow.css';
 
 export const metadata: Metadata = {

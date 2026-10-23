@@ -1,47 +1,45 @@
 'use client';
-// Integrations: the tools a supplier already runs on, lighting up one at a time as they sync.
+// Integrations: 3D interactive Icon Cloud displaying the wholesale tools a supplier runs on:
+// Tally, Zoho Books, QuickBooks, Razorpay, PhonePe, Paytm, Shiprocket, Delhivery, WhatsApp, Sheets, Excel, SAP, etc.
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { IconCloud } from '@/components/ui/icon-cloud';
 import { useEvery } from './shared';
+import { INTEGRATION_TOOLS } from './integration-icons';
 
-/* ═════════════════════════ 5. INTEGRATIONS ═════════════════════════ */
-const TOOLS = [
-  { n: 'Tally', m: 'T', c: '#1F4E9D' }, { n: 'Zoho Books', m: 'Z', c: '#D63B2F' }, { n: 'QuickBooks', m: 'qb', c: '#2CA01C' },
-  { n: 'Razorpay', m: 'R', c: '#2B6FE8' }, { n: 'WhatsApp', m: 'W', c: '#25A55F' }, { n: 'Gmail', m: 'M', c: '#D44638' },
-  { n: 'Google Sheets', m: 'S', c: '#1E8E4E' }, { n: 'Excel', m: 'X', c: '#1D6F42' }, { n: 'Shiprocket', m: 'Sr', c: '#6C3FC7' },
-  { n: 'Delhivery', m: 'D', c: '#222222' }, { n: 'Petpooja', m: 'P', c: '#E2501F' }, { n: 'PhonePe', m: 'Pe', c: '#5F259F' },
-  { n: 'Paytm', m: 'Pt', c: '#0B5FB3' }, { n: 'Shopify', m: 'Sh', c: '#5E8E3E' }, { n: 'Slack', m: '#', c: '#4A154B' },
-  { n: 'Xero', m: 'x', c: '#13B5EA' }, { n: 'Odoo', m: 'O', c: '#714B67' }, { n: 'SAP', m: 'SAP', c: '#0A6ED1' },
-  { n: 'Busy', m: 'B', c: '#C2410C' }, { n: 'Marg ERP', m: 'Mg', c: '#B91C1C' },
-];
+const INTEGRATION_IMAGES = INTEGRATION_TOOLS.map((t) => t.icon);
+const TOOL_NAMES = INTEGRATION_TOOLS.map((t) => t.name);
 
 export function IntegrationsCard({ run }: { run: boolean }) {
-  const [ping, setPing] = useState(4);
-  const [hover, setHover] = useState<number | null>(null);
-  useEvery(1300, run && hover === null, () => setPing((p) => (p + 7) % TOOLS.length));
-  const active = hover ?? ping;
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  // Periodically cycle the active integration indicator
+  useEvery(2200, run, () => {
+    setActiveIdx((prev) => (prev + 1) % TOOL_NAMES.length);
+  });
+
   return (
     <div className="sbx-int">
-      <div className="sbx-int-grid">
-        {TOOLS.map((t, i) => (
-          <button
-            key={t.n}
-            type="button"
-            className={`sbx-tool ${i === active ? 'is-on' : ''}`}
-            style={{ ['--tc' as string]: t.c }}
-            onPointerEnter={() => setHover(i)}
-            onPointerLeave={() => setHover(null)}
-            onFocus={() => setHover(i)}
-            onBlur={() => setHover(null)}
-            aria-label={t.n}
-          >
-            <span className="sbx-mark">{t.m}</span>
-          </button>
-        ))}
+      <div className="sbx-cloud-wrap">
+        <IconCloud
+          images={INTEGRATION_IMAGES}
+          radius={142}
+          iconSize={58}
+          showControl={false}
+        />
       </div>
+
       <AnimatePresence mode="wait">
-        <motion.div key={active} className="sbx-sync" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }}>
-          <i style={{ background: TOOLS[active].c }} /> {hover !== null ? TOOLS[active].n : `Synced with ${TOOLS[active].n} · just now`}
+        <motion.div
+          key={activeIdx}
+          className="sbx-sync"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.22 }}
+        >
+          <i style={{ background: '#1FA952' }} />
+          <span>Live sync with <b>{TOOL_NAMES[activeIdx]}</b></span>
         </motion.div>
       </AnimatePresence>
     </div>
