@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { preload } from 'react-dom'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import './landing-fonts.css'
@@ -80,6 +81,10 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Hero fonts are otherwise only discovered after g365.css parses; fetch them alongside it.
+  for (const f of ['instrument-sans', 'geist']) {
+    preload(`/g365/fonts/${f}.woff2`, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' })
+  }
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [

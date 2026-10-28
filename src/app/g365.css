@@ -104,6 +104,8 @@
 .hero-br { display: block; }
 @media (max-width: 640px) {
   .hero-br { display: none; }
+  /* the nowrap "all [pill] are connected." line is ~14.4em wide; size it to the viewport so it is never cut */
+  .g365-hero h1 { font-size: clamp(20px, 6.2vw, 28px); }
 }
 
 /* ═════════════════════════════ NOTION PRODUCT PILL ANIMATION ═════════════════════════════ */

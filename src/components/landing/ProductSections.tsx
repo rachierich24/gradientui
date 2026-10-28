@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView, useScroll, useTransform, useSpring, useReducedMotion, useMotionValue, interpolate, useMotionValueEvent } from 'framer-motion';
+import { createPortal } from 'react-dom';
+import { motion, animate, useInView, useScroll, useTransform, useSpring, useReducedMotion, useMotionValue, useMotionValueEvent, useMotionTemplate } from 'framer-motion';
 import { MotionTimelineBar, AnimatedCursor, WorkflowNode, AnimatedBezierCable } from './ProductMotionEngine';
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -10,6 +11,26 @@ import { MotionTimelineBar, AnimatedCursor, WorkflowNode, AnimatedBezierCable } 
    Front-Facing Flat Physical Model · Continuous Scroll-Driven Color Transitions
    90% Neutral UI · 10% Controlled Stakeholder Accent
 ───────────────────────────────────────────────────────────────────────── */
+
+/* The supplier and brand frames are laid out once at their design size and scaled to the frame's width,
+   like a screenshot, so the dense dashboards never reflow or overflow on smaller laptops. */
+const FRAME_W = 980;
+const FRAME_H = 612.5;
+function useFrameZoom(frameRef: React.RefObject<HTMLDivElement | null>) {
+  const [zoom, setZoom] = useState<number | null>(null);
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+    const measure = () => setZoom(window.innerWidth > 768 ? el.clientWidth / FRAME_W : null);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [frameRef]);
+  return zoom === null
+    ? undefined
+    : ({ width: FRAME_W, height: FRAME_H, zoom, display: 'flex', flexDirection: 'column', position: 'relative', flexShrink: 0 } as React.CSSProperties);
+}
 
 /* ── Lightweight Animated Number Component (respects reduced motion) ── */
 function AnimatedCounter({
@@ -220,42 +241,82 @@ export function ProductSections() {
     restDelta: 0.0001,
   });
 
-  // Dynamic continuous chromatic transition across all chapters:
-  // Café Red (#E03527) -> Supplier Green (#16A34A) -> Brand Purple (#6D28D9)
-  const interpolateRedToGreen = interpolate([0, 1], ['#E03527', '#16A34A']);
-  const interpolateGreenToPurple = interpolate([0, 1], ['#16A34A', '#6D28D9']);
+  // Café -> supplier -> brand hand-off. Scrubbed by scroll, the café's order card leaves the phone and docks
+  // into the supplier's Incoming orders; then a consumption ping leaves that row and docks into the brand's
+  // Live consumption. Each landing floods the (white) universe with that chapter's colour from the dock point.
+  const isReducedMotion = useReducedMotion();
+  const isStatic = !!isReducedMotion || isMobile; // no couriers: show both chapters already coloured
+  const [orderDocked, setOrderDocked] = useState(false);
+  const [pingDocked, setPingDocked] = useState(false);
+  const green = useFlood();
+  const purple = useFlood();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  const productBg = useTransform(
-    [smoothSupplierProgress, smoothBrandProgress],
-    (values: number[]) => {
-      const [sProg, bProg] = values;
-      const s = Math.max(0, Math.min(1, sProg));
-      const b = Math.max(0, Math.min(1, bProg));
-      if (b > 0.01 && s >= 0.85) {
-        return interpolateGreenToPurple(b);
-      }
-      return interpolateRedToGreen(s);
-    }
-  );
-
-  // Sync the whole background CSS variable across the document
-  useMotionValueEvent(productBg, 'change', (latest: string) => {
-    if (supplierProgress.get() > 0 || brandProgress.get() > 0) {
-      document.documentElement.style.setProperty('--universe-bg', String(latest));
-    }
-  });
+  // Where the brand chapter starts inside the universe: the split between the green and purple floods.
+  const [brandTop, setBrandTop] = useState(0);
+  useEffect(() => {
+    const universe = localContainerRef.current;
+    if (!universe) return;
+    const ro = new ResizeObserver(() => setBrandTop(brandRef.current?.offsetTop ?? 0));
+    ro.observe(universe);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (window.scrollY > 300) {
-      document.documentElement.style.setProperty('--universe-bg', String(productBg.get()));
-    }
-  }, [productBg]);
+    if (!isStatic) return;
+    setOrderDocked(true);
+    setPingDocked(true);
+    green.fill();
+    purple.fill();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isStatic]);
+
+  // Dock when the target row reaches this fraction of the viewport height.
+  const landAt = (rect: DOMRect, y: number, at: number) => rect.top + y - window.innerHeight * at;
+
+  const order = useScrollCourier({
+    enabled: !isStatic,
+    endScale: (to) => to.width / ORDER_CARD_W,
+    measure: (y) => {
+      const eco = document.getElementById('ecosystem');
+      const phone = document.querySelector('.eco-phone-chassis')?.getBoundingClientRect();
+      const to = document.querySelector('[data-dock="supplier-order"]')?.getBoundingClientRect();
+      if (!eco || !phone || !to) return null;
+      const unpin = eco.getBoundingClientRect().top + y + eco.offsetHeight - window.innerHeight;
+      return { from: phone, to, startAt: unpin, landAt: landAt(to, y, 0.55) };
+    },
+    onLand: (to, instant) => {
+      setOrderDocked(true);
+      green.flood(to, instant);
+    },
+    onReset: () => {
+      setOrderDocked(false);
+      green.reset();
+    },
+  });
+
+  const ping = useScrollCourier({
+    enabled: !isStatic,
+    endScale: () => 1,
+    measure: (y) => {
+      const brand = brandRef.current?.getBoundingClientRect();
+      const from = document.querySelector('[data-dock="supplier-order"]')?.getBoundingClientRect();
+      const to = document.querySelector('[data-dock="brand-live"]')?.getBoundingClientRect();
+      if (!brand || !from || !to) return null;
+      return { from, to, startAt: brand.top + y - window.innerHeight, landAt: landAt(to, y, 0.7) };
+    },
+    onLand: (to, instant) => {
+      setPingDocked(true);
+      purple.flood(to, instant);
+    },
+    onReset: () => {
+      setPingDocked(false);
+      purple.reset();
+    },
+  });
 
   // Atmospheric radial fields opacity & subtle slow vertical drift
-  // 1. Café Glow (Warm Red): visible as section enters, fades out as Supplier locks in
-  const cafeGlowOpacity = useTransform(smoothSupplierProgress, [0.0, 0.5], [1, 0]);
-  const cafeGlowY = useTransform(smoothSupplierProgress, [0.0, 1.0], ['0%', '-2%']);
-
   // 2. Supplier Glow (Vibrant Green): fades in as Supplier arrives, fades out as Brand arrives
   const supplierGlowOpacity = useTransform(
     [smoothSupplierProgress, smoothBrandProgress],
@@ -280,34 +341,187 @@ export function ProductSections() {
       ref={localContainerRef}
       className="product-universe"
       id="product-universe"
-      style={{ backgroundColor: productBg }}
+      style={{ backgroundColor: '#FFFFFF' }}
     >
-      {/* Immersive Atmospheric Color Fields */}
-      <div className="universe-atmospheric-layer" aria-hidden="true">
-        <motion.div
-          className="env-atmospheric-field cafe-field"
-          style={{ opacity: cafeGlowOpacity, y: cafeGlowY }}
-        />
-        <motion.div
-          className="env-atmospheric-field supplier-field"
-          style={{ opacity: supplierGlowOpacity, y: supplierGlowY }}
-        />
-        <motion.div
-          className="env-atmospheric-field brand-field"
-          style={{ opacity: brandGlowOpacity, y: brandGlowY }}
-        />
-      </div>
+      {mounted && !isStatic && createPortal(
+        <>
+          <motion.div className="courier courier-order" aria-hidden="true" style={order.style}>
+            <div className="courier-order-head">
+              <strong>Tamarind Lane Cafe</strong>
+              <span>· Hauz Khas · Just now</span>
+            </div>
+            <div className="courier-order-body">6 x Hillfold House Espresso 1 kg</div>
+            <div className="courier-order-foot">
+              <span>➔ New order</span>
+              <b>₹6,900</b>
+            </div>
+          </motion.div>
+          <motion.div className="courier courier-ping" aria-hidden="true" style={ping.style}>
+            <span className="courier-ping-dot" />
+            Consumed · 6 x House Espresso · Hauz Khas
+          </motion.div>
+        </>,
+        document.body
+      )}
+      {/* Colour floods, each clipped to a circle that grows from its dock point. Green covers the supplier
+          chapter and purple the brand chapter (both start white); they overlap by 2 x CHAPTER_FADE around the
+          boundary with opposing masks, so the chapters blend instead of meeting at a line. */}
+      <motion.div
+        ref={green.layer}
+        className="product-universe-flood"
+        aria-hidden="true"
+        style={{
+          backgroundColor: '#16A34A',
+          clipPath: green.clip,
+          bottom: 'auto',
+          height: brandTop + CHAPTER_FADE,
+          maskImage: `linear-gradient(to bottom, #000 calc(100% - ${CHAPTER_FADE * 2}px), transparent)`,
+        }}
+      >
+        <div className="universe-atmospheric-layer">
+          <motion.div
+            className="env-atmospheric-field supplier-field"
+            style={{ opacity: supplierGlowOpacity, y: supplierGlowY }}
+          />
+        </div>
+      </motion.div>
+      <motion.div
+        ref={purple.layer}
+        className="product-universe-flood"
+        aria-hidden="true"
+        style={{
+          backgroundColor: '#6D28D9',
+          clipPath: purple.clip,
+          top: brandTop - CHAPTER_FADE,
+          maskImage: `linear-gradient(to bottom, transparent, #000 ${CHAPTER_FADE * 2}px)`,
+        }}
+      >
+        <div className="universe-atmospheric-layer">
+          <motion.div
+            className="env-atmospheric-field brand-field"
+            style={{ opacity: brandGlowOpacity, y: brandGlowY }}
+          />
+        </div>
+      </motion.div>
 
       <div ref={supplierRef}>
-        <SupplierSection isMobile={isMobile} />
+        <SupplierSection isMobile={isMobile} docked={orderDocked} />
       </div>
       <div ref={brandRef}>
-        <BrandSection isMobile={isMobile} />
+        <BrandSection isMobile={isMobile} docked={pingDocked} />
       </div>
     </motion.div>
   );
 }
 
+
+const ORDER_CARD_W = 300; // px, matches .courier-order
+const CHAPTER_FADE = 220; // px either side of the supplier/brand boundary where green blends into purple
+const FLOODED = 100000; // px: a clip circle this big covers the whole universe
+
+// A colour layer revealed by a circle growing from a dock point, slowly, once a courier lands there.
+function useFlood() {
+  const r = useMotionValue(0);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const clip = useMotionTemplate`circle(${r}px at ${x}px ${y}px)`;
+  const layer = useRef<HTMLDivElement>(null);
+  const fill = () => r.set(FLOODED);
+  const flood = (at: DOMRect, instant: boolean) => {
+    if (!layer.current) return;
+    const u = layer.current.getBoundingClientRect();
+    x.set(at.left + at.width / 2 - u.left);
+    y.set(at.top + at.height / 2 - u.top);
+    if (instant) return fill();
+    animate(r, Math.hypot(u.width, window.innerHeight * 1.4), { duration: 4, ease: [0.45, 0, 0.4, 1], onComplete: fill });
+  };
+  const reset = () => {
+    r.stop();
+    r.set(0);
+  };
+  return { clip, layer, fill, flood, reset };
+}
+
+type CourierLeg = { from: DOMRect; to: DOMRect; startAt: number; landAt: number };
+
+// Something that travels, in page coordinates, from one live element to another while the page scrolls from
+// `startAt` to `landAt` (scroll positions), then lands. Scrolling back above `startAt` resets it.
+function useScrollCourier({ enabled, measure, endScale, onLand, onReset }: {
+  enabled: boolean;
+  measure: (scrollY: number) => CourierLeg | null;
+  endScale: (to: DOMRect) => number;
+  onLand: (to: DOMRect, instant: boolean) => void;
+  onReset: () => void;
+}) {
+  const left = useMotionValue(0);
+  const top = useMotionValue(0);
+  const scale = useMotionValue(0);
+  const opacity = useMotionValue(0);
+  const target = useMotionValue(0);
+  const progress = useSpring(target, { stiffness: 50, damping: 18, mass: 0.7, restDelta: 0.0005 });
+  const leg = useRef<{ fx: number; fy: number; tx: number; ty: number; s1: number } | null>(null);
+  const landed = useRef(false);
+  const { scrollY } = useScroll();
+
+  const track = (y: number) => {
+    const g = measure(y);
+    if (!g) return null;
+    leg.current = {
+      fx: g.from.left + g.from.width / 2 + window.scrollX,
+      fy: g.from.top + g.from.height / 2 + y,
+      tx: g.to.left + g.to.width / 2 + window.scrollX,
+      ty: g.to.top + g.to.height / 2 + y,
+      s1: endScale(g.to),
+    };
+    target.set(Math.max(0, Math.min(1, (y - g.startAt) / Math.max(1, g.landAt - g.startAt))));
+    return g;
+  };
+
+  useMotionValueEvent(scrollY, 'change', (y: number) => {
+    if (enabled) track(y);
+  });
+
+  useMotionValueEvent(progress, 'change', (p: number) => {
+    const l = leg.current;
+    if (!l) return;
+    if (p <= 0.001) {
+      opacity.set(0);
+      if (landed.current) {
+        landed.current = false;
+        onReset();
+      }
+      return;
+    }
+    if (landed.current) return;
+    const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // easeInOutCubic
+    const emerge = Math.min(1, p / 0.08);
+    left.set(l.fx + (l.tx - l.fx) * e);
+    top.set(l.fy + (l.ty - l.fy) * e);
+    scale.set((1 + (l.s1 - 1) * e) * (0.6 + 0.4 * emerge)); // own size -> the docked row's size
+    opacity.set(emerge);
+    if (p >= 0.995) {
+      landed.current = true;
+      animate(opacity, 0, { duration: 0.35, ease: 'easeOut' });
+      const to = measure(window.scrollY)?.to;
+      if (to) onLand(to, false);
+    }
+  });
+
+  useEffect(() => {
+    if (!enabled) return;
+    // Opened mid-page (reload, anchor link): land without the journey.
+    const g = track(window.scrollY);
+    if (g && window.scrollY >= g.landAt) {
+      landed.current = true;
+      target.jump(1);
+      progress.jump(1);
+      onLand(g.to, true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled]);
+
+  return { style: { left, top, scale, opacity } };
+}
 
 /* ═════════════════════════════════════════════════════════════════════════
    SECTION 02: SUPPLIER PRODUCT
@@ -346,40 +560,52 @@ interface WhatsAppPO {
 
 const INITIAL_WHATSAPP_POS: WhatsAppPO[] = [
   {
-    id: 'PO-GRD-1048',
-    cafe: 'Third Wave Coffee',
-    location: 'Indiranagar 12th Main',
-    rawText: '"Need 40kg Arabica medium roast + 15L Barista Oat tomorrow 7 AM"',
-    parsedSummary: '40kg Arabica (Medium) + 15L Barista Oat',
-    amount: '₹34,200',
-    status: 'In Van #1',
-    time: '12m ago',
-  },
-  {
-    id: 'PO-GRD-1043',
-    cafe: 'Blue Tokai Roasters',
-    location: 'Koramangala 4th Block',
-    rawText: '"Repeat regular weekly order 25kg house blend + 500 kraft cups"',
-    parsedSummary: '25kg House Blend + 500 Ripple Cups',
-    amount: '₹19,800',
-    status: 'Picked',
-    time: '34m ago',
-  },
-  {
-    id: 'PO-GRD-1038',
-    cafe: 'Araku Specialty Store',
-    location: 'Lavelle Road',
-    rawText: '"Add 10 btls Madagascar Vanilla syrup to our morning run please"',
-    parsedSummary: '10 btls Madagascar Vanilla Syrup (750ml)',
-    amount: '₹5,400',
+    id: 'ORD-9314',
+    cafe: 'Tamarind Lane Cafe',
+    location: 'Hauz Khas',
+    rawText: '"Same as last week please, 6 bags House Espresso for tomorrow morning"',
+    parsedSummary: '6 x Hillfold House Espresso 1 kg',
+    amount: '₹6,900',
     status: 'Scheduled',
-    time: '1h ago',
+    time: 'Just now',
+  },
+  {
+    id: 'ORD-9313',
+    cafe: 'Brewhaus Collective',
+    location: 'Greater Kailash',
+    rawText: '"10kg Filter Blend + 12L oat milk, usual 7-9 slot"',
+    parsedSummary: '10 x Filter Blend 1 kg + 12 L Barista Oat',
+    amount: '₹18,420',
+    status: 'Picked',
+    time: '3m ago',
+  },
+  {
+    id: 'ORD-9312',
+    cafe: 'Saffron Steps Cafe',
+    location: 'Saket',
+    rawText: '"Add 500 kraft cups and 6 vanilla syrups to tomorrow\'s run"',
+    parsedSummary: '500 Ripple Cups + 6 btls Vanilla Syrup',
+    amount: '₹8,760',
+    status: 'In Van #1',
+    time: '6m ago',
+  },
+  {
+    id: 'ORD-9311',
+    cafe: 'Lantern Row Cafe',
+    location: 'Malviya Nagar',
+    rawText: '"3 bags House Espresso and the decaf, same window as always"',
+    parsedSummary: '3 x House Espresso 1 kg + 2 x Decaf 1 kg',
+    amount: '₹9,820',
+    status: 'Picked',
+    time: '48m ago',
   },
 ];
 
-function SupplierSection({ isMobile }: { isMobile: boolean }) {
+function SupplierSection({ isMobile, docked }: { isMobile: boolean; docked: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const mainScrollRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const canvasStyle = useFrameZoom(frameRef);
   const shouldReduceMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
@@ -441,9 +667,9 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
   };
 
   const supplierCursorCoords = [
-    { x: '35%', y: '230px', label: 'Parse WhatsApp PO' },
-    { x: '75%', y: '190px', label: 'Roast Batch #4 (180kg)' },
-    { x: '75%', y: '295px', label: 'Dispatch Morning Fleet' },
+    { x: '40%', y: '250px', label: 'Accept ORD-9314' },
+    { x: '78%', y: '235px', label: 'Assign to run R-08' },
+    { x: '78%', y: '345px', label: 'Dispatch R-07' },
   ];
 
   // Interactive UI State
@@ -483,9 +709,9 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
 
   const handleSimulateWhatsAppPO = () => {
     const newPO: WhatsAppPO = {
-      id: `PO-GRD-${Math.floor(1050 + Math.random() * 50)}`,
-      cafe: 'Subko Specialty Roastery',
-      location: 'Bandra West, Mumbai',
+      id: 'ORD-9315',
+      cafe: 'Juniper Steps Cafe',
+      location: 'Hauz Khas',
       rawText: '"Urgent: Send 20kg Arabica Medium + 10L Barista Oat for tomorrow rush"',
       parsedSummary: '20kg Arabica (Medium) + 10L Barista Oat',
       amount: '₹19,200',
@@ -493,7 +719,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
       time: 'Just now',
     };
     setWhatsappPOs((prev) => [newPO, ...prev]);
-    showToast('⚡ WhatsApp order from Subko parsed: PO #GRD-1051 created (₹19,200)');
+    showToast('⚡ WhatsApp order from Juniper Steps Cafe parsed: ORD-9315 created (₹19,200)');
   };
 
   const handleAllocateBatch = () => {
@@ -562,6 +788,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
           {/* Left: Dynamic 3D Tilted Product Interface with Google-Style Motion Workflow */}
           <div className="product-stage">
             <motion.div
+              ref={frameRef}
               className="product-frame"
               style={{
                 x: 0,
@@ -574,11 +801,12 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               onMouseEnter={handleUserInteract}
               onClick={handleUserInteract}
             >
+              <div className="product-frame-canvas" style={canvasStyle}>
               {/* Google-Style Product Motion Vignette Chrome */}
               <MotionTimelineBar
                 currentStep={motionStep}
                 totalSteps={3}
-                stepLabels={['WhatsApp Ingest', 'Batch Allocation', 'Route Dispatch']}
+                stepLabels={['Order In', 'Assign Run', 'Dispatch']}
                 isPlaying={isMotionPlaying && !isUserInteracting}
                 onTogglePlay={() => setIsMotionPlaying(!isMotionPlaying)}
                 accentColor="#22C55E"
@@ -603,13 +831,12 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <span>app.gradient365.com/supplier/wholesale</span>
+                  <span>app.gradient365.com/supplier/orders</span>
                 </div>
                 <div className="browser-actions">
-                  <span className="browser-status-tag" style={{ background: '#ECFDF5', color: '#047857', borderColor: '#A7F3D0' }}>Wholesale Live · BLR Hub</span>
                   <div className="browser-user-badge">
-                    <span className="browser-avatar" style={{ background: '#064E3B' }}>RS</span>
-                    <span>RoastSupply & Dairy Co.</span>
+                    <span className="browser-avatar" style={{ background: '#064E3B' }}>SS</span>
+                    <span>Southfield Supply Co.</span>
                   </div>
                 </div>
               </div>
@@ -624,26 +851,25 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                 )}
 
                 {/* Unified Gradient Sidebar */}
-                <aside className="dashboard-sidebar" aria-label="Supplier Dashboard Navigation">
+                <aside className="dashboard-sidebar sidebar-dense" aria-label="Supplier Dashboard Navigation">
                   <div>
                     <div className="sidebar-brand-header">
                       <div className="sidebar-grabbit-logo">
                         <span className="grabbit-mark" style={{ background: '#064E3B' }}>G</span>
                         <span className="grabbit-name">Gradient</span>
                       </div>
-                      <span className="sidebar-org-sub">Supplier OS</span>
+                      <span className="sidebar-org-sub">Supplier</span>
+                    </div>
+                    <div className="sidebar-workspace">
+                      <span className="sidebar-workspace-mark" style={{ background: '#DCFCE7', color: '#15803D' }}>SF</span>
+                      <span className="sidebar-workspace-text"><strong>Southfield Supply Co.</strong><small>South Delhi hub · 3 warehouses</small></span>
                     </div>
 
-                    <div className="sidebar-nav-section-label">Inventory & Trade</div>
+                    <div className="sidebar-nav-section-label">Operations</div>
                     <nav className="sidebar-nav">
-                      <button
-                        type="button"
-                        className={`sidebar-item ${activeTab === 'catalog' ? 'active' : ''}`}
-                        onClick={() => scrollToAnchor('sup-catalog-table', 'catalog')}
-                      >
-                        <SvgIcons.Inventory />
-                        <span>Catalog & Stock</span>
-                        <span className="sidebar-badge-count">{products.length}</span>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('Supplier overview opened')}>
+                        <SvgIcons.Overview />
+                        <span>Overview</span>
                       </button>
                       <button
                         type="button"
@@ -651,8 +877,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                         onClick={() => scrollToAnchor('sup-whatsapp-section', 'whatsapp')}
                       >
                         <SvgIcons.Orders />
-                        <span>WhatsApp POs</span>
-                        <span className="sidebar-badge-count" style={{ background: '#DCFCE7', color: '#166534' }}>34</span>
+                        <span>Orders</span>
+                        <span className="sidebar-badge-count" style={{ background: '#DCFCE7', color: '#166534' }}>13</span>
                       </button>
                       <button
                         type="button"
@@ -660,8 +886,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                         onClick={() => scrollToAnchor('sup-route-section', 'routes')}
                       >
                         <SvgIcons.Deliveries />
-                        <span>Van Routes</span>
-                        <span className="sidebar-badge-count">3</span>
+                        <span>Delivery runs</span>
+                        <span className="sidebar-badge-count" style={{ background: '#DCFCE7', color: '#166534' }}>4 live</span>
                       </button>
                       <button
                         type="button"
@@ -669,31 +895,68 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                         onClick={() => scrollToAnchor('sup-settlement-section', 'settlement')}
                       >
                         <SvgIcons.Payments />
-                        <span>T+1 Ledger</span>
+                        <span>Invoices</span>
+                        <span className="sidebar-badge-count" style={{ background: '#FEF3C7', color: '#92400E' }}>9 due</span>
                       </button>
+                    </nav>
+
+                    <div className="sidebar-nav-section-label">Catalogue</div>
+                    <nav className="sidebar-nav">
                       <button
                         type="button"
-                        className="sidebar-item"
-                        onClick={() => showToast('Full distributor GMV analytics opened')}
+                        className={`sidebar-item ${activeTab === 'catalog' ? 'active' : ''}`}
+                        onClick={() => scrollToAnchor('sup-catalog-table', 'catalog')}
                       >
+                        <SvgIcons.Menu />
+                        <span>Catalogue</span>
+                        <span className="sidebar-badge-count">318</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('6 SKUs below par: reorder suggested')}>
+                        <SvgIcons.Inventory />
+                        <span>Inventory</span>
+                        <span className="sidebar-badge-count" style={{ background: '#FEF3C7', color: '#92400E' }}>6 low</span>
+                      </button>
+                    </nav>
+
+                    <div className="sidebar-nav-section-label">Customers</div>
+                    <nav className="sidebar-nav">
+                      <button type="button" className="sidebar-item" onClick={() => showToast('142 cafés supplied this month')}>
+                        <SvgIcons.Suppliers />
+                        <span>Cafes</span>
+                        <span className="sidebar-badge-count">142</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('7 open enquiries')}>
+                        <SvgIcons.Network />
+                        <span>Enquiries</span>
+                        <span className="sidebar-badge-count">7</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('4 brand purchase orders')}>
+                        <SvgIcons.Campaigns />
+                        <span>Brand orders</span>
+                        <span className="sidebar-badge-count">4</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('Demand forecast by zone opened')}>
                         <SvgIcons.Analytics />
-                        <span>Analytics</span>
+                        <span>Demand</span>
                       </button>
                     </nav>
                   </div>
 
                   <div className="sidebar-footer">
-                    <button type="button" className="sidebar-item" onClick={() => showToast('Supplier documentation & route guide')}>
-                      <SvgIcons.Help />
-                      <span>Help</span>
-                    </button>
+                    <div className="sidebar-today">
+                      <div className="sidebar-today-head"><span>Today</span><span>Thu 22 Oct</span></div>
+                      <div className="sidebar-today-row"><span>Delivered</span><strong>62</strong></div>
+                      <div className="sidebar-today-row"><span>Value</span><strong>₹4.8L</strong></div>
+                      <div className="sidebar-today-row"><span>On time</span><strong>98.4%</strong></div>
+                      <div className="sidebar-today-bar"><i style={{ width: '98.4%', background: '#16A34A' }} /></div>
+                    </div>
                     <button type="button" className="sidebar-item" onClick={() => showToast('Warehouse settings & pricing rules')}>
                       <SvgIcons.Settings />
                       <span>Settings</span>
                     </button>
-                    <div className="sidebar-pill-status">
-                      <span className="status-dot-pulse" aria-hidden="true" />
-                      <span>SLA 99.4% · Active</span>
+                    <div className="sidebar-user">
+                      <span className="sidebar-user-avatar">RK</span>
+                      <span className="sidebar-workspace-text"><strong>Ravi Kulkarni</strong><small>Fulfilment lead · 8 on shift</small></span>
                     </div>
                   </div>
                 </aside>
@@ -710,16 +973,14 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                   <div className="dashboard-top-nav">
                     <div className="dashboard-heading-group">
                       <div className="dashboard-title-row">
-                        <h3 className="dashboard-page-title">Wholesale Operations</h3>
-                        <span className="dash-date-indicator">Today · 27 Sep 2026</span>
+                        <h3 className="dashboard-page-title">Orders</h3>
                       </div>
-                      <span className="dashboard-page-subtitle">RoastSupply & Dairy Co. · Bangalore Indiranagar Hub</span>
                     </div>
 
                     <div className="dashboard-top-nav-right">
                       <span className="status-pill status-available">
                         <span className="status-dot" aria-hidden="true" />
-                        34 Orders Synced
+                        312 orders this week
                       </span>
                       <button
                         type="button"
@@ -731,61 +992,27 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                       </button>
                     </div>
                   </div>
-
-                  {/* Linear Core Journey Pipeline (Clean & Minimal) */}
-                  <div className="linear-core-pipeline" role="region" aria-label="Wholesale Lifecycle Pipeline">
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">01 Ingest</span>
-                      <span className="pipeline-step-title">WhatsApp POs</span>
-                      <span className="pipeline-step-proof">34 Auto-Parsed</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">02 Production</span>
-                      <span className="pipeline-step-title">Roast Batching</span>
-                      <span className="pipeline-step-proof">180kg Scheduled</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">03 Dispatch</span>
-                      <span className="pipeline-step-title">Morning Routes</span>
-                      <span className="pipeline-step-proof">3 Vans · 07:30 Cutoff</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge">04 Settlement</span>
-                      <span className="pipeline-step-title">T+1 Bank Payout</span>
-                      <span className="pipeline-step-proof">₹1.84L HDFC</span>
-                    </div>
-                  </div>
-
-                  {/* Three High-Signal Metrics */}
-                  <div className="dashboard-overview-row">
+                  {/* Four live order-board counts */}
+                  <div className="dashboard-overview-row dashboard-overview-row--four">
                     <div className="dashboard-stat">
-                      <span className="stat-label">Today's Demand (34 Cafés)</span>
-                      <div className="stat-value">₹1.84L</div>
-                      <div className="stat-trend positive">
-                        <span>↑ 18.4% volume</span>
-                        <span className="stat-context">100% WhatsApp auto-parsed</span>
-                      </div>
+                      <span className="stat-label">New</span>
+                      <div className="stat-value">{docked ? 13 : 12}</div>
+                      <div className="stat-trend positive"><span>+3 in 10 min</span></div>
                     </div>
-
                     <div className="dashboard-stat">
-                      <span className="stat-label">Batch Roast #4 Scheduled</span>
-                      <div className="stat-value">180 kg</div>
-                      <div className="stat-trend positive">
-                        <span>● 06:00 AM Roaster 1</span>
-                        <span className="stat-context">Arabica Medium Roast</span>
-                      </div>
+                      <span className="stat-label">In progress</span>
+                      <div className="stat-value">24</div>
+                      <div className="stat-trend"><span>Pack &amp; invoice</span></div>
                     </div>
-
                     <div className="dashboard-stat">
-                      <span className="stat-label">T+1 Automated Settlement</span>
-                      <div className="stat-value" style={{ color: '#15803D' }}>₹1.84L</div>
-                      <div className="stat-trend positive">
-                        <span>✓ HDFC Disbursed</span>
-                        <span className="stat-context">Zero bad debt guarantee</span>
-                      </div>
+                      <span className="stat-label">Dispatched</span>
+                      <div className="stat-value">16</div>
+                      <div className="stat-trend"><span>On the road · 4 runs</span></div>
+                    </div>
+                    <div className="dashboard-stat" style={{ background: '#F0FDF4' }}>
+                      <span className="stat-label" style={{ color: '#15803D' }}>Delivered</span>
+                      <div className="stat-value" style={{ color: '#15803D' }}>62</div>
+                      <div className="stat-trend positive"><span>Today · 98.4% on time</span></div>
                     </div>
                   </div>
 
@@ -795,8 +1022,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                     <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                       <div className="card-header">
                         <div>
-                          <span className="card-title">Live WhatsApp PO Stream</span>
-                          <span className="card-subtitle">AI converts voice & text orders into verified POs</span>
+                          <span className="card-title" id="sup-whatsapp-section">Incoming orders</span>
                         </div>
                         <button
                           type="button"
@@ -804,25 +1030,25 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
                           style={{ background: '#DCFCE7', color: '#166534', borderColor: '#BBF7D0' }}
                           onClick={handleSimulateWhatsAppPO}
                         >
-                          + Simulate Incoming PO
+                          + Simulate order
                         </button>
                       </div>
 
                       <div className="simple-order-list">
-                        {whatsappPOs.slice(0, 2).map((po) => (
+                        {whatsappPOs.slice(0, 4).map((po) => (
                           <div
                             key={po.id}
-                            className="simple-order-card"
+                            className={`simple-order-card${po.id === 'ORD-9314' ? ` dock-target${docked ? ' is-docked' : ''}` : ''}`}
+                            data-dock={po.id === 'ORD-9314' ? 'supplier-order' : undefined}
                             onClick={() => showToast(`Order manifest opened for ${po.cafe} (${po.amount})`)}
                           >
                             <div className="simple-card-header">
-                              <span className="simple-card-title">{po.cafe}</span>
+                              <span className="simple-card-title">{po.cafe} <span style={{ fontWeight: 500, color: '#64748B' }}>· {po.location} · {po.time}</span></span>
                               <span className={`status-pill status-${po.status === 'Picked' ? 'processing' : po.status === 'In Van #1' ? 'transit' : 'available'}`}>
                                 <span className="status-dot" aria-hidden="true" />
                                 {po.status}
                               </span>
                             </div>
-                            <div className="simple-card-meta">{po.location} · {po.time}</div>
                             <div className="simple-card-body">{po.rawText}</div>
                             <div className="simple-card-footer">
                               <span style={{ color: '#166534', fontWeight: 600 }}>➔ {po.parsedSummary}</span>
@@ -835,70 +1061,54 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
 
                     {/* Right: Production Roasting & Van Route Dispatch */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {/* Batch Roasting Card */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px' }}>
+                      {/* Today's delivery runs */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }} id="sup-route-section">
                         <div className="card-header">
-                          <span className="card-title">⚡ Batch Roast #4</span>
-                          <span style={{ fontSize: '9.5px', color: '#166534', fontWeight: 700 }}>180 kg Arabica</span>
-                        </div>
-                        <div style={{ fontSize: '9.5px', color: '#64748B', marginBottom: '6px' }}>
-                          Consolidated across 34 café POs · Scheduled 05:00 AM
+                          <span className="card-title">Delivery runs</span>
+                          <span className="status-pill status-transit">63 / 90 drops</span>
                         </div>
                         <div style={{ height: '5px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden', marginBottom: '8px' }}>
-                          <div style={{ width: '82%', height: '100%', background: '#16A34A', borderRadius: '99px' }} />
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155' }}>
-                          <span>Roasted: <strong>148 kg</strong></span>
-                          <span>Finishing: <strong>32 kg</strong></span>
-                        </div>
-                      </div>
-
-                      {/* Morning Route Dispatch */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px' }}>
-                        <div className="card-header">
-                          <span className="card-title">🚚 Morning Fleet Clusters</span>
-                          <span className="status-pill status-transit">07:30 Cutoff</span>
+                          <div style={{ width: '70%', height: '100%', background: '#16A34A', borderRadius: '99px' }} />
                         </div>
                         <div className="simple-route-strip">
                           <div className="simple-route-row">
-                            <span><strong>Van #1</strong> (Driver: Ramesh)</span>
-                            <span style={{ color: '#166534', fontWeight: 600 }}>14 Drops · Indiranagar</span>
+                            <span><strong>R-07</strong> Jangpura &amp; Nizamuddin</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>On road · 0/12</span>
                           </div>
                           <div className="simple-route-row">
-                            <span><strong>Van #2</strong> (Driver: Suresh)</span>
-                            <span style={{ color: '#166534', fontWeight: 600 }}>11 Drops · Koramangala</span>
+                            <span><strong>R-04</strong> Greater Kailash</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>8/11 · ETA 9:40</span>
                           </div>
                           <div className="simple-route-row">
-                            <span><strong>Van #3</strong> (Driver: Imran)</span>
-                            <span style={{ color: '#166534', fontWeight: 600 }}>9 Drops · CBD & Lavelle</span>
+                            <span><strong>R-02</strong> Vasant Kunj &amp; Mehrauli</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>12/14</span>
+                          </div>
+                          <div className="simple-route-row">
+                            <span><strong>R-05</strong> Malviya Nagar</span>
+                            <span style={{ color: '#166534', fontWeight: 600 }}>7/12</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Stripe Automated Bank Settlement Card */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px', background: '#F0FDF4', borderColor: '#BBF7D0' }}>
-                        <div className="card-header" style={{ marginBottom: '2px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#14532D' }}>T+1 Automated Bank Settlement</span>
-                          <span style={{ fontSize: '9px', color: '#166534', fontWeight: 600 }}>UTR: HDFC-99281048</span>
+                      {/* Low stock + cold chain */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }} id="sup-catalog-table">
+                        <div className="card-header">
+                          <span className="card-title">Low stock</span>
+                          <span className="status-pill" style={{ background: '#FEF3C7', color: '#92400E' }}>6 SKUs</span>
                         </div>
-                        <div style={{ fontSize: '9.5px', color: '#166534', lineHeight: 1.4 }}>
-                          <strong>₹1,84,200.00</strong> auto-disbursed at 06:00 AM IST directly to HDFC Bank account.
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #DCFCE7' }}>
-                          <span style={{ fontSize: '9px', color: '#15803D', fontWeight: 700 }}>✓ Zero Bad Debt Escrow</span>
-                          <button
-                            type="button"
-                            className="table-action-btn"
-                            style={{ fontSize: '9px', padding: '2px 6px' }}
-                            onClick={() => showToast('GST reconciliation ledger exported to Tally')}
-                          >
-                            Tally GST Sync
-                          </button>
+                        <div className="simple-route-strip">
+                          {products.filter((p) => p.status === 'Low stock').concat(products.filter((p) => p.status !== 'Low stock')).slice(0, 4).map((p) => (
+                            <div className="simple-route-row" key={p.name} onClick={() => { setSelectedProduct(p); handleAllocateBatch(); }}>
+                              <span>{p.name}</span>
+                              <span style={{ color: p.status === 'Low stock' ? '#92400E' : '#166534', fontWeight: 600 }}>{p.stock} · par {p.par}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
                   </div>
                 </main>
+              </div>
               </div>
             </motion.div>
           </div>
@@ -917,7 +1127,7 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               Manage less.
             </h2>
             <p className="section-description">
-              Auto-aggregate café demand from WhatsApp, batch roast par levels, dispatch morning van fleets, and receive guaranteed T+1 payouts without credit risk.
+              Take orders from WhatsApp, plan your roast, dispatch vans, and get paid the next day.
             </p>
 
             <div className="feature-list">
@@ -938,8 +1148,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">01</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Manage inventory &amp; roast par.</span>
-                  <span className="feature-text">Real-time SKU availability, roast-date batch control, and automated par alerts.</span>
+                  <span className="feature-heading">Know your stock and roast plan.</span>
+                  <span className="feature-text">Live inventory and roast batches, with alerts before you run low.</span>
                 </div>
               </div>
 
@@ -960,8 +1170,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">02</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Auto-parse WhatsApp orders.</span>
-                  <span className="feature-text">AI converts voice notes and chats into structured digital POs in 3 seconds.</span>
+                  <span className="feature-heading">Turn WhatsApp into orders.</span>
+                  <span className="feature-text">Voice notes and chats become clean purchase orders in seconds.</span>
                 </div>
               </div>
 
@@ -982,8 +1192,8 @@ function SupplierSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">03</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Morning route dispatch &amp; T+1 payout.</span>
-                  <span className="feature-text">Clustered delivery runs with digital ePOD and next-morning bank settlement.</span>
+                  <span className="feature-heading">Dispatch and get paid next day.</span>
+                  <span className="feature-text">Plan van routes and receive bank settlement the next morning.</span>
                 </div>
               </div>
             </div>
@@ -1017,60 +1227,60 @@ interface BrandCampaign {
 
 const INITIAL_BRAND_CAMPAIGNS: BrandCampaign[] = [
   {
-    title: 'Barista Oat Milk Indiranagar Flight',
-    cafes: '120 cafés',
-    product: 'Barista Oat Milk',
+    title: 'House Espresso · South Delhi',
+    cafes: '46 cafés',
+    product: 'Hillfold House Espresso',
     status: 'Active',
-    performance: '84% Adoption',
-    reach: '120 cafés',
-    orders: '1,284 cartons',
-    revenue: '₹2.1L',
-    period: '01 Sep → 30 Sep',
-    approval: '94% Barista Score',
-    reorderRate: '78%',
-    metro: 'Bangalore',
-  },
-  {
-    title: 'Nitro Cold Brew Single-Origin Trial',
-    cafes: '85 cafés',
-    product: 'Nitro Cold Brew',
-    status: 'Active',
-    performance: '92% Score',
-    reach: '85 cafés',
-    orders: '640 pre-booked',
-    revenue: '₹1.4L',
-    period: '15 Sep → 15 Oct',
-    approval: '98% Barista Score',
-    reorderRate: '82%',
-    metro: 'Mumbai',
-  },
-  {
-    title: 'Kyoto Ceremonial Matcha Flights',
-    cafes: '62 cafés',
-    product: 'Uji Matcha',
-    status: 'Scheduled',
-    performance: '76% Projected',
-    reach: '62 cafés',
-    orders: '380 kits queued',
-    revenue: '₹95K projected',
+    performance: '50% Conversion',
+    reach: '46 cafés',
+    orders: '312 orders',
+    revenue: '₹5.2L',
     period: '01 Oct → 31 Oct',
-    approval: '91% Barista Score',
-    reorderRate: '71%',
+    approval: '4.8 ★ barista score',
+    reorderRate: '64%',
     metro: 'Delhi-NCR',
   },
   {
-    title: 'Madagascar Vanilla & Cascara Syrups',
-    cafes: '45 cafés',
-    product: 'Craft Syrups',
+    title: 'Cold Brew launch · Gurugram',
+    cafes: '41 cafés',
+    product: 'Cold Brew Coarse',
+    status: 'Active',
+    performance: '37 tried',
+    reach: '41 cafés',
+    orders: '96 kits',
+    revenue: '₹2.2L',
+    period: '08 Oct → 07 Nov',
+    approval: '4.7 ★ barista score',
+    reorderRate: '58%',
+    metro: 'Delhi-NCR',
+  },
+  {
+    title: 'Filter Blend refill · Noida',
+    cafes: '28 cafés',
+    product: 'Hillfold Filter Blend',
+    status: 'Scheduled',
+    performance: 'Starts 1 Nov',
+    reach: '28 cafés',
+    orders: '120 kits queued',
+    revenue: '₹1.1L projected',
+    period: '01 Nov → 30 Nov',
+    approval: '4.6 ★ barista score',
+    reorderRate: '61%',
+    metro: 'Delhi-NCR',
+  },
+  {
+    title: 'Decaf Swiss Water · Central Delhi',
+    cafes: '19 cafés',
+    product: 'Decaf Swiss Water',
     status: 'Completed',
-    performance: '88% Conversion',
-    reach: '45 cafés',
-    orders: '890 bottles',
-    revenue: '₹1.8L',
-    period: '01 Aug → 31 Aug',
-    approval: '95% Barista Score',
-    reorderRate: '84%',
-    metro: 'Bangalore',
+    performance: '68% Conversion',
+    reach: '19 cafés',
+    orders: '74 bags',
+    revenue: '₹1.4L',
+    period: '01 Sep → 30 Sep',
+    approval: '4.7 ★ barista score',
+    reorderRate: '66%',
+    metro: 'Delhi-NCR',
   },
 ];
 
@@ -1088,39 +1298,41 @@ interface BaristaReview {
 const INITIAL_BARISTA_REVIEWS: BaristaReview[] = [
   {
     id: 'REV-101',
-    cafe: 'Third Wave Coffee',
-    metro: 'Bangalore · Indiranagar',
-    barista: 'Head Barista Vikram',
-    rating: 5.0,
-    product: 'Barista Oat Milk',
-    comment: 'Microfoam texture is identical to whole milk. Holds glossy latte art for 8+ mins without curdling in high-acidity roasts.',
-    outcome: 'Added 15 cases/wk to weekly auto-replenish',
+    cafe: 'Tamarind Lane Cafe',
+    metro: 'Delhi NCR · Hauz Khas',
+    barista: 'Head Barista',
+    rating: 4.9,
+    product: 'Hillfold House Espresso',
+    comment: 'Holds a sweet, even shot through the morning rush. Milk drinks keep the chocolate note.',
+    outcome: 'Repeat order: 6 x 1 kg every week',
   },
   {
     id: 'REV-102',
-    cafe: 'Blue Tokai Roasters',
-    metro: 'Bangalore · Koramangala',
-    barista: 'Lead Barista Ananya',
-    rating: 5.0,
-    product: 'Nitro Cold Brew Canisters',
-    comment: 'Creamy nitrogen cascade with dense head. Customers loved the clean finish. Zero bar prep time.',
-    outcome: 'Switched 100% of cold tap line to Origins',
+    cafe: 'Brewhaus Collective',
+    metro: 'Delhi NCR · Greater Kailash',
+    barista: 'Lead Barista',
+    rating: 4.8,
+    product: 'Hillfold Filter Blend',
+    comment: 'Clean pour-over profile, consistent roast to roast. Easy to dial in on batch brew.',
+    outcome: 'Switched the filter bar to Hillfold',
   },
   {
     id: 'REV-103',
-    cafe: 'Subko Specialty Coffee',
-    metro: 'Mumbai · Bandra West',
-    barista: 'Beverage Director Rohan',
-    rating: 4.9,
-    product: 'Barista Oat Milk',
-    comment: '38% of our morning iced lattes converted to this oat milk in week one. Clean natural sweetness.',
-    outcome: 'Contract signed across 4 Mumbai stores',
+    cafe: 'Saffron Steps Cafe',
+    metro: 'Delhi NCR · Saket',
+    barista: 'Beverage lead',
+    rating: 4.7,
+    product: 'Cold Brew Coarse',
+    comment: 'Trial kit sold out in four days. Smooth, low acid, customers asked for it by name.',
+    outcome: 'Converted to a standing order',
   },
 ];
 
-function BrandSection({ isMobile }: { isMobile: boolean }) {
+function BrandSection({ isMobile, docked }: { isMobile: boolean; docked: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const mainScrollRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const canvasStyle = useFrameZoom(frameRef);
   const shouldReduceMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
@@ -1182,9 +1394,9 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
   };
 
   const brandCursorCoords = [
-    { x: '35%', y: '235px', label: 'Deploy Barista Sampling Flight' },
-    { x: '75%', y: '190px', label: '94.2% SCA Cupping Score' },
-    { x: '75%', y: '330px', label: 'Convert to Net-15 Standing PO' },
+    { x: '40%', y: '250px', label: 'South Delhi hotspot' },
+    { x: '78%', y: '235px', label: 'Tamarind Lane reorder' },
+    { x: '78%', y: '345px', label: 'Trial → orders 50%' },
   ];
 
   // Interactive UI State
@@ -1245,7 +1457,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
   };
 
   const handleSeedMoreKits = () => {
-    showToast(`Dispatched 20 additional barista tasting flights across ${selectedMetro === 'All' ? 'Bangalore' : selectedMetro} specialty cafés`);
+    showToast(`Dispatched 20 more trial kits across ${selectedMetro === 'All' ? 'Delhi NCR' : selectedMetro} cafés`);
   };
 
   const scrollToAnchor = (anchorId: string, tab: 'campaigns' | 'telemetry' | 'funnel' | 'share') => {
@@ -1294,7 +1506,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               Grow distribution across India’s best cafés.
             </h2>
             <p className="section-description">
-              Eliminate distributor blindness. Seed tasting flights directly to verified barista stations, measure real-time café consumption telemetry, and convert trials into weekly recurring wholesale orders.
+              Put your product in front of verified baristas, see what they use, and turn trials into weekly orders.
             </p>
 
             <div className="feature-list">
@@ -1315,8 +1527,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">01</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Target verified cafés by tier.</span>
-                  <span className="feature-text">Filter high-volume specialty coffee bars across Bangalore, Mumbai, and Delhi NCR.</span>
+                  <span className="feature-heading">Find the right cafés.</span>
+                  <span className="feature-text">Filter verified specialty cafés by city and volume.</span>
                 </div>
               </div>
 
@@ -1337,8 +1549,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">02</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Seed barista sampling flights.</span>
-                  <span className="feature-text">Collect live sensory feedback, microfoam performance, and taste scorecards.</span>
+                  <span className="feature-heading">Send samples.</span>
+                  <span className="feature-text">Baristas test your product and score it.</span>
                 </div>
               </div>
 
@@ -1359,8 +1571,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">03</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Convert trials into recurring GMV.</span>
-                  <span className="feature-text">78% of approved trials convert into weekly automatic wholesale replenishment.</span>
+                  <span className="feature-heading">Turn trials into repeat orders.</span>
+                  <span className="feature-text">78% of approved trials reorder every week.</span>
                 </div>
               </div>
 
@@ -1381,8 +1593,8 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               >
                 <span className="feature-num">04</span>
                 <div className="feature-content">
-                  <span className="feature-heading">Direct consumption &amp; shelf share.</span>
-                  <span className="feature-text">Track daily liters consumed, city velocity, and market share vs competing products.</span>
+                  <span className="feature-heading">See what sells.</span>
+                  <span className="feature-text">Daily usage and market share, by city.</span>
                 </div>
               </div>
             </div>
@@ -1391,6 +1603,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
           {/* Right: Dynamic 3D Tilted Product Interface with Google-Style Motion Workflow */}
           <div className="product-stage">
             <motion.div
+              ref={frameRef}
               className="product-frame"
               style={{
                 x: 0,
@@ -1403,11 +1616,12 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
               onMouseEnter={handleUserInteract}
               onClick={handleUserInteract}
             >
+              <div className="product-frame-canvas" style={canvasStyle}>
               {/* Google-Style Product Motion Vignette Chrome */}
               <MotionTimelineBar
                 currentStep={motionStep}
                 totalSteps={3}
-                stepLabels={['Target Cafés', 'Deploy Flights', 'Barista Feedback']}
+                stepLabels={['Where it sells', 'Live orders', 'Trial → repeat']}
                 isPlaying={isMotionPlaying && !isUserInteracting}
                 onTogglePlay={() => setIsMotionPlaying(!isMotionPlaying)}
                 accentColor="#9333EA"
@@ -1432,13 +1646,12 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  <span>app.gradient365.com/brand/telemetry</span>
+                  <span>app.gradient365.com/brand/dashboard</span>
                 </div>
                 <div className="browser-actions">
-                  <span className="browser-status-tag" style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}>Direct Telemetry · Active</span>
                   <div className="browser-user-badge">
-                    <span className="browser-avatar" style={{ background: '#6D28D9' }}>OB</span>
-                    <span>Origins Beverage &amp; Oat Co.</span>
+                    <span className="browser-avatar" style={{ background: '#6D28D9' }}>HR</span>
+                    <span>Hillfold Roasters</span>
                   </div>
                 </div>
               </div>
@@ -1453,68 +1666,103 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                 )}
 
                 {/* Unified Gradient Sidebar */}
-                <aside className="dashboard-sidebar" aria-label="Brand Dashboard Navigation">
+                <aside className="dashboard-sidebar sidebar-dense" aria-label="Brand Dashboard Navigation">
                   <div>
                     <div className="sidebar-brand-header">
                       <div className="sidebar-grabbit-logo">
                         <span className="grabbit-mark" style={{ background: '#6D28D9' }}>G</span>
                         <span className="grabbit-name">Gradient</span>
                       </div>
-                      <span className="sidebar-org-sub">Brand OS</span>
+                      <span className="sidebar-org-sub">Brand portal</span>
+                    </div>
+                    <div className="sidebar-workspace">
+                      <span className="sidebar-workspace-mark" style={{ background: '#F1EAFE', color: '#6D28D9' }}>HR</span>
+                      <span className="sidebar-workspace-text"><strong>Hillfold Roasters</strong><small>Delhi NCR · 15 districts</small></span>
                     </div>
 
-                    <div className="sidebar-nav-section-label">Growth &amp; Reach</div>
+                    <div className="sidebar-nav-section-label">Overview</div>
                     <nav className="sidebar-nav">
-                      <button
-                        type="button"
-                        className={`sidebar-item ${activeTab === 'campaigns' ? 'active' : ''}`}
-                        onClick={() => scrollToAnchor('brand-campaigns-table', 'campaigns')}
-                      >
-                        <SvgIcons.Campaigns />
-                        <span>Campaigns &amp; Flights</span>
-                        <span className="sidebar-badge-count">{campaigns.length}</span>
-                      </button>
-                      <button
-                        type="button"
-                        className={`sidebar-item ${activeTab === 'telemetry' ? 'active' : ''}`}
-                        onClick={() => scrollToAnchor('brand-telemetry-section', 'telemetry')}
-                      >
-                        <SvgIcons.Network />
-                        <span>Barista Telemetry</span>
-                        <span className="sidebar-badge-count" style={{ background: '#EDE9FE', color: '#6D28D9' }}>312</span>
-                      </button>
                       <button
                         type="button"
                         className={`sidebar-item ${activeTab === 'funnel' ? 'active' : ''}`}
                         onClick={() => scrollToAnchor('brand-funnel-section', 'funnel')}
                       >
                         <SvgIcons.Overview />
-                        <span>Conversion Funnel</span>
-                        <span className="sidebar-badge-count">78%</span>
+                        <span>Dashboard</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('9 open café queries')}>
+                        <SvgIcons.Network />
+                        <span>Cafe Queries</span>
+                        <span className="sidebar-badge-count" style={{ background: '#EDE9FE', color: '#6D28D9' }}>9</span>
                       </button>
                       <button
                         type="button"
-                        className={`sidebar-item ${activeTab === 'share' ? 'active' : ''}`}
-                        onClick={() => scrollToAnchor('brand-share-section', 'share')}
+                        className={`sidebar-item ${activeTab === 'telemetry' ? 'active' : ''}`}
+                        onClick={() => scrollToAnchor('brand-telemetry-section', 'telemetry')}
                       >
                         <SvgIcons.Analytics />
-                        <span>Market Share</span>
+                        <span>Live Consumption</span>
+                        <span className="sidebar-badge-count" style={{ background: '#DCFCE7', color: '#15803D' }}>live</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('Delhi NCR heatmap: South Delhi is the hotspot')}>
+                        <SvgIcons.Search />
+                        <span>Heatmaps</span>
+                        <span className="sidebar-badge-count" style={{ background: '#EDE9FE', color: '#6D28D9' }}>new</span>
+                      </button>
+                    </nav>
+
+                    <div className="sidebar-nav-section-label">Network</div>
+                    <nav className="sidebar-nav">
+                      <button type="button" className="sidebar-item" onClick={() => showToast('Distributor sales by zone')}>
+                        <SvgIcons.Payments />
+                        <span>Distributor Sales</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('4 linked distributors')}>
+                        <SvgIcons.Suppliers />
+                        <span>Supplier Network</span>
+                        <span className="sidebar-badge-count">4</span>
+                      </button>
+                      <button type="button" className="sidebar-item" onClick={() => showToast('12 supplier orders in flight')}>
+                        <SvgIcons.Deliveries />
+                        <span>Supplier Orders</span>
+                        <span className="sidebar-badge-count">12</span>
+                      </button>
+                    </nav>
+
+                    <div className="sidebar-nav-section-label">Brand</div>
+                    <nav className="sidebar-nav">
+                      <button type="button" className="sidebar-item" onClick={() => showToast('18 products listed')}>
+                        <SvgIcons.Menu />
+                        <span>Products</span>
+                        <span className="sidebar-badge-count">18</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`sidebar-item ${activeTab === 'campaigns' ? 'active' : ''}`}
+                        onClick={() => scrollToAnchor('brand-campaigns-table', 'campaigns')}
+                      >
+                        <SvgIcons.Campaigns />
+                        <span>Trial Campaigns</span>
+                        <span className="sidebar-badge-count" style={{ background: '#EDE9FE', color: '#6D28D9' }}>3 live</span>
                       </button>
                     </nav>
                   </div>
 
                   <div className="sidebar-footer">
-                    <button type="button" className="sidebar-item" onClick={() => showToast('Brand playbook & sampling logistics guide')}>
-                      <SvgIcons.Help />
-                      <span>Help</span>
-                    </button>
-                    <button type="button" className="sidebar-item" onClick={() => showToast('Brand privacy & competitor-blind settings')}>
+                    <div className="sidebar-today">
+                      <div className="sidebar-today-head"><span>This month</span><span>Oct</span></div>
+                      <div className="sidebar-today-row"><span>Target</span><strong>₹16L</strong></div>
+                      <div className="sidebar-today-row"><span>Achieved</span><strong>₹14.2L · 89%</strong></div>
+                      <div className="sidebar-today-bar"><i style={{ width: '89%', background: '#7C3AED' }} /></div>
+                      <div className="sidebar-today-row"><span>Trials running</span><strong>3 · 41 cafés</strong></div>
+                    </div>
+                    <button type="button" className="sidebar-item" onClick={() => showToast('Brand settings')}>
                       <SvgIcons.Settings />
                       <span>Settings</span>
                     </button>
-                    <div className="sidebar-pill-status" style={{ background: '#F5F3FF', color: '#6D28D9' }}>
-                      <span className="status-dot-pulse" style={{ background: '#6D28D9' }} aria-hidden="true" />
-                      <span>312 Cafés Reached</span>
+                    <div className="sidebar-user">
+                      <span className="sidebar-user-avatar">KM</span>
+                      <span className="sidebar-workspace-text"><strong>Kavya Menon</strong><small>Regional Manager · North</small></span>
                     </div>
                   </div>
                 </aside>
@@ -1531,17 +1779,11 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                   <div className="dashboard-top-nav">
                     <div className="dashboard-heading-group">
                       <div className="dashboard-title-row">
-                        <h3 className="dashboard-page-title">Brand OS Telemetry</h3>
-                        <span className="dash-date-indicator">Q3 · Active Distribution</span>
+                        <h3 className="dashboard-page-title">Dashboard</h3>
                       </div>
-                      <span className="dashboard-page-subtitle">Origins Beverage &amp; Oat Co. · Specialty Café Distribution</span>
                     </div>
 
                     <div className="dashboard-top-nav-right">
-                      <span className="status-pill" style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}>
-                        <span className="status-dot" style={{ background: '#7C3AED' }} aria-hidden="true" />
-                        312 Cafés Reached
-                      </span>
                       <button
                         type="button"
                         className="dash-btn-primary"
@@ -1549,65 +1791,31 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                         onClick={() => setShowNewCampaignModal(true)}
                       >
                         <span>+</span>
-                        <span>Deploy Sampling Flight</span>
+                        <span>New trial campaign</span>
                       </button>
                     </div>
                   </div>
-
-                  {/* Linear Core Journey Pipeline */}
-                  <div className="linear-core-pipeline" role="region" aria-label="Brand Distribution Lifecycle Pipeline">
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>01 Seed</span>
-                      <span className="pipeline-step-title">Sampling Flights</span>
-                      <span className="pipeline-step-proof">312 Cafés</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>02 Cupping</span>
-                      <span className="pipeline-step-title">Barista Feedback</span>
-                      <span className="pipeline-step-proof">94.2% Approval</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>03 Convert</span>
-                      <span className="pipeline-step-title">Standing POs</span>
-                      <span className="pipeline-step-proof">78% Reorder Rate</span>
-                    </div>
-                    <span className="pipeline-arrow-separator">➔</span>
-                    <div className="pipeline-stage">
-                      <span className="pipeline-step-badge" style={{ color: '#7C3AED', background: '#F5F3FF' }}>04 Velocity</span>
-                      <span className="pipeline-step-title">Direct Telemetry</span>
-                      <span className="pipeline-step-proof">₹4.82L/mo MRR</span>
-                    </div>
-                  </div>
-
-                  {/* Three High-Signal Metrics */}
-                  <div className="dashboard-overview-row">
+                  {/* Month-to-date brand KPIs */}
+                  <div className="dashboard-overview-row dashboard-overview-row--four">
                     <div className="dashboard-stat">
-                      <span className="stat-label">Active Specialty Cafés</span>
-                      <div className="stat-value" style={{ color: '#6D28D9' }}>312</div>
-                      <div className="stat-trend positive">
-                        <span>↑ 28 New this month</span>
-                        <span className="stat-context">Bangalore, Mumbai, Delhi</span>
-                      </div>
+                      <span className="stat-label">Revenue</span>
+                      <div className="stat-value">₹14.2L</div>
+                      <div className="stat-trend positive"><span>↑ 36% vs Sept</span></div>
                     </div>
-
                     <div className="dashboard-stat">
-                      <span className="stat-label">Barista Sensory Approval</span>
-                      <div className="stat-value">94.2%</div>
-                      <div className="stat-trend positive">
-                        <span>★ 4.9 / 5.0 (SCA scale)</span>
-                        <span className="stat-context">141 Cupping reviews logged</span>
-                      </div>
+                      <span className="stat-label">Orders</span>
+                      <div className="stat-value">584</div>
+                      <div className="stat-trend"><span>via 4 distributors</span></div>
                     </div>
-
                     <div className="dashboard-stat">
-                      <span className="stat-label">Recurring Wholesale GMV</span>
-                      <div className="stat-value" style={{ color: '#15803D' }}>₹4.82L</div>
-                      <div className="stat-trend positive">
-                        <span>✓ 78% Trial Reorder</span>
-                        <span className="stat-context">Standing weekly Net-15 POs</span>
-                      </div>
+                      <span className="stat-label">Active cafés</span>
+                      <div className="stat-value">142</div>
+                      <div className="stat-trend positive"><span>+11 this month</span></div>
+                    </div>
+                    <div className="dashboard-stat" id="brand-funnel-section">
+                      <span className="stat-label">Trial conversion</span>
+                      <div className="stat-value" style={{ color: '#6D28D9' }}>50%</div>
+                      <div className="stat-trend"><span>25 of 50 cafés ordered</span></div>
                     </div>
                   </div>
 
@@ -1617,8 +1825,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                     <div className="dashboard-card" style={{ padding: '10px 12px' }}>
                       <div className="card-header">
                         <div>
-                          <span className="card-title">Active Sampling Flights</span>
-                          <span className="card-subtitle">Direct seeding to verified barista stations</span>
+                          <span className="card-title" id="brand-campaigns-table">Trial campaigns</span>
                         </div>
                         <button
                           type="button"
@@ -1626,12 +1833,12 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                           style={{ background: '#F5F3FF', color: '#6D28D9', borderColor: '#DDD6FE' }}
                           onClick={() => setShowNewCampaignModal(true)}
                         >
-                          + New Flight
+                          + New campaign
                         </button>
                       </div>
 
                       <div className="simple-flight-list">
-                        {campaigns.slice(0, 2).map((c) => (
+                        {campaigns.slice(0, 4).map((c) => (
                           <div
                             key={c.title}
                             className="simple-flight-card"
@@ -1644,11 +1851,9 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                                 {c.status}
                               </span>
                             </div>
-                            <div className="simple-card-meta">{c.metro} · {c.cafes} · {c.period}</div>
-                            <div className="simple-card-body">{c.product} — seeded directly to espresso stations</div>
                             <div className="simple-card-footer">
-                              <span style={{ color: '#6D28D9', fontWeight: 600 }}>★ {c.approval} ({c.reorderRate} reorder)</span>
-                              <span style={{ fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono, monospace)' }}>{c.revenue} GMV</span>
+                              <span style={{ color: '#6D28D9', fontWeight: 600 }}>{c.cafes} · {c.reorderRate} reorder</span>
+                              <span style={{ fontWeight: 800, color: '#0F172A', fontFamily: 'var(--font-mono, monospace)' }}>{c.revenue}</span>
                             </div>
                           </div>
                         ))}
@@ -1657,78 +1862,61 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
 
                     {/* Right: Barista Scorecard & Wholesale Conversion Engine */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {/* Barista Sensory Scorecard */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px' }}>
+                      {/* Live consumption, newest first */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }} id="brand-telemetry-section">
                         <div className="card-header">
-                          <span className="card-title">☕ Barista Cupping Scorecard</span>
-                          <span style={{ fontSize: '9.5px', color: '#7C3AED', fontWeight: 700 }}>94.2% (SCA Standard)</span>
+                          <span className="card-title">Live consumption</span>
+                          <span className="status-pill" style={{ background: '#DCFCE7', color: '#15803D' }}>● {docked ? 11 : 10} today</span>
                         </div>
-                        <div style={{ fontSize: '9.5px', color: '#64748B', marginBottom: '8px' }}>
-                          Aggregated from 141 blind cupping trials across 3 metros
-                        </div>
-
-                        {/* Attribute progress bars */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '10px' }}>
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
-                              <span>Microfoam Gloss &amp; Texture</span>
-                              <strong>9.8 / 10</strong>
+                        <div className="simple-route-strip">
+                          {[
+                            ['Tamarind Lane Cafe', 'Hauz Khas · 6 x House Espresso', '₹6,900', true],
+                            ['Brewhaus Collective', 'Greater Kailash · 10 x Filter Blend', '₹9,800', false],
+                            ['Saffron Steps Cafe', 'Saket · 6 x Filter Blend', '₹5,880', false],
+                            ['Juniper Steps Cafe', 'Hauz Khas · 4 x Decaf', '₹4,960', false],
+                            ['Ember & Oat', 'Vasant Kunj · 10 x House Espresso', '₹11,200', false],
+                            ['Lantern Row Cafe', 'Malviya Nagar · Cold Brew trial', 'Trial', false],
+                          ].map(([cafe, line, amt, hot]) => (
+                            <div
+                              className={`simple-route-row${hot ? ` dock-target${docked ? ' is-docked' : ''}` : ''}`}
+                              key={cafe as string}
+                              data-dock={hot ? 'brand-live' : undefined}
+                              style={hot ? { background: '#F5F3FF', borderRadius: '6px', padding: '3px 5px', margin: '0 -5px' } : undefined}
+                            >
+                              <span><strong>{cafe}</strong> <span style={{ color: '#64748B' }}>{line}</span></span>
+                              <span style={{ color: hot ? '#6D28D9' : '#0F172A', fontWeight: 700 }}>{amt}</span>
                             </div>
-                            <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
-                              <div style={{ width: '98%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
-                            </div>
-                          </div>
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
-                              <span>Steam Stability (Past 65°C)</span>
-                              <strong>9.6 / 10</strong>
-                            </div>
-                            <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
-                              <div style={{ width: '96%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
-                            </div>
-                          </div>
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
-                              <span>Acidity Balance in Light Roasts</span>
-                              <strong>9.4 / 10</strong>
-                            </div>
-                            <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
-                              <div style={{ width: '94%', height: '100%', background: '#7C3AED', borderRadius: '99px' }} />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Recent Barista quote */}
-                        <div style={{ padding: '6px 8px', borderRadius: '6px', background: '#F8FAFC', border: '1px solid rgba(23, 23, 23, 0.05)', fontSize: '9px', color: '#475569', fontStyle: 'italic', lineHeight: 1.35 }}>
-                          &ldquo;Microfoam holds glossy latte art past 65°C with zero curdling in high-acidity roasts.&rdquo;
-                          <div style={{ fontStyle: 'normal', fontWeight: 600, color: '#1E293B', marginTop: '3px' }}>
-                            — Head Barista Vikram, Third Wave Coffee
-                          </div>
+                          ))}
                         </div>
                       </div>
 
-                      {/* Standing Wholesale Reorder Engine */}
-                      <div className="dashboard-card" style={{ padding: '10px 12px', background: '#FAF5FF', borderColor: '#E9D5FF' }}>
-                        <div className="card-header" style={{ marginBottom: '2px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#581C87' }}>Wholesale Conversion Engine</span>
-                          <span style={{ fontSize: '9px', color: '#7C3AED', fontWeight: 600 }}>Net-15 Auto-Debit</span>
+                      {/* Where it sells: Delhi NCR districts */}
+                      <div className="dashboard-card" style={{ padding: '10px 12px' }} id="brand-share-section">
+                        <div className="card-header">
+                          <span className="card-title">Top districts · 7d</span>
+                          <span style={{ fontSize: '9.5px', color: '#7C3AED', fontWeight: 700 }}>206 orders</span>
                         </div>
-                        <div style={{ fontSize: '9.5px', color: '#6B21A8', lineHeight: 1.4 }}>
-                          <strong>78% of approved tastings</strong> automatically convert to weekly recurring wholesale orders.
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {[
+                            ['South Delhi', 55, '#6D28D9'],
+                            ['Gurugram', 36, '#A8A29E'],
+                            ['New Delhi', 26, '#A8A29E'],
+                            ['Noida', 22, '#A8A29E'],
+                            ['Central', 15, '#A8A29E'],
+                            ['South West', 13, '#A8A29E'],
+                          ].map(([name, n, c]) => (
+                            <div key={name as string}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#334155', marginBottom: '2px' }}>
+                                <span>{name}</span>
+                                <strong>{n}</strong>
+                              </div>
+                              <div style={{ height: '4px', borderRadius: '99px', background: '#F1F5F9', overflow: 'hidden' }}>
+                                <div style={{ width: `${((n as number) / 55) * 100}%`, height: '100%', background: c as string, borderRadius: '99px' }} />
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #F3E8FF' }}>
-                          <span style={{ fontSize: '9px', color: '#7C3AED', fontWeight: 700 }}>₹4.82L Active Monthly GMV</span>
-                          <button
-                            type="button"
-                            className="table-action-btn"
-                            style={{ fontSize: '9px', padding: '2px 6px' }}
-                            onClick={() => showToast('Dispatched 20 additional barista tasting flights')}
-                          >
-                            + Seed 20 Cafés
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                      </div>                    </div>
                   </div>
 
                   {/* Accessible New Campaign Modal */}
@@ -1767,10 +1955,10 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                               value={newCampaignProduct}
                               onChange={(e) => setNewCampaignProduct(e.target.value)}
                             >
-                              <option>Barista Oat Milk (Steam-Stable)</option>
-                              <option>Nitro Cold Brew Single-Origin Canisters</option>
-                              <option>Kyoto Ceremonial Uji Matcha</option>
-                              <option>Madagascar Vanilla &amp; Cascara Syrups</option>
+                              <option>Hillfold House Espresso</option>
+                              <option>Hillfold Filter Blend</option>
+                              <option>Cold Brew Coarse</option>
+                              <option>Decaf Swiss Water</option>
                             </select>
                           </div>
                           <div className="dash-form-row" style={{ marginTop: '8px' }}>
@@ -1797,6 +1985,7 @@ function BrandSection({ isMobile }: { isMobile: boolean }) {
                     </div>
                   )}
                 </main>
+              </div>
               </div>
             </motion.div>
           </div>

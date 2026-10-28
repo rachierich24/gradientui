@@ -2,10 +2,16 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useReducedMotion } from 'framer-motion';
-import { ThreePackagingScene } from './ThreePackagingScene';
+import dynamic from 'next/dynamic';
 import { OrderWorkflowDemo, WorkflowStage } from './OrderWorkflowDemo';
 import { GhostType } from '@/components/ui/ghost-type';
 import { BorderBeam } from '@/components/ui/border-beam';
+
+// three.js (~600 kB) stays out of the initial bundle; the scene mounts after hydration.
+const ThreePackagingScene = dynamic(
+  () => import('./ThreePackagingScene').then((m) => m.ThreePackagingScene),
+  { ssr: false },
+);
 import DotGrid from '@/components/ui/DotGrid';
 
 interface OrderItem {

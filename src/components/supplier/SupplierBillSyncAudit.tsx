@@ -822,6 +822,7 @@ export function SupplierBillSyncAudit() {
               )}
             </AnimatePresence>
           </div>
+
         </div>
 
         {/* ─── 5-Step Selector Controller (Minimal Pill Bar Below Terminal) ─── */}

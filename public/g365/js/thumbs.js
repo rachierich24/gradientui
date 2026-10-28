@@ -52,6 +52,7 @@
     const out = {};
     for (const k of keys) {
       if (!makers[k] || out[k]) continue;
+      await new Promise((r) => setTimeout(r, 0)); // yield between products so no single long task blocks input/paint
       const obj = makers[k]();
       obj.rotation.y = -0.5;
       scene.add(obj);

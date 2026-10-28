@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
@@ -84,9 +85,12 @@ const CafePreview = ({
         {(activeFilter === 'All' || activeFilter === 'Beans') && (
           <div className="mock-cafe-card">
             <div className="mock-cafe-img-wrap">
-              <img
+              <Image
                 src="/landing/spotlight/arabica-beans.jpg"
                 alt="Arabica Estate Beans"
+                width={320}
+                height={240}
+                sizes="160px"
                 className="mock-cafe-img-photo"
                 loading="lazy"
               />
@@ -112,9 +116,12 @@ const CafePreview = ({
         {(activeFilter === 'All' || activeFilter === 'Dairy') && (
           <div className="mock-cafe-card">
             <div className="mock-cafe-img-wrap">
-              <img
+              <Image
                 src="/landing/spotlight/barista-oat-carton.jpg"
                 alt="Barista Oat Milk"
+                width={320}
+                height={240}
+                sizes="160px"
                 className="mock-cafe-img-photo"
                 loading="lazy"
               />
@@ -140,9 +147,12 @@ const CafePreview = ({
         {large && (activeFilter === 'All' || activeFilter === 'Syrups') && (
           <div className="mock-cafe-card">
             <div className="mock-cafe-img-wrap">
-              <img
+              <Image
                 src="/landing/spotlight/caramel-syrup-bottle.jpg"
                 alt="Caramel Artisan Syrup"
+                width={320}
+                height={240}
+                sizes="160px"
                 className="mock-cafe-img-photo"
                 loading="lazy"
               />

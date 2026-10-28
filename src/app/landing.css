@@ -2656,3 +2656,9 @@ section.l-sec.stats-sec {
   .footer-bot { flex-direction: column; align-items: flex-start; gap: 8px; }
   .footer { padding-bottom: 96px; }   /* clear the floating support FAB */
 }
+
+/* ─── phones/tablets: section headers stack instead of squeezing the lead into a narrow side column ─── */
+@media (max-width: 768px) {
+  .sec-head-row { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .sec-head-row .sec-lead { max-width: none; }
+}
