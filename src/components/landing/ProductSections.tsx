@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, animate, useInView, useScroll, useTransform, useSpring, useReducedMotion, useMotionValue, useMotionValueEvent, useMotionTemplate } from 'framer-motion';
+import { motion, animate, useInView, useScroll, useTransform, useSpring, useReducedMotion, useMotionValue, useMotionValueEvent, useMotionTemplate, interpolate } from 'framer-motion';
 import { MotionTimelineBar, AnimatedCursor, WorkflowNode, AnimatedBezierCable } from './ProductMotionEngine';
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -241,82 +240,42 @@ export function ProductSections() {
     restDelta: 0.0001,
   });
 
-  // Café -> supplier -> brand hand-off. Scrubbed by scroll, the café's order card leaves the phone and docks
-  // into the supplier's Incoming orders; then a consumption ping leaves that row and docks into the brand's
-  // Live consumption. Each landing floods the (white) universe with that chapter's colour from the dock point.
-  const isReducedMotion = useReducedMotion();
-  const isStatic = !!isReducedMotion || isMobile; // no couriers: show both chapters already coloured
-  const [orderDocked, setOrderDocked] = useState(false);
-  const [pingDocked, setPingDocked] = useState(false);
-  const green = useFlood();
-  const purple = useFlood();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // Dynamic continuous chromatic transition across all chapters:
+  // Café Red (#E03527) -> Supplier Green (#16A34A) -> Brand Purple (#6D28D9)
+  const interpolateRedToGreen = interpolate([0, 1], ['#E03527', '#16A34A']);
+  const interpolateGreenToPurple = interpolate([0, 1], ['#16A34A', '#6D28D9']);
 
-  // Where the brand chapter starts inside the universe: the split between the green and purple floods.
-  const [brandTop, setBrandTop] = useState(0);
-  useEffect(() => {
-    const universe = localContainerRef.current;
-    if (!universe) return;
-    const ro = new ResizeObserver(() => setBrandTop(brandRef.current?.offsetTop ?? 0));
-    ro.observe(universe);
-    return () => ro.disconnect();
-  }, []);
+  const productBg = useTransform(
+    [smoothSupplierProgress, smoothBrandProgress],
+    (values: number[]) => {
+      const [sProg, bProg] = values;
+      const s = Math.max(0, Math.min(1, sProg));
+      const b = Math.max(0, Math.min(1, bProg));
+      if (b > 0.01 && s >= 0.85) {
+        return interpolateGreenToPurple(b);
+      }
+      return interpolateRedToGreen(s);
+    }
+  );
 
-  useEffect(() => {
-    if (!isStatic) return;
-    setOrderDocked(true);
-    setPingDocked(true);
-    green.fill();
-    purple.fill();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isStatic]);
-
-  // Dock when the target row reaches this fraction of the viewport height.
-  const landAt = (rect: DOMRect, y: number, at: number) => rect.top + y - window.innerHeight * at;
-
-  const order = useScrollCourier({
-    enabled: !isStatic,
-    endScale: (to) => to.width / ORDER_CARD_W,
-    measure: (y) => {
-      const eco = document.getElementById('ecosystem');
-      const phone = document.querySelector('.eco-phone-chassis')?.getBoundingClientRect();
-      const to = document.querySelector('[data-dock="supplier-order"]')?.getBoundingClientRect();
-      if (!eco || !phone || !to) return null;
-      const unpin = eco.getBoundingClientRect().top + y + eco.offsetHeight - window.innerHeight;
-      return { from: phone, to, startAt: unpin, landAt: landAt(to, y, 0.55) };
-    },
-    onLand: (to, instant) => {
-      setOrderDocked(true);
-      green.flood(to, instant);
-    },
-    onReset: () => {
-      setOrderDocked(false);
-      green.reset();
-    },
+  // Sync the whole background CSS variable across the document
+  useMotionValueEvent(productBg, 'change', (latest: string) => {
+    if (supplierProgress.get() > 0 || brandProgress.get() > 0) {
+      document.documentElement.style.setProperty('--universe-bg', String(latest));
+    }
   });
 
-  const ping = useScrollCourier({
-    enabled: !isStatic,
-    endScale: () => 1,
-    measure: (y) => {
-      const brand = brandRef.current?.getBoundingClientRect();
-      const from = document.querySelector('[data-dock="supplier-order"]')?.getBoundingClientRect();
-      const to = document.querySelector('[data-dock="brand-live"]')?.getBoundingClientRect();
-      if (!brand || !from || !to) return null;
-      return { from, to, startAt: brand.top + y - window.innerHeight, landAt: landAt(to, y, 0.7) };
-    },
-    onLand: (to, instant) => {
-      setPingDocked(true);
-      purple.flood(to, instant);
-    },
-    onReset: () => {
-      setPingDocked(false);
-      purple.reset();
-    },
-  });
+  useEffect(() => {
+    if (supplierProgress.get() > 0 || brandProgress.get() > 0) {
+      document.documentElement.style.setProperty('--universe-bg', String(productBg.get()));
+    }
+  }, [productBg, supplierProgress, brandProgress]);
 
   // Atmospheric radial fields opacity & subtle slow vertical drift
+  // 1. Café Glow (Warm Red): visible as section enters, fades out as Supplier locks in
+  const cafeGlowOpacity = useTransform(smoothSupplierProgress, [0.0, 0.5], [1, 0]);
+  const cafeGlowY = useTransform(smoothSupplierProgress, [0.0, 1.0], ['0%', '-2%']);
+
   // 2. Supplier Glow (Vibrant Green): fades in as Supplier arrives, fades out as Brand arrives
   const supplierGlowOpacity = useTransform(
     [smoothSupplierProgress, smoothBrandProgress],
@@ -341,186 +300,32 @@ export function ProductSections() {
       ref={localContainerRef}
       className="product-universe"
       id="product-universe"
-      style={{ backgroundColor: '#FFFFFF' }}
+      style={{ backgroundColor: productBg }}
     >
-      {mounted && !isStatic && createPortal(
-        <>
-          <motion.div className="courier courier-order" aria-hidden="true" style={order.style}>
-            <div className="courier-order-head">
-              <strong>Tamarind Lane Cafe</strong>
-              <span>· Hauz Khas · Just now</span>
-            </div>
-            <div className="courier-order-body">6 x Hillfold House Espresso 1 kg</div>
-            <div className="courier-order-foot">
-              <span>➔ New order</span>
-              <b>₹6,900</b>
-            </div>
-          </motion.div>
-          <motion.div className="courier courier-ping" aria-hidden="true" style={ping.style}>
-            <span className="courier-ping-dot" />
-            Consumed · 6 x House Espresso · Hauz Khas
-          </motion.div>
-        </>,
-        document.body
-      )}
-      {/* Colour floods, each clipped to a circle that grows from its dock point. Green covers the supplier
-          chapter and purple the brand chapter (both start white); they overlap by 2 x CHAPTER_FADE around the
-          boundary with opposing masks, so the chapters blend instead of meeting at a line. */}
-      <motion.div
-        ref={green.layer}
-        className="product-universe-flood"
-        aria-hidden="true"
-        style={{
-          backgroundColor: '#16A34A',
-          clipPath: green.clip,
-          bottom: 'auto',
-          height: brandTop + CHAPTER_FADE,
-          maskImage: `linear-gradient(to bottom, #000 calc(100% - ${CHAPTER_FADE * 2}px), transparent)`,
-        }}
-      >
-        <div className="universe-atmospheric-layer">
-          <motion.div
-            className="env-atmospheric-field supplier-field"
-            style={{ opacity: supplierGlowOpacity, y: supplierGlowY }}
-          />
-        </div>
-      </motion.div>
-      <motion.div
-        ref={purple.layer}
-        className="product-universe-flood"
-        aria-hidden="true"
-        style={{
-          backgroundColor: '#6D28D9',
-          clipPath: purple.clip,
-          top: brandTop - CHAPTER_FADE,
-          maskImage: `linear-gradient(to bottom, transparent, #000 ${CHAPTER_FADE * 2}px)`,
-        }}
-      >
-        <div className="universe-atmospheric-layer">
-          <motion.div
-            className="env-atmospheric-field brand-field"
-            style={{ opacity: brandGlowOpacity, y: brandGlowY }}
-          />
-        </div>
-      </motion.div>
+      {/* Immersive Atmospheric Color Fields */}
+      <div className="universe-atmospheric-layer" aria-hidden="true">
+        <motion.div
+          className="env-atmospheric-field cafe-field"
+          style={{ opacity: cafeGlowOpacity, y: cafeGlowY }}
+        />
+        <motion.div
+          className="env-atmospheric-field supplier-field"
+          style={{ opacity: supplierGlowOpacity, y: supplierGlowY }}
+        />
+        <motion.div
+          className="env-atmospheric-field brand-field"
+          style={{ opacity: brandGlowOpacity, y: brandGlowY }}
+        />
+      </div>
 
       <div ref={supplierRef}>
-        <SupplierSection isMobile={isMobile} docked={orderDocked} />
+        <SupplierSection isMobile={isMobile} />
       </div>
       <div ref={brandRef}>
-        <BrandSection isMobile={isMobile} docked={pingDocked} />
+        <BrandSection isMobile={isMobile} />
       </div>
     </motion.div>
   );
-}
-
-
-const ORDER_CARD_W = 300; // px, matches .courier-order
-const CHAPTER_FADE = 220; // px either side of the supplier/brand boundary where green blends into purple
-const FLOODED = 100000; // px: a clip circle this big covers the whole universe
-
-// A colour layer revealed by a circle growing from a dock point, slowly, once a courier lands there.
-function useFlood() {
-  const r = useMotionValue(0);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const clip = useMotionTemplate`circle(${r}px at ${x}px ${y}px)`;
-  const layer = useRef<HTMLDivElement>(null);
-  const fill = () => r.set(FLOODED);
-  const flood = (at: DOMRect, instant: boolean) => {
-    if (!layer.current) return;
-    const u = layer.current.getBoundingClientRect();
-    x.set(at.left + at.width / 2 - u.left);
-    y.set(at.top + at.height / 2 - u.top);
-    if (instant) return fill();
-    animate(r, Math.hypot(u.width, window.innerHeight * 1.4), { duration: 4, ease: [0.45, 0, 0.4, 1], onComplete: fill });
-  };
-  const reset = () => {
-    r.stop();
-    r.set(0);
-  };
-  return { clip, layer, fill, flood, reset };
-}
-
-type CourierLeg = { from: DOMRect; to: DOMRect; startAt: number; landAt: number };
-
-// Something that travels, in page coordinates, from one live element to another while the page scrolls from
-// `startAt` to `landAt` (scroll positions), then lands. Scrolling back above `startAt` resets it.
-function useScrollCourier({ enabled, measure, endScale, onLand, onReset }: {
-  enabled: boolean;
-  measure: (scrollY: number) => CourierLeg | null;
-  endScale: (to: DOMRect) => number;
-  onLand: (to: DOMRect, instant: boolean) => void;
-  onReset: () => void;
-}) {
-  const left = useMotionValue(0);
-  const top = useMotionValue(0);
-  const scale = useMotionValue(0);
-  const opacity = useMotionValue(0);
-  const target = useMotionValue(0);
-  const progress = useSpring(target, { stiffness: 50, damping: 18, mass: 0.7, restDelta: 0.0005 });
-  const leg = useRef<{ fx: number; fy: number; tx: number; ty: number; s1: number } | null>(null);
-  const landed = useRef(false);
-  const { scrollY } = useScroll();
-
-  const track = (y: number) => {
-    const g = measure(y);
-    if (!g) return null;
-    leg.current = {
-      fx: g.from.left + g.from.width / 2 + window.scrollX,
-      fy: g.from.top + g.from.height / 2 + y,
-      tx: g.to.left + g.to.width / 2 + window.scrollX,
-      ty: g.to.top + g.to.height / 2 + y,
-      s1: endScale(g.to),
-    };
-    target.set(Math.max(0, Math.min(1, (y - g.startAt) / Math.max(1, g.landAt - g.startAt))));
-    return g;
-  };
-
-  useMotionValueEvent(scrollY, 'change', (y: number) => {
-    if (enabled) track(y);
-  });
-
-  useMotionValueEvent(progress, 'change', (p: number) => {
-    const l = leg.current;
-    if (!l) return;
-    if (p <= 0.001) {
-      opacity.set(0);
-      if (landed.current) {
-        landed.current = false;
-        onReset();
-      }
-      return;
-    }
-    if (landed.current) return;
-    const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // easeInOutCubic
-    const emerge = Math.min(1, p / 0.08);
-    left.set(l.fx + (l.tx - l.fx) * e);
-    top.set(l.fy + (l.ty - l.fy) * e);
-    scale.set((1 + (l.s1 - 1) * e) * (0.6 + 0.4 * emerge)); // own size -> the docked row's size
-    opacity.set(emerge);
-    if (p >= 0.995) {
-      landed.current = true;
-      animate(opacity, 0, { duration: 0.35, ease: 'easeOut' });
-      const to = measure(window.scrollY)?.to;
-      if (to) onLand(to, false);
-    }
-  });
-
-  useEffect(() => {
-    if (!enabled) return;
-    // Opened mid-page (reload, anchor link): land without the journey.
-    const g = track(window.scrollY);
-    if (g && window.scrollY >= g.landAt) {
-      landed.current = true;
-      target.jump(1);
-      progress.jump(1);
-      onLand(g.to, true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled]);
-
-  return { style: { left, top, scale, opacity } };
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -601,7 +406,7 @@ const INITIAL_WHATSAPP_POS: WhatsAppPO[] = [
   },
 ];
 
-function SupplierSection({ isMobile, docked }: { isMobile: boolean; docked: boolean }) {
+function SupplierSection({ isMobile, docked = true }: { isMobile: boolean; docked?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const mainScrollRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -1328,7 +1133,7 @@ const INITIAL_BARISTA_REVIEWS: BaristaReview[] = [
   },
 ];
 
-function BrandSection({ isMobile, docked }: { isMobile: boolean; docked: boolean }) {
+function BrandSection({ isMobile, docked = true }: { isMobile: boolean; docked?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const mainScrollRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);

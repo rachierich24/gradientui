@@ -162,40 +162,38 @@ export function EcosystemShowcase() {
     } catch {}
   }, []);
 
-  // Transition to next screen
-  const advanceToNext = useCallback(() => {
-    setActiveVideoScreen((curr) => {
-      if (curr === 'mobile') return 'supplier';
-      if (curr === 'supplier') return 'brand';
-      return 'mobile';
-    });
-  }, []);
-
-  // Video ended handlers. In the café chapter the phone video loops instead of handing off.
+  // Videos loop cleanly while active:
   const handleMobileEnded = useCallback(() => {
-    if (isCafeActive) {
-      const v = mobileVideoRef.current;
-      if (v) {
-        try { v.currentTime = 0; } catch {}
-        safePlay(v);
-      }
-      return;
+    const v = mobileVideoRef.current;
+    if (v) {
+      try { v.currentTime = 0; } catch {}
+      safePlay(v);
     }
-    setActiveVideoScreen('supplier');
-  }, [isCafeActive, safePlay]);
+  }, [safePlay]);
 
-  // The café chapter only shows the phone, so it always owns playback there
+  // In the café chapter, the phone video always owns playback
   useEffect(() => {
-    if (isCafeActive) setActiveVideoScreen('mobile');
+    if (isCafeActive) {
+      setActiveVideoScreen('mobile');
+      setHoveredScreen(null);
+    }
   }, [isCafeActive]);
 
   const handleSupplierEnded = useCallback(() => {
-    setActiveVideoScreen('brand');
-  }, []);
+    const v = supplierVideoRef.current;
+    if (v) {
+      try { v.currentTime = 0; } catch {}
+      safePlay(v);
+    }
+  }, [safePlay]);
 
   const handleBrandEnded = useCallback(() => {
-    setActiveVideoScreen('mobile');
-  }, []);
+    const v = brandVideoRef.current;
+    if (v) {
+      try { v.currentTime = 0; } catch {}
+      safePlay(v);
+    }
+  }, [safePlay]);
 
   // Sync video play/pause with activeVideoScreen and viewport visibility
   useEffect(() => {
@@ -218,45 +216,26 @@ export function EcosystemShowcase() {
       safePause(vBrand);
       try { vBrand.currentTime = 0; } catch {}
 
-      try { vMob.currentTime = 0; } catch {}
       safePlay(vMob);
     } else if (activeVideoScreen === 'supplier') {
       safePause(vMob);
-      try { vMob.currentTime = 0; } catch {}
       safePause(vBrand);
       try { vBrand.currentTime = 0; } catch {}
 
       try { vSupp.currentTime = 0; } catch {}
       // Play once the window has glided to the centre
-      const t = setTimeout(() => safePlay(vSupp), FOCUS_MS);
+      const t = setTimeout(() => safePlay(vSupp), 250);
       return () => clearTimeout(t);
     } else if (activeVideoScreen === 'brand') {
       safePause(vMob);
-      try { vMob.currentTime = 0; } catch {}
       safePause(vSupp);
       try { vSupp.currentTime = 0; } catch {}
 
       try { vBrand.currentTime = 0; } catch {}
-      const t = setTimeout(() => safePlay(vBrand), FOCUS_MS);
+      const t = setTimeout(() => safePlay(vBrand), 250);
       return () => clearTimeout(t);
     }
   }, [activeVideoScreen, isVisible, isTabVisible, safePlay, safePause]);
-
-  // Safety fallback timer (advances if onEnded is delayed or dropped, only when tab is active).
-  // Sized from the active video's own length; the café chapter loops the phone instead.
-  useEffect(() => {
-    if (!isVisible || !isTabVisible || isCafeActive) return;
-    const v =
-      activeVideoScreen === 'mobile' ? mobileVideoRef.current
-      : activeVideoScreen === 'supplier' ? supplierVideoRef.current
-      : brandVideoRef.current;
-    const seconds = v && Number.isFinite(v.duration) ? v.duration : 10;
-    const delay = activeVideoScreen === 'mobile' ? 0 : FOCUS_MS;
-    const timer = setTimeout(() => {
-      advanceToNext();
-    }, seconds * 1000 + delay + 500);
-    return () => clearTimeout(timer);
-  }, [activeVideoScreen, isVisible, isTabVisible, isCafeActive, advanceToNext]);
 
   // IntersectionObserver for viewport awareness
   useEffect(() => {
@@ -298,9 +277,10 @@ export function EcosystemShowcase() {
       setHoveredScreen(null); // Clear hover in Café section
     }
 
-    // Immediately clear hover state as soon as user begins scrolling down
+    // Immediately clear hover and return to normal when user scrolls
     if (latest > 0.08) {
       setHoveredScreen(null);
+      setActiveVideoScreen('mobile');
     }
     // Side-portal focus only holds while the section sits at rest; scrolling on releases it
     setIsAtRest(latest <= 0.08);
@@ -325,6 +305,7 @@ export function EcosystemShowcase() {
 
   const handlePointerLeave = () => {
     setHoveredScreen(null);
+    setActiveVideoScreen('mobile');
     setPointerOffset({ x: 0, y: 0 });
   };
 
@@ -421,10 +402,10 @@ export function EcosystemShowcase() {
     return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
   }, [phoneDrop, phoneMaxScale]);
   const phoneY = useTransform([smoothProgress, phoneDrop], ([p, drop]: number[]) => {
-    if (p <= 0.12) return -16;
+    if (p <= 0.12) return 24;
     if (p >= 0.44) return drop;
     const k = (p - 0.12) / 0.32, e = k * k * (3 - 2 * k);
-    return -16 + (drop + 16) * e;
+    return 24 + (drop - 24) * e;
   });
   const phoneScale = useTransform([smoothProgress, phoneMaxScale], ([p, max]: number[]) => {
     if (p <= 0.12) return 1;
@@ -458,12 +439,12 @@ export function EcosystemShowcase() {
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, []);
-  const sideFocused = isAtRest && !isCafeActive && activeVideoScreen !== 'mobile' && focus.supplier.s > 1;
-  // Focus offsets reach the CSS only while focused, so a playing window never fades out in the centre
-  const focusVars = (side: 'supplier' | 'brand') =>
-    sideFocused && activeVideoScreen === side
-      ? { ['--focus-x' as any]: `${focus[side].x}px`, ['--focus-scale' as any]: focus[side].s }
-      : {};
+  const sideFocused = isAtRest && !isCafeActive && (hoveredScreen === 'supplier' || hoveredScreen === 'brand') && focus.supplier.s > 1;
+  // Always supply the calculated focus variables so CSS transforms animate smoothly
+  const focusVars = (side: 'supplier' | 'brand') => ({
+    ['--focus-x' as any]: `${focus[side].x}px`,
+    ['--focus-scale' as any]: focus[side].s,
+  });
 
   // Hovering a side portal brings it to the centre and plays its video
   const focusSide = useCallback((side: 'supplier' | 'brand') => {
@@ -471,6 +452,13 @@ export function EcosystemShowcase() {
     setHoveredScreen(side);
     setActiveVideoScreen(side);
   }, [isCafeActive]);
+
+  // Leaving a side portal immediately returns it to its normal place
+  const unfocusSide = useCallback(() => {
+    setHoveredScreen(null);
+    setActiveVideoScreen('mobile');
+    setPointerOffset({ x: 0, y: 0 });
+  }, []);
 
   // 5. Chapter 2 Café story flanking content (Headline left + 4 narrative cards right):
   // Glides smoothly UP from below (+70px -> 0px) over a generous, comfortable scroll window
@@ -486,9 +474,9 @@ export function EcosystemShowcase() {
     [0, 0, 1, 1]
   );
 
-  // Paint from this section's own colour, not the shared --universe-bg: the product sections below
-  // write that as soon as they enter the viewport, which turned the café green.
-  const stageBg = isReduced ? '#FFFFFF' : containerBg;
+  // Connect stage background to the shared continuous --universe-bg so that when the
+  // user scrolls from Cafe Red to Supplier Green, the entire stage transitions seamlessly as one surface.
+  const stageBg = isReduced ? '#FFFFFF' : 'var(--universe-bg, #FFFFFF)';
 
   return (
     <section
@@ -655,8 +643,8 @@ export function EcosystemShowcase() {
               }`}
               onMouseEnter={() => focusSide('supplier')}
               onMouseMove={handlePointerMove}
-              onMouseLeave={handlePointerLeave}
-              onClick={() => setActiveVideoScreen('supplier')}
+              onMouseLeave={unfocusSide}
+              onClick={() => focusSide('supplier')}
               style={
                 isReduced
                   ? { transform: 'none', opacity: 0.95 }
@@ -666,7 +654,7 @@ export function EcosystemShowcase() {
                       scale: supplierScale,
                       opacity: supplierOpacity,
                       pointerEvents: isCafeActive ? 'none' : 'auto',
-                      zIndex: activeVideoScreen === 'supplier' ? 35 : hoveredScreen === 'supplier' ? 40 : 10,
+                      zIndex: hoveredScreen === 'supplier' ? 45 : 10,
                     }
               }
             >
@@ -730,8 +718,11 @@ export function EcosystemShowcase() {
               }`}
               onMouseEnter={() => !isCafeActive && setHoveredScreen('mobile')}
               onMouseMove={handlePointerMove}
-              onMouseLeave={handlePointerLeave}
-              onClick={() => setActiveVideoScreen('mobile')}
+              onMouseLeave={unfocusSide}
+              onClick={() => {
+                setActiveVideoScreen('mobile');
+                setHoveredScreen(null);
+              }}
               style={
                 isReduced
                   ? { transform: 'none' }
@@ -739,7 +730,7 @@ export function EcosystemShowcase() {
                       y: phoneY,
                       scale: phoneScale,
                       opacity: phoneOpacity,
-                      zIndex: activeVideoScreen === 'mobile' ? 38 : hoveredScreen === 'mobile' ? 45 : 20,
+                      zIndex: sideFocused ? 15 : 30,
                     }
               }
             >
@@ -831,8 +822,8 @@ export function EcosystemShowcase() {
               }`}
               onMouseEnter={() => focusSide('brand')}
               onMouseMove={handlePointerMove}
-              onMouseLeave={handlePointerLeave}
-              onClick={() => setActiveVideoScreen('brand')}
+              onMouseLeave={unfocusSide}
+              onClick={() => focusSide('brand')}
               style={
                 isReduced
                   ? { transform: 'none', opacity: 0.95 }
@@ -842,7 +833,7 @@ export function EcosystemShowcase() {
                       scale: brandScale,
                       opacity: brandOpacity,
                       pointerEvents: isCafeActive ? 'none' : 'auto',
-                      zIndex: activeVideoScreen === 'brand' ? 35 : hoveredScreen === 'brand' ? 40 : 10,
+                      zIndex: hoveredScreen === 'brand' ? 45 : 10,
                     }
               }
             >
