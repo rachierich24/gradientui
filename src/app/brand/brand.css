@@ -166,14 +166,21 @@
   text-transform: uppercase;
   margin-top: clamp(4px, 1vw, 16px);
   margin-bottom: 0;
-  background: linear-gradient(180deg, #1A0C38 15%, #2B1760 50%, #5B2BB5 80%, #7C4DDB 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 14px 40px rgba(43, 23, 96, 0.12));
   position: relative;
   z-index: 1;
-  pointer-events: none;
   user-select: none;
+}
+.brd-txt-brands .fold-text-word {
+  letter-spacing: -0.05em;
+}
+.brd-txt-brands .fold-text-piece {
+  line-height: 0.82;
+  background: linear-gradient(180deg, #1A0C38 15%, #2B1760 50%, #5B2BB5 80%, #7C4DDB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
 }
 
 .brd-scroll-center {

@@ -5,6 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { reduced } from './shared';
 import CrystalizedBall from './CrystalizedBall';
+import FoldText from './FoldText';
 
 export function BrandHero() {
   const film = useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export function BrandHero() {
               <span className="brd-txt-for">for</span>
             </div>
 
-            {/* The giant BRANDS with CrystalizedBall centered right behind 'AN' */}
+            {/* The giant BRANDS with FoldText and CrystalizedBall centered right behind 'AN' */}
             <div className="brd-brands-stage">
               <div className="brd-hero-ball-bg" aria-hidden="true">
                 <CrystalizedBall
@@ -64,7 +65,26 @@ export function BrandHero() {
                   hoverStrength={0.8}
                 />
               </div>
-              <span className="brd-txt-brands">BRANDS</span>
+              <FoldText
+                text="BRANDS"
+                foldStyle="paper"
+                splitBy="char"
+                hinge="top"
+                trigger="mount"
+                foldAngle={92}
+                duration={0.7}
+                stagger={0.05}
+                staggerFrom="start"
+                ease="power3.out"
+                hoverRefold={true}
+                refoldRadius={160}
+                refoldAngle={45}
+                perspective={800}
+                creaseShading={0.5}
+                fontSize="clamp(84px, 22.5vw, 340px)"
+                fontWeight={900}
+                className="brd-txt-brands"
+              />
             </div>
           </h1>
         </div>
