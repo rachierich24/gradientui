@@ -85,8 +85,8 @@
   top: 55%;
   left: 50%;
   transform: translate(-50%, -42%);
-  width: clamp(110px, 20vw, 300px);
-  height: clamp(110px, 20vw, 300px);
+  width: clamp(100px, 17vw, 240px);
+  height: clamp(100px, 17vw, 240px);
   pointer-events: auto;
   z-index: 0;
   overflow: visible;
@@ -148,23 +148,23 @@
   line-height: 1;
 }
 .brd-txt-for {
-  font-size: clamp(18px, 2.2vw, 30px);
+  font-size: clamp(22px, 2.8vw, 38px);
   font-weight: 500;
-  font-style: italic;
-  font-family: Georgia, 'Times New Roman', serif, var(--font-sans);
+  font-style: normal;
+  font-family: var(--font-sans, "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif);
   color: #6E5091;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 
 .brd-txt-brands {
   display: block;
-  font-size: clamp(84px, 22.5vw, 340px);
+  font-size: clamp(64px, 17.5vw, 240px);
   font-weight: 900;
-  line-height: 0.82;
-  letter-spacing: -0.05em;
+  line-height: 0.85;
+  letter-spacing: 0.025em;
   text-transform: uppercase;
-  margin-top: clamp(4px, 1vw, 16px);
+  margin-top: clamp(6px, 1.2vw, 18px);
   margin-bottom: 0;
   filter: drop-shadow(0 14px 40px rgba(43, 23, 96, 0.12));
   position: relative;
@@ -172,15 +172,18 @@
   user-select: none;
 }
 .brd-txt-brands .fold-text-word {
-  letter-spacing: -0.05em;
+  letter-spacing: 0.025em;
+}
+.brd-txt-brands .fold-text-segment {
+  margin: 0 0.015em;
 }
 .brd-txt-brands .fold-text-piece {
-  line-height: 0.82;
+  line-height: 0.85;
   background: linear-gradient(180deg, #1A0C38 15%, #2B1760 50%, #5B2BB5 80%, #7C4DDB 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -0.05em;
+  letter-spacing: 0.025em;
 }
 
 .brd-scroll-center {
