@@ -1,17 +1,10 @@
 'use client';
-// Brand Portal hero, in two halves. The top is a purple band: the nav, the headline set big at the bottom
-// left, a line and "Scroll down" at the bottom right. Under it sits a full-screen film that rises into view
-// as you scroll, easing from a slight zoom to rest, warm against the purple: Times Square on a sunny
-// afternoon, where the centre screen plays a 19-second Gradient for brands ad shot on real footage. A call
-// centre asks "Still cold-calling cafés?"; then a founder launches a campaign to café owners, a café opens
-// its trial kit, a barista pours (with the rating that came back), a phone tracks every kit, a demand index
-// shows where it'll sell, and the old way meets Gradient side by side. The camera flies into the screen, the
-// ad plays full frame, and the camera pulls back out to the first shot, so it loops. Phones held upright get
-// a portrait cut that lands on the whole billboard: each scene's line above the footage, its card below.
-// The film plays only while it's on screen; with reduced motion it stays on its first frame. Footage:
-// Mixkit (free licence); the ad, its cards and the phone screen are composited for this page.
+// Brand Portal hero: Central editorial design.
+// "Gradient for Brands" with "Gradient" medium, "for" small, and "BRANDS" large typography
+// on a clean white background with interactive <CrystalizedBall /> in the brand purple.
 import { useEffect, useRef } from 'react';
-import { reduced, scrollToId } from './shared';
+import { reduced } from './shared';
+import CrystalizedBall from './CrystalizedBall';
 
 export function BrandHero() {
   const film = useRef<HTMLDivElement>(null);
@@ -32,7 +25,7 @@ export function BrandHero() {
     set();
     if (!still) { window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); }
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !still) v.play().catch(() => {}); else v.pause();
+      if (e.isIntersecting && !still) v.play().catch(() => { }); else v.pause();
     }, { threshold: 0 });
     io.observe(el);
     return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); io.disconnect(); };
@@ -41,15 +34,43 @@ export function BrandHero() {
   return (
     <section className="brd-hero" id="brd-top" aria-labelledby="brd-hero-title">
       <div className="brd-band">
-        <div className="brd-wrap brd-band-in">
-          <h1 id="brd-hero-title">Get your product into<br className="brd-br" /> India’s best cafés<sup>®</sup></h1>
-          <div className="brd-band-side">
-            <p>Trial kits to verified cafés, through the suppliers they already buy from.</p>
-            <button type="button" className="brd-scroll" onClick={() => scrollToId('platform')}>Scroll down</button>
+        <div className="brd-wrap brd-band-center">
+          {/* Centered Eyebrow: Social Proof Monospace in Brand Purple */}
+          <div className="brd-hero-eyebrow">
+            TRUSTED BY 500+ VERIFIED CAFÉS &amp; BRANDS
           </div>
+
+          {/* Centered "Gradient for Brands" Lockup in Brand Purple */}
+          <h1 id="brd-hero-title" className="brd-hero-title-lockup">
+            <div className="brd-title-top">
+              <span className="brd-txt-grad">Gradient</span>
+              <span className="brd-txt-for">for</span>
+            </div>
+
+            {/* The giant BRANDS with CrystalizedBall centered right behind 'AN' */}
+            <div className="brd-brands-stage">
+              <div className="brd-hero-ball-bg" aria-hidden="true">
+                <CrystalizedBall
+                  preset="plasma"
+                  color="#6D28D9"
+                  theme="light"
+                  size={0.78}
+                  crackle={0.85}
+                  flares={0.75}
+                  glow={1.15}
+                  fill={0.52}
+                  haze={0.35}
+                  interactive={true}
+                  hoverStrength={0.8}
+                />
+              </div>
+              <span className="brd-txt-brands">BRANDS</span>
+            </div>
+          </h1>
         </div>
       </div>
 
+      {/* Video Film Container with Top Overlap over the word "BRANDS" */}
       <div className="brd-film" ref={film}>
         <video ref={video} muted loop playsInline preload="metadata" poster="/brand/hero-billboard-poster.jpg" aria-hidden="true" tabIndex={-1}>
           <source src="/brand/hero-billboard-portrait.mp4" type="video/mp4" media="(orientation: portrait)" />

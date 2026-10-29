@@ -1,0 +1,366 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Brand Portal Moat & Capabilities Section ("What We Do For Brands")
+   Interactive, refined isometric capability visuals:
+   - Scrubbable demand forecast curves with dynamic data callouts
+   - Interactive sampling flight tabs & modular tasting floor docks
+   - Clickable purchase order rows with dynamic circuit routing
+   - Clean, quiet, and premium aesthetic matching Gradient design tokens
+───────────────────────────────────────────────────────────────────────── */
+
+.bmoat-section {
+  position: relative;
+  width: 100%;
+  background-color: #07080D;
+  color: #FFFFFF;
+  padding: clamp(96px, 13vh, 150px) 0 clamp(100px, 14vh, 160px);
+  overflow: visible;
+  box-sizing: border-box;
+  scroll-margin-top: 100px;
+}
+
+/* Ambient Radial Glow */
+.bmoat-bg-glow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -15%);
+  width: 1200px;
+  height: 600px;
+  background: radial-gradient(ellipse 65% 55% at center, rgba(126, 34, 206, 0.14) 0%, rgba(79, 70, 229, 0.03) 50%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.bmoat-container {
+  position: relative;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 48px);
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* ─── Minimal Editorial Section Header ───────────────────────────── */
+.bmoat-header {
+  max-width: 860px;
+  margin-bottom: clamp(88px, 12vh, 126px);
+}
+
+.bmoat-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C084FC;
+  margin-bottom: 16px;
+}
+
+.bmoat-eyebrow-line {
+  width: 24px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #C084FC, #9333EA);
+  border-radius: 2px;
+}
+
+.bmoat-title {
+  font-size: clamp(32px, 3.8vw, 52px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+  font-family: var(--font-sans);
+}
+
+.bmoat-sub {
+  font-size: clamp(15px, 1.2vw, 17.5px);
+  line-height: 1.55;
+  color: rgba(226, 232, 240, 0.7);
+  max-width: 680px;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ─── 3-Column Cards Grid ────────────────────────────────────────── */
+.bmoat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.5vw, 32px);
+  position: relative;
+  align-items: stretch;
+}
+
+@media (max-width: 1080px) {
+  .bmoat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 86px;
+  }
+}
+
+@media (max-width: 720px) {
+  .bmoat-grid {
+    grid-template-columns: 1fr;
+    row-gap: 76px;
+  }
+}
+
+/* ─── Card Wrapper with Oversized Numerals ───────────────────────── */
+.bmoat-card-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Oversized Background Number
+   Rises above and sinks behind the card top with frosted glass depth */
+.bmoat-bg-num {
+  position: absolute;
+  top: -108px;
+  right: 24px;
+  font-size: clamp(125px, 11vw, 160px);
+  font-weight: 900;
+  font-family: var(--font-sans);
+  line-height: 0.82;
+  color: rgba(168, 85, 247, 0.14);
+  -webkit-text-stroke: 1.8px rgba(192, 132, 252, 0.44);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  transition: -webkit-text-stroke-color 380ms ease,
+              color 380ms ease,
+              text-shadow 380ms ease,
+              transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow: 0 0 40px rgba(147, 51, 234, 0.3);
+}
+
+.bmoat-card-wrap:hover .bmoat-bg-num,
+.bmoat-bg-num.is-lit {
+  color: rgba(192, 132, 252, 0.26);
+  -webkit-text-stroke: 1.8px rgba(216, 180, 254, 0.85);
+  transform: translateY(-6px);
+  text-shadow: 0 0 60px rgba(168, 85, 247, 0.6);
+}
+
+/* ─── Minimalist Dark Card Frame ─────────────────────────────────── */
+.bmoat-card {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(16, 17, 26, 0.82) 0%, rgba(9, 10, 16, 0.92) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 24px;
+  padding: clamp(26px, 2.8vw, 34px);
+  box-sizing: border-box;
+  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 380ms ease,
+              box-shadow 380ms ease;
+  overflow: hidden;
+  cursor: default;
+}
+
+.bmoat-card.is-hovered {
+  transform: translateY(-4px);
+  border-color: rgba(168, 85, 247, 0.45);
+  box-shadow: 
+    0 0 0 1px rgba(168, 85, 247, 0.25),
+    0 16px 44px -8px rgba(126, 34, 206, 0.28),
+    0 32px 72px -16px rgba(0, 0, 0, 0.75);
+}
+
+.bmoat-card-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ─── Card Header: Title First, Then Category Pill ────────────────── */
+.bmoat-card-top {
+  margin-bottom: 12px;
+}
+
+.bmoat-card-title {
+  font-size: clamp(22px, 1.75vw, 26px);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.025em;
+  font-family: var(--font-sans);
+}
+
+.bmoat-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(216, 180, 254, 0.9);
+  background: rgba(147, 51, 234, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 999px;
+  padding: 3.5px 10px;
+}
+
+/* ─── Enhanced Isometric Graphic Frame with Ambient Vignette ─────── */
+.bmoat-graphic-frame {
+  width: 100%;
+  height: 220px;
+  margin: 10px 0 18px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.08) 0%, rgba(10, 10, 16, 0.95) 70%, #07080D 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: border-color 300ms ease, box-shadow 300ms ease;
+}
+
+.bmoat-card:hover .bmoat-graphic-frame {
+  border-color: rgba(168, 85, 247, 0.35);
+  box-shadow: inset 0 0 24px rgba(139, 92, 246, 0.08);
+}
+
+.bmoat-canvas {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bmoat-canvas-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 340px;
+  max-height: 220px;
+  display: block;
+}
+
+/* Subtle, stationary hover on featured product */
+.bmoat-product-group {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), filter 300ms ease;
+  transform-origin: center bottom;
+}
+
+.bmoat-product-group:hover {
+  transform: translate(42px, 51px) scale(1.02);
+  filter: drop-shadow(0 6px 16px rgba(147, 51, 234, 0.35));
+}
+
+/* Dynamic Tooltip Transition */
+.bmoat-dynamic-tooltip {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Interactive Rows Transition */
+.bmoat-interactive-row {
+  transition: transform 200ms ease, filter 200ms ease;
+}
+
+.bmoat-interactive-row:hover {
+  filter: drop-shadow(0 2px 8px rgba(168, 85, 247, 0.25));
+}
+
+/* Active Path Glow */
+.bmoat-active-path {
+  filter: drop-shadow(0 0 4px rgba(192, 132, 252, 0.7));
+}
+
+/* Live Status Pulse Dot (Ping) */
+.bmoat-ping {
+  animation: pingPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  transform-origin: center;
+}
+
+@keyframes pingPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  70%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* ─── Minimal Body Text & Pointers ───────────────────────────────── */
+.bmoat-card-desc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(203, 213, 225, 0.72);
+  margin: 0 0 18px 0;
+  font-weight: 450;
+}
+
+.bmoat-pointers {
+  list-style: none;
+  padding: 0;
+  margin: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 16px;
+}
+
+.bmoat-pointer-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: rgba(226, 232, 240, 0.82);
+  transition: color 220ms ease;
+}
+
+.bmoat-card:hover .bmoat-pointer-item {
+  color: rgba(241, 245, 249, 0.95);
+}
+
+.bmoat-pointer-dot {
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background: #A855F7;
+  box-shadow: 0 0 7px #A855F7;
+  margin-top: 6px;
+  flex-shrink: 0;
+  transition: box-shadow 300ms ease, transform 300ms ease;
+}
+
+.bmoat-card:hover .bmoat-pointer-dot {
+  box-shadow: 0 0 10px #C084FC;
+  transform: scale(1.15);
+}
+
+.bmoat-pointer-text {
+  flex: 1;
+}
+
+/* Reduced Motion Respect */
+@media (prefers-reduced-motion: reduce) {
+  .bmoat-card,
+  .bmoat-product-group,
+  .bmoat-bg-num,
+  .bmoat-dynamic-tooltip {
+    transition: none;
+  }
+  .bmoat-ping {
+    animation: none;
+  }
+}

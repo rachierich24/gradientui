@@ -402,10 +402,10 @@ export function EcosystemShowcase() {
     return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
   }, [phoneDrop, phoneMaxScale]);
   const phoneY = useTransform([smoothProgress, phoneDrop], ([p, drop]: number[]) => {
-    if (p <= 0.12) return 24;
+    if (p <= 0.12) return 0;
     if (p >= 0.44) return drop;
     const k = (p - 0.12) / 0.32, e = k * k * (3 - 2 * k);
-    return 24 + (drop - 24) * e;
+    return drop * e;
   });
   const phoneScale = useTransform([smoothProgress, phoneMaxScale], ([p, max]: number[]) => {
     if (p <= 0.12) return 1;
