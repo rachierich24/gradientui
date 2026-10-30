@@ -20,7 +20,7 @@ export function SupplierFaq() {
     },
     {
       q: 'Do we have to change our current delivery fleet or drivers?',
-      a: 'No. Grabbit gives you complete operational flexibility. You can dispatch orders using your existing delivery vans and in-house drivers (equipped with the Grabbit Driver App for ePOD signatures), your contracted 3PL logistics partners, or on-demand Grabbit EV cargo carrier routes.',
+      a: 'No. Gradient gives you complete operational flexibility. You can dispatch orders using your existing delivery vans and in-house drivers (equipped with the Gradient Driver App for ePOD signatures), your contracted 3PL logistics partners, or on-demand Gradient EV cargo carrier routes.',
       cat: 'logistics',
     },
     {
@@ -39,7 +39,7 @@ export function SupplierFaq() {
       cat: 'logistics',
     },
     {
-      q: 'Does Grabbit integrate with Tally Prime and Zoho Books for accounting?',
+      q: 'Does Gradient integrate with Tally Prime and Zoho Books for accounting?',
       a: 'Yes. Completed purchase orders automatically generate GST-compliant e-invoices with valid IRN numbers and push directly into your Tally Prime, Zoho Books, or QuickBooks ledger without manual data entry or reconciliation headaches.',
       cat: 'onboarding',
     },

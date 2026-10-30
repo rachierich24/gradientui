@@ -15,7 +15,7 @@ export function SupplierTrust() {
             Built for enterprise reliability and wholesale compliance.
           </h2>
           <p className="sup-section-desc">
-            Every café and roaster on Grabbit is authenticated for commercial safety, licensing, and trade legitimacy.
+            Every café and roaster on Gradient is authenticated for commercial safety, licensing, and trade legitimacy.
           </p>
         </div>
 

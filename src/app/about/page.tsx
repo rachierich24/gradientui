@@ -212,7 +212,7 @@ export default function AboutPage() {
                 Free to start. No credit card.
               </p>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <a href="/login" className="btn-l dark">Start free</a>
+                <a href="/contact" className="btn-l dark">Book a demo</a>
                 <a href="/contact" className="btn-l ghost">Contact</a>
               </div>
             </motion.div>

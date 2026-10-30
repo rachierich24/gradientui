@@ -10,16 +10,16 @@ type Sync = 'synced' | 'syncing' | 'due';
 type Order = { id: string; cafe: string; area: string; date: string; inv: string; pay: string; lines: [string, number, number][]; sync: Sync };
 const ORDERS: Order[] = [
   { id: 'GRD-4831', cafe: 'Raydee Café', area: 'Indiranagar', date: '24 Oct', inv: 'INV-2291', pay: 'UPI', sync: 'syncing', lines: [['Barista Oat Milk · 1 L', 20, 210], ['Arabica AA · 1 kg', 5, 820]] },
-  { id: 'GRD-4830', cafe: 'Blue Tokai', area: 'Koramangala', date: '24 Oct', inv: 'INV-2290', pay: 'NEFT', sync: 'synced', lines: [['Arabica AA · 1 kg', 12, 820], ['Barista Oat Milk · 1 L', 12, 210]] },
-  { id: 'GRD-4829', cafe: 'Third Wave Coffee', area: 'Indiranagar', date: '23 Oct', inv: 'INV-2289', pay: 'UPI', sync: 'syncing', lines: [['Barista Oat Milk · 1 L', 24, 210], ['Vanilla syrup · 750 ml', 6, 580]] },
-  { id: 'GRD-4828', cafe: 'Subko', area: 'Bandra West', date: '23 Oct', inv: 'INV-2288', pay: 'UPI', sync: 'due', lines: [['Callebaut 811 · 2.5 kg', 2, 3450], ['Ceremonial matcha · 100 g', 4, 1890]] },
-  { id: 'GRD-4827', cafe: 'Araku Café', area: 'Indiranagar', date: '22 Oct', inv: 'INV-2287', pay: 'UPI', sync: 'synced', lines: [['Fresh cream · 1 L', 20, 215], ['Callebaut 811 · 2.5 kg', 1, 3450]] },
+  { id: 'GRD-4830', cafe: 'Hillfold', area: 'Koramangala', date: '24 Oct', inv: 'INV-2290', pay: 'NEFT', sync: 'synced', lines: [['Arabica AA · 1 kg', 12, 820], ['Barista Oat Milk · 1 L', 12, 210]] },
+  { id: 'GRD-4829', cafe: 'Lantern Row Coffee', area: 'Indiranagar', date: '23 Oct', inv: 'INV-2289', pay: 'UPI', sync: 'syncing', lines: [['Barista Oat Milk · 1 L', 24, 210], ['Vanilla syrup · 750 ml', 6, 580]] },
+  { id: 'GRD-4828', cafe: 'Sundial', area: 'Bandra West', date: '23 Oct', inv: 'INV-2288', pay: 'UPI', sync: 'due', lines: [['Callebaut 811 · 2.5 kg', 2, 3450], ['Ceremonial matcha · 100 g', 4, 1890]] },
+  { id: 'GRD-4827', cafe: 'Ridgeway Café', area: 'Indiranagar', date: '22 Oct', inv: 'INV-2287', pay: 'UPI', sync: 'synced', lines: [['Fresh cream · 1 L', 20, 215], ['Callebaut 811 · 2.5 kg', 1, 3450]] },
   { id: 'GRD-4826', cafe: 'Dope Coffee', area: 'HSR Layout', date: '22 Oct', inv: 'INV-2286', pay: 'UPI', sync: 'syncing', lines: [['Vanilla syrup · 750 ml', 6, 580], ['Fresh cream · 1 L', 10, 215]] },
   { id: 'GRD-4825', cafe: 'Kitchen at 12th', area: 'Jayanagar', date: '21 Oct', inv: 'INV-2285', pay: 'Card', sync: 'synced', lines: [['Amul butter · 500 g', 20, 285], ['Fresh cream · 1 L', 12, 215]] },
   { id: 'GRD-4824', cafe: 'Roastery Coffee House', area: 'Banjara Hills', date: '21 Oct', inv: 'INV-2284', pay: 'NEFT', sync: 'synced', lines: [['Ceremonial matcha · 100 g', 8, 1890]] },
-  { id: 'GRD-4823', cafe: 'Maverick & Farmer', area: 'Indiranagar', date: '20 Oct', inv: 'INV-2283', pay: 'UPI', sync: 'due', lines: [['Arabica AA · 1 kg', 8, 820], ['Barista Oat Milk · 1 L', 18, 210]] },
-  { id: 'GRD-4822', cafe: 'Slay Coffee', area: 'HSR Layout', date: '20 Oct', inv: 'INV-2282', pay: 'UPI', sync: 'synced', lines: [['Caramel syrup · 750 ml', 6, 560], ['Paper cups · 12 oz', 500, 6.5]] },
-  { id: 'GRD-4821', cafe: 'KC Roasters', area: 'Koramangala', date: '19 Oct', inv: 'INV-2281', pay: 'NEFT', sync: 'synced', lines: [['Arabica AA · 1 kg', 20, 820]] },
+  { id: 'GRD-4823', cafe: 'Copper & Kiln', area: 'Indiranagar', date: '20 Oct', inv: 'INV-2283', pay: 'UPI', sync: 'due', lines: [['Arabica AA · 1 kg', 8, 820], ['Barista Oat Milk · 1 L', 18, 210]] },
+  { id: 'GRD-4822', cafe: 'Brewhaus Coffee', area: 'HSR Layout', date: '20 Oct', inv: 'INV-2282', pay: 'UPI', sync: 'synced', lines: [['Caramel syrup · 750 ml', 6, 560], ['Paper cups · 12 oz', 500, 6.5]] },
+  { id: 'GRD-4821', cafe: 'Kiln Roasters', area: 'Koramangala', date: '19 Oct', inv: 'INV-2281', pay: 'NEFT', sync: 'synced', lines: [['Arabica AA · 1 kg', 20, 820]] },
   { id: 'GRD-4820', cafe: 'Raydee Café', area: 'Indiranagar', date: '19 Oct', inv: 'INV-2280', pay: 'UPI', sync: 'synced', lines: [['Barista Oat Milk · 1 L', 24, 210], ['Fresh cream · 1 L', 8, 215]] },
 ];
 const INITIAL: Record<string, Sync> = Object.fromEntries(ORDERS.map((o) => [o.id, o.sync]));

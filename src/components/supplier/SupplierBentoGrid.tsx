@@ -30,14 +30,14 @@ const CARDS: CardDef[] = [
   },
   {
     area: 'growth', label: "Supplier's growth in the past 30 days", title: "Supplier's growth", muted: 'in the past 30 days',
-    desc: 'Suppliers on Gradient reach more cafés from the first month. Real-time sales analytics, reorders without sales calls, and automated inventory sync across 340+ cafés.',
-    points: ['Daily order volume and roast dispatch tracking', 'Automated reorders from 340+ verified cafés', 'Live billing and T+1 escrow settlement sync', 'Predictive demand trends for every wholesale SKU'],
+    desc: 'Suppliers on Gradient reach more cafés from the first month. Real-time sales analytics, reorders without sales calls, and automated inventory sync across every café you serve.',
+    points: ['Daily order volume and roast dispatch tracking', 'Automated reorders from the cafés you serve', 'Live billing and T+1 escrow settlement sync', 'Predictive demand trends for every wholesale SKU'],
     render: (run, still) => <GrowthCard run={run} still={still} />,
   },
   {
     area: 'catalogue', label: 'Catalogue building', title: 'Catalogue building', muted: 'organised, priced and live for every café',
     desc: 'Keep products in folders by category. Add a photo, price and minimum order once and it is live for every café on Gradient; change a price and every café sees it instantly.',
-    points: ['Folders by category, with live counts', 'Publish once, sell to 340+ cafés', 'Price lists and MOQs per café tier', 'Bulk upload from a sheet in minutes'],
+    points: ['Folders by category, with live counts', 'Publish once, sell to every café', 'Price lists and MOQs per café tier', 'Bulk upload from a sheet in minutes'],
     render: (run) => <CatalogueCard run={run} />,
   },
   {

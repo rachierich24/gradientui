@@ -14,10 +14,11 @@ const stagger = {
 }
 
 type Item = { title: string; desc: string; shared?: string }
-type Group = { audience: string; accent: string; surface: string; lead: string; items: Item[] }
+type Group = { id: string; audience: string; accent: string; surface: string; lead: string; items: Item[] }
 
 const groups: Group[] = [
   {
+    id: 'cafe',
     audience: 'For cafés',
     accent: '#EA580C',
     surface: '#FBEFE6',
@@ -31,6 +32,7 @@ const groups: Group[] = [
     ],
   },
   {
+    id: 'supplier',
     audience: 'For suppliers',
     accent: '#0891B2',
     surface: '#E6F3F4',
@@ -41,6 +43,7 @@ const groups: Group[] = [
     ],
   },
   {
+    id: 'brand',
     audience: 'For brands',
     accent: '#7C3AED',
     surface: '#EFE9F7',
@@ -90,7 +93,8 @@ export default function FeaturesPage() {
             {groups.map((g, gi) => (
               <section
                 key={g.audience}
-                style={{ marginTop: gi === 0 ? 0 : '88px' }}
+                id={g.id}
+                style={{ marginTop: gi === 0 ? 0 : '88px', scrollMarginTop: '120px' }}
               >
                 {/* Group header */}
                 <div style={{ display: 'grid', gridTemplateColumns: '64px 1fr', columnGap: '24px', alignItems: 'baseline', marginBottom: '32px' }}>
@@ -157,7 +161,7 @@ export default function FeaturesPage() {
                 Free to start. No credit card.
               </p>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <a href="/login" className="btn-l dark">Start free</a>
+                <a href="/contact" className="btn-l dark">Book a demo</a>
                 <a href="/pricing" className="btn-l ghost">Contact sales</a>
               </div>
             </motion.div>

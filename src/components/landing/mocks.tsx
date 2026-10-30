@@ -86,9 +86,7 @@ const METRICS = [
   { lab: 'Pending orders', value: 6, suffix: ' orders', d: 'awaiting dispatch', spark: [9, 7, 8, 6, 7, 6] },
   { lab: 'On-time suppliers', value: 92, suffix: '%', d: 'on-time this week', spark: [86, 89, 88, 90, 91, 92] },
 ];
-// Static assets served from CloudFront (S3) in prod; falls back to /public in dev.
-const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE_URL ?? '';
-// Two-letter initials fallback (used if a logo image fails to load).
+// Two-letter initials for café tiles.
 function initials(name: string) {
   const words = name.split('/')[0].trim().split(/\s+/).filter(w => /[a-z]/i.test(w[0]));
   const ini = words.length >= 2 ? words[0][0] + words[1][0] : (words[0]?.slice(0, 2) ?? '');
@@ -96,24 +94,16 @@ function initials(name: string) {
 }
 // Real café/brand logos (same assets as the landing logo strip).
 const ORDERS = [
-  { cafe: 'Blue Tokai / Indiranagar', supplier: 'Dairycraft', value: 'Rs 38,400', status: 'Packing', cls: 'active', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
-  { cafe: 'Subko / Bandra', supplier: 'Urban Platter', value: 'Rs 71,920', status: 'Dispatch', cls: 'info', img: '/logos/subko.png', co: 'var(--c-orange)' },
-  { cafe: 'Third Wave / Koramangala', supplier: 'Araku Estates', value: 'Rs 22,180', status: 'Counter', cls: 'pending', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
-  { cafe: 'Sleepy Owl / Powai', supplier: 'KC Roasters', value: 'Rs 54,600', status: 'Packing', cls: 'active', img: '/logos/sleepy-owl.png', co: 'var(--c-blue)' },
-  { cafe: 'Araku / Aundh', supplier: 'Corridor Seven', value: 'Rs 41,750', status: 'Dispatch', cls: 'info', img: '/logos/araku.png', co: 'var(--c-green)' },
-  { cafe: 'Rage Coffee / HSR', supplier: 'Country Bean', value: 'Rs 18,240', status: 'Counter', cls: 'pending', img: '/logos/rage-coffee.jpeg', co: 'var(--c-pink)' },
+  { cafe: 'Hillfold / Indiranagar', supplier: 'Dairycraft', value: 'Rs 38,400', status: 'Packing', cls: 'active', co: 'var(--ink)' },
+  { cafe: 'Sundial / Bandra', supplier: 'Pantry Lane', value: 'Rs 71,920', status: 'Dispatch', cls: 'info', co: 'var(--c-orange)' },
+  { cafe: 'Lantern Row / Koramangala', supplier: 'Ridgeway Estates', value: 'Rs 22,180', status: 'Counter', cls: 'pending', co: 'var(--c-purple)' },
+  { cafe: 'Night Heron / Powai', supplier: 'Kiln Roasters', value: 'Rs 54,600', status: 'Packing', cls: 'active', co: 'var(--c-blue)' },
+  { cafe: 'Ridgeway / Aundh', supplier: 'Mill Seven', value: 'Rs 41,750', status: 'Dispatch', cls: 'info', co: 'var(--c-green)' },
+  { cafe: 'Pebble Street / HSR', supplier: 'Marigold Foods', value: 'Rs 18,240', status: 'Counter', cls: 'pending', co: 'var(--c-pink)' },
 ];
 
-// Café logo tile with initials fallback if the image fails.
-function RowAvatar({ name, img, co }: { name: string; img?: string; co: string }) {
-  const [err, setErr] = useState(false);
-  if (img && !err) {
-    return (
-      <span className="cmd-av cmd-av--logo">
-        <img src={`${ASSET_BASE}${img}`} alt={name} loading="lazy" onError={() => setErr(true)} />
-      </span>
-    );
-  }
+// Café initials tile (sample cafés are invented, so no real logos).
+function RowAvatar({ name, co }: { name: string; co: string }) {
   return <span className="cmd-av" style={{ background: co }}>{initials(name)}</span>;
 }
 const FUNNEL = [
@@ -143,10 +133,10 @@ const ROLE_DATA = {
       { lab: 'Auto-reorder items', value: 3, suffix: ' SKUs', d: 'oat milk & cups low', delta: 'Auto-triggered', cls: 'warn', spark: [6, 5, 5, 4, 4, 3] },
     ],
     orders: [
-      { cafe: 'Blue Tokai / Indiranagar', supplier: 'Dairycraft', value: '₹38,400', status: 'In transit', cls: 'active', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
-      { cafe: 'Subko / Bandra', supplier: 'Urban Platter', value: '₹71,920', status: 'Cold Dispatch', cls: 'info', img: '/logos/subko.png', co: 'var(--c-orange)' },
-      { cafe: 'Third Wave / Koramangala', supplier: 'Araku Estates', value: '₹22,180', status: 'Scheduled', cls: 'pending', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
-      { cafe: 'Sleepy Owl / Powai', supplier: 'KC Roasters', value: '₹54,600', status: 'In transit', cls: 'active', img: '/logos/sleepy-owl.png', co: 'var(--c-blue)' },
+      { cafe: 'Hillfold / Indiranagar', supplier: 'Dairycraft', value: '₹38,400', status: 'In transit', cls: 'active', co: 'var(--ink)' },
+      { cafe: 'Sundial / Bandra', supplier: 'Pantry Lane', value: '₹71,920', status: 'Cold Dispatch', cls: 'info', co: 'var(--c-orange)' },
+      { cafe: 'Lantern Row / Koramangala', supplier: 'Ridgeway Estates', value: '₹22,180', status: 'Scheduled', cls: 'pending', co: 'var(--c-purple)' },
+      { cafe: 'Night Heron / Powai', supplier: 'Kiln Roasters', value: '₹54,600', status: 'In transit', cls: 'active', co: 'var(--c-blue)' },
     ],
     sideNoteTitle: 'Consolidated Billing',
     sideNoteDesc: '8 vendor deliveries unified into 1 monthly Net-15 statement. Zero WhatsApp voice notes.',
@@ -169,10 +159,10 @@ const ROLE_DATA = {
       { lab: 'On-time fleet rate', value: 98.4, suffix: '%', d: 'morning cutoff 07:30', delta: '● Zero late drops', cls: 'pos', spark: [96, 97, 98, 97, 98, 98.4] },
     ],
     orders: [
-      { cafe: 'Third Wave (5 Outlets)', supplier: 'Batch #ROAST-402', value: '₹48,200', status: 'Loaded Van 1', cls: 'active', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
-      { cafe: 'Blue Tokai Hub', supplier: 'Single Origin Lot', value: '₹62,400', status: 'In transit', cls: 'info', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
-      { cafe: 'Subko Specialty', supplier: 'Barista Oat Milk', value: '₹34,800', status: 'Delivered', cls: 'pos', img: '/logos/subko.png', co: 'var(--c-orange)' },
-      { cafe: 'Araku Flagship', supplier: 'Ripple Cups 12oz', value: '₹18,500', status: 'Van 2 Route', cls: 'active', img: '/logos/araku.png', co: 'var(--c-green)' },
+      { cafe: 'Lantern Row (5 Outlets)', supplier: 'Batch #ROAST-402', value: '₹48,200', status: 'Loaded Van 1', cls: 'active', co: 'var(--c-purple)' },
+      { cafe: 'Hillfold Hub', supplier: 'Single Origin Lot', value: '₹62,400', status: 'In transit', cls: 'info', co: 'var(--ink)' },
+      { cafe: 'Sundial Specialty', supplier: 'Barista Oat Milk', value: '₹34,800', status: 'Delivered', cls: 'pos', co: 'var(--c-orange)' },
+      { cafe: 'Ridgeway Flagship', supplier: 'Ripple Cups 12oz', value: '₹18,500', status: 'Van 2 Route', cls: 'active', co: 'var(--c-green)' },
     ],
     sideNoteTitle: 'Zero Bad Debt',
     sideNoteDesc: '100% payments guaranteed via Gradient Escrow before vans leave the roastery.',
@@ -181,11 +171,11 @@ const ROLE_DATA = {
     portal: 'Brand OS',
     kicker: 'Growth & Telemetry / Q3 Flights',
     title: 'Verified Barista Trials & Conversion',
-    desc: 'Track 141 direct barista cupping evaluations and 78% transition into recurring weekly orders.',
+    desc: 'Track barista cupping feedback and see which trials turn into recurring weekly orders.',
     pipeline: [
       { step: '01', title: 'Targeted Flights', proof: '180 Seeded' },
       { step: '02', title: 'Barista Cupping', proof: '141 Notes' },
-      { step: '03', title: 'Recurring Wholesale', proof: '78% Converted' },
+      { step: '03', title: 'Recurring Wholesale', proof: 'Standing order' },
       { step: '04', title: 'Category Share', proof: '44% Blind' },
     ],
     metrics: [
@@ -195,10 +185,10 @@ const ROLE_DATA = {
       { lab: 'Category share', value: 44, suffix: '%', d: 'plant milk category leader', delta: 'Blind telemetry', cls: 'pos', spark: [28, 32, 35, 38, 41, 44] },
     ],
     orders: [
-      { cafe: 'Subko Specialty / Bandra', supplier: 'Barista Oat Trial', value: 'Converted', status: 'Weekly 120L', cls: 'active', img: '/logos/subko.png', co: 'var(--c-orange)' },
-      { cafe: 'Blue Tokai / Koramangala', supplier: 'Matcha Uji Lot', value: 'Cupped', status: '4.9★ Score', cls: 'info', img: '/logos/blue-tokai.png', co: 'var(--ink)' },
-      { cafe: 'Third Wave / Indiranagar', supplier: 'Vanilla Syrup 750ml', value: 'Converted', status: 'Weekly 24 Btl', cls: 'active', img: '/logos/third-wave.png', co: 'var(--c-purple)' },
-      { cafe: 'Araku / Lavelle Rd', supplier: 'Organic Cascara', value: 'Sampling', status: 'In Review', cls: 'pending', img: '/logos/araku.png', co: 'var(--c-green)' },
+      { cafe: 'Sundial Specialty / Bandra', supplier: 'Barista Oat Trial', value: 'Converted', status: 'Weekly 120L', cls: 'active', co: 'var(--c-orange)' },
+      { cafe: 'Hillfold / Koramangala', supplier: 'Matcha Uji Lot', value: 'Cupped', status: '4.9★ Score', cls: 'info', co: 'var(--ink)' },
+      { cafe: 'Lantern Row / Indiranagar', supplier: 'Vanilla Syrup 750ml', value: 'Converted', status: 'Weekly 24 Btl', cls: 'active', co: 'var(--c-purple)' },
+      { cafe: 'Ridgeway / Lavelle Rd', supplier: 'Organic Cascara', value: 'Sampling', status: 'In Review', cls: 'pending', co: 'var(--c-green)' },
     ],
     sideNoteTitle: 'Privacy Wall Enforced',
     sideNoteDesc: 'Competitors cannot see your cafe accounts or pricing. All benchmarking is blind and aggregated.',
@@ -361,7 +351,7 @@ export function HeroDashboard() {
                   transition={{ duration: 0.45, delay: 0.15 + i * 0.08, ease: [0.22, 0.61, 0.36, 1] }}
                 >
                   <div className="cmd-row-name">
-                    <RowAvatar name={row.cafe} img={row.img} co={row.co} />
+                    <RowAvatar name={row.cafe} co={row.co} />
                     <div>
                       <strong>{row.cafe}</strong>
                       <span>{row.supplier}</span>
@@ -439,10 +429,10 @@ export function ShowcaseSourcing() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10, minWidth: 0 }}>
           {[
-            { nm: 'Attikan Estate', sup: 'Blue Tokai', pr: '₹820/kg', moq: '5kg', co: 'orange' },
-            { nm: 'Monsoon Malabar', sup: 'Araku', pr: '₹740/kg', moq: '10kg', co: 'green' },
-            { nm: 'Ratnagiri Peaberry', sup: 'Subko', pr: '₹960/kg', moq: '5kg', co: 'purple' },
-            { nm: 'Kelagur Heights', sup: 'Third Wave', pr: '₹680/kg', moq: '15kg', co: 'blue' },
+            { nm: 'Attikan Estate', sup: 'Hillfold', pr: '₹820/kg', moq: '5kg', co: 'orange' },
+            { nm: 'Monsoon Malabar', sup: 'Ridgeway', pr: '₹740/kg', moq: '10kg', co: 'green' },
+            { nm: 'Ratnagiri Peaberry', sup: 'Sundial', pr: '₹960/kg', moq: '5kg', co: 'purple' },
+            { nm: 'Kelagur Heights', sup: 'Lantern Row', pr: '₹680/kg', moq: '15kg', co: 'blue' },
             { nm: 'Bibi Plantation', sup: 'Roastery', pr: '₹890/kg', moq: '8kg', co: 'pink' },
             { nm: 'Sandalwood Reserve', sup: 'Devans', pr: '₹920/kg', moq: '3kg', co: 'cyan' },
           ].map((p, i) => (

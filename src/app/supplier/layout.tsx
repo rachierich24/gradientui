@@ -6,9 +6,9 @@ import './supplier-flow.css';
 import './supplier-growth.css';
 
 export const metadata: Metadata = {
-  title: 'Gradient Supplier Portal — Every Café Order. Ready to Fulfill.',
+  title: 'Gradient Supplier Portal: every café order, ready to fulfil',
   description:
-    'Receive wholesale orders, manage inventory and move every delivery forward — all from one supplier workspace. Built for the people who keep cafés running.',
+    'Receive wholesale orders, manage inventory and move every delivery forward, all from one supplier workspace. Built for the people who keep cafés running.',
   keywords: [
     'Gradient supplier portal',
     'B2B coffee supplier platform',
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     canonical: '/supplier',
   },
   openGraph: {
-    title: 'Gradient Supplier Portal — Every Café Order. Ready to Fulfill.',
+    title: 'Gradient Supplier Portal: every café order, ready to fulfil',
     description:
-      'Receive wholesale orders, manage inventory and move every delivery forward — all from one supplier workspace.',
+      'Receive wholesale orders, manage inventory and move every delivery forward, all from one supplier workspace.',
     url: 'https://www.gradient365.com/supplier',
     siteName: 'Gradient',
     locale: 'en_IN',
@@ -32,9 +32,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Grabbit Supplier Portal — Every Café Order. Ready to Fulfill.',
+    title: 'Gradient Supplier Portal: every café order, ready to fulfil',
     description:
-      'Receive wholesale orders, manage inventory and move every delivery forward — all from one supplier workspace.',
+      'Receive wholesale orders, manage inventory and move every delivery forward, all from one supplier workspace.',
   },
 };
 

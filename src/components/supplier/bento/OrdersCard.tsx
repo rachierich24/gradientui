@@ -13,10 +13,10 @@ type Line = { name: string; qty: string; amt: number };
 type Q = { cafe: string; area: string; lines: Line[] };
 const QUEUE: Q[] = [
   { cafe: 'Raydee Café', area: 'Indiranagar', lines: [{ name: 'Barista Oat Milk · 1 L', qty: '× 20', amt: 4200 }, { name: 'Arabica AA · 1 kg', qty: '× 5', amt: 4100 }] },
-  { cafe: 'Araku Café', area: 'Indiranagar', lines: [{ name: 'Fresh cream · 1 L', qty: '× 20', amt: 4300 }, { name: 'Callebaut 811 · 2.5 kg', qty: '× 1', amt: 3450 }] },
-  { cafe: 'Blue Tokai', area: 'Koramangala', lines: [{ name: 'Arabica AA · 1 kg', qty: '× 12', amt: 9840 }, { name: 'Barista Oat Milk · 1 L', qty: '× 12', amt: 2520 }] },
-  { cafe: 'Third Wave Coffee', area: 'Indiranagar', lines: [{ name: 'Barista Oat Milk · 1 L', qty: '× 24', amt: 5040 }, { name: 'Vanilla syrup · 750 ml', qty: '× 6', amt: 3480 }] },
-  { cafe: 'Subko', area: 'Bandra West', lines: [{ name: 'Callebaut 811 · 2.5 kg', qty: '× 2', amt: 6900 }, { name: 'Ceremonial matcha · 100 g', qty: '× 4', amt: 7560 }] },
+  { cafe: 'Ridgeway Café', area: 'Indiranagar', lines: [{ name: 'Fresh cream · 1 L', qty: '× 20', amt: 4300 }, { name: 'Callebaut 811 · 2.5 kg', qty: '× 1', amt: 3450 }] },
+  { cafe: 'Hillfold', area: 'Koramangala', lines: [{ name: 'Arabica AA · 1 kg', qty: '× 12', amt: 9840 }, { name: 'Barista Oat Milk · 1 L', qty: '× 12', amt: 2520 }] },
+  { cafe: 'Lantern Row Coffee', area: 'Indiranagar', lines: [{ name: 'Barista Oat Milk · 1 L', qty: '× 24', amt: 5040 }, { name: 'Vanilla syrup · 750 ml', qty: '× 6', amt: 3480 }] },
+  { cafe: 'Sundial', area: 'Bandra West', lines: [{ name: 'Callebaut 811 · 2.5 kg', qty: '× 2', amt: 6900 }, { name: 'Ceremonial matcha · 100 g', qty: '× 4', amt: 7560 }] },
 ];
 const qTotal = (q: Q) => q.lines.reduce((a, l) => a + l.amt, 0);
 type Stage = 0 | 1 | 2 | 3;

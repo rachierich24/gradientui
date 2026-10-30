@@ -125,8 +125,8 @@ export function LHero() {
           buy from and gives both sides one place to source, order, fulfil, invoice, and grow.
         </p>
         <div className="hero-ctas">
-          <a className="btn-l dark" href="/contact">Start free <Icon.Arrow size={15}/></a>
-          <a className="btn-l ghost" href="/contact">Book a walkthrough</a>
+          <a className="btn-l dark" href="/contact">Book a demo <Icon.Arrow size={15}/></a>
+          <a className="btn-l ghost" href="/login">Log in</a>
         </div>
         <div className="hero-trust">
           <span className="av-stack">
@@ -145,7 +145,7 @@ export function LHero() {
         <MotionConfig reducedMotion="user">
         <div className="hero-peek" ref={peekRef}>
           {[
-            { pos: 'a', delay: 0.15, floatDur: 5.5, icBg: 'var(--c-green-bg)', icCo: 'var(--c-green)', ic: <Icon.Check size={16}/>, t1: 'PO #2841 confirmed', t2: 'Blue Tokai · ₹38,400 · 12 SKUs' },
+            { pos: 'a', delay: 0.15, floatDur: 5.5, icBg: 'var(--c-green-bg)', icCo: 'var(--c-green)', ic: <Icon.Check size={16}/>, t1: 'PO #2841 confirmed', t2: 'Hillfold · ₹38,400 · 12 SKUs' },
             { pos: 'b', delay: 0.32, floatDur: 6.2, icBg: 'var(--c-orange-bg)', icCo: 'var(--c-orange)', ic: <Icon.Sparkle size={16}/>, t1: 'Oat milk running low', t2: 'Auto-reorder scheduled · 2 cafés' },
             { pos: 'c', delay: 0.5, floatDur: 5.8, icBg: 'var(--c-purple-bg)', icCo: 'var(--c-purple)', ic: <Icon.Truck size={16}/>, t1: '3 trucks dispatched', t2: 'ETA 4:20pm · live tracking on' },
           ].map((c) => (
@@ -274,9 +274,9 @@ function DualCafeVisual() {
   return (
     <div style={{ position: 'absolute', inset: 0, padding: '0 0 0 0', display: 'flex', alignItems: 'flex-end', gap: 8, overflow: 'hidden' }}>
       {[
-        { nm: 'Blue Tokai · Attikan', q: '5kg', co: 'orange' },
-        { nm: 'Araku · Monsoon', q: '10kg', co: 'green' },
-        { nm: 'Subko · Ratnagiri', q: '5kg', co: 'purple' },
+        { nm: 'Hillfold · Attikan', q: '5kg', co: 'orange' },
+        { nm: 'Ridgeway · Monsoon', q: '10kg', co: 'green' },
+        { nm: 'Sundial · Ratnagiri', q: '5kg', co: 'purple' },
       ].map((r, i) => (
         <div key={i} className="mini-ui" style={{ flex: 1, minWidth: 0, transform: `translateY(${i * -8}px) rotate(${(i - 1) * 1.5}deg)` }}>
           <div className="mini-row" style={{ background: `var(--c-${r.co}-bg)` }}>
@@ -302,8 +302,8 @@ function DualSupVisual() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
           {[
-            { c: 'Third Wave, Indiranagar', v: '₹38,400', st: 'active', stLab: 'Packing' },
-            { c: 'Subko, BKC', v: '₹71,920', st: 'info', stLab: 'Dispatch' },
+            { c: 'Lantern Row, Indiranagar', v: '₹38,400', st: 'active', stLab: 'Packing' },
+            { c: 'Sundial, BKC', v: '₹71,920', st: 'info', stLab: 'Dispatch' },
             { c: 'Roastery, HYD', v: '₹14,260', st: 'pending', stLab: 'New' },
           ].map((o, i) => (
             <div key={i} className="mini-row">
@@ -526,10 +526,10 @@ export function LShowcase() {
 
 function BentoMultiCart() {
   const cards = [
-    { nm: 'Blue Tokai · Attikan', q: '5 kg', pr: '₹4,100', co: 'orange' },
-    { nm: 'Araku · Monsoon Malabar', q: '10 kg', pr: '₹7,400', co: 'green' },
-    { nm: 'Subko · Ratnagiri PB', q: '5 kg', pr: '₹4,800', co: 'purple' },
-    { nm: 'Third Wave · Kelagur', q: '15 kg', pr: '₹10,200', co: 'blue' },
+    { nm: 'Hillfold · Attikan', q: '5 kg', pr: '₹4,100', co: 'orange' },
+    { nm: 'Ridgeway · Monsoon Malabar', q: '10 kg', pr: '₹7,400', co: 'green' },
+    { nm: 'Sundial · Ratnagiri PB', q: '5 kg', pr: '₹4,800', co: 'purple' },
+    { nm: 'Lantern Row · Kelagur', q: '15 kg', pr: '₹10,200', co: 'blue' },
   ];
   return (
     <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 8 }}>
@@ -1198,11 +1198,6 @@ export function LFooter() {
             <p>The operating system for the café supply chain. Built in Delhi, shipping nationwide.</p>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Gradient 365 is a product of <a className="link-underline" href="https://unifiednexgrade.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', fontWeight: 700 }}>Unified Nexgrade Private Limited</a>.</p>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>Also from Unified Nexgrade: <a className="link-underline" href="https://letsgrabbit.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', fontWeight: 700 }}>Grabbit</a>, cafe order-ahead and pickup in Delhi.</p>
-            <div style={{ display: 'flex', gap: 12 }}>
-              {['TW', 'IN', 'YT'].map(s => (
-                <span key={s} style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border-soft)', display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--ink-2)' }}>{s}</span>
-              ))}
-            </div>
           </div>
           <div className="footer-col">
             <h6>Product</h6>
@@ -1210,14 +1205,14 @@ export function LFooter() {
               <li><a href="/features#cafe">Café Portal</a></li>
               <li><a href="/features#supplier">Supplier Portal</a></li>
               <li><a href="https://brand.gradient365.com" target="_blank" rel="noopener noreferrer">Brand Portal</a></li>
-              <li><a href="/features#insights">Insights</a></li>
+              <li><a href="/features#brand">Insights</a></li>
             </ul>
           </div>
           <div className="footer-col">
             <h6>Company</h6>
             <ul>
               <li><a href="/about">About</a></li>
-              <li><a href="/careers">Careers <span style={{ color: 'var(--c-orange)', fontWeight: 600 }}>· 6</span></a></li>
+              <li><a href="/careers">Careers</a></li>
               <li><a href="/faq">FAQ</a></li>
               <li><a href="/contact">Contact</a></li>
             </ul>

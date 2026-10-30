@@ -107,7 +107,7 @@ export function SupplierLogistics() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#F59E0B' }} />
                   <div style={{ fontSize: '13px' }}>
-                    <span style={{ fontWeight: 700 }}>Stop 01: Blue Tokai Koramangala</span>
+                    <span style={{ fontWeight: 700 }}>Stop 01: Hillfold Koramangala</span>
                     <span style={{ color: 'var(--sup-fresh)', marginLeft: '8px', fontWeight: 600 }}>● Active Unload</span>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ export function SupplierLogistics() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'rgba(255,255,255,0.4)' }} />
                   <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
-                    <span>Stop 02: Maverick &amp; Farmer (80ft Rd)</span>
+                    <span>Stop 02: Copper &amp; Kiln (80ft Rd)</span>
                     <span style={{ marginLeft: '8px', fontSize: '11px' }}>ETA 12:40 PM</span>
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export function SupplierLogistics() {
               </div>
               <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'center' }}>
                 <span style={{ background: '#DCFCE7', color: '#166534', fontSize: '11.5px', fontWeight: 700, padding: '4px 10px', borderRadius: '6px' }}>
-                  ● AT CAFÉ (Blue Tokai Koramangala)
+                  ● AT CAFÉ (Hillfold Koramangala)
                 </span>
               </div>
             </div>

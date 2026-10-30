@@ -20,7 +20,7 @@ export function SupplierCta({ onJoinClick }: { onJoinClick?: () => void }) {
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '9999px', background: 'rgba(255, 255, 255, 0.12)', border: '1px solid rgba(255, 255, 255, 0.2)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--sup-fresh)', marginBottom: '20px' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--sup-fresh)' }} />
-              <span>JOIN 340+ VERIFIED WHOLESALE SUPPLIERS</span>
+              <span>FOR WHOLESALE SUPPLIERS</span>
             </div>
 
             <h2 className="sup-closing-cta-title">
@@ -33,12 +33,12 @@ export function SupplierCta({ onJoinClick }: { onJoinClick?: () => void }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.12)' }}>
               <div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#FFFFFF' }}>340+</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>Verified Roasters</div>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: '#FFFFFF' }}>1 portal</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>For every café order</div>
               </div>
               <div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--sup-fresh)' }}>₹48 Cr+</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>Fulfilled via Escrow</div>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--sup-fresh)' }}>GST</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>Invoices built for you</div>
               </div>
               <div>
                 <div style={{ fontSize: '24px', fontWeight: 800, color: '#FFFFFF' }}>T+1</div>
@@ -63,7 +63,7 @@ export function SupplierCta({ onJoinClick }: { onJoinClick?: () => void }) {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Subko Specialty Roasters"
+                  placeholder="e.g. Sundial Specialty Roasters"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   style={{

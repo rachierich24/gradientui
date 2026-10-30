@@ -131,12 +131,12 @@ export function CatalogueCard({ run }: { run: boolean }) {
             {live ? (
               <motion.span key="live" className="sbx-fd-label" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
                 <b><i className="sbx-fd-ok"><Check /></i>{live.name.split(' · ')[0]} is live</b>
-                <small>Visible to 340 cafés now</small>
+                <small>Visible to your cafés now</small>
               </motion.span>
             ) : (
               <motion.span key="count" className="sbx-fd-label" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
                 <b>{count} products</b>
-                <small>Live for 340 cafés</small>
+                <small>Live for your cafés</small>
               </motion.span>
             )}
           </AnimatePresence>

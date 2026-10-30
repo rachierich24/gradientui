@@ -1361,7 +1361,7 @@ function BrandSection({ isMobile, docked = true }: { isMobile: boolean; docked?:
 
               <div
                 className={`feature-item ${activeFeature === 2 ? 'active' : ''}`}
-                onClick={() => { setActiveFeature(2); showToast('78% trial-to-PO conversion rate · Standing Net-15'); }}
+                onClick={() => { setActiveFeature(2); showToast('Trial converted to a standing order · Net-15'); }}
                 onMouseEnter={() => setActiveFeature(2)}
                 role="button"
                 tabIndex={0}
@@ -1377,7 +1377,7 @@ function BrandSection({ isMobile, docked = true }: { isMobile: boolean; docked?:
                 <span className="feature-num">03</span>
                 <div className="feature-content">
                   <span className="feature-heading">Turn trials into repeat orders.</span>
-                  <span className="feature-text">78% of approved trials reorder every week.</span>
+                  <span className="feature-text">Approved trials turn into standing weekly orders.</span>
                 </div>
               </div>
 

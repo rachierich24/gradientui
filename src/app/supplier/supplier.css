@@ -5021,3 +5021,14 @@
 .supplier-portal-root .g365-footer .ft-dots circle { fill: var(--sup-ft-ink); }
 .supplier-portal-root .g365-footer .ft-guides * { stroke: rgba(31, 169, 82, 0.2); }
 .supplier-portal-root .g365-footer .ft-wrap::before { background: linear-gradient(180deg, rgba(31, 169, 82, 0), rgba(31, 169, 82, 0.55)); }
+
+/* supplier nav: short controls never wrap; the section links give way before the buttons squeeze */
+.sup-nav-link, .sup-btn-login, .sup-btn-cta, .sup-badge-portal { white-space: nowrap; }
+.sup-btn-cta, .sup-logo-group { flex-shrink: 0; }
+@media (max-width: 1080px) {
+  .sup-nav-links { display: none; }
+}
+@media (max-width: 480px) {
+  .sup-nav-inner { padding: 0 16px; gap: 12px; }
+  .sup-btn-login { display: none; }
+}

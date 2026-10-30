@@ -89,7 +89,7 @@ export function SupplierCtaSection({ onJoinClick }: { onJoinClick?: () => void }
           Ready to streamline your wholesale café supply?
         </h2>
         <p style={{ fontSize: '18px', color: 'var(--sup-text-secondary)', maxWidth: '600px', margin: '0 auto 36px', lineHeight: 1.6 }}>
-          Join 340+ verified specialty roasters and HoReCa distributors. Receive structured orders, eliminate WhatsApp confusion, and automate next-day bank settlement.
+          Join the specialty roasters and HoReCa distributors. Receive structured orders, eliminate WhatsApp confusion, and automate next-day bank settlement.
         </p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
           <button

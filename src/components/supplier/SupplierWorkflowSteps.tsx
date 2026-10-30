@@ -33,7 +33,7 @@ export function SupplierWorkflowSteps() {
             <div className="sup-step-num">01</div>
             <h3 className="sup-step-title">Consolidated PO Routing</h3>
             <p className="sup-step-desc">
-              Cafés source whole-bean coffee, oat milk, and packaging in a single checkout. The Grabbit signal engine instantly isolates and routes your SKUs to your depot without multi-supplier clutter.
+              Cafés source whole-bean coffee, oat milk, and packaging in a single checkout. The Gradient signal engine instantly isolates and routes your SKUs to your depot without multi-supplier clutter.
             </p>
 
             <div className="sup-step-preview">
@@ -80,7 +80,7 @@ export function SupplierWorkflowSteps() {
                   ||||| | ||||| || |||
                 </div>
                 <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--sup-forest)' }}>
-                  BLUE TOKAI KORAMANGALA · 10 KG
+                  HILLFOLD KORAMANGALA · 10 KG
                 </div>
               </div>
             </div>

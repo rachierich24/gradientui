@@ -6,7 +6,6 @@ export { PackagingScene } from './PackagingScene';
 export { SupplierWorkspace } from './SupplierWorkspace';
 export { OrderWorkflowDemo } from './OrderWorkflowDemo';
 export { SupplierBentoFeatures } from './SupplierBentoFeatures';
-export { SupplierLogos } from './SupplierLogos';
 export { SupplierOperationPath } from './SupplierOperationPath';
 export { SupplierBenefits } from './SupplierBenefits';
 export { SupplierWorkflowSteps } from './SupplierWorkflowSteps';

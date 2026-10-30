@@ -206,7 +206,7 @@ export function SupplierChaosFlow() {
             {/* ── the pieces ── */}
             <div className="sfl-card sfl-wa" data-card data-rot="-1.5" data-fly="0.22" data-jx="-200" style={{ left: 30, top: 40, width: 284 }}>
               <div className="sfl-in">
-                <div className="sfl-wa-top"><i>BT</i><div><b>Blue Tokai · Koramangala</b><small>online</small></div><em>23</em></div>
+                <div className="sfl-wa-top"><i>BT</i><div><b>Hillfold · Koramangala</b><small>online</small></div><em>23</em></div>
                 <div className="sfl-wa-body">
                   <p className="in">Bhaiya kal subah 10kg Arabica AA bhej dena<time>9:42 PM</time></p>
                   <p className="in voice"><span className="play" /><span className="wave" /><time>0:42</time></p>
@@ -220,10 +220,10 @@ export function SupplierChaosFlow() {
               <div className="sfl-in">
                 <b>ORDER BOOK · OCT</b>
                 <ol>
-                  <li><s>17/10 Third Wave 4kg</s></li>
-                  <li>17/10 Blue Tokai 10kg AA ✓</li>
-                  <li>Maverick, oat milk ×12 ?</li>
-                  <li>Third Wave 6kg (rate??)</li>
+                  <li><s>17/10 Lantern Row 4kg</s></li>
+                  <li>17/10 Hillfold 10kg AA ✓</li>
+                  <li>Copper Kiln, oat milk ×12 ?</li>
+                  <li>Lantern Row 6kg (rate??)</li>
                   <li className="circ">call back!!</li>
                 </ol>
                 <span className="ring" />
@@ -249,7 +249,7 @@ export function SupplierChaosFlow() {
 
             <div className="sfl-card sfl-calls" data-card data-rot="1.5" data-fly="0.265" data-jx="-40" style={{ left: 404, top: 290, width: 200 }}>
               <div className="sfl-in">
-                <p><i className="ph" /><span><b>Maverick &amp; Farmer</b><small>4 missed calls</small></span></p>
+                <p><i className="ph" /><span><b>Copper &amp; Kiln</b><small>4 missed calls</small></span></p>
                 <p><i className="ph" /><span><b>Unknown number</b><small>2 missed calls</small></span></p>
               </div>
             </div>
@@ -258,7 +258,7 @@ export function SupplierChaosFlow() {
               <div className="sfl-in">
                 <span className="tag">Payment reminder #3</span>
                 <b>₹18,400 due</b>
-                <small>Third Wave · Indiranagar · 47 days overdue</small>
+                <small>Lantern Row · Indiranagar · 47 days overdue</small>
                 <span className="btn">Send reminder</span>
               </div>
             </div>
@@ -267,7 +267,7 @@ export function SupplierChaosFlow() {
               <div className="sfl-in">
                 <div className="sfl-win"><i /><i /><i /><span>Sales Voucher · GST</span></div>
                 <dl>
-                  <div><dt>Party</dt><dd>Blue Tokai Koramangala</dd></div>
+                  <div><dt>Party</dt><dd>Hillfold Koramangala</dd></div>
                   <div><dt>Invoice no.</dt><dd className="blank" /></div>
                   <div><dt>Amount</dt><dd>₹8,200.00</dd></div>
                 </dl>

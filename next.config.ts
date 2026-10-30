@@ -35,6 +35,9 @@ const nextConfig: NextConfig = {
   experimental: {},
   images: { formats: ['image/avif', 'image/webp'] },
   devIndicators: false,
+  async redirects() {
+    return [{ source: '/suppliers', destination: '/supplier', permanent: true }]
+  },
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },

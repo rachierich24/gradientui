@@ -24,7 +24,7 @@ export function SupplierNavbar({ onJoinClick }: SupplierNavbarProps) {
     <header className={`sup-navbar ${isScrolled ? 'is-scrolled' : ''}`}>
       <div className="sup-container sup-nav-inner">
         {/* Left: Gradient Logo + Supplier Portal Tag */}
-        <Link href="/supplier" className="sup-logo-group" aria-label="Gradient Supplier Portal">
+        <Link href="/" className="sup-logo-group" aria-label="Gradient home">
           <div className="sup-logo-mark" aria-hidden="true">G</div>
           <div className="sup-logo-text">
             <span>Gradient</span>
@@ -46,7 +46,7 @@ export function SupplierNavbar({ onJoinClick }: SupplierNavbarProps) {
               </a>
             </li>
             <li>
-              <a href="#workspace" className="sup-nav-link">
+              <a href="#order-workspace" className="sup-nav-link">
                 Features
               </a>
             </li>

@@ -72,30 +72,8 @@ export function IndiaGlobe() {
             </h2>
 
             <p className="ig-subtitle">
-              16 hub cities and 1,200+ partner outlets — powering automated replenishment and zero-stockout logistics.
+              Cafés, suppliers and brands on one network, with orders, stock and payments in sync.
             </p>
-
-            <div className="ig-metrics-strip" aria-label="Network stats">
-              <div className="ig-metric-chip">
-                <span className="ig-metric-val">16</span>
-                <span className="ig-metric-lbl">Active Hubs</span>
-              </div>
-              <div className="ig-metric-div" />
-              <div className="ig-metric-chip">
-                <span className="ig-metric-val">14,200+</span>
-                <span className="ig-metric-lbl">Daily Signals</span>
-              </div>
-              <div className="ig-metric-div" />
-              <div className="ig-metric-chip">
-                <span className="ig-metric-val">T+1</span>
-                <span className="ig-metric-lbl">Bank Payout</span>
-              </div>
-              <div className="ig-metric-div" />
-              <div className="ig-metric-chip">
-                <span className="ig-metric-val">99.8%</span>
-                <span className="ig-metric-lbl">On-Time Sync</span>
-              </div>
-            </div>
           </div>
 
         <div className="ig-ctl" data-globe-ui>

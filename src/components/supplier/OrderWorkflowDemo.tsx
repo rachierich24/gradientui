@@ -18,7 +18,7 @@ export const WORKFLOW_STAGES: Record<WorkflowStage, WorkflowStageInfo> = {
     num: '01',
     shortLabel: 'Received',
     title: 'Café Places Wholesale Order',
-    subtitle: 'Blue Tokai (Koramangala) places wholesale order #GRB-1048 for 10kg Arabica AA.',
+    subtitle: 'Hillfold (Koramangala) places wholesale order #GRB-1048 for 10kg Arabica AA.',
     durationMs: 2800,
   },
   2: {
@@ -140,7 +140,7 @@ export function OrderWorkflowDemo({
               <span>JUST RECEIVED</span>
             </div>
             <div className="sup-stage1-detail">
-              <strong>PO #GRB-1048</strong> from <strong>Blue Tokai Koramangala</strong> · 10kg Arabica AA (₹8,200) · Auto-assigned to Roastery Bay
+              <strong>PO #GRB-1048</strong> from <strong>Hillfold Koramangala</strong> · 10kg Arabica AA (₹8,200) · Auto-assigned to Roastery Bay
             </div>
             <button
               type="button"
@@ -169,7 +169,7 @@ export function OrderWorkflowDemo({
                 <div className="sup-connect-avatar">PS</div>
                 <div>
                   <div className="sup-connect-name">Priya S. · Head Barista &amp; Café Manager</div>
-                  <div className="sup-connect-sub">Blue Tokai Coffee Roasters · Koramangala Outlet #04</div>
+                  <div className="sup-connect-sub">Hillfold Coffee Roasters · Koramangala Outlet #04</div>
                 </div>
               </div>
               <div className="sup-connect-badge">
@@ -399,7 +399,7 @@ export function OrderWorkflowDemo({
                 </div>
                 <div className="sup-telem-box">
                   <span className="telem-label">Destination</span>
-                  <strong className="telem-val">Blue Tokai · Koramangala 80ft Rd</strong>
+                  <strong className="telem-val">Hillfold · Koramangala 80ft Rd</strong>
                 </div>
                 <div className="sup-telem-box">
                   <span className="telem-label">Estimated Arrival</span>
@@ -425,7 +425,7 @@ export function OrderWorkflowDemo({
                   <div className="sup-point dest">
                     <span className="point-dot dest-dot" />
                     <div className="point-text">
-                      <span className="point-title">Blue Tokai Roastery</span>
+                      <span className="point-title">Hillfold Roastery</span>
                       <span className="point-sub">Koramangala Outlet #04 · ETA 12:02 PM</span>
                     </div>
                   </div>
@@ -461,7 +461,7 @@ export function OrderWorkflowDemo({
               </div>
 
               <div className="sup-f-footer">
-                <span className="sup-f-note">Driver arriving at Blue Tokai loading bay</span>
+                <span className="sup-f-note">Driver arriving at Hillfold loading bay</span>
                 <button
                   type="button"
                   className="sup-action-btn-green"
@@ -535,7 +535,7 @@ export function OrderWorkflowDemo({
                   </div>
                   <div className="sup-escrow-title">₹8,200.00 Released to Supplier</div>
                   <div className="sup-escrow-desc">
-                    HDFC Smart Escrow settlement released upon verified ePOD. T+1 direct credit to Blue Tokai Roastery bank account.
+                    HDFC Smart Escrow settlement released upon verified ePOD. T+1 direct credit to Hillfold Roastery bank account.
                   </div>
                 </div>
 

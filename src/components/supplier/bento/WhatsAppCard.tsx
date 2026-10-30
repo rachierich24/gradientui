@@ -9,8 +9,8 @@ import { GradientMark, clock, inr } from './shared';
 type Flow = { cafe: string; msg: string; order: string; items: number; amt: number; slot: string; inv: string; t: number };
 const FLOWS: Flow[] = [
   { cafe: 'Raydee Café', msg: 'Need 20 L oat milk and 5 kg Arabica for tomorrow 🙏', order: 'GRD-4831', items: 2, amt: 8300, slot: 'tomorrow, 9–11 AM', inv: 'INV-2291', t: 41 },
-  { cafe: 'Third Wave Coffee', msg: 'Same as last week, plus 6 vanilla syrups please', order: 'GRD-4832', items: 3, amt: 11760, slot: 'today, 4–6 PM', inv: 'INV-2292', t: 52 },
-  { cafe: 'Subko', msg: '2 packs of Callebaut 811 and 4 matcha tins', order: 'GRD-4833', items: 2, amt: 14460, slot: 'tomorrow, 8–10 AM', inv: 'INV-2293', t: 63 },
+  { cafe: 'Lantern Row Coffee', msg: 'Same as last week, plus 6 vanilla syrups please', order: 'GRD-4832', items: 3, amt: 11760, slot: 'today, 4–6 PM', inv: 'INV-2292', t: 52 },
+  { cafe: 'Sundial', msg: '2 packs of Callebaut 811 and 4 matcha tins', order: 'GRD-4833', items: 2, amt: 14460, slot: 'tomorrow, 8–10 AM', inv: 'INV-2293', t: 63 },
 ];
 type Kind = 'wa' | 'order' | 'confirm' | 'invoice' | 'paid';
 const COLOR: Record<Kind, string> = { wa: '#25D366', order: '#121413', confirm: '#1E86FF', invoice: '#FFB800', paid: '#00C9A7' };

@@ -49,7 +49,7 @@ export const isOpen = (o: Order) => o.status !== 'Delivered';
 
 const ORDERS: Order[] = [
   {
-    id: 'GRB-2058', cafe: 'Blue Tokai', area: 'Indiranagar', tier: 'A', channel: 'Portal', placed: '10:52',
+    id: 'GRB-2058', cafe: 'Hillfold', area: 'Indiranagar', tier: 'A', channel: 'Portal', placed: '10:52',
     lines: [{ sku: 'Cups 8oz', qty: 1000, price: 2.9 }], status: 'New', eta: 'Tomorrow',
     log: [{ t: '10:52', text: 'Placed on the portal' }],
   },
@@ -71,18 +71,18 @@ const ORDERS: Order[] = [
     log: [{ t: '09:40', text: 'Placed on the portal' }, { t: '09:44', text: 'Confirmed · stock reserved in Bay 01' }, { t: '11:20', text: 'Packed · thermal label printed' }],
   },
   {
-    id: 'GRB-2053', cafe: 'Third Wave', area: 'Indiranagar', tier: 'A', channel: 'WhatsApp', placed: 'Yesterday',
+    id: 'GRB-2053', cafe: 'Lantern Row', area: 'Indiranagar', tier: 'A', channel: 'WhatsApp', placed: 'Yesterday',
     message: '6 kg house blend for tomorrow please',
     lines: [{ sku: 'House blend 1kg', qty: 6, price: 830 }], status: 'Out for delivery', eta: '14:35', van: 'Van 04', invoice: 'INV-2209',
     log: [{ t: 'Yest.', text: 'Received on WhatsApp · 1 item matched' }, { t: '08:50', text: 'Packed · thermal label printed' }, { t: '12:40', text: 'Dispatched with Van 04 · ETA 14:35' }],
   },
   {
-    id: 'GRB-2051', cafe: 'Maverick & Farmer', area: '80 ft Road', tier: 'A', channel: 'WhatsApp', placed: 'Yesterday',
+    id: 'GRB-2051', cafe: 'Copper & Kiln', area: '80 ft Road', tier: 'A', channel: 'WhatsApp', placed: 'Yesterday',
     lines: [{ sku: 'Oat milk 1L', qty: 12, price: 180 }], status: 'Delivered', eta: '13:50', van: 'Van 04', signer: 'Rahul', invoice: 'INV-2208',
     log: [{ t: '12:40', text: 'Dispatched with Van 04' }, { t: '13:52', text: 'Delivered · ePOD signed by Rahul' }],
   },
   {
-    id: 'GRB-2048', cafe: 'Blue Tokai', area: 'Koramangala', tier: 'A', channel: 'WhatsApp', placed: 'Yesterday',
+    id: 'GRB-2048', cafe: 'Hillfold', area: 'Koramangala', tier: 'A', channel: 'WhatsApp', placed: 'Yesterday',
     lines: [{ sku: 'Arabica AA 1kg', qty: 10, price: 740 }, { sku: 'Oat milk 1L', qty: 4, price: 180 }], status: 'Delivered', eta: '13:10', van: 'Van 04', signer: 'Priya', invoice: 'INV-2207',
     log: [{ t: '12:40', text: 'Dispatched with Van 04' }, { t: '13:11', text: 'Delivered · ePOD signed by Priya' }],
   },
@@ -124,9 +124,9 @@ const VANS: Record<VanId, Van> = {
   'Van 04': {
     id: 'Van 04', driver: 'Ramesh K.', status: 'On route',
     stops: [
-      { place: 'Koramangala', cafe: 'Blue Tokai', t: '13:10', state: 'done' },
-      { place: '80 ft Road', cafe: 'Maverick & Farmer', t: '13:50', state: 'done' },
-      { place: 'Indiranagar', cafe: 'Third Wave', t: '14:35', state: 'next' },
+      { place: 'Koramangala', cafe: 'Hillfold', t: '13:10', state: 'done' },
+      { place: '80 ft Road', cafe: 'Copper & Kiln', t: '13:50', state: 'done' },
+      { place: 'Indiranagar', cafe: 'Lantern Row', t: '14:35', state: 'next' },
     ],
   },
   'Van 05': {
@@ -139,17 +139,17 @@ const VANS: Record<VanId, Van> = {
 };
 
 const CRATES: Crate[] = [
-  { cafe: 'Blue Tokai · Koramangala', out: 6, due: 'Today, 16:00', back: false },
-  { cafe: 'Third Wave · Indiranagar', out: 4, due: 'Today, 16:30', back: false },
-  { cafe: 'Maverick & Farmer · 80 ft Rd', out: 3, due: 'Tomorrow', back: false },
+  { cafe: 'Hillfold · Koramangala', out: 6, due: 'Today, 16:00', back: false },
+  { cafe: 'Lantern Row · Indiranagar', out: 4, due: 'Today, 16:30', back: false },
+  { cafe: 'Copper & Kiln · 80 ft Rd', out: 3, due: 'Tomorrow', back: false },
   { cafe: 'Copper Kettle · HSR Layout', out: 2, due: 'Tomorrow', back: false },
 ];
 
 const FEED: Feed[] = [
-  { id: 1, t: '13:52', kind: 'epod', text: 'ePOD signed by Rahul', sub: 'Maverick & Farmer · GRB-2051' },
-  { id: 2, t: '13:11', kind: 'epod', text: 'ePOD signed by Priya', sub: 'Blue Tokai Koramangala · GRB-2048' },
+  { id: 1, t: '13:52', kind: 'epod', text: 'ePOD signed by Rahul', sub: 'Copper & Kiln · GRB-2051' },
+  { id: 2, t: '13:11', kind: 'epod', text: 'ePOD signed by Priya', sub: 'Hillfold Koramangala · GRB-2048' },
   { id: 3, t: '12:40', kind: 'van', text: 'Van 04 left Bay 01', sub: '3 stops · Ramesh K.' },
-  { id: 4, t: '10:52', kind: 'order', text: 'New order GRB-2058', sub: 'Blue Tokai Indiranagar · Portal' },
+  { id: 4, t: '10:52', kind: 'order', text: 'New order GRB-2058', sub: 'Hillfold Indiranagar · Portal' },
   { id: 5, t: '10:31', kind: 'order', text: 'New order GRB-2057', sub: 'Morning Ground · WhatsApp' },
 ];
 
@@ -190,12 +190,12 @@ export function reducer(s: State, a: Action): State {
     case 'reorder': {
       if (s.drafted.includes(a.sku)) return s;
       const seq = s.seq + 1;
-      return { ...s, seq, drafted: [...s.drafted, a.sku], feed: [feedItem(seq, '14:24', 'po', `PO drafted for ${a.sku}`, 'Sent to Araku Estates for approval'), ...s.feed] };
+      return { ...s, seq, drafted: [...s.drafted, a.sku], feed: [feedItem(seq, '14:24', 'po', `PO drafted for ${a.sku}`, 'Sent to Ridgeway Estates for approval'), ...s.feed] };
     }
     case 'sync': {
       if (a.s === 'syncing') return { ...s, sync: 'syncing' };
       const seq = s.seq + 1;
-      return { ...s, seq, sync: 'done', feed: [feedItem(seq, '14:25', 'invoice', 'INV-2209 synced to Tally', 'Third Wave · ₹4,980'), ...s.feed] };
+      return { ...s, seq, sync: 'done', feed: [feedItem(seq, '14:25', 'invoice', 'INV-2209 synced to Tally', 'Lantern Row · ₹4,980'), ...s.feed] };
     }
     case 'crate': return { ...s, crates: s.crates.map((c) => (c.cafe === a.cafe ? { ...c, back: true } : c)) };
     case 'incoming': {

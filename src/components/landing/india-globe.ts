@@ -33,21 +33,21 @@ export const CORE: GlobeNode = {
 
 export const NODES: GlobeNode[] = ([
   // Major Indian café & commercial hubs
-  ['Mumbai', 19.08, 72.88, 'cafe', '412 Pickups Synced', 'Primary Roaster & High-Street Corridor'],
-  ['Bengaluru', 12.97, 77.59, 'cafe', '1,240 SKUs Live', 'Specialty Café & Tech Capital Hub'],
-  ['Hyderabad', 17.39, 78.49, 'brand', '320 Outlets Synced', 'Micro-Roaster & Fast-Growth Corridor'],
-  ['Kolkata', 22.57, 88.36, 'cafe', '180 Cafés Active', 'Eastern Gateway & Heritage Coffee Trade'],
+  ['Mumbai', 19.08, 72.88, 'cafe', 'Café market', 'Primary Roaster & High-Street Corridor'],
+  ['Bengaluru', 12.97, 77.59, 'cafe', 'Café market', 'Specialty Café & Tech Capital Hub'],
+  ['Hyderabad', 17.39, 78.49, 'brand', 'Brand market', 'Micro-Roaster & Fast-Growth Corridor'],
+  ['Kolkata', 22.57, 88.36, 'cafe', 'Café market', 'Eastern Gateway & Heritage Coffee Trade'],
   ['Chennai', 13.08, 80.27, 'supply', 'Port & Coastal Roasters', 'Green Bean Import & Roastery Logistics'],
-  ['Pune', 18.52, 73.86, 'brand', '94 Outlets Synced', 'Artisanal Roaster & Trial Corridor'],
+  ['Pune', 18.52, 73.86, 'brand', 'Brand market', 'Artisanal Roaster & Trial Corridor'],
   ['Ahmedabad', 23.02, 72.57, 'supply', 'Bulk Distribution Hub', 'FMCG Dairy, Syrups & Packaging Depot'],
   ['Kochi', 9.93, 76.27, 'supply', 'Malabar Port Hub', 'Monsooned Malabar Export & Processing'],
-  ['Jaipur', 26.91, 75.79, 'cafe', '65 Cafés Connected', 'Specialty Tourism & Café Network'],
-  ['Chandigarh', 30.73, 76.78, 'cafe', '110 Cafés Connected', 'North Tier Flagship Network'],
-  ['Goa', 15.49, 73.83, 'brand', '84 Hospitality Venues', 'Boutique Café & Roaster Hub'],
+  ['Jaipur', 26.91, 75.79, 'cafe', 'Café market', 'Specialty Tourism & Café Network'],
+  ['Chandigarh', 30.73, 76.78, 'cafe', 'Café market', 'North Tier Flagship Network'],
+  ['Goa', 15.49, 73.83, 'brand', 'Brand market', 'Boutique Café & Roaster Hub'],
   ['Indore', 22.72, 75.86, 'supply', 'Central Depot', 'Central India Transit & Roaster Supply'],
   ['Guwahati', 26.14, 91.74, 'supply', 'NE Gateway', 'Organic Tea & Shade-Grown Arabica Depot'],
   ['Coimbatore', 11.02, 76.96, 'supply', 'Machinery Depot', 'Espresso Machines & Grinder Tech Hub'],
-  ['Lucknow', 26.85, 80.95, 'brand', '45 Outlets Connected', 'Awadh Specialty Café Corridor'],
+  ['Lucknow', 26.85, 80.95, 'brand', 'Brand market', 'Awadh Specialty Café Corridor'],
 
   // Indian coffee origins
   ['Chikmagalur', 13.32, 75.77, 'origin', 'Birthplace of Indian Coffee', 'Western Ghats Single Origin Arabica Farms'],

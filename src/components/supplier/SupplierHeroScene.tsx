@@ -29,7 +29,7 @@ interface OrderItem {
 const INITIAL_ORDERS: OrderItem[] = [
   {
     id: '#GRB-1048',
-    cafe: 'Blue Tokai',
+    cafe: 'Hillfold',
     outlet: 'Koramangala · Outlet #04',
     items: 'Arabica AA · 10kg',
     total: '₹8,200',
@@ -40,7 +40,7 @@ const INITIAL_ORDERS: OrderItem[] = [
   },
   {
     id: '#GRB-1047',
-    cafe: 'Subko Specialty',
+    cafe: 'Sundial Specialty',
     outlet: 'Bandra West · Flagship',
     items: 'Ratnagiri Peaberry · 5kg',
     total: '₹4,800',
@@ -50,7 +50,7 @@ const INITIAL_ORDERS: OrderItem[] = [
   },
   {
     id: '#GRB-1046',
-    cafe: 'Third Wave Coffee',
+    cafe: 'Lantern Row Coffee',
     outlet: 'Indiranagar 100ft Rd',
     items: 'Cold Brew Blend · 15kg',
     total: '₹11,250',
@@ -60,7 +60,7 @@ const INITIAL_ORDERS: OrderItem[] = [
   },
   {
     id: '#GRB-1045',
-    cafe: 'Araku Coffee',
+    cafe: 'Ridgeway Coffee',
     outlet: 'Jubilee Hills · Hub',
     items: 'Micro-lot Selection · 8kg',
     total: '₹7,400',
@@ -182,7 +182,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
       className="sup-hero-scene"
       ref={sceneRef}
       id="hero-scene"
-      aria-label="Grabbit Supplier Portal Hero and Interactive Cockpit"
+      aria-label="Gradient Supplier Portal Hero and Interactive Cockpit"
     >
       {/* ─── Pinned Sticky Stage (Occupies 100vh during the 240vh scroll scrub) ─── */}
       <div className="sup-sticky-stage">
@@ -225,7 +225,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
         >
           {/* Eyebrow: Vibrant uppercase tracked text, matching Relume cadence */}
           <div className="sup-hero-eyebrow-relume">
-            TRUSTED BY 340+ SPECIALTY ROASTERS &amp; DISTRIBUTORS
+            FOR SPECIALTY ROASTERS &amp; DISTRIBUTORS
           </div>
 
           {/* AI-Style Ghost Type Headline (React Bits Pro) */}
@@ -256,7 +256,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
 
           {/* Subtitle: Restrained, generous line height */}
           <p className="sup-hero-sub">
-            Receive wholesale orders, manage inventory, and move every delivery forward—all from one supplier workspace.
+            Receive wholesale orders, manage inventory, and move every delivery forward, all from one supplier workspace.
           </p>
 
           {/* Clean Minimal Hero CTA Buttons */}
@@ -314,7 +314,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
               {/* Left: Brand / Depot dropdown selector */}
               <div className="sup-mat-brand-badge">
                 <span className="brand-dot" />
-                <span className="brand-title">Blue Tokai Roastery</span>
+                <span className="brand-title">Hillfold Roastery</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
@@ -411,7 +411,7 @@ const STAGE_DURATIONS: Record<WorkflowStage, number> = {
                   <div className="sup-sidebar-brand">
                     <div className="sup-sidebar-brand-mark">G</div>
                     <div className="sup-sidebar-brand-text">
-                      <span className="sup-sidebar-brand-name">Blue Tokai Roastery</span>
+                      <span className="sup-sidebar-brand-name">Hillfold Roastery</span>
                       <span className="sup-sidebar-hub-name">Depot Hub · Koramangala</span>
                     </div>
                   </div>

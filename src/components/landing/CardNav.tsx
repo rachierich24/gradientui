@@ -56,26 +56,26 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
       {
         label: 'Ordering',
         description: 'Multi-vendor basket with instant split dispatch',
-        href: '/features#ordering',
+        href: '/features#cafe',
         badge: 'Live',
         icon: 'cart',
       },
       {
         label: 'Sourcing',
-        description: 'Browse 340+ verified specialty roasters & suppliers',
-        href: '/features#sourcing',
+        description: 'Browse verified roasters and suppliers',
+        href: '/features#cafe',
         icon: 'search',
       },
       {
         label: 'Inventory',
         description: 'Live par alerts, batch expiry & zero-stockout auto-reorder',
-        href: '/features#inventory',
+        href: '/features#cafe',
         icon: 'box',
       },
       {
         label: 'Analytics',
         description: 'Consumption forecast, price benchmarks & margin tracking',
-        href: '/features#analytics',
+        href: '/features#brand',
         badge: 'v2.4',
         icon: 'chart',
       },
@@ -100,7 +100,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
         description: 'Source smarter. Order faster. Single-click multi-vendor ordering.',
         href: '#for-cafes',
         accent: '#E03E3E',
-        badge: '1,240+ Cafés',
+        badge: 'Live',
         icon: 'cafe',
       },
       {
@@ -108,7 +108,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
         description: 'Turn demand into fulfillment. Automated purchase orders & instant payout.',
         href: '/supplier',
         accent: '#22C55E',
-        badge: '340+ Suppliers',
+        badge: 'Live',
         icon: 'supplier',
       },
       {
@@ -116,7 +116,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
         description: 'See demand before it moves. Direct consumption telemetry & retail coverage.',
         href: '#for-brands',
         accent: '#6D28D9',
-        badge: '47 Trials',
+        badge: 'Live',
         icon: 'brand',
       },
     ],
@@ -142,21 +142,8 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
         icon: 'flow',
       },
       {
-        label: 'Customer Stories',
-        description: 'How top specialty café chains reduced purchasing overhead by 22%',
-        href: '/about',
-        icon: 'quote',
-      },
-      {
-        label: 'Supply Insights',
-        description: 'Weekly commodity updates on green beans, packaging, and oat milk tariffs',
-        href: '/faq',
-        badge: 'Weekly',
-        icon: 'sparkle',
-      },
-      {
-        label: 'Help & Documentation',
-        description: 'POS & ERP integrations, webhook guides, and dedicated support',
+        label: 'Help & FAQ',
+        description: 'Answers on ordering, payments and getting set up',
         href: '/faq',
         icon: 'help',
       },
@@ -195,17 +182,11 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
         href: '/contact',
         icon: 'mail',
       },
-      {
-        label: 'Partners & Ecosystem',
-        description: 'Hardware, packaging, and logistics integration partners',
-        href: '/features',
-        icon: 'shield',
-      },
     ],
     featured: {
       tag: 'MISSION',
-      title: 'Powering 10,000+ Independent Cafés',
-      desc: 'Built in Bengaluru with zero-downtime architecture for fast-growing hospitality brands.',
+      title: 'Built for independent cafés',
+      desc: 'Built in Delhi for the cafés, suppliers and brands that keep India’s coffee moving.',
       meta: 'Unified Nexgrade Pvt Ltd',
       href: '/about',
     },
@@ -382,7 +363,7 @@ function ProductPreviewCard({ item }: { item: CardNavItem }) {
           <div className="preview-nodes-cluster">
             <div className="preview-node node-cafe">
               <span className="node-port red-port" />
-              <span className="node-title">1,240 Cafés</span>
+              <span className="node-title">Cafés</span>
               <span className="node-sub">Demand signals</span>
             </div>
             <div className="preview-node-connector">
@@ -392,12 +373,12 @@ function ProductPreviewCard({ item }: { item: CardNavItem }) {
             <div className="preview-nodes-bottom">
               <div className="preview-node node-supplier">
                 <span className="node-port green-port" />
-                <span className="node-title">340 Suppliers</span>
+                <span className="node-title">Suppliers</span>
                 <span className="node-sub">Fulfillment</span>
               </div>
               <div className="preview-node node-brand">
                 <span className="node-port purple-port" />
-                <span className="node-title">47 Brands</span>
+                <span className="node-title">Brands</span>
                 <span className="node-sub">Intelligence</span>
               </div>
             </div>
@@ -952,7 +933,7 @@ export function CardNav({
                           openContactSalesModal();
                         }}
                       >
-                        Request Platform Demo ➔
+                        Book a demo ➔
                       </a>
                     </div>
                   </div>
@@ -964,7 +945,7 @@ export function CardNav({
           {/* MOBILE MENU ACCORDION DRAWER (max-width: 860px) */}
           {isMobileOpen && (
             <div ref={mobileMenuRef} className="nav-mobile-menu">
-              <div className="nav-mobile-inner">
+              <div className="nav-mobile-inner" data-lenis-prevent>
                 {items.map((cat) => (
                   <div key={cat.label} className="mobile-drawer-section">
                     <span className="mobile-section-heading">{cat.label}</span>

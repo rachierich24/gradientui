@@ -34,9 +34,9 @@ export function G365Hero() {
         </p>
         <div className="actions">
           <a className="btn primary" href="#contact-sales" onClick={(e) => { e.preventDefault(); openContactSalesModal(); }}>
-            Start free
+            Book a demo
           </a>
-          <a className="btn ghost" href="/contact">Book a walkthrough</a>
+          <a className="btn ghost" href="/login">Log in</a>
         </div>
       </header>
 
@@ -93,8 +93,6 @@ export function G365Footer() {
         <div className="ft-legal">
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms</a>
-          <a href="#">LinkedIn</a>
-          <a href="#">Instagram</a>
         </div>
       </div>
       <p className="ft-note">

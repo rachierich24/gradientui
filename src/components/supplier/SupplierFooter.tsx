@@ -54,7 +54,7 @@ export function SupplierFooter() {
             <ul className="sup-footer-links">
               <li>
                 <Link href="/" className="sup-footer-link">
-                  Grabbit Main Portal
+                  Gradient Main Portal
                 </Link>
               </li>
               <li>
@@ -65,11 +65,6 @@ export function SupplierFooter() {
               <li>
                 <Link href="/features#brand" className="sup-footer-link">
                   For Brand Trials
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="sup-footer-link">
-                  Customer Stories
                 </Link>
               </li>
             </ul>
@@ -104,8 +99,7 @@ export function SupplierFooter() {
         </div>
 
         <div className="sup-footer-bottom">
-          <span>© {new Date().getFullYear()} Grabbit (Unified Nexgrade Pvt. Ltd.). All rights reserved.</span>
-          <span>Designed with Relume spatial depth &amp; Grabbit B2B precision.</span>
+          <span>© {new Date().getFullYear()} Gradient 365 (Unified Nexgrade Pvt. Ltd.). All rights reserved.</span>
         </div>
       </div>
     </footer>

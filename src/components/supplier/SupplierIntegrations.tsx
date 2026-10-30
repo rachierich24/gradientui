@@ -11,7 +11,7 @@ export function SupplierIntegrations() {
   "timestamp": "2026-10-16T08:42:10Z",
   "order_id": "GRB-1048",
   "buyer": {
-    "brand": "Blue Tokai Coffee",
+    "brand": "Hillfold Coffee",
     "outlet_id": "blr_krm_01",
     "contact": "Priya Sharma (Head Barista)"
   },
@@ -26,13 +26,13 @@ export function SupplierIntegrations() {
   "timestamp": "2026-10-16T11:20:00Z",
   "order_id": "GRB-1048",
   "fleet": {
-    "carrier": "Grabbit Fleet EV Van 04",
+    "carrier": "Gradient Fleet EV Van 04",
     "driver": "Ramesh Kumar (+91 98450 11234)",
     "crate_rfid": "CRATE-C88"
   },
   "route": {
     "origin_depot": "blr_roastery_hub",
-    "destination": "Blue Tokai Koramangala 80ft Rd",
+    "destination": "Hillfold Koramangala 80ft Rd",
     "eta": "12:05 PM"
   }
 }`,

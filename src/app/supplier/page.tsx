@@ -8,7 +8,6 @@ import {
   SupplierBentoFeatures,
   SupplierBillSyncAudit,
   SupplierGrowth,
-  SupplierLogos,
   SupplierBenefits,
   SupplierWorkflowSteps,
   SupplierInventory,
@@ -57,9 +56,6 @@ export default function SupplierPortalPage() {
 
       {/* ─── 04b. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
       <SupplierBillSyncAudit />
-
-      {/* ─── 05. Relume-Style Partner Logo Ticker (Section Immediately after Dashboard) ─── */}
-      <SupplierLogos />
 
       {/* ─── 06. Operational Benefits (Interactive Bento Grid) ─── */}
       <SupplierBenefits />

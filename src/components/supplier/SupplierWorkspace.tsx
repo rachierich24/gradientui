@@ -19,7 +19,7 @@ interface OrderItem {
 const INITIAL_ORDERS: OrderItem[] = [
   {
     id: '#GRB-1048',
-    cafe: 'Blue Tokai',
+    cafe: 'Hillfold',
     outlet: 'Koramangala · Outlet #04',
     items: 'Arabica AA · 10kg',
     total: '₹8,200',
@@ -30,7 +30,7 @@ const INITIAL_ORDERS: OrderItem[] = [
   },
   {
     id: '#GRB-1047',
-    cafe: 'Subko Specialty',
+    cafe: 'Sundial Specialty',
     outlet: 'Bandra West · Flagship',
     items: 'Ratnagiri Peaberry · 5kg',
     total: '₹4,800',
@@ -40,7 +40,7 @@ const INITIAL_ORDERS: OrderItem[] = [
   },
   {
     id: '#GRB-1046',
-    cafe: 'Third Wave Coffee',
+    cafe: 'Lantern Row Coffee',
     outlet: 'Indiranagar 100ft Rd',
     items: 'Cold Brew Blend · 15kg',
     total: '₹11,250',
@@ -50,7 +50,7 @@ const INITIAL_ORDERS: OrderItem[] = [
   },
   {
     id: '#GRB-1045',
-    cafe: 'Araku Coffee',
+    cafe: 'Ridgeway Coffee',
     outlet: 'Jubilee Hills · Hub',
     items: 'Micro-lot Selection · 8kg',
     total: '₹7,400',
@@ -315,7 +315,7 @@ export function SupplierWorkspace() {
                 <div className="sup-sidebar-brand">
                   <div className="sup-sidebar-brand-mark">G</div>
                   <div className="sup-sidebar-brand-text">
-                    <span className="sup-sidebar-brand-name">Blue Tokai Roastery</span>
+                    <span className="sup-sidebar-brand-name">Hillfold Roastery</span>
                     <span className="sup-sidebar-hub-name">Depot Hub · Koramangala</span>
                   </div>
                 </div>

@@ -30,7 +30,7 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
 
   const handleExampleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setPromptText('Blue Tokai Koramangala needs 10kg Arabica AA Estate by 12:00 PM, medium-fine grind.');
+    setPromptText('Hillfold Koramangala needs 10kg Arabica AA Estate by 12:00 PM, medium-fine grind.');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,7 +41,7 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
   };
 
   return (
-    <section className="sup-hero-section" id="hero" aria-label="Grabbit Supplier Portal Hero">
+    <section className="sup-hero-section" id="hero" aria-label="Gradient Supplier Portal Hero">
       {/* Precision Technical Grid Lines (Relume aesthetic) */}
       <div className="sup-hero-grid-lines" aria-hidden="true" />
 
@@ -81,7 +81,7 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
         >
           {/* Eyebrow: Pure vibrant green text (Relume style, no pill container) */}
           <div className="sup-hero-eyebrow-relume">
-            TRUSTED BY 340+ SPECIALTY ROASTERS &amp; DISTRIBUTORS
+            FOR SPECIALTY ROASTERS &amp; DISTRIBUTORS
           </div>
 
           {/* Large, Confident Headline (Relume 2-line cadence) */}
@@ -93,7 +93,7 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
 
           {/* Supporting Copy */}
           <p className="sup-hero-sub">
-            Start with café demand. Grabbit consolidates purchase orders, automates batch roast scheduling, and guarantees next-day escrow settlement. The platform handles logistics. You make the calls.
+            Start with café demand. Gradient consolidates purchase orders, automates batch roast scheduling, and guarantees next-day escrow settlement. The platform handles logistics. You make the calls.
           </p>
 
           {/* ─── Relume-Style Interactive Prompt Card ─── */}
@@ -107,7 +107,7 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
               <div className="sup-prompt-textarea-wrapper">
                 <textarea
                   className="sup-prompt-textarea"
-                  placeholder="Tell Grabbit what you're supplying (e.g., 100% Arabica AA, Oat Milk, Bio Cups)..."
+                  placeholder="Tell Gradient what you're supplying (e.g., 100% Arabica AA, Oat Milk, Bio Cups)..."
                   value={promptText}
                   onChange={(e) => setPromptText(e.target.value)}
                   rows={2}
@@ -155,7 +155,7 @@ export function SupplierHero({ onJoinClick, onExploreClick }: SupplierHeroProps)
               onClick={handleExampleClick}
               className="sup-example-btn"
             >
-              Try an example: Blue Tokai Koramangala 10kg roast order
+              Try an example: Hillfold Koramangala 10kg roast order
             </button>
           </div>
         </motion.div>

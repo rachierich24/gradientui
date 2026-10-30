@@ -428,7 +428,7 @@ export function SupplierBillSyncAudit() {
                   className="sup-stage-frame-container"
                 >
                   <div className="sup-stacked-receipts-stage">
-                    {/* Bill 1: Blue Tokai */}
+                    {/* Bill 1: Hillfold */}
                     <motion.div
                       className="sup-stacked-thermal-card"
                       initial={{ opacity: 0, x: direction * 40, scale: 0.9 }}
@@ -437,7 +437,7 @@ export function SupplierBillSyncAudit() {
                     >
                       <div className="sup-mini-receipt-inner">
                         <div className="sup-mini-receipt-head">
-                          <span className="sup-mini-vendor">Blue Tokai Roasters</span>
+                          <span className="sup-mini-vendor">Hillfold Roasters</span>
                           <span className="sup-mini-inv">INV-8824</span>
                         </div>
                         <div className="sup-mini-receipt-body">
@@ -520,7 +520,7 @@ export function SupplierBillSyncAudit() {
                       <div className="sup-micro-receipt-wrapper">
                         <div className="sup-micro-receipt-card">
                           <div className="sup-micro-receipt-title">Gradient AI</div>
-                          <div className="sup-micro-receipt-vendor">Blue Tokai #8824</div>
+                          <div className="sup-micro-receipt-vendor">Hillfold #8824</div>
                           <div className="sup-micro-receipt-price">₹38,000.00</div>
                         </div>
                         <span
@@ -614,7 +614,7 @@ export function SupplierBillSyncAudit() {
                                 />
                                 07/01
                               </td>
-                              <td>BLUE TOKAI ROASTERS (INV-8824)</td>
+                              <td>HILLFOLD ROASTERS (INV-8824)</td>
                               <td className="sup-table-amt-neg">-38,000.00</td>
                               <td style={{ textAlign: 'right' }}>4,18,800.00</td>
                             </tr>

@@ -262,7 +262,7 @@ function RevenueChart({ series, extra }: { series: Series; extra: number }) {
       {hi !== null && (
         <div className="sdb-tip" style={{ left: Math.min(w - 92, Math.max(92, X(hi))) }}>
           <b>{series.labels[hi]}</b>
-          <span><i className="c" />{series.legend[0]}<em>{hv !== undefined ? rupees(hv) : '—'}</em></span>
+          <span><i className="c" />{series.legend[0]}<em>{hv !== undefined ? rupees(hv) : '-'}</em></span>
           <span><i className="p" />{series.legend[1]}<em>{rupees(series.prev[hi])}</em></span>
         </div>
       )}
@@ -323,7 +323,7 @@ function Home({ s, d }: P) {
               ))}
               <li>
                 <span className={`ic ${s.sync === 'done' ? 'is-green' : 'is-red'}`}><Ico d={s.sync === 'done' ? I.check : I.sync} s={15} /></span>
-                <span><b>{s.sync === 'done' ? 'Tally sync complete' : 'Tally sync failed'}</b><small>INV-2209 · Third Wave · ₹4,980</small></span>
+                <span><b>{s.sync === 'done' ? 'Tally sync complete' : 'Tally sync failed'}</b><small>INV-2209 · Lantern Row · ₹4,980</small></span>
                 {s.sync === 'failed' && <button type="button" className="sdb-b is-sm" onClick={() => { d({ t: 'sync', s: 'syncing' }); setTimeout(() => d({ t: 'sync', s: 'done' }), 1300); }}>Retry</button>}
                 {s.sync === 'syncing' && <span className="sdb-spin" aria-label="Syncing" />}
               </li>

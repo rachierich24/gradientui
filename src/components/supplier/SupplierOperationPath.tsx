@@ -15,20 +15,20 @@ export function SupplierOperationPath({ onJoinClick }: { onJoinClick?: () => voi
               CHOOSE YOUR OPERATION
             </div>
             <h2 className="sup-path-title">
-              Fulfill on Grabbit Fleet, or dispatch with your own logistics.
+              Fulfill on Gradient Fleet, or dispatch with your own logistics.
             </h2>
           </div>
 
           <div className="sup-path-right-col">
             <p className="sup-path-desc">
-              Everything synchronizes through the same order protocol. Deploy Grabbit&apos;s temperature-monitored EV cargo fleet and returnable crates, or connect your in-house drivers and 3PL partners with our driver mobile ePOD app. Same system, your call.
+              Everything synchronizes through the same order protocol. Deploy Gradient&apos;s temperature-monitored EV cargo fleet and returnable crates, or connect your in-house drivers and 3PL partners with our driver mobile ePOD app. Same system, your call.
             </p>
           </div>
         </div>
 
         {/* 2-Column Asymmetric Showcase (Relume pattern) */}
         <div className="sup-path-showcase-grid">
-          {/* Card 1: Grabbit Fleet */}
+          {/* Card 1: Gradient Fleet */}
           <div className={`sup-path-card ${activeTab === 'fleet' ? 'active' : ''}`} onClick={() => setActiveTab('fleet')}>
             <div className="sup-path-card-badge">
               <span className="sup-badge-dot" />
@@ -49,7 +49,7 @@ export function SupplierOperationPath({ onJoinClick }: { onJoinClick?: () => voi
                 className="sup-path-btn-primary"
                 onClick={onJoinClick}
               >
-                <span>Deploy Grabbit Fleet</span>
+                <span>Deploy Gradient Fleet</span>
                 <span>→</span>
               </button>
               <a href="#dispatch" className="sup-path-btn-secondary">
@@ -123,7 +123,7 @@ export function SupplierOperationPath({ onJoinClick }: { onJoinClick?: () => voi
 
               <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '12px', fontSize: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontWeight: 600 }}>Destination: Blue Tokai Koramangala</span>
+                  <span style={{ fontWeight: 600 }}>Destination: Hillfold Koramangala</span>
                   <span style={{ color: 'var(--sup-primary)', fontWeight: 700 }}>ARRIVED ✓</span>
                 </div>
                 <div style={{ fontStyle: 'italic', fontFamily: 'cursive', fontSize: '15px', color: '#1E293B', padding: '4px 0', borderBottom: '1px solid #E2E8F0' }}>

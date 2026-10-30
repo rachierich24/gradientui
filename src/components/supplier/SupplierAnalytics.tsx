@@ -5,7 +5,7 @@ import React from 'react';
 export function SupplierAnalytics() {
   const accounts = [
     {
-      name: 'Third Wave Coffee (Indiranagar)',
+      name: 'Lantern Row Coffee (Indiranagar)',
       volume: '22.0 KG / week',
       velocity: 'High Velocity',
       predicted: 'Tomorrow 09:00 AM',
@@ -13,7 +13,7 @@ export function SupplierAnalytics() {
       urgency: 'urgent',
     },
     {
-      name: 'Blue Tokai Coffee (Koramangala)',
+      name: 'Hillfold Coffee (Koramangala)',
       volume: '14.2 KG / week',
       velocity: 'Consistent',
       predicted: 'Friday 08:30 AM',
@@ -21,7 +21,7 @@ export function SupplierAnalytics() {
       urgency: 'normal',
     },
     {
-      name: 'Subko Specialty Coffee (Bandra)',
+      name: 'Sundial Specialty Coffee (Bandra)',
       volume: '18.5 KG / week',
       velocity: 'Expanding',
       predicted: 'Saturday 07:45 AM',

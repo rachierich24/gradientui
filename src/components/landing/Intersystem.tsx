@@ -153,7 +153,7 @@ export function Intersystem() {
           <span className="isx-eyebrow"><i /><i /><i />The Gradient intersystem</span>
           <h2 id="isx-title">One core between every café, supplier and brand.</h2>
         </div>
-        <p>Orders leave the café floor, route to the right supplier and surface as demand for brands — in real time, through a single connected core.</p>
+        <p>Orders leave the café floor, route to the right supplier and surface as demand for brands, in real time, through a single connected core.</p>
       </div>
 
       <div className="isx-diagram" style={{ width: W * s, height: H * s }}>

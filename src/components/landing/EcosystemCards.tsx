@@ -4,7 +4,6 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Icon } from './icons';
 
 // ─── VERIFIED LIVE PLATFORMS FOR THE THREE SIDES OF THE ECOSYSTEM ───
 const ECOSYSTEM_LINKS = {
@@ -13,495 +12,267 @@ const ECOSYSTEM_LINKS = {
   brands: 'https://brand.gradient365.com',
 };
 
-// ─── RICH, AUTHENTIC UI MOCKUP COMPONENTS ───
+// ─── PRODUCT SCREENS ───
+// One dashboard per side of the network. The cards show it at half scale inside a browser frame;
+// the expanded tab shows it full size.
 
-const CafePreview = ({
-  large = false,
-  onOpen,
-}: {
-  large?: boolean;
-  onOpen?: () => void;
-}) => {
-  const [activeFilter, setActiveFilter] = useState<'All' | 'Beans' | 'Dairy' | 'Syrups'>('All');
-  const [addedItems, setAddedItems] = useState<Record<string, number>>({});
-  const [cartCount, setCartCount] = useState(2);
-  const [totalPrice, setTotalPrice] = useState(1240);
+const MiniFrame = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <div className="mock-preview-shell eco-mini">
+    <div className="eco-preview-chrome">
+      <div className="eco-preview-dots">
+        <div className="eco-preview-dot is-red" />
+        <div className="eco-preview-dot is-yellow" />
+        <div className="eco-preview-dot is-green" />
+      </div>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="eco-preview-address is-link"
+        onClick={(e) => e.stopPropagation()}
+        title={`Visit ${href.replace('https://', '')}`}
+      >
+        <span className="eco-address-lock">🔒</span> {href.replace('https://', '')} <span className="eco-address-ext">↗</span>
+      </a>
+    </div>
+    <div className="eco-mini-stage">{children}</div>
+  </div>
+);
 
-  const handleAdd = (id: string, name: string, price: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setAddedItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
-    setCartCount((c) => c + 1);
-    setTotalPrice((t) => t + price);
-  };
+const BRAND_BARS = [
+  { height: 42, label: 'W1', value: '42 POs · ₹3.4L' },
+  { height: 60, label: 'W2', value: '60 POs · ₹4.9L' },
+  { height: 78, label: 'W3', value: '78 POs · ₹6.2L' },
+  { height: 95, label: 'W4', value: '95 POs · ₹7.8L' },
+  { height: 68, label: 'W5', value: '68 POs · ₹5.5L' },
+];
 
-  return (
-    <div className={`mock-preview-shell is-cafe ${large ? 'is-large' : ''}`}>
-      {!large && (
-        <div className="eco-preview-chrome">
-          <div className="eco-preview-dots">
-            <div className="eco-preview-dot is-red" />
-            <div className="eco-preview-dot is-yellow" />
-            <div className="eco-preview-dot is-green" />
-          </div>
-          <a
-            href={ECOSYSTEM_LINKS.cafes}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="eco-preview-address is-link"
-            onClick={(e) => e.stopPropagation()}
-            title="Visit cafe.gradient365.com"
-          >
-            <span className="eco-address-lock">🔒</span> cafe.gradient365.com <span className="eco-address-ext">↗</span>
-          </a>
+const SUP_ORDERS = [
+  { id: 'GRB-1049', cafe: 'Hillfold', area: 'Hauz Khas', items: 'Arabica AA · 12 kg', value: '₹9,840', status: 'New', cls: 'is-new' },
+  { id: 'GRB-1048', cafe: 'Lantern Row', area: 'Saket', items: 'Oat milk · 24 L', value: '₹5,040', status: 'Packing', cls: 'is-pack' },
+  { id: 'GRB-1047', cafe: 'Sundial Roasters', area: 'GK II', items: 'Kraft cups · 6 packs', value: '₹3,120', status: 'On the road', cls: 'is-road' },
+  { id: 'GRB-1046', cafe: 'Ridgeway Coffee', area: 'Jangpura', items: 'House blend · 18 kg', value: '₹14,760', status: 'Packing', cls: 'is-pack' },
+  { id: 'GRB-1045', cafe: 'Tamarind Lane', area: 'Hauz Khas', items: 'Fresh cream · 40 L', value: '₹8,600', status: 'Delivered', cls: 'is-done' },
+];
+const SUP_RUNS = [
+  { name: 'Run 2 · Vasant Kunj', done: 12, total: 14 },
+  { name: 'Run 4 · Greater Kailash', done: 8, total: 11 },
+  { name: 'Run 5 · Malviya Nagar', done: 7, total: 12 },
+];
+
+// Expanded supplier view: the day's orders and delivery runs.
+const SupplierDashboard = () => (
+  <div className="mock-preview-shell is-supplier is-large bd is-supplier-dash" data-lenis-prevent>
+    <div className="bd-head">
+      <div>
+        <div className="bd-title">Today&apos;s orders</div>
+        <div className="bd-sub">Every café order, packed and on its way</div>
+      </div>
+      <span className="bd-pill">Today</span>
+    </div>
+    <div className="bd-kpis">
+      {[
+        { v: '39', l: 'Orders today', t: '+14%' },
+        { v: '98.8%', l: 'Delivered on time', t: '+0.6%' },
+        { v: '₹2.4L', l: 'Billed today', t: '+9%' },
+        { v: '3', l: 'Vans on the road', t: '' },
+      ].map((k) => (
+        <div key={k.l} className="bd-kpi">
+          <div className="bd-kpi-v">{k.v}{k.t && <span className="bd-trend">{k.t}</span>}</div>
+          <div className="bd-kpi-l">{k.l}</div>
         </div>
-      )}
-
-      {/* Search & Filter Header */}
-      <div className="mock-cafe-header">
-        <div className="mock-cafe-search">
-          <Icon.Search size={large ? 13 : 10} />
-          <span>Search beans, milks, syrups...</span>
-        </div>
-        <div className="mock-cafe-pill-row">
-          {(['All', 'Beans', 'Dairy', ...(large ? ['Syrups'] : [])] as const).map((pill) => (
-            <button
-              key={pill}
-              type="button"
-              className={`mock-cafe-pill ${activeFilter === pill ? 'is-active' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveFilter(pill as 'All' | 'Beans' | 'Dairy' | 'Syrups');
-              }}
-            >
-              {pill}
-            </button>
+      ))}
+    </div>
+    <div className="bd-main">
+      <section className="bd-panel" aria-label="Incoming orders">
+        <div className="bd-panel-title">Incoming orders</div>
+        <ul className="bd-orders">
+          {SUP_ORDERS.map((o) => (
+            <li key={o.id}>
+              <span className="bd-ord-av">{o.cafe.slice(0, 1)}</span>
+              <span className="bd-ord-main">
+                <b>{o.cafe}</b> <span>{o.area}</span>
+                <small>{o.items}</small>
+              </span>
+              <span className="bd-ord-val">{o.value}</span>
+              <span className={`bd-status ${o.cls}`}>{o.status}</span>
+            </li>
           ))}
-        </div>
-      </div>
-
-      {/* Product Catalog Grid */}
-      <div className={`mock-cafe-content ${large ? 'is-large' : ''}`}>
-        {/* Product 1: Arabica Beans */}
-        {(activeFilter === 'All' || activeFilter === 'Beans') && (
-          <div className="mock-cafe-card">
-            <div className="mock-cafe-img-wrap">
-              <Image
-                src="/landing/spotlight/arabica-beans.jpg"
-                alt="Arabica Estate Beans"
-                width={320}
-                height={240}
-                sizes="160px"
-                className="mock-cafe-img-photo"
-                loading="lazy"
-              />
-              <span className="mock-cafe-tag">Verified</span>
-            </div>
-            <div className="mock-cafe-card-info">
-              <div className="mock-cafe-card-name">Arabica Estate AA</div>
-              <div className="mock-cafe-card-meta">
-                <span className="mock-cafe-card-price">₹820 / kg</span>
-                <button
-                  type="button"
-                  className={`mock-cafe-add-btn ${addedItems['arabica'] ? 'is-added' : ''}`}
-                  onClick={(e) => handleAdd('arabica', 'Arabica Estate AA', 820, e)}
-                >
-                  {addedItems['arabica'] ? `Added (${addedItems['arabica']})` : '+ Quick PO'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Product 2: Barista Oat Milk */}
-        {(activeFilter === 'All' || activeFilter === 'Dairy') && (
-          <div className="mock-cafe-card">
-            <div className="mock-cafe-img-wrap">
-              <Image
-                src="/landing/spotlight/barista-oat-carton.jpg"
-                alt="Barista Oat Milk"
-                width={320}
-                height={240}
-                sizes="160px"
-                className="mock-cafe-img-photo"
-                loading="lazy"
-              />
-              <span className="mock-cafe-tag">Verified</span>
-            </div>
-            <div className="mock-cafe-card-info">
-              <div className="mock-cafe-card-name">Barista Oat Milk 1L</div>
-              <div className="mock-cafe-card-meta">
-                <span className="mock-cafe-card-price">₹420 / L</span>
-                <button
-                  type="button"
-                  className={`mock-cafe-add-btn ${addedItems['oat'] ? 'is-added' : ''}`}
-                  onClick={(e) => handleAdd('oat', 'Barista Oat Milk 1L', 420, e)}
-                >
-                  {addedItems['oat'] ? `Added (${addedItems['oat']})` : '+ Quick PO'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Product 3 (Shown in large modal or when Syrups selected) */}
-        {large && (activeFilter === 'All' || activeFilter === 'Syrups') && (
-          <div className="mock-cafe-card">
-            <div className="mock-cafe-img-wrap">
-              <Image
-                src="/landing/spotlight/caramel-syrup-bottle.jpg"
-                alt="Caramel Artisan Syrup"
-                width={320}
-                height={240}
-                sizes="160px"
-                className="mock-cafe-img-photo"
-                loading="lazy"
-              />
-              <span className="mock-cafe-tag">Verified</span>
-            </div>
-            <div className="mock-cafe-card-info">
-              <div className="mock-cafe-card-name">Caramel Artisan Syrup</div>
-              <div className="mock-cafe-card-meta">
-                <span className="mock-cafe-card-price">₹680 / btl</span>
-                <button
-                  type="button"
-                  className={`mock-cafe-add-btn ${addedItems['caramel'] ? 'is-added' : ''}`}
-                  onClick={(e) => handleAdd('caramel', 'Caramel Artisan Syrup', 680, e)}
-                >
-                  {addedItems['caramel'] ? `Added (${addedItems['caramel']})` : '+ Quick PO'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Bottom Live Cart Bar */}
-      {large ? (
-        <a
-          href={ECOSYSTEM_LINKS.cafes}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mock-cafe-bottom-strip is-clickable-cart"
-          onClick={(e) => e.stopPropagation()}
-          title="Open live PO order on cafe.gradient365.com"
-        >
-          <div className="mock-cafe-cart-info">
-            <span className="mock-cafe-cart-badge">{cartCount} items</span>
-            <span className="mock-cafe-cart-total">₹{totalPrice.toLocaleString()} PO batch</span>
-          </div>
-          <div className="mock-cafe-dispatch-pill">
-            <span>⚡ Next-Day 8 AM</span>
-            <span className="mock-cafe-checkout-arrow">↗</span>
-          </div>
-        </a>
-      ) : (
-        <div
-          className="mock-cafe-bottom-strip is-clickable-cart"
-          title="Click to expand cafe tab"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen?.();
-          }}
-        >
-          <div className="mock-cafe-cart-info">
-            <span className="mock-cafe-cart-badge">{cartCount} items</span>
-            <span className="mock-cafe-cart-total">₹{totalPrice.toLocaleString()} PO batch</span>
-          </div>
-          <div className="mock-cafe-dispatch-pill">
-            <span>⚡ Next-Day 8 AM</span>
-            <span className="mock-cafe-checkout-arrow">→</span>
-          </div>
-        </div>
-      )}
+        </ul>
+      </section>
+      <section className="bd-panel" aria-label="Delivery runs">
+        <div className="bd-panel-title">Delivery runs</div>
+        <ul className="bd-runs">
+          {SUP_RUNS.map((r) => (
+            <li key={r.name}>
+              <div className="bd-prod-row"><span className="bd-prod-name">{r.name}</span><span className="bd-prod-cafes">{r.done}/{r.total} drops</span></div>
+              <div className="bd-meter"><span style={{ width: `${Math.round((r.done / r.total) * 100)}%` }} /></div>
+            </li>
+          ))}
+        </ul>
+        <div className="bd-note">Next van leaves at 11:20 AM with 4 drops</div>
+      </section>
     </div>
-  );
-};
+  </div>
+);
 
-const SupplierPreview = ({
-  large = false,
-  onOpen,
-}: {
-  large?: boolean;
-  onOpen?: () => void;
-}) => {
-  const [selectedTab, setSelectedTab] = useState<'orders' | 'fleet' | 'analytics'>('orders');
-  const [activeRow, setActiveRow] = useState<number | null>(null);
+const CAFE_PRODUCTS = [
+  { id: 'arabica', name: 'Arabica Estate AA', sup: 'Hillfold Roasters', price: 820, unit: 'kg', img: '/landing/spotlight/arabica-beans.jpg' },
+  { id: 'oat', name: 'Barista Oat Milk', sup: 'Pantry Lane', price: 420, unit: 'L', img: '/landing/spotlight/barista-oat-carton.jpg' },
+  { id: 'caramel', name: 'Caramel Syrup', sup: 'Marigold Foods', price: 680, unit: 'btl', img: '/landing/spotlight/caramel-syrup-bottle.jpg' },
+  { id: 'matcha', name: 'Ceremonial Matcha', sup: 'Sundial', price: 1890, unit: 'tin', img: '/landing/spotlight/ceremonial-matcha-tin.jpg' },
+];
 
+// Expanded café view: browse, add to the basket, see the delivery slot.
+const CafeDashboard = () => {
+  const [basket, setBasket] = useState<Record<string, number>>({ arabica: 2, oat: 6 });
+  const add = (id: string) => setBasket((b) => ({ ...b, [id]: (b[id] ?? 0) + 1 }));
+  const lines = CAFE_PRODUCTS.filter((p) => basket[p.id]);
+  const total = lines.reduce((sum, p) => sum + p.price * basket[p.id], 0);
   return (
-    <div className={`mock-preview-shell is-supplier ${large ? 'is-large' : ''}`}>
-      {!large && (
-        <div className="eco-preview-chrome">
-          <div className="eco-preview-dots">
-            <div className="eco-preview-dot is-red" />
-            <div className="eco-preview-dot is-yellow" />
-            <div className="eco-preview-dot is-green" />
-          </div>
-          <a
-            href={ECOSYSTEM_LINKS.suppliers}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="eco-preview-address is-link"
-            onClick={(e) => e.stopPropagation()}
-            title="Visit supplier.gradient365.com"
-          >
-            <span className="eco-address-lock">🔒</span> supplier.gradient365.com <span className="eco-address-ext">↗</span>
-          </a>
+    <div className="mock-preview-shell is-cafe is-large bd is-cafe-dash" data-lenis-prevent>
+      <div className="bd-head">
+        <div>
+          <div className="bd-title">Order supplies</div>
+          <div className="bd-sub">Tamarind Lane Cafe · Hauz Khas</div>
         </div>
-      )}
-
-      <div className="mock-sup-split">
-        {/* Dark Green Sidebar with Icons */}
-        <div className="mock-sup-sidebar">
-          <button
-            type="button"
-            className={`mock-sup-icon ${selectedTab === 'orders' ? 'is-active' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedTab('orders');
-            }}
-            title="Orders Feed"
-          >
-            <Icon.Box size={large ? 16 : 12} />
-          </button>
-          <button
-            type="button"
-            className={`mock-sup-icon ${selectedTab === 'fleet' ? 'is-active' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedTab('fleet');
-            }}
-            title="Fleet Dispatch"
-          >
-            <Icon.Truck size={large ? 16 : 12} />
-          </button>
-          <button
-            type="button"
-            className={`mock-sup-icon ${selectedTab === 'analytics' ? 'is-active' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedTab('analytics');
-            }}
-            title="SLA Analytics"
-          >
-            <Icon.Chart size={large ? 16 : 12} />
-          </button>
-        </div>
-
-        {/* Main Fulfillment Feed */}
-        <div className="mock-sup-main">
-          {/* KPI Row */}
-          <div className="mock-sup-kpi">
-            <div className="mock-sup-kpi-box">
-              <div className="mock-sup-kpi-top">
-                <span className="mock-sup-kpi-val">39</span>
-                <span className="mock-sup-kpi-trend">+14%</span>
-              </div>
-              <div className="mock-sup-kpi-lbl">Orders Today</div>
-            </div>
-            <div className="mock-sup-kpi-box">
-              <div className="mock-sup-kpi-top">
-                <span className="mock-sup-kpi-val">98.8%</span>
-                <span className="mock-sup-kpi-trend is-sla">Target</span>
-              </div>
-              <div className="mock-sup-kpi-lbl">On-Time SLA</div>
-            </div>
-          </div>
-
-          {/* Live Orders Stream */}
-          <div className="mock-sup-orders-list">
-            {[
-              { id: '#GRB-1049', cafe: 'Blue Tokai · 12kg', badge: 'New PO', badgeClass: 'is-new' },
-              { id: '#GRB-1048', cafe: 'Third Wave · 24L', badge: 'Fulfilling', badgeClass: 'is-transit' },
-              { id: '#GRB-1047', cafe: 'Subko Roasters · 6pk', badge: 'Dispatched', badgeClass: 'is-dispatched' },
-              ...(large
-                ? [{ id: '#GRB-1046', cafe: 'Araku Coffee · 18kg', badge: 'Ready', badgeClass: 'is-new' }]
-                : []),
-            ].map((order, idx) => (
-              <div
-                key={order.id}
-                className={`mock-sup-row ${activeRow === idx ? 'is-selected' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveRow(activeRow === idx ? null : idx);
-                }}
-              >
-                <div className="mock-sup-row-left">
-                  <span className="mock-sup-order-id">{order.id}</span>
-                  <span className="mock-sup-order-cafe">{order.cafe}</span>
-                </div>
-                <span className={`mock-sup-badge ${order.badgeClass}`}>{order.badge}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom Fleet Status Bar */}
-          {large ? (
-            <a
-              href={ECOSYSTEM_LINKS.suppliers}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mock-sup-bottom-strip is-clickable-fleet"
-              onClick={(e) => e.stopPropagation()}
-              title="Open Live Fleet Route on supplier.gradient365.com"
-            >
-              <div className="mock-sup-fleet-status">
-                <span className="mock-sup-fleet-dot" />
-                <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
-              </div>
-              <span className="mock-sup-eta">ETA 11:20 AM ↗</span>
-            </a>
-          ) : (
-            <div
-              className="mock-sup-bottom-strip is-clickable-fleet"
-              title="Click to expand supplier tab"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpen?.();
-              }}
-            >
-              <div className="mock-sup-fleet-status">
-                <span className="mock-sup-fleet-dot" />
-                <span className="mock-sup-fleet-text">Fleet Route #3 · 4 drops remaining</span>
-              </div>
-              <span className="mock-sup-eta">ETA 11:20 AM →</span>
-            </div>
-          )}
-        </div>
+        <span className="bd-pill">Delivery tomorrow, 8 AM</span>
       </div>
-    </div>
-  );
-};
-
-const BrandPreview = ({
-  large = false,
-  onOpen,
-}: {
-  large?: boolean;
-  onOpen?: () => void;
-}) => {
-  const [hoveredBar, setHoveredBar] = useState<number | null>(null);
-
-  const bars = [
-    { height: 42, label: 'W1', value: '42 POs · ₹3.4L' },
-    { height: 60, label: 'W2', value: '60 POs · ₹4.9L' },
-    { height: 78, label: 'W3', value: '78 POs · ₹6.2L' },
-    { height: 95, label: 'W4', value: '95 POs · ₹7.8L' },
-    { height: 68, label: 'W5', value: '68 POs · ₹5.5L' },
-  ];
-
-  return (
-    <div className={`mock-preview-shell is-brand ${large ? 'is-large' : ''}`}>
-      {!large && (
-        <div className="eco-preview-chrome">
-          <div className="eco-preview-dots">
-            <div className="eco-preview-dot is-red" />
-            <div className="eco-preview-dot is-yellow" />
-            <div className="eco-preview-dot is-green" />
-          </div>
-          <a
-            href={ECOSYSTEM_LINKS.brands}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="eco-preview-address is-link"
-            onClick={(e) => e.stopPropagation()}
-            title="Visit brand.gradient365.com"
-          >
-            <span className="eco-address-lock">🔒</span> brand.gradient365.com <span className="eco-address-ext">↗</span>
-          </a>
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="mock-brand-header">
-        <div className="mock-brand-title-wrap">
-          <div className="mock-brand-title">Café Adoption</div>
-          <div className="mock-brand-sub">Demand velocity</div>
-        </div>
-        <span className="mock-brand-period-pill">Last 30 days</span>
-      </div>
-
-      {/* Animated Bar Chart */}
-      <div className="mock-brand-chart">
-        {bars.map((bar, i) => (
-          <div
-            key={i}
-            className="mock-brand-bar-col"
-            onMouseEnter={() => setHoveredBar(i)}
-            onMouseLeave={() => setHoveredBar(null)}
-          >
-            {hoveredBar === i && <div className="mock-brand-tooltip">{bar.value}</div>}
-            <div className="mock-brand-bar">
-              <motion.div
-                className="mock-brand-bar-fill"
-                initial={{ height: '0%' }}
-                animate={{ height: `${bar.height}%` }}
-                transition={{ duration: 1.1, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              />
-            </div>
-            <span className="mock-brand-bar-lbl">{bar.label}</span>
+      <div className="bd-kpis">
+        {[
+          { v: '₹42,180', l: 'Spent this month', t: '8% less' },
+          { v: '14', l: 'Orders this month', t: '' },
+          { v: '6', l: 'Suppliers, one bill', t: '' },
+          { v: '0', l: 'Missed deliveries', t: '' },
+        ].map((k) => (
+          <div key={k.l} className="bd-kpi">
+            <div className="bd-kpi-v">{k.v}{k.t && <span className="bd-trend">{k.t}</span>}</div>
+            <div className="bd-kpi-l">{k.l}</div>
           </div>
         ))}
       </div>
-
-      {/* Stats Row */}
-      <div className="mock-brand-stats">
-        <div className="mock-brand-stat-box">
-          <div className="mock-brand-stat-top">
-            <span className="mock-brand-stat-val">124</span>
-            <span className="mock-brand-stat-trend">+18.4%</span>
+      <div className="bd-main is-cafe-main">
+        <section className="bd-panel" aria-label="Products">
+          <div className="bd-panel-title">Reorder your usuals</div>
+          <div className="bd-shelf">
+            {CAFE_PRODUCTS.map((p) => (
+              <div key={p.id} className="bd-item">
+                <Image src={p.img} alt={p.name} width={240} height={180} sizes="200px" className="bd-item-img" />
+                <div className="bd-item-name">{p.name}</div>
+                <div className="bd-item-sup">{p.sup}</div>
+                <div className="bd-item-foot">
+                  <span>₹{p.price.toLocaleString('en-IN')} / {p.unit}</span>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); add(p.id); }}>
+                    {basket[p.id] ? `${basket[p.id]} added` : 'Add'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="mock-brand-stat-lbl">Cafés Reached</div>
-        </div>
-        <div className="mock-brand-stat-box">
-          <div className="mock-brand-stat-top">
-            <span className="mock-brand-stat-val">25.0%</span>
-            <span className="mock-brand-stat-trend">+4.2%</span>
-          </div>
-          <div className="mock-brand-stat-lbl">Repeat POs</div>
-        </div>
+        </section>
+        <section className="bd-panel" aria-label="Basket">
+          <div className="bd-panel-title">Basket</div>
+          <ul className="bd-basket">
+            {lines.map((p) => (
+              <li key={p.id}><span>{basket[p.id]} × {p.name}</span><b>₹{(p.price * basket[p.id]).toLocaleString('en-IN')}</b></li>
+            ))}
+          </ul>
+          <div className="bd-total"><span>Total</span><b>₹{total.toLocaleString('en-IN')}</b></div>
+          <div className="bd-cta">Place order</div>
+          <div className="bd-note">Split across {new Set(lines.map((p) => p.sup)).size} suppliers, one delivery</div>
+        </section>
       </div>
-
-      {/* Bottom Top-SKUs Feed */}
-      {large ? (
-        <a
-          href={ECOSYSTEM_LINKS.brands}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mock-brand-bottom-strip is-clickable-brand"
-          onClick={(e) => e.stopPropagation()}
-          title="View SKU Intelligence on brand.gradient365.com"
-        >
-          <div className="mock-brand-sku-row">
-            <span className="mock-brand-sku-name">Arabica Estate AA</span>
-            <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
-          </div>
-          <div className="mock-brand-sku-row">
-            <span className="mock-brand-sku-name">Barista Oat Milk</span>
-            <span className="mock-brand-sku-metric">64 cafés · 89% retention ↗</span>
-          </div>
-        </a>
-      ) : (
-        <div
-          className="mock-brand-bottom-strip is-clickable-brand"
-          title="Click to expand brand tab"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen?.();
-          }}
-        >
-          <div className="mock-brand-sku-row">
-            <span className="mock-brand-sku-name">Arabica Estate AA</span>
-            <span className="mock-brand-sku-metric">88 cafés · 94% retention</span>
-          </div>
-          <div className="mock-brand-sku-row">
-            <span className="mock-brand-sku-name">Barista Oat Milk</span>
-            <span className="mock-brand-sku-metric">64 cafés · 89% retention →</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
+
+// Expanded brand view: a full dashboard instead of the card's bar strip stretched to window size.
+const BRAND_PRODUCTS = [
+  { name: 'Arabica Estate AA', cafes: 88, retention: 94, img: '/landing/spotlight/arabica-beans.jpg' },
+  { name: 'Barista Oat Milk 1L', cafes: 64, retention: 89, img: '/landing/spotlight/barista-oat-carton.jpg' },
+  { name: 'Caramel Artisan Syrup', cafes: 41, retention: 81, img: '/landing/spotlight/caramel-syrup-bottle.jpg' },
+  { name: 'Ceremonial Matcha', cafes: 27, retention: 72, img: '/landing/spotlight/ceremonial-matcha-tin.jpg' },
+];
+const BRAND_AREAS = [
+  { area: 'Hauz Khas', growth: '+24%' },
+  { area: 'Saket', growth: '+17%' },
+  { area: 'Greater Kailash', growth: '+11%' },
+  { area: 'Malviya Nagar', growth: '+8%' },
+];
+
+const BrandDashboard = ({ bars = BRAND_BARS }: { bars?: { height: number; label: string; value: string }[] }) => (
+  <div className="mock-preview-shell is-brand is-large bd" data-lenis-prevent>
+    <div className="bd-head">
+      <div>
+        <div className="bd-title">Café adoption</div>
+        <div className="bd-sub">How your products are moving through cafés</div>
+      </div>
+      <span className="bd-pill">Last 30 days</span>
+    </div>
+
+    <div className="bd-kpis">
+      {[
+        { v: '124', l: 'Cafés reached', t: '+18.4%' },
+        { v: '25.0%', l: 'Repeat purchase orders', t: '+4.2%' },
+        { v: '343', l: 'Purchase orders', t: '+31%' },
+        { v: '₹27.8L', l: 'Order value', t: '+22%' },
+      ].map((k) => (
+        <div key={k.l} className="bd-kpi">
+          <div className="bd-kpi-v">{k.v}<span className="bd-trend">{k.t}</span></div>
+          <div className="bd-kpi-l">{k.l}</div>
+        </div>
+      ))}
+    </div>
+
+    <div className="bd-main">
+      <section className="bd-panel bd-chart-panel" aria-label="Weekly purchase orders">
+        <div className="bd-panel-title">Weekly purchase orders</div>
+        <div className="bd-chart">
+          <div className="bd-grid" aria-hidden="true"><span>100</span><span>50</span><span>0</span></div>
+          <div className="bd-bars">
+            {bars.map((bar, i) => (
+              <div key={bar.label} className={`bd-bar-col${bar.height === Math.max(...bars.map((b) => b.height)) ? ' is-peak' : ''}`} title={bar.value}>
+                <span className="bd-bar-val">{bar.height}</span>
+                <div className="bd-bar-track">
+                  <motion.div
+                    className="bd-bar-fill"
+                    initial={{ height: '0%' }}
+                    animate={{ height: `${bar.height}%` }}
+                    transition={{ duration: 0.9, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                </div>
+                <span className="bd-bar-lbl">{bar.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bd-panel" aria-label="Top products">
+        <div className="bd-panel-title">Top products</div>
+        <ul className="bd-products">
+          {BRAND_PRODUCTS.map((p) => (
+            <li key={p.name}>
+              <Image src={p.img} alt="" width={80} height={80} sizes="40px" className="bd-prod-img" />
+              <div className="bd-prod-body">
+              <div className="bd-prod-row"><span className="bd-prod-name">{p.name}</span><span className="bd-prod-cafes">{p.cafes} cafés</span></div>
+              <div className="bd-meter"><span style={{ width: `${p.retention}%` }} /></div>
+              <div className="bd-prod-ret">{p.retention}% reorder</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <div className="bd-areas">
+      <span className="bd-areas-lbl">Growing fastest</span>
+      {BRAND_AREAS.map((a) => (
+        <span key={a.area} className="bd-area">{a.area} <b>{a.growth}</b></span>
+      ))}
+    </div>
+  </div>
+);
 
 // ─── STAKEHOLDER CARDS CONFIG ───
 
@@ -527,8 +298,8 @@ const CARDS = [
       'Consolidated monthly supplier invoices',
     ],
     link: ECOSYSTEM_LINKS.cafes,
-    miniPreview: (onOpen?: () => void) => <CafePreview onOpen={onOpen} />,
-    largePreview: <CafePreview large />,
+    miniPreview: () => <MiniFrame href={ECOSYSTEM_LINKS.cafes}><CafeDashboard /></MiniFrame>,
+    largePreview: <CafeDashboard />,
   },
   {
     id: 'suppliers',
@@ -539,7 +310,7 @@ const CARDS = [
     theme: 'supplier',
     color: '#22C55E',
     desc: 'Receive wholesale orders and manage dispatch.',
-    headline: 'Receive wholesale orders and run dispatch',
+    headline: 'Take café orders and run dispatch',
     expandedTitle: 'Fulfill wholesale demand without paperwork chaos.',
     expandedDesc:
       'Receive inbound café purchase orders instantly, streamline fulfillment queues, route local delivery fleets, and guarantee 99%+ on-time SLAs.',
@@ -551,8 +322,8 @@ const CARDS = [
       'Real-time SLA performance & fulfillment score',
     ],
     link: ECOSYSTEM_LINKS.suppliers,
-    miniPreview: (onOpen?: () => void) => <SupplierPreview onOpen={onOpen} />,
-    largePreview: <SupplierPreview large />,
+    miniPreview: () => <MiniFrame href={ECOSYSTEM_LINKS.suppliers}><SupplierDashboard /></MiniFrame>,
+    largePreview: <SupplierDashboard />,
   },
   {
     id: 'brands',
@@ -575,8 +346,8 @@ const CARDS = [
       'Real-time brand GMV analytics & growth insights',
     ],
     link: ECOSYSTEM_LINKS.brands,
-    miniPreview: (onOpen?: () => void) => <BrandPreview onOpen={onOpen} />,
-    largePreview: <BrandPreview large />,
+    miniPreview: () => <MiniFrame href={ECOSYSTEM_LINKS.brands}><BrandDashboard /></MiniFrame>,
+    largePreview: <BrandDashboard />,
   },
 ];
 
@@ -727,8 +498,17 @@ export function EcosystemCards() {
                 >
                   <div className="eco-card-inner">
                     <div className="eco-bento-head">
-                      <span className="eco-bento-label"><i />{card.index} · {card.title}</span>
+                      <span className="eco-bento-label"><i />{card.title}</span>
                       <h3 className="eco-bento-title">{card.headline}</h3>
+                      <a
+                        href={card.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="eco-bento-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {card.link.replace('https://', '')} <span aria-hidden="true">↗</span>
+                      </a>
                       <button
                         type="button"
                         className="eco-bento-expand"
@@ -746,20 +526,7 @@ export function EcosystemCards() {
                         openCard(card.id, e);
                       }}
                     >
-                      {card.miniPreview(() => openCard(card.id))}
-                    </div>
-
-                    <div className="eco-bento-foot">
-                      <span className="eco-bento-domain">{card.link.replace('https://', '')}</span>
-                      <a
-                        href={card.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="eco-bento-link"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Visit platform <span aria-hidden="true">↗</span>
-                      </a>
+                      {card.miniPreview()}
                     </div>
                   </div>
                 </div>

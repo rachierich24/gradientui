@@ -15,7 +15,7 @@ export function SupplierBenefits() {
             <span>OPERATIONAL EXCELLENCE</span>
           </div>
           <h2 className="sup-section-title">
-            Why 340+ wholesale suppliers run their operations on Grabbit.
+            Why wholesale suppliers run their operations on Gradient.
           </h2>
           <p className="sup-section-desc">
             Eliminate communication fragmentation, protect your margins with private pricing, and automate daily production scheduling.
@@ -40,7 +40,7 @@ export function SupplierBenefits() {
               {/* Left: Raw WhatsApp Message */}
               <div className="sup-wa-chat-bubble">
                 <div className="sup-wa-sender">
-                  <span>Priya (Blue Tokai)</span>
+                  <span>Priya (Hillfold)</span>
                   <span style={{ fontWeight: 400, opacity: 0.7 }}>08:42 AM</span>
                 </div>
                 <div>
