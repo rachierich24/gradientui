@@ -314,7 +314,7 @@
   z-index: 10;
   margin: 0 24px;
   align-self: stretch;
-  padding-top: 36px; /* offset for side-column header labels */
+  padding-top: 54px; /* offset for side-column header labels + hub label compensation */
 }
 
 /* Soft concentric halo behind the circle */
