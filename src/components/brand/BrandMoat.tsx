@@ -84,7 +84,7 @@ export function BrandMoat() {
 
             return (
               <div key={card.id} className="bmoat-card-wrap">
-                {/* Oversized Background Number in Electric Purple */}
+                {/* Oversized Background Number in Restrained Violet Contour */}
                 <div
                   className={`bmoat-bg-num ${isHovered ? 'is-lit' : ''}`}
                   aria-hidden="true"
@@ -96,29 +96,29 @@ export function BrandMoat() {
                   className={`bmoat-card ${isHovered ? 'is-hovered' : ''}`}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 14 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.05 }}
                   transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <div className="bmoat-card-inner">
-                    {/* Card Title & Purple Category Pill */}
+                    {/* Top: Card Title & Precision Category Pill */}
                     <div className="bmoat-card-top">
                       <h3 className="bmoat-card-title">{card.title}</h3>
                       <div className="bmoat-pill">{card.pill}</div>
                     </div>
 
-                    {/* Interactive, 3D Product Visual Workspace with Crisp HTML HUD */}
+                    {/* Middle: 3D Product Visual Workspace with Crisp HUD */}
                     <div className="bmoat-graphic-frame">
                       {idx === 0 && <DemandIntelligenceWorkspace />}
                       {idx === 1 && <SamplingFlightsWorkspace />}
                       {idx === 2 && <OrderVelocityWorkspace />}
                     </div>
 
-                    {/* Concise Supporting Description */}
+                    {/* Bottom: Editorial Description */}
                     <p className="bmoat-card-desc">{card.description}</p>
 
-                    {/* Minimal Razor-Sharp Pointers */}
+                    {/* Bottom Divider & Razor-Sharp Pointers */}
                     <ul className="bmoat-pointers">
                       {card.pointers.map((pt, pIdx) => (
                         <li key={pIdx} className="bmoat-pointer-item">
@@ -140,8 +140,9 @@ export function BrandMoat() {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    WORKSPACE 01: DEMAND INTELLIGENCE
-   - Enhanced 3D Coffee Pouch with floating ambient glow and shadow
-   - Continuous interactive forecast telemetry with scrubbable W1-W5 points
+   - Foreground 3D Coffee Pouch with soft contact shadow & violet rim glow
+   - Clean, uncluttered forecast telemetry with scrubbable / auto-cycling points
+   - Single glowing trendline, peak forecast node, zero visual clutter
 ───────────────────────────────────────────────────────────────────────────── */
 interface TelemetryPoint {
   week: string;
@@ -153,11 +154,11 @@ interface TelemetryPoint {
 }
 
 const TELEMETRY_SERIES: TelemetryPoint[] = [
-  { week: 'W1', stageLabel: 'Baseline Roast Cycle', volumeKg: 48, growth: '+12%', x: 15, y: 65 },
-  { week: 'W2', stageLabel: 'Secondary Roaster Pull', volumeKg: 68, growth: '+19%', x: 48, y: 58 },
-  { week: 'W3', stageLabel: 'Hauz Khas Cluster Surge', volumeKg: 94, growth: '+25%', x: 82, y: 46 },
-  { week: 'W4', stageLabel: 'Multi-Outlet Depletion', volumeKg: 118, growth: '+29%', x: 115, y: 32 },
-  { week: 'W5', stageLabel: 'Peak Forecast Order Window', volumeKg: 142, growth: '+34%', x: 150, y: 18 },
+  { week: 'W1', stageLabel: 'Baseline Roast Cycle', volumeKg: 48, growth: '+12%', x: 12, y: 58 },
+  { week: 'W2', stageLabel: 'Secondary Roaster Pull', volumeKg: 68, growth: '+19%', x: 46, y: 52 },
+  { week: 'W3', stageLabel: 'Hauz Khas Cluster Surge', volumeKg: 94, growth: '+25%', x: 80, y: 42 },
+  { week: 'W4', stageLabel: 'Multi-Outlet Depletion', volumeKg: 118, growth: '+29%', x: 114, y: 28 },
+  { week: 'W5', stageLabel: 'Peak Forecast Order Window', volumeKg: 142, growth: '+34%', x: 148, y: 14 },
 ];
 
 function DemandIntelligenceWorkspace() {
@@ -168,13 +169,13 @@ function DemandIntelligenceWorkspace() {
     if (isPaused) return;
     const interval = setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % TELEMETRY_SERIES.length);
-    }, 4200);
+    }, 4500);
     return () => clearInterval(interval);
   }, [isPaused]);
 
   const activePoint = TELEMETRY_SERIES[activeIdx];
-  const tooltipX = Math.max(10, Math.min(115, activePoint.x - 20));
-  const tooltipY = Math.max(0, activePoint.y - 18);
+  const tooltipX = Math.max(6, Math.min(98, activePoint.x - 26));
+  const tooltipY = Math.max(1, activePoint.y - 12);
 
   return (
     <div
@@ -182,15 +183,14 @@ function DemandIntelligenceWorkspace() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background CAD Grid */}
+      {/* Subtle Ground CAD Grid */}
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
-        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
-        <line x1="50" y1="178" x2="210" y2="228" stroke="rgba(168, 85, 247, 0.1)" strokeWidth="0.7" />
-        <line x1="90" y1="165" x2="250" y2="215" stroke="rgba(168, 85, 247, 0.1)" strokeWidth="0.7" />
-        <line x1="130" y1="152" x2="290" y2="202" stroke="rgba(168, 85, 247, 0.1)" strokeWidth="0.7" />
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.08)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.015)" />
+        <line x1="50" y1="178" x2="210" y2="228" stroke="rgba(168, 85, 247, 0.06)" strokeWidth="0.6" />
+        <line x1="90" y1="165" x2="250" y2="215" stroke="rgba(168, 85, 247, 0.06)" strokeWidth="0.6" />
       </svg>
 
-      {/* 3D Product Stage (Left) */}
+      {/* Foreground 3D Product (Left) */}
       <div className="bmoat-stage-left">
         <img
           src="/brand/pouch_3d_cutout.png"
@@ -209,56 +209,55 @@ function DemandIntelligenceWorkspace() {
             <span>Arabica AA Roast</span>
           </div>
           <div className="bmoat-hud-capsule-purple">
-            {activePoint.growth} RISING
+            {activePoint.growth} Surge
           </div>
         </div>
 
-        {/* Interactive Scrubbable Trendline */}
+        {/* Clean Forecast Chart */}
         <div className="bmoat-hud-chart-box">
-          <svg className="bmoat-hud-chart-svg" viewBox="0 0 165 75" fill="none">
+          <svg className="bmoat-hud-chart-svg" viewBox="0 0 160 68" fill="none">
             <defs>
               <linearGradient id="curveGrad1" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#A855F7" />
-                <stop offset="50%" stopColor="#C084FC" />
+                <stop offset="0%" stopColor="#9333EA" />
+                <stop offset="60%" stopColor="#C084FC" />
                 <stop offset="100%" stopColor="#FFFFFF" />
               </linearGradient>
               <linearGradient id="areaGrad1" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#9333EA" stopOpacity="0.38" />
-                <stop offset="60%" stopColor="#7C4DDB" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#0B0A14" stopOpacity="0" />
+                <stop offset="0%" stopColor="#A855F7" stopOpacity="0.22" />
+                <stop offset="100%" stopColor="#08070D" stopOpacity="0" />
               </linearGradient>
             </defs>
 
-            {/* Horizontal Grid Guides */}
-            <line x1="8" y1="20" x2="158" y2="20" stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
-            <line x1="8" y1="42" x2="158" y2="42" stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
-            <line x1="8" y1="64" x2="158" y2="64" stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
+            {/* Restrained Guide Lines */}
+            <line x1="5" y1="18" x2="155" y2="18" stroke="rgba(255,255,255,0.04)" strokeDasharray="2 2" />
+            <line x1="5" y1="38" x2="155" y2="38" stroke="rgba(255,255,255,0.04)" strokeDasharray="2 2" />
+            <line x1="5" y1="58" x2="155" y2="58" stroke="rgba(255,255,255,0.04)" strokeDasharray="2 2" />
 
             {/* Shaded Area Under Curve */}
             <path
-              d="M 15 65 Q 45 60, 82 46 T 150 18 L 150 68 L 15 68 Z"
+              d="M 12 58 Q 45 54, 80 42 T 148 14 L 148 62 L 12 62 Z"
               fill="url(#areaGrad1)"
             />
 
             {/* Glowing Line */}
             <path
-              d="M 15 65 Q 45 60, 82 46 T 150 18"
+              d="M 12 58 Q 45 54, 80 42 T 148 14"
               fill="none"
               stroke="url(#curveGrad1)"
-              strokeWidth="2.4"
+              strokeWidth="2.2"
               strokeLinecap="round"
             />
 
-            {/* Dynamic Laser Guide */}
+            {/* Dynamic Laser Guide on Active Node */}
             <line
               x1={activePoint.x}
               y1={activePoint.y}
               x2={activePoint.x}
-              y2="66"
+              y2="60"
               stroke="#C084FC"
-              strokeWidth="1"
+              strokeWidth="0.9"
               strokeDasharray="2 2"
-              strokeOpacity="0.75"
+              strokeOpacity="0.6"
             />
 
             {/* 5 Scrub Points */}
@@ -277,14 +276,11 @@ function DemandIntelligenceWorkspace() {
                   }}
                   style={{ cursor: 'pointer' }}
                 >
-                  <circle cx={pt.x} cy={pt.y} r="10" fill="transparent" />
+                  <circle cx={pt.x} cy={pt.y} r="8" fill="transparent" />
                   {isSelected ? (
-                    <>
-                      <circle cx={pt.x} cy={pt.y} r="4.5" fill="#FFFFFF" />
-                      <circle cx={pt.x} cy={pt.y} r="2.2" fill="#6D28D9" />
-                    </>
+                    <circle cx={pt.x} cy={pt.y} r="4.2" fill="#FFFFFF" stroke="#9333EA" strokeWidth="1.8" />
                   ) : (
-                    <circle cx={pt.x} cy={pt.y} r="2.4" fill="#1C182F" stroke="#A855F7" strokeWidth="0.8" />
+                    <circle cx={pt.x} cy={pt.y} r="2.2" fill="#1C182F" stroke="#A855F7" strokeWidth="0.7" />
                   )}
                 </g>
               );
@@ -292,14 +288,14 @@ function DemandIntelligenceWorkspace() {
 
             {/* Floating Tooltip Pill */}
             <g transform={`translate(${tooltipX}, ${tooltipY})`}>
-              <rect width="38" height="15" rx="4" fill="#6D28D9" stroke="#A855F7" strokeWidth="0.6" />
-              <text x="19" y="11" fill="#FFFFFF" fontSize="8" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
-                {activePoint.volumeKg} kg
+              <rect width="52" height="15" rx="4" fill="#581C87" stroke="#A855F7" strokeWidth="0.6" />
+              <text x="26" y="10.5" fill="#FFFFFF" fontSize="7.5" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
+                {activePoint.volumeKg} kg · {activeIdx === 4 ? 'Peak' : 'Forecast'}
               </text>
             </g>
           </svg>
 
-          {/* Crisp X-Axis HTML Labels */}
+          {/* Crisp X-Axis Labels */}
           <div className="bmoat-hud-axis-row">
             {TELEMETRY_SERIES.map((pt, pIdx) => (
               <span
@@ -320,10 +316,10 @@ function DemandIntelligenceWorkspace() {
           </div>
         </div>
 
-        {/* Dynamic Footer Meta */}
+        {/* Dynamic Footer Meta with Safe Spacing */}
         <div className="bmoat-hud-footer-row">
-          <span className="bmoat-hud-footer-desc">{activePoint.stageLabel}</span>
-          <span className="bmoat-hud-footer-tag">AUTO-RUNNING</span>
+          <span className="bmoat-hud-footer-desc">Hauz Khas Cluster</span>
+          <strong className="bmoat-hud-footer-tag">TELEMETRY ACTIVE</strong>
         </div>
       </div>
     </div>
@@ -332,51 +328,48 @@ function DemandIntelligenceWorkspace() {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    WORKSPACE 02: DIRECT CAFÉ DISCOVERY
-   - Enhanced 3D Craft Glass Bottle on Turntable Pedestal
-   - Dynamic Laser Spline Connector with streaming animated photon node
-   - Interactive Venue Tabs & Sensory Cupping HUD
+   - Large, recognizable 3D Craft Glass Bottle on dark pedestal
+   - Restrained hairline connector spline with calm streaming photon
+   - Focused, single-window trial preview: one product, one café identity,
+     one trial status, one tasting evaluation
 ───────────────────────────────────────────────────────────────────────────── */
-interface TrialStage {
+interface TrialVenue {
   id: string;
-  tabLabel: string;
+  stageNum: string;
+  stageShort: string;
   venue: string;
   location: string;
-  lifecycleStatus: string;
-  evaluator: string;
-  sensoryQuote: string;
   cuppingScore: string;
+  sensoryQuote: string;
 }
 
-const TRIAL_LIFECYCLE: TrialStage[] = [
+const TRIAL_VENUES: TrialVenue[] = [
   {
     id: 'tamarind',
-    tabLabel: 'Tamarind',
+    stageNum: '02',
+    stageShort: 'In Brew',
     venue: 'Tamarind Lane Roastery',
     location: 'Hauz Khas · Roaster Tier 1 (42 Venues)',
-    lifecycleStatus: 'TRIAL ACTIVE · IN BREW',
-    evaluator: 'Head Barista Tasting Evaluation',
-    sensoryQuote: '"Dense microfoam balance & zero curdling approved"',
-    cuppingScore: '★ 4.8',
+    cuppingScore: '★ 4.9',
+    sensoryQuote: '“Dense microfoam balance & zero curdling approved”',
   },
   {
     id: 'hillfold',
-    tabLabel: 'Hillfold',
+    stageNum: '01',
+    stageShort: 'Active',
     venue: 'Hillfold Espresso Lab',
     location: 'Indiranagar · Multi-Outlet Barista Team',
-    lifecycleStatus: 'EN ROUTE · VAN SLOT 02',
-    evaluator: 'Cold-Chain Dispatch Verification',
-    sensoryQuote: '"Sample flight scheduled for calibration"',
-    cuppingScore: 'CALIB',
+    cuppingScore: '★ 4.8',
+    sensoryQuote: '“Clean cold-chain delivery and excellent crema stability”',
   },
   {
     id: 'bramblegate',
-    tabLabel: 'Bramble',
-    venue: 'Bramblegate Roasters',
+    stageNum: '03',
+    stageShort: 'Ready',
+    venue: 'Bramblegate Roastery',
     location: 'Bandra West · Artisanal Single Origin',
-    lifecycleStatus: 'EVALUATED · STANDING PO',
-    evaluator: 'Lead Roaster Sensory Protocol',
-    sensoryQuote: '"Signature iced vanilla latte test approved"',
     cuppingScore: '★ 5.0',
+    sensoryQuote: '“Signature cold brew flight evaluated and approved”',
   },
 ];
 
@@ -387,12 +380,12 @@ function SamplingFlightsWorkspace() {
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
-      setSelectedIdx((prev) => (prev + 1) % TRIAL_LIFECYCLE.length);
-    }, 4200);
+      setSelectedIdx((prev) => (prev + 1) % TRIAL_VENUES.length);
+    }, 4800);
     return () => clearInterval(timer);
   }, [isPaused]);
 
-  const currentStage = TRIAL_LIFECYCLE[selectedIdx];
+  const currentVenue = TRIAL_VENUES[selectedIdx];
 
   return (
     <div
@@ -400,18 +393,18 @@ function SamplingFlightsWorkspace() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background CAD Grid & Glowing Laser Spline Connector */}
+      {/* Background CAD Grid & Delicate Hairline Spline Connector */}
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
-        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.08)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.015)" />
         {/* Dynamic laser spline connector path from bottle's neck to card */}
-        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(192, 132, 252, 0.65)" strokeWidth="1.2" strokeDasharray="3 3" />
+        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(192, 132, 252, 0.55)" strokeWidth="1.2" strokeDasharray="3 3" />
         {/* Constant Streaming Photon Pulse along the Path */}
         <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 5px #C084FC)">
           <animateMotion dur="2.8s" repeatCount="indefinite" path="M 72 135 C 92 135, 102 102, 114 98" />
         </circle>
       </svg>
 
-      {/* 3D Product Stage with Turntable Base (Left) */}
+      {/* 3D Product Stage on Subtle Pedestal (Left) */}
       <div className="bmoat-stage-left">
         <img
           src="/brand/bottle_3d_cutout.png"
@@ -424,56 +417,36 @@ function SamplingFlightsWorkspace() {
 
       {/* Crisp HTML Glass HUD (Right) */}
       <div className="bmoat-hud-right">
-        {/* Interactive Clickable Venue Tabs */}
-        <div className="bmoat-hud-tabs">
-          {TRIAL_LIFECYCLE.map((stg, sIdx) => {
-            const isTabSelected = selectedIdx === sIdx;
-            return (
-              <button
-                key={stg.id}
-                type="button"
-                className={`bmoat-hud-tab-btn ${isTabSelected ? 'active' : ''}`}
-                onClick={() => {
-                  setSelectedIdx(sIdx);
-                  setIsPaused(true);
-                }}
-              >
-                {stg.tabLabel}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Live Status Row */}
-        <div className="bmoat-hud-row-head" style={{ marginTop: '3px' }}>
+        <div className="bmoat-hud-row-head">
           <div className="bmoat-hud-badge-green">
             <span className="bmoat-live-dot" />
-            <span>{currentStage.lifecycleStatus}</span>
+            <span>Sampling Flight</span>
           </div>
           <div className="bmoat-hud-capsule-purple">
-            STAGE 0{selectedIdx + 1}
+            Stage {currentVenue.stageNum} · {currentVenue.stageShort}
           </div>
         </div>
 
         {/* Venue Information with smooth crossfade */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentStage.id}
-            initial={{ opacity: 0, y: 3 }}
+            key={currentVenue.id}
+            initial={{ opacity: 0, y: 2 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -3 }}
+            exit={{ opacity: 0, y: -2 }}
             transition={{ duration: 0.22 }}
             className="bmoat-hud-venue-block"
           >
-            <div className="bmoat-hud-venue-title">{currentStage.venue}</div>
-            <div className="bmoat-hud-venue-meta">{currentStage.location}</div>
+            <div className="bmoat-hud-venue-title">{currentVenue.venue}</div>
+            <div className="bmoat-hud-venue-meta">{currentVenue.location}</div>
           </motion.div>
         </AnimatePresence>
 
         {/* Sensory Evaluation Box with smooth crossfade */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentStage.id + '-sensory'}
+            key={currentVenue.id + '-sensory'}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -481,12 +454,18 @@ function SamplingFlightsWorkspace() {
             className="bmoat-hud-sensory-box"
           >
             <div className="bmoat-hud-sensory-head">
-              <span>{currentStage.evaluator}</span>
-              <span className="bmoat-hud-score-badge">{currentStage.cuppingScore}</span>
+              <span>Head Barista Sensory Score</span>
+              <span className="bmoat-hud-score-badge">{currentVenue.cuppingScore}</span>
             </div>
-            <p className="bmoat-hud-sensory-quote">{currentStage.sensoryQuote}</p>
+            <p className="bmoat-hud-sensory-quote">{currentVenue.sensoryQuote}</p>
           </motion.div>
         </AnimatePresence>
+
+        {/* Footer Status with Safe Breathing Room */}
+        <div className="bmoat-hud-footer-row">
+          <span>Cold-Chain Dispatch</span>
+          <strong className="bmoat-hud-footer-tag">CALIBRATED</strong>
+        </div>
       </div>
     </div>
   );
@@ -494,9 +473,9 @@ function SamplingFlightsWorkspace() {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    WORKSPACE 03: AUTOMATED REORDERS
-   - Enhanced 3D Barista Oat Milk Carton with grounded stage
-   - Branching Highway Connector Lines with continuous streaming packet
-   - Stacked Interactive Purchase Order Rows
+   - Prominent 3D Barista Oat Milk carton with grounded stage
+   - Single clean active PO route connector with animated photon pulse
+   - Three compact café order rows with clear identities and stable dimensions
 ───────────────────────────────────────────────────────────────────────────── */
 interface OrderVelocityRow {
   id: string;
@@ -504,7 +483,7 @@ interface OrderVelocityRow {
   venue: string;
   status: string;
   cases: string;
-  badgeBg: string;
+  avatarBg: string;
   statusColor: string;
   pathD: string;
 }
@@ -516,7 +495,7 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Hillfold Roastery',
     status: 'Net-15 Recurring PO',
     cases: '12 cs',
-    badgeBg: '#6D28D9',
+    avatarBg: '#6D28D9',
     statusColor: '#10B981',
     pathD: 'M 74 110 C 95 110, 102 68, 114 68',
   },
@@ -524,19 +503,19 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     id: 'tamarind',
     initial: 'T',
     venue: 'Tamarind Lane Café',
-    status: 'Order Dispatched · Van 04',
+    status: 'Dispatched · Van 04',
     cases: '8 cs',
-    badgeBg: '#4C1D95',
+    avatarBg: '#3B1B54',
     statusColor: '#93C5FD',
     pathD: 'M 74 110 L 114 112',
   },
   {
     id: 'bramblegate',
     initial: 'B',
-    venue: 'Bramblegate Roasters',
+    venue: 'Bramblegate Roastery',
     status: 'Standing PO · Ready',
     cases: '16 cs',
-    badgeBg: '#3B0764',
+    avatarBg: '#231336',
     statusColor: '#C084FC',
     pathD: 'M 74 110 C 95 110, 102 156, 114 156',
   },
@@ -550,7 +529,7 @@ function OrderVelocityWorkspace() {
     if (isPaused) return;
     const interval = setInterval(() => {
       setActiveRowIdx((prev) => (prev + 1) % VELOCITY_ROWS.length);
-    }, 4200);
+    }, 4500);
     return () => clearInterval(interval);
   }, [isPaused]);
 
@@ -562,22 +541,16 @@ function OrderVelocityWorkspace() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background CAD Grid & Branching Highway Lines */}
+      {/* Background CAD Grid & Active Highway Line */}
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
-        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
-        {/* Dynamic Branching Highway Paths */}
-        {VELOCITY_ROWS.map((row, rIdx) => {
-          const isRowActive = activeRowIdx === rIdx;
-          return (
-            <path
-              key={row.id}
-              d={row.pathD}
-              stroke={isRowActive ? '#C084FC' : 'rgba(168, 85, 247, 0.25)'}
-              strokeWidth={isRowActive ? '1.6' : '1.1'}
-              strokeLinecap="round"
-            />
-          );
-        })}
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.08)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.015)" />
+        {/* Dynamic Highway Path to Active Row */}
+        <path
+          d={activeRow.pathD}
+          stroke="rgba(192, 132, 252, 0.75)"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
         {/* Continuous Streaming Packet along Active Row Path */}
         <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 5px #C084FC)">
           <animateMotion
@@ -587,8 +560,7 @@ function OrderVelocityWorkspace() {
           />
         </circle>
         {/* Connection node on carton */}
-        <circle cx="74" cy="110" r="3.5" fill="#A855F7" />
-        <circle cx="74" cy="110" r="6" stroke="#C084FC" strokeWidth="0.8" opacity="0.6" />
+        <circle cx="74" cy="110" r="3" fill="#A855F7" />
       </svg>
 
       {/* 3D Product Stage (Left) */}
@@ -603,14 +575,14 @@ function OrderVelocityWorkspace() {
 
       {/* Crisp HTML Glass HUD (Right) */}
       <div className="bmoat-hud-right">
-        {/* Scale Header */}
+        {/* Header */}
         <div className="bmoat-hud-row-head">
           <div className="bmoat-hud-badge-green" style={{ color: '#E9D5FF' }}>
-            <span className="bmoat-live-dot" style={{ background: '#A855F7', boxShadow: '0 0 8px #A855F7' }} />
-            <span>ACTIVE VELOCITY</span>
+            <span className="bmoat-live-dot" style={{ background: '#A855F7', boxShadow: '0 0 6px #A855F7' }} />
+            <span>Recurring Velocity</span>
           </div>
-          <div className="bmoat-hud-capsule-purple" style={{ background: '#6D28D9', borderColor: '#A855F7' }}>
-            148 CAFÉS
+          <div className="bmoat-hud-capsule-purple">
+            148 Cafés
           </div>
         </div>
 
@@ -632,7 +604,7 @@ function OrderVelocityWorkspace() {
                   setIsPaused(true);
                 }}
               >
-                <div className="bmoat-hud-po-avatar" style={{ background: row.badgeBg }}>
+                <div className="bmoat-hud-po-avatar" style={{ background: row.avatarBg }}>
                   {row.initial}
                 </div>
                 <div className="bmoat-hud-po-info">
