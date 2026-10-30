@@ -1,10 +1,11 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Brand Portal Transformation Section ("Before vs With Gradient")
-   Light-Mode Luxury Minimalist Aesthetic (Jamie / Linear / Stripe inspired)
+   Magic UI Animated Beam Integration Architecture (Minimal Light Mode)
    - Pristine white background (#FFFFFF) with refined slate & obsidian typography
-   - Iconic dual-column comparison card with luminous organic violet aperture ring
-   - 3 concise, high-contrast operational points per side with precision SVG icons
-   - 5 detailed editorial comparison rows below with interactive hover spotlights
+   - 3-column Animated Beam canvas (Fragmented Inputs → Gradient Hub → Connected Outputs)
+   - Dynamic curved SVG beams with pulsing traveling light gradients
+   - Interactive hover synchronization between nodes and summary cards below
+   - Responsive degradation for tablet and mobile screens
 ───────────────────────────────────────────────────────────────────────── */
 
 .btrans-section {
@@ -24,8 +25,8 @@
   top: 15%;
   left: 50%;
   transform: translate(-50%, -15%);
-  width: 1000px;
-  height: 500px;
+  width: 1100px;
+  height: 520px;
   background: radial-gradient(ellipse 65% 55% at center, rgba(168, 85, 247, 0.08) 0%, rgba(124, 58, 237, 0.02) 50%, transparent 75%);
   pointer-events: none;
   z-index: 0;
@@ -84,469 +85,393 @@
   margin: 0;
 }
 
-/* ─── 2. Minimal Comparison Canvas (Light Mode / White Background) ─── */
-.btrans-minimal-card {
+/* ─── 2. Animated Beam Integration Canvas (White Background) ─────── */
+.btrans-beam-stage {
   position: relative;
   width: 100%;
   min-height: 560px;
   background: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 32px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  padding: clamp(36px, 4vw, 52px) clamp(24px, 4vw, 56px);
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   overflow: hidden;
   box-shadow: 0 24px 64px -16px rgba(124, 58, 237, 0.08), 0 4px 24px rgba(0, 0, 0, 0.03), 0 0 1px rgba(0, 0, 0, 0.06);
-  margin-bottom: 64px;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
   box-sizing: border-box;
 }
 
-/* Ambient background subtle spotlight on white */
-.btrans-minimal-card::before {
+/* Ambient subtle purple spotlight */
+.btrans-beam-stage::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 75% 50%, rgba(168, 85, 247, 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.04) 0%, transparent 60%);
   pointer-events: none;
 }
 
-/* ─── Left Side: Without Gradient ─── */
-.btrans-side-left {
-  padding: clamp(48px, 6vw, 80px) clamp(32px, 4vw, 48px) clamp(48px, 6vw, 80px) clamp(36px, 5vw, 80px);
+/* Ensure AnimatedBeam SVGs are strictly absolute overlays and never participate in flex layout */
+.btrans-beam-stage > svg {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+
+/* Columns */
+.btrans-beam-col {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
   position: relative;
-  z-index: 2;
-  box-sizing: border-box;
+  z-index: 10;
 }
 
-.btrans-side-title {
-  font-size: clamp(30px, 3vw, 40px);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  color: #0F172A;
-  margin: 0 0 32px 0;
-  line-height: 1.15;
+.btrans-beam-col-label {
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
 }
 
-.btrans-points-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.btrans-beam-col-label.left {
+  color: #64748B;
+  text-align: right;
+}
+
+.btrans-beam-col-label.right {
+  color: #7C3AED;
+  text-align: left;
+}
+
+.btrans-node-list {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  width: 100%;
-  max-width: 420px;
+  gap: 20px;
 }
 
-.btrans-point-item {
+/* Left Node Row: Text on Left, Circle on Right */
+.btrans-node-row-left {
   display: flex;
   align-items: center;
   gap: 16px;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.btrans-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
+.btrans-node-row-left .btrans-node-info {
+  text-align: right;
+}
+
+/* Right Node Row: Circle on Left, Text on Right */
+.btrans-node-row-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.btrans-node-row-right .btrans-node-info {
+  text-align: left;
+}
+
+.btrans-node-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btrans-icon-muted {
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
-  color: #64748B;
-}
-
-.btrans-icon-accent {
-  background: rgba(124, 58, 237, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.45);
-  color: #7C3AED;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.18);
-}
-
-.btrans-point-text {
-  font-size: clamp(14px, 1.1vw, 15px);
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-}
-
-.btrans-text-muted {
-  color: #475569;
-  font-weight: 450;
-}
-
-.btrans-text-bright {
-  color: #0F172A;
-  font-weight: 600;
-}
-
-/* ─── Right Side: With Gradient inside Luminous Organic Violet Aperture ─── */
-.btrans-side-right {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 560px;
-  padding: 60px 40px;
-  z-index: 2;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
 
-/* The Luminous Layered Organic Violet Aperture Ring on White Canvas */
-.btrans-aperture-bg {
+.btrans-circle-muted {
+  background: #FFFFFF;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  color: #64748B;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.btrans-circle-accent {
+  background: #FAF5FF;
+  border: 1.5px solid rgba(124, 58, 237, 0.35);
+  color: #7C3AED;
+  box-shadow: 0 8px 20px -6px rgba(124, 58, 237, 0.2);
+}
+
+.btrans-node-circle:hover,
+.btrans-node-row-left:hover .btrans-node-circle,
+.btrans-node-row-right:hover .btrans-node-circle,
+.btrans-node-row-left.is-active .btrans-node-circle,
+.btrans-node-row-right.is-active .btrans-node-circle {
+  border-color: #7C3AED;
+  box-shadow: 0 10px 25px -4px rgba(124, 58, 237, 0.28);
+  transform: scale(1.08);
+}
+
+.btrans-node-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 175px;
+}
+
+.btrans-node-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.btrans-node-row-left.is-active .btrans-node-label,
+.btrans-node-row-right.is-active .btrans-node-label {
+  color: #7C3AED;
+}
+
+.btrans-node-desc {
+  font-size: 11.5px;
+  color: #64748B;
+  line-height: 1.35;
+}
+
+/* ─── Center Column: The Gradient Platform Hub ────────────────────── */
+.btrans-beam-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.btrans-hub-halo {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 550px;
-  height: 550px;
+  transform: translate(-50%, -60%);
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(124, 58, 237, 0.08) 50%, transparent 70%);
+  filter: blur(22px);
   pointer-events: none;
-  z-index: 0;
 }
 
-/* Ambient violet aura on white */
-.btrans-ring-glow {
-  position: absolute;
-  inset: -25px;
+.btrans-hub-circle {
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.32) 15%, rgba(124, 58, 237, 0.1) 48%, transparent 70%);
-  filter: blur(48px);
-}
-
-/* Outer soft organic aura band */
-.btrans-ring-layer-1 {
-  position: absolute;
-  inset: 6px;
-  border-radius: 48% 52% 51% 49% / 53% 47% 53% 47%;
-  border: 42px solid rgba(168, 85, 247, 0.22);
-  filter: blur(14px);
-  transform: rotate(-18deg);
-  animation: btrans-morph-1 14s ease-in-out infinite alternate;
-}
-
-/* Main luminous layered aperture ring */
-.btrans-ring-layer-2 {
-  position: absolute;
-  inset: 18px;
-  border-radius: 50%;
-  border: 44px solid transparent;
-  background: conic-gradient(from 220deg at 50% 50%, #C084FC 0deg, #A855F7 55%, #7C3AED 145%, #6366F1 235%, #9333EA 325%, #C084FC 360deg) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  box-shadow: 0 0 30px rgba(147, 51, 234, 0.35), inset 0 0 20px rgba(124, 58, 237, 0.18);
-  filter: drop-shadow(0 4px 20px rgba(147, 51, 234, 0.35));
-  animation: btrans-spin 32s linear infinite;
-}
-
-/* Secondary organic crescent sheen */
-.btrans-ring-layer-3 {
-  position: absolute;
-  inset: 30px;
-  border-radius: 52% 48% 47% 53% / 48% 52% 48% 52%;
-  border: 24px solid rgba(192, 132, 252, 0.35);
-  filter: blur(6px);
-  transform: rotate(25deg);
-  animation: btrans-morph-2 10s ease-in-out infinite alternate;
-}
-
-/* Clean crisp light center void behind text */
-.btrans-ring-void {
-  position: absolute;
-  inset: 64px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #FFFFFF 0%, #FAFAFD 75%, rgba(245, 243, 255, 0.85) 100%);
-  box-shadow: inset 0 0 30px rgba(124, 58, 237, 0.06);
-}
-
-@keyframes btrans-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes btrans-morph-1 {
-  0% { border-radius: 48% 52% 51% 49% / 53% 47% 53% 47%; transform: rotate(-18deg) scale(1); }
-  100% { border-radius: 52% 48% 49% 51% / 47% 53% 47% 53%; transform: rotate(-10deg) scale(1.03); }
-}
-
-@keyframes btrans-morph-2 {
-  0% { border-radius: 52% 48% 47% 53% / 48% 52% 48% 52%; transform: rotate(25deg) scale(1); }
-  100% { border-radius: 47% 53% 52% 48% / 53% 47% 53% 47%; transform: rotate(18deg) scale(0.98); }
-}
-
-.btrans-right-content {
+  background: #FFFFFF;
+  border: 2px solid rgba(124, 58, 237, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16px 40px -10px rgba(124, 58, 237, 0.32), 0 0 0 6px rgba(124, 58, 237, 0.06);
   position: relative;
   z-index: 2;
-  width: 320px;
-  margin: 0 auto;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.btrans-hub-circle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 48px -10px rgba(124, 58, 237, 0.4), 0 0 0 8px rgba(124, 58, 237, 0.1);
+}
+
+.btrans-hub-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-/* ─── 3. Comparison Details Rows (Light Mode) ────────────────────── */
-.btrans-comparison-section {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  padding-top: 48px;
-}
-
-.btrans-comp-head-row {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  gap: 24px;
-  margin-bottom: 20px;
-  padding: 0 20px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.btrans-comp-head-before {
-  color: #64748B;
-}
-
-.btrans-comp-head-after {
-  color: #7C3AED;
-  text-align: right;
-}
-
-.btrans-comp-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.btrans-comp-row {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 850;
+  font-size: 24px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+
+.btrans-hub-label-wrap {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.btrans-hub-title {
+  font-size: 14.5px;
+  font-weight: 750;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+}
+
+.btrans-hub-badge {
+  font-size: 9.5px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7C3AED;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ─── 3. Five Transformation Topic Cards Below ────────────────────── */
+.btrans-workflow-strip {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.btrans-workflow-card {
   background: #FAFAFC;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 16px;
-  padding: 22px 28px;
+  padding: 18px 16px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   box-sizing: border-box;
 }
 
-.btrans-comp-row:hover {
+.btrans-workflow-card:hover,
+.btrans-workflow-card.is-active {
   background: #FFFFFF;
-  border-color: rgba(124, 58, 237, 0.3);
-  box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.12), 0 0 0 1px rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 10px 28px -8px rgba(124, 58, 237, 0.16), 0 0 0 1px rgba(124, 58, 237, 0.15);
   transform: translateY(-2px);
 }
 
-.btrans-comp-col-before {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.btrans-comp-col-after {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  text-align: right;
-}
-
-.btrans-comp-label {
+.btrans-wf-topic {
   font-size: 10px;
   font-weight: 750;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: #7C3AED;
+  margin-bottom: 6px;
 }
 
-.btrans-label-muted {
+.btrans-wf-from {
+  font-size: 11.5px;
   color: #64748B;
+  margin-bottom: 6px;
+  line-height: 1.35;
 }
 
-.btrans-label-accent {
-  color: #7C3AED;
-}
-
-.btrans-comp-text {
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.btrans-text-before {
-  color: #475569;
-}
-
-.btrans-text-after {
+.btrans-wf-to {
+  font-size: 12.5px;
+  font-weight: 600;
   color: #0F172A;
-  font-weight: 550;
-}
-
-.btrans-comp-arrow-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.btrans-comp-arrow {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(124, 58, 237, 0.08);
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  color: #7C3AED;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
-}
-
-.btrans-comp-row:hover .btrans-comp-arrow {
-  background: #7C3AED;
-  color: #FFFFFF;
-  transform: scale(1.1);
+  line-height: 1.35;
 }
 
 /* ─── 4. Responsive Breakpoints ──────────────────────────────────── */
-@media (max-width: 960px) {
-  .btrans-minimal-card {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    padding-bottom: 32px;
+@media (max-width: 1080px) {
+  .btrans-node-info {
+    width: 140px;
   }
-
-  .btrans-side-left {
-    padding: 48px 32px 24px 32px;
-    align-items: flex-start;
-    text-align: left;
+  .btrans-node-label {
+    font-size: 12.5px;
   }
-
-  .btrans-side-title {
-    margin-bottom: 24px;
+  .btrans-node-desc {
+    font-size: 10.5px;
   }
-
-  .btrans-points-list {
-    max-width: 100%;
-  }
-
-  .btrans-side-right {
-    min-height: 480px;
-    padding: 24px 16px;
-    overflow: hidden;
-  }
-
-  .btrans-aperture-bg {
-    transform: translate(-50%, -50%) scale(0.82);
-  }
-
-  .btrans-right-content {
-    width: 290px;
-  }
-
-  .btrans-comp-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .btrans-comp-col-after {
-    text-align: left;
-  }
-
-  .btrans-comp-arrow-wrap {
-    display: none;
-  }
-
-  .btrans-comp-head-row {
-    display: none;
+  .btrans-workflow-strip {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 540px) {
-  .btrans-side-left {
-    padding: 36px 20px 20px 20px;
+@media (max-width: 820px) {
+  .btrans-beam-stage {
+    padding: 32px 16px;
   }
 
-  .btrans-side-right {
-    min-height: 380px;
-    padding: 24px 12px;
+  .btrans-node-info {
+    display: none;
   }
 
-  .btrans-aperture-bg {
-    width: 330px;
-    height: 330px;
-    transform: translate(-50%, -50%);
+  .btrans-beam-col-label {
+    font-size: 9.5px;
+    margin-bottom: 14px;
   }
 
-  .btrans-ring-layer-1 {
-    inset: 4px;
-    border-width: 24px;
-    filter: blur(10px);
+  .btrans-node-circle {
+    width: 44px;
+    height: 44px;
   }
 
-  .btrans-ring-layer-2 {
-    inset: 12px;
-    border-width: 26px;
-    box-shadow: 0 0 20px rgba(147, 51, 234, 0.35);
+  .btrans-hub-circle {
+    width: 76px;
+    height: 76px;
   }
 
-  .btrans-ring-layer-3 {
-    inset: 20px;
-    border-width: 14px;
+  .btrans-hub-logo {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
   }
 
-  .btrans-ring-void {
-    inset: 42px;
+  .btrans-workflow-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .btrans-beam-stage {
+    min-height: 460px;
+    padding: 24px 10px;
   }
 
-  .btrans-right-content {
-    width: 215px;
+  .btrans-node-circle {
+    width: 38px;
+    height: 38px;
   }
 
-  .btrans-side-title {
-    font-size: 26px;
-    margin-bottom: 18px;
+  .btrans-node-circle svg {
+    width: 16px;
+    height: 16px;
   }
 
-  .btrans-points-list {
+  .btrans-node-list {
     gap: 14px;
   }
 
-  .btrans-point-text {
+  .btrans-hub-circle {
+    width: 64px;
+    height: 64px;
+  }
+
+  .btrans-hub-logo {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+
+  .btrans-hub-title {
     font-size: 12.5px;
-    line-height: 1.4;
   }
 
-  .btrans-icon-box {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-  }
-
-  .btrans-icon-box svg {
-    width: 12px;
-    height: 12px;
+  .btrans-hub-badge {
+    font-size: 8.5px;
   }
 }
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
-  .btrans-ring-layer-1,
-  .btrans-ring-layer-2,
-  .btrans-ring-layer-3 {
-    animation: none !important;
-  }
-
-  .btrans-comp-row:hover {
+  .btrans-workflow-card:hover {
     transform: none !important;
   }
 }
