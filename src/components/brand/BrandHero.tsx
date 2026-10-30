@@ -51,19 +51,7 @@ export function BrandHero() {
             {/* The giant BRANDS with FoldText and CrystalizedBall centered right behind 'AN' */}
             <div className="brd-brands-stage">
               <div className="brd-hero-ball-bg" aria-hidden="true">
-                <CrystalizedBall
-                  preset="plasma"
-                  color="#6D28D9"
-                  theme="light"
-                  size={0.78}
-                  crackle={0.85}
-                  flares={0.75}
-                  glow={1.15}
-                  fill={0.52}
-                  haze={0.35}
-                  interactive={true}
-                  hoverStrength={0.8}
-                />
+
               </div>
               <FoldText
                 text="BRANDS"
