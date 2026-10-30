@@ -152,7 +152,7 @@
   background: linear-gradient(180deg, rgba(20, 16, 32, 0.88) 0%, rgba(10, 10, 17, 0.96) 100%);
   border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 24px;
-  padding: clamp(26px, 2.8vw, 34px);
+  padding: clamp(24px, 2.6vw, 32px);
   box-sizing: border-box;
   -webkit-backdrop-filter: blur(28px);
   backdrop-filter: blur(28px);
@@ -190,7 +190,7 @@
 
 .bmoat-card-title {
   font-size: clamp(22px, 1.75vw, 26px);
-  font-weight: 700;
+  font-weight: 750;
   line-height: 1.25;
   color: #FFFFFF;
   margin: 0 0 8px 0;
@@ -212,21 +212,21 @@
   padding: 3.5px 10px;
 }
 
-/* ─── Enhanced 3D Graphic Frame with Ambient Radial Light ─────────── */
+/* ─── Graphic Frame: Container for 3D Stage + Glass HUD ──────────── */
 .bmoat-graphic-frame {
   width: 100%;
-  height: 230px;
+  height: 236px;
   margin: 10px 0 18px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
-  background: radial-gradient(ellipse at 35% 55%, rgba(139, 92, 246, 0.14) 0%, rgba(12, 13, 20, 0.96) 65%, #07080D 100%);
+  background: radial-gradient(ellipse at 30% 60%, rgba(139, 92, 246, 0.16) 0%, rgba(12, 13, 20, 0.96) 65%, #07080D 100%);
   border-radius: 16px;
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.22);
   box-sizing: border-box;
   overflow: hidden;
   transition: border-color 300ms ease, box-shadow 300ms ease;
+  display: flex;
+  align-items: center;
+  padding: 12px;
 }
 
 .bmoat-card:hover .bmoat-graphic-frame {
@@ -234,69 +234,346 @@
   box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.12);
 }
 
-.bmoat-canvas {
+.bmoat-workspace {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 10px;
 }
 
-.bmoat-canvas-svg {
-  width: 100%;
+/* ─── 3D Product Stage (Left Column) ─────────────────────────────── */
+.bmoat-stage-left {
+  width: 38%;
   height: 100%;
-  max-width: 340px;
-  max-height: 220px;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 1;
+  padding-bottom: 4px;
 }
 
-/* 3D Product Image Hover Effect */
-.bmoat-product-3d {
+.bmoat-stage-img {
+  max-height: 168px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(126, 34, 206, 0.55));
+  transform: translateY(4px);
   transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), filter 320ms ease;
-  transform-origin: center bottom;
-  filter: drop-shadow(0 14px 28px rgba(126, 34, 206, 0.45));
+  pointer-events: auto;
+  cursor: pointer;
 }
 
-.bmoat-product-3d:hover,
-.bmoat-card:hover .bmoat-product-3d {
-  transform: translateY(-3px) scale(1.02);
-  filter: drop-shadow(0 18px 36px rgba(168, 85, 247, 0.65));
+.bmoat-stage-img.bottle {
+  max-height: 172px;
 }
 
-/* Dynamic Tooltip Transition */
-.bmoat-dynamic-tooltip {
-  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+.bmoat-stage-img:hover,
+.bmoat-card:hover .bmoat-stage-img {
+  transform: translateY(0px) scale(1.03);
+  filter: drop-shadow(0 18px 36px rgba(168, 85, 247, 0.7));
 }
 
-/* Interactive Rows Transition */
-.bmoat-interactive-row {
-  transition: transform 200ms ease, filter 200ms ease;
+.bmoat-stage-shadow {
+  position: absolute;
+  bottom: 2px;
+  width: 85px;
+  height: 16px;
+  background: radial-gradient(ellipse, rgba(124, 77, 219, 0.6) 0%, rgba(0, 0, 0, 0.85) 50%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(3.5px);
+  z-index: -1;
+  pointer-events: none;
 }
 
-.bmoat-interactive-row:hover {
-  filter: drop-shadow(0 2px 12px rgba(168, 85, 247, 0.4));
+.bmoat-stage-turntable {
+  position: absolute;
+  bottom: 0px;
+  width: 88px;
+  height: 22px;
+  background: radial-gradient(ellipse, #2A1F45 0%, #110E1D 70%);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(126, 34, 206, 0.45);
+  z-index: -1;
+  pointer-events: none;
 }
 
-/* Active Path Glow */
-.bmoat-active-path {
-  filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.85));
+/* ─── Razor-Sharp HTML Glass HUD (Right Column) ──────────────────── */
+.bmoat-hud-right {
+  width: 62%;
+  height: 100%;
+  background: rgba(18, 15, 30, 0.88);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 12px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* Live Status Pulse Dot (Ping) */
-.bmoat-ping {
-  animation: pingPulse 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
-  transform-origin: center;
+.bmoat-hud-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
 }
 
-@keyframes pingPulse {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.85;
-  }
-  70%, 100% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
+.bmoat-hud-badge-green {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
+}
+
+.bmoat-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  flex-shrink: 0;
+}
+
+.bmoat-hud-capsule-purple {
+  font-size: 9.5px;
+  font-weight: 750;
+  color: #F3E8FF;
+  background: rgba(147, 51, 234, 0.3);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 999px;
+  padding: 2px 7px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Chart Container & SVG */
+.bmoat-hud-chart-box {
+  height: 98px;
+  position: relative;
+  margin: 4px 0 2px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bmoat-hud-chart-svg {
+  width: 100%;
+  height: 75px;
+  overflow: visible;
+}
+
+.bmoat-hud-axis-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin-top: -4px;
+}
+
+.bmoat-hud-axis-lbl {
+  font-size: 8.5px;
+  color: #64748B;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 150ms ease;
+  user-select: none;
+}
+
+.bmoat-hud-axis-lbl.active,
+.bmoat-hud-axis-lbl:hover {
+  color: #C084FC;
+  font-weight: 750;
+}
+
+.bmoat-hud-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: #CBD5E1;
+  font-weight: 600;
+  border-top: 1px solid rgba(168, 85, 247, 0.15);
+  padding-top: 5px;
+  font-family: var(--font-sans);
+}
+
+.bmoat-hud-footer-desc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.bmoat-hud-footer-tag {
+  font-size: 8.5px;
+  color: #C084FC;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ─── Card 02 Specific: Venue Tabs & Tasting Evaluation ──────────── */
+.bmoat-hud-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.bmoat-hud-tab-btn {
+  flex: 1;
+  padding: 4px 0;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94A3B8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.bmoat-hud-tab-btn.active,
+.bmoat-hud-tab-btn:hover {
+  background: #6D28D9;
+  color: #FFFFFF;
+  border-color: #A855F7;
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.4);
+}
+
+.bmoat-hud-venue-block {
+  margin: 1px 0;
+}
+
+.bmoat-hud-venue-title {
+  font-size: 12px;
+  font-weight: 750;
+  color: #FFFFFF;
+  letter-spacing: -0.015em;
+  font-family: var(--font-sans);
+}
+
+.bmoat-hud-venue-meta {
+  font-size: 9.5px;
+  color: #94A3B8;
+  margin-top: 1px;
+}
+
+.bmoat-hud-sensory-box {
+  background: rgba(147, 51, 234, 0.14);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 7px;
+  padding: 6px 8px;
+  margin-top: 2px;
+}
+
+.bmoat-hud-sensory-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #E9D5FF;
+  margin-bottom: 2px;
+}
+
+.bmoat-hud-score-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #FBBF24;
+  background: #6D28D9;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.bmoat-hud-sensory-quote {
+  font-size: 9.5px;
+  color: #CBD5E1;
+  font-style: italic;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* ─── Card 03 Specific: Stacked Purchase Orders ──────────────────── */
+.bmoat-hud-po-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.bmoat-hud-po-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(26, 20, 46, 0.6);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.bmoat-hud-po-row.active,
+.bmoat-hud-po-row:hover {
+  background: #1F173B;
+  border-color: #A855F7;
+  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+}
+
+.bmoat-hud-po-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: #6D28D9;
+  color: #FFF;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bmoat-hud-po-info {
+  flex: 1;
+  margin: 0 8px;
+  min-width: 0;
+}
+
+.bmoat-hud-po-name {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #FFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmoat-hud-po-status {
+  font-size: 8.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmoat-hud-po-qty {
+  font-size: 9.5px;
+  font-weight: 750;
+  color: #FFF;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 /* ─── Minimal Body Text & Pointers ───────────────────────────────── */

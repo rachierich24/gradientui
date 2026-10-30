@@ -108,11 +108,11 @@ export function BrandMoat() {
                       <div className="bmoat-pill">{card.pill}</div>
                     </div>
 
-                    {/* Interactive, 3D Product Visual Workspace with Luxury Purple Theme */}
+                    {/* Interactive, 3D Product Visual Workspace with Crisp HTML HUD */}
                     <div className="bmoat-graphic-frame">
-                      {idx === 0 && <RunningDemandIntelligence />}
-                      {idx === 1 && <RunningSamplingFlights />}
-                      {idx === 2 && <RunningOrderVelocity />}
+                      {idx === 0 && <DemandIntelligenceWorkspace />}
+                      {idx === 1 && <SamplingFlightsWorkspace />}
+                      {idx === 2 && <OrderVelocityWorkspace />}
                     </div>
 
                     {/* Concise Supporting Description */}
@@ -139,7 +139,9 @@ export function BrandMoat() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   CARD 01: DEMAND INTELLIGENCE (Actual 3D Coffee Pouch + Purple Telemetry HUD)
+   WORKSPACE 01: DEMAND INTELLIGENCE
+   - Actual 3D Coffee Pouch with glowing purple floor ground
+   - Crisp HTML/CSS Telemetry HUD with interactive scrubbable SVG forecast curve
 ───────────────────────────────────────────────────────────────────────────── */
 interface TelemetryPoint {
   week: string;
@@ -151,14 +153,14 @@ interface TelemetryPoint {
 }
 
 const TELEMETRY_SERIES: TelemetryPoint[] = [
-  { week: 'W1', stageLabel: 'Baseline Roast Cycle', volumeKg: 48, growth: '+12%', x: 20, y: 104 },
-  { week: 'W2', stageLabel: 'Secondary Roaster Pull', volumeKg: 68, growth: '+19%', x: 56, y: 94 },
-  { week: 'W3', stageLabel: 'Hauz Khas Cluster Surge', volumeKg: 94, growth: '+25%', x: 94, y: 78 },
-  { week: 'W4', stageLabel: 'Multi-Outlet Depletion', volumeKg: 118, growth: '+29%', x: 130, y: 64 },
-  { week: 'W5', stageLabel: 'Peak Forecast Order Window', volumeKg: 142, growth: '+34%', x: 162, y: 46 },
+  { week: 'W1', stageLabel: 'Baseline Roast Cycle', volumeKg: 48, growth: '+12%', x: 15, y: 65 },
+  { week: 'W2', stageLabel: 'Secondary Roaster Pull', volumeKg: 68, growth: '+19%', x: 48, y: 58 },
+  { week: 'W3', stageLabel: 'Hauz Khas Cluster Surge', volumeKg: 94, growth: '+25%', x: 82, y: 46 },
+  { week: 'W4', stageLabel: 'Multi-Outlet Depletion', volumeKg: 118, growth: '+29%', x: 115, y: 32 },
+  { week: 'W5', stageLabel: 'Peak Forecast Order Window', volumeKg: 142, growth: '+34%', x: 150, y: 18 },
 ];
 
-function RunningDemandIntelligence() {
+function DemandIntelligenceWorkspace() {
   const [activeIdx, setActiveIdx] = useState<number>(4);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
@@ -171,260 +173,157 @@ function RunningDemandIntelligence() {
   }, [isPaused]);
 
   const activePoint = TELEMETRY_SERIES[activeIdx];
-  const tooltipX = Math.max(12, Math.min(118, activePoint.x - 24));
-  const tooltipY = Math.max(22, activePoint.y - 24);
+  const tooltipX = Math.max(10, Math.min(115, activePoint.x - 20));
+  const tooltipY = Math.max(0, activePoint.y - 18);
 
   return (
     <div
-      className="bmoat-canvas"
+      className="bmoat-workspace"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <svg
-        viewBox="0 0 340 220"
-        className="bmoat-canvas-svg"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          {/* Luminous Purple Gradients */}
-          <linearGradient id="purpleCurveGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#7C4DDB" />
-            <stop offset="50%" stopColor="#A855F7" />
-            <stop offset="100%" stopColor="#C084FC" />
-          </linearGradient>
-          <linearGradient id="purpleAreaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#9333EA" stopOpacity="0.32" />
-            <stop offset="60%" stopColor="#7C4DDB" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#07080D" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="hudCardGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#161528" stopOpacity="0.94" />
-            <stop offset="100%" stopColor="#0B0B14" stopOpacity="0.98" />
-          </linearGradient>
-          <filter id="purpleGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
+      {/* 3D Product Stage (Left) */}
+      <div className="bmoat-stage-left">
+        <img
+          src="/brand/pouch_3d_cutout.png"
+          alt="Hillfold Arabica Coffee Pouch 3D"
+          className="bmoat-stage-img"
+        />
+        <div className="bmoat-stage-shadow" />
+      </div>
 
-        {/* ─── Isometric Floor Grid ─── */}
-        <g stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7">
-          <path d="M20 176 L170 134 L320 176 L170 218 Z" fill="rgba(147, 51, 234, 0.025)" />
-          <line x1="55" y1="166" x2="195" y2="208" />
-          <line x1="90" y1="156" x2="230" y2="198" />
-          <line x1="125" y1="146" x2="265" y2="188" />
-          <line x1="195" y1="146" x2="55" y2="188" />
-          <line x1="230" y1="156" x2="90" y2="198" />
-          <line x1="265" y1="166" x2="125" y2="208" />
-        </g>
+      {/* Crisp HTML Glass HUD (Right) */}
+      <div className="bmoat-hud-right">
+        {/* Top Header */}
+        <div className="bmoat-hud-row-head">
+          <div className="bmoat-hud-badge-green">
+            <span className="bmoat-live-dot" />
+            <span>Arabica AA Roast</span>
+          </div>
+          <div className="bmoat-hud-capsule-purple">
+            {activePoint.growth} RISING
+          </div>
+        </div>
 
-        {/* ─── LEFT: Actual 3D Specialty Coffee Pouch Render ─── */}
-        <g className="bmoat-product-group" transform="translate(14, 20)">
-          {/* Ambient Purple Floor Reflection & Shadow */}
-          <ellipse cx="56" cy="162" rx="42" ry="14" fill="#7C4DDB" fillOpacity="0.3" filter="blur(9px)" />
-          <ellipse cx="56" cy="162" rx="26" ry="8" fill="#000000" fillOpacity="0.8" filter="blur(3px)" />
+        {/* Interactive Scrubbable Trendline */}
+        <div className="bmoat-hud-chart-box">
+          <svg className="bmoat-hud-chart-svg" viewBox="0 0 165 75" fill="none">
+            <defs>
+              <linearGradient id="curveGrad1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#A855F7" />
+                <stop offset="50%" stopColor="#C084FC" />
+                <stop offset="100%" stopColor="#FFFFFF" />
+              </linearGradient>
+              <linearGradient id="areaGrad1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#9333EA" stopOpacity="0.38" />
+                <stop offset="60%" stopColor="#7C4DDB" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#0B0A14" stopOpacity="0" />
+              </linearGradient>
+            </defs>
 
-          {/* Actual 3D Pouch Image Cutout */}
-          <image
-            href="/brand/pouch_3d_cutout.png"
-            x="4"
-            y="12"
-            width="106"
-            height="152"
-            preserveAspectRatio="xMidYMid meet"
-            className="bmoat-product-3d"
-          />
-        </g>
+            {/* Horizontal Grid Guides */}
+            <line x1="8" y1="20" x2="158" y2="20" stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
+            <line x1="8" y1="42" x2="158" y2="42" stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
+            <line x1="8" y1="64" x2="158" y2="64" stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
 
-        {/* ─── RIGHT: Interactive Frosted Glass Telemetry HUD ─── */}
-        <g transform="translate(134, 32)">
-          {/* Card Shadow */}
-          <rect x="0" y="4" width="186" height="150" rx="12" fill="#000000" fillOpacity="0.65" filter="blur(6px)" />
-
-          {/* Card Body */}
-          <rect
-            x="0"
-            y="0"
-            width="186"
-            height="150"
-            rx="12"
-            fill="url(#hudCardGrad)"
-            stroke="rgba(168, 85, 247, 0.28)"
-            strokeWidth="0.9"
-          />
-
-          {/* Top Edge Specular Highlight */}
-          <path d="M1 12 C 1 6, 6 1, 12 1 L 174 1 C 180 1, 185 6, 185 12" stroke="rgba(216, 180, 254, 0.45)" strokeWidth="0.9" fill="none" />
-
-          {/* Header Row: Live Telemetry Status + Growth Capsule */}
-          <g transform="translate(14, 18)">
-            <circle cx="0" cy="-2" r="2.5" fill="#10B981" />
-            <circle cx="0" cy="-2" r="5.5" stroke="#10B981" strokeWidth="0.6" strokeOpacity="0.5" className="bmoat-ping" />
-            <text x="8" y="1" fill="#FFFFFF" fontSize="8.2" fontWeight="700" fontFamily="system-ui, sans-serif">
-              Arabica AA Roast
-            </text>
-            <rect
-              x="108"
-              y="-10"
-              width="50"
-              height="16"
-              rx="8"
-              fill="rgba(147, 51, 234, 0.22)"
-              stroke="rgba(168, 85, 247, 0.4)"
-              strokeWidth="0.75"
+            {/* Shaded Area Under Curve */}
+            <path
+              d="M 15 65 Q 45 60, 82 46 T 150 18 L 150 68 L 15 68 Z"
+              fill="url(#areaGrad1)"
             />
-            <text
-              x="133"
-              y="1"
-              fill="#E9D5FF"
-              fontSize="7"
-              fontWeight="700"
-              textAnchor="middle"
-              fontFamily="system-ui, sans-serif"
-            >
-              {activePoint.growth} RISING
-            </text>
-          </g>
 
-          <line x1="14" y1="28" x2="172" y2="28" stroke="rgba(168, 85, 247, 0.15)" strokeWidth="0.75" />
+            {/* Glowing Line */}
+            <path
+              d="M 15 65 Q 45 60, 82 46 T 150 18"
+              fill="none"
+              stroke="url(#curveGrad1)"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+            />
 
-          {/* Chart Grid Lines */}
-          <g stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="3 3" strokeWidth="0.75">
-            <line x1="14" y1="52" x2="172" y2="52" />
-            <line x1="14" y1="76" x2="172" y2="76" />
-            <line x1="14" y1="104" x2="172" y2="104" />
-          </g>
+            {/* Dynamic Laser Guide */}
+            <line
+              x1={activePoint.x}
+              y1={activePoint.y}
+              x2={activePoint.x}
+              y2="66"
+              stroke="#C084FC"
+              strokeWidth="1"
+              strokeDasharray="2 2"
+              strokeOpacity="0.75"
+            />
 
-          {/* Shaded Area Under Curve */}
-          <path
-            d="M20 104 C 46 98, 76 86, 100 78 C 124 70, 146 52, 162 46 L 162 104 L 20 104 Z"
-            fill="url(#purpleAreaGrad)"
-          />
+            {/* 5 Scrub Points */}
+            {TELEMETRY_SERIES.map((pt, pIdx) => {
+              const isSelected = activeIdx === pIdx;
+              return (
+                <g
+                  key={pt.week}
+                  onClick={() => {
+                    setActiveIdx(pIdx);
+                    setIsPaused(true);
+                  }}
+                  onMouseEnter={() => {
+                    setActiveIdx(pIdx);
+                    setIsPaused(true);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <circle cx={pt.x} cy={pt.y} r="10" fill="transparent" />
+                  {isSelected ? (
+                    <>
+                      <circle cx={pt.x} cy={pt.y} r="4.5" fill="#FFFFFF" />
+                      <circle cx={pt.x} cy={pt.y} r="2.2" fill="#6D28D9" />
+                    </>
+                  ) : (
+                    <circle cx={pt.x} cy={pt.y} r="2.4" fill="#1C182F" stroke="#A855F7" strokeWidth="0.8" />
+                  )}
+                </g>
+              );
+            })}
 
-          {/* Glowing Purple Trendline */}
-          <path
-            d="M20 104 C 46 98, 76 86, 100 78 C 124 70, 146 52, 162 46"
-            stroke="url(#purpleCurveGrad)"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-          />
+            {/* Floating Tooltip Pill */}
+            <g transform={`translate(${tooltipX}, ${tooltipY})`}>
+              <rect width="38" height="15" rx="4" fill="#6D28D9" stroke="#A855F7" strokeWidth="0.6" />
+              <text x="19" y="11" fill="#FFFFFF" fontSize="8" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
+                {activePoint.volumeKg} kg
+              </text>
+            </g>
+          </svg>
 
-          {/* Dynamic Laser Guide */}
-          <line
-            x1={activePoint.x}
-            y1={activePoint.y}
-            x2={activePoint.x}
-            y2="104"
-            stroke="#C084FC"
-            strokeWidth="1"
-            strokeDasharray="2 2"
-            strokeOpacity="0.8"
-          />
-
-          {/* 5 Weekly Points */}
-          {TELEMETRY_SERIES.map((pt, pIdx) => {
-            const isSelected = activeIdx === pIdx;
-            return (
-              <g
+          {/* Crisp X-Axis HTML Labels */}
+          <div className="bmoat-hud-axis-row">
+            {TELEMETRY_SERIES.map((pt, pIdx) => (
+              <span
                 key={pt.week}
+                className={`bmoat-hud-axis-lbl ${activeIdx === pIdx ? 'active' : ''}`}
                 onClick={() => {
                   setActiveIdx(pIdx);
                   setIsPaused(true);
                 }}
-                onMouseEnter={() => {
-                  setActiveIdx(pIdx);
-                  setIsPaused(true);
-                }}
-                style={{ cursor: 'pointer' }}
               >
-                <circle cx={pt.x} cy={pt.y} r="12" fill="transparent" />
+                {pt.week}
+              </span>
+            ))}
+          </div>
+        </div>
 
-                {isSelected ? (
-                  <>
-                    <circle cx={pt.x} cy={pt.y} r="5.5" fill="#FFFFFF" filter="url(#purpleGlowFilter)" />
-                    <circle cx={pt.x} cy={pt.y} r="2.5" fill="#6D28D9" />
-                  </>
-                ) : (
-                  <circle cx={pt.x} cy={pt.y} r="2.8" fill="#1A152E" stroke="#A855F7" strokeWidth="0.8" />
-                )}
-
-                <text
-                  x={pt.x}
-                  y="118"
-                  fill={isSelected ? '#C084FC' : 'rgba(255, 255, 255, 0.45)'}
-                  fontSize="7"
-                  fontWeight={isSelected ? '700' : '500'}
-                  textAnchor="middle"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {pt.week}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* Floating Volume Tooltip Badge */}
-          <g
-            transform={`translate(${tooltipX}, ${tooltipY})`}
-            className="bmoat-dynamic-tooltip"
-          >
-            <rect
-              x="0"
-              y="0"
-              width="48"
-              height="18"
-              rx="5"
-              fill="#6D28D9"
-              stroke="#A855F7"
-              strokeWidth="0.9"
-              filter="drop-shadow(0 4px 10px rgba(109, 40, 217, 0.5))"
-            />
-            <text
-              x="24"
-              y="12"
-              fill="#FFFFFF"
-              fontSize="8.2"
-              fontWeight="800"
-              textAnchor="middle"
-              fontFamily="system-ui, sans-serif"
-            >
-              {activePoint.volumeKg} kg
-            </text>
-          </g>
-
-          {/* Live Telemetry Status Footnote */}
-          <g transform="translate(14, 137)">
-            <text
-              x="0"
-              y="0"
-              fill="rgba(226, 232, 240, 0.85)"
-              fontSize="6.8"
-              fontWeight="600"
-              fontFamily="system-ui, sans-serif"
-            >
-              {activePoint.stageLabel}
-            </text>
-            <text
-              x="158"
-              y="0"
-              fill={isPaused ? '#C084FC' : 'rgba(255, 255, 255, 0.45)'}
-              fontSize="6.2"
-              fontWeight={isPaused ? '700' : '500'}
-              textAnchor="end"
-              fontFamily="system-ui, sans-serif"
-            >
-              {isPaused ? 'PAUSED · TAP TO SCRUB' : 'AUTO-RUNNING'}
-            </text>
-          </g>
-        </g>
-      </svg>
+        {/* Footer Meta Row */}
+        <div className="bmoat-hud-footer-row">
+          <span className="bmoat-hud-footer-desc">{activePoint.stageLabel}</span>
+          <span className="bmoat-hud-footer-tag">
+            {isPaused ? 'PAUSED' : 'AUTO-RUNNING'}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   CARD 02: DIRECT CAFÉ DISCOVERY (Actual 3D Glass Bottle + Purple Cupping HUD)
+   WORKSPACE 02: DIRECT CAFÉ DISCOVERY
+   - Actual 3D Craft Glass Bottle standing on a glowing purple turntable base
+   - Crisp HTML Tasting Flight HUD with real tabs and barista review score
 ───────────────────────────────────────────────────────────────────────────── */
 interface TrialStage {
   id: string;
@@ -470,7 +369,7 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
   },
 ];
 
-function RunningSamplingFlights() {
+function SamplingFlightsWorkspace() {
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
@@ -486,226 +385,86 @@ function RunningSamplingFlights() {
 
   return (
     <div
-      className="bmoat-canvas"
+      className="bmoat-workspace"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <svg
-        viewBox="0 0 340 220"
-        className="bmoat-canvas-svg"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="laserBeamPurple" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#C084FC" />
-            <stop offset="100%" stopColor="#7C4DDB" stopOpacity="0.4" />
-          </linearGradient>
-          <linearGradient id="turntablePurple" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2E2248" />
-            <stop offset="100%" stopColor="#120E1E" />
-          </linearGradient>
-          <filter id="whiteGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
-        {/* ─── Isometric Floor Grid ─── */}
-        <g stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7">
-          <path d="M20 176 L170 134 L320 176 L170 218 Z" fill="rgba(147, 51, 234, 0.025)" />
-          <line x1="55" y1="166" x2="195" y2="208" />
-          <line x1="90" y1="156" x2="230" y2="198" />
-          <line x1="195" y1="146" x2="55" y2="188" />
-          <line x1="230" y1="156" x2="90" y2="198" />
-        </g>
-
-        {/* ─── LEFT: Actual 3D Craft Bottle on Illuminated Turntable ─── */}
-        <g className="bmoat-product-group" transform="translate(16, 16)">
-          {/* Base Floor Glow & Shadow */}
-          <ellipse cx="50" cy="168" rx="36" ry="12" fill="#7C4DDB" fillOpacity="0.35" filter="blur(9px)" />
-
-          {/* Elevated Turntable Pedestal */}
-          <path
-            d="M24 162 C 24 170, 76 170, 76 162 L 76 167 C 76 175, 24 175, 24 167 Z"
-            fill="#120E1E"
-            stroke="rgba(168, 85, 247, 0.35)"
-            strokeWidth="0.8"
-          />
-          <ellipse cx="50" cy="162" rx="26" ry="8.5" fill="url(#turntablePurple)" stroke="rgba(192, 132, 252, 0.55)" strokeWidth="0.9" />
-          <ellipse cx="50" cy="162" rx="18" ry="5.5" fill="none" stroke="rgba(216, 180, 254, 0.35)" strokeWidth="0.6" strokeDasharray="3 2" />
-
-          {/* Actual 3D Glass Bottle Cutout Image */}
-          <image
-            href="/brand/bottle_3d_cutout.png"
-            x="2"
-            y="8"
-            width="96"
-            height="158"
-            preserveAspectRatio="xMidYMid meet"
-            className="bmoat-product-3d"
-          />
-        </g>
-
-        {/* 3D Laser Spline Connector from Bottle to HUD */}
-        <path
-          d="M84 126 C 106 126, 114 96, 134 90"
-          stroke="url(#laserBeamPurple)"
-          strokeWidth="1.5"
-          strokeDasharray="4 3"
+      {/* 3D Product Stage with Turntable Base (Left) */}
+      <div className="bmoat-stage-left">
+        <img
+          src="/brand/bottle_3d_cutout.png"
+          alt="Tamarind Lane Craft Bottle 3D"
+          className="bmoat-stage-img bottle"
         />
+        <div className="bmoat-stage-turntable" />
+        <div className="bmoat-stage-shadow" />
+      </div>
 
-        {/* Flowing Glowing Photon Node */}
-        <circle r="2.8" fill="#FFFFFF" filter="url(#whiteGlowFilter)">
-          <animateMotion
-            dur="2.4s"
-            repeatCount="indefinite"
-            path="M84 126 C 106 126, 114 96, 134 90"
-          />
-        </circle>
+      {/* Crisp HTML Glass HUD (Right) */}
+      <div className="bmoat-hud-right">
+        {/* Interactive Clickable Venue Tabs */}
+        <div className="bmoat-hud-tabs">
+          {TRIAL_LIFECYCLE.map((stg, sIdx) => {
+            const isTabSelected = selectedIdx === sIdx;
+            return (
+              <button
+                key={stg.id}
+                type="button"
+                className={`bmoat-hud-tab-btn ${isTabSelected ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedIdx(sIdx);
+                  setIsPaused(true);
+                }}
+              >
+                {stg.tabLabel}
+              </button>
+            );
+          })}
+        </div>
 
-        {/* ─── RIGHT: Interactive Frosted Glass Sampling HUD ─── */}
-        <g transform="translate(134, 30)">
-          <rect x="0" y="4" width="186" height="152" rx="12" fill="#000000" fillOpacity="0.65" filter="blur(6px)" />
+        {/* Live Status Row */}
+        <div className="bmoat-hud-row-head" style={{ marginTop: '3px' }}>
+          <div className="bmoat-hud-badge-green">
+            <span className="bmoat-live-dot" />
+            <span>{currentStage.lifecycleStatus}</span>
+          </div>
+          <div className="bmoat-hud-capsule-purple">
+            STAGE 0{selectedIdx + 1}
+          </div>
+        </div>
 
-          <rect
-            x="0"
-            y="0"
-            width="186"
-            height="152"
-            rx="12"
-            fill="url(#hudCardGrad)"
-            stroke="rgba(168, 85, 247, 0.28)"
-            strokeWidth="0.9"
-          />
-          <path d="M1 12 C 1 6, 6 1, 12 1 L 174 1 C 180 1, 185 6, 185 12" stroke="rgba(216, 180, 254, 0.45)" strokeWidth="0.9" fill="none" />
+        {/* Venue Information */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStage.id}
+            initial={{ opacity: 0, y: 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.2 }}
+            className="bmoat-hud-venue-block"
+          >
+            <div className="bmoat-hud-venue-title">{currentStage.venue}</div>
+            <div className="bmoat-hud-venue-meta">{currentStage.location}</div>
+          </motion.div>
+        </AnimatePresence>
 
-          {/* Interactive Café Flight Tabs on Top */}
-          <g transform="translate(12, 12)">
-            {TRIAL_LIFECYCLE.map((stg, sIdx) => {
-              const isTabSelected = selectedIdx === sIdx;
-              return (
-                <g
-                  key={stg.id}
-                  transform={`translate(${sIdx * 54}, 0)`}
-                  onClick={() => {
-                    setSelectedIdx(sIdx);
-                    setIsPaused(true);
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <rect
-                    x="0"
-                    y="0"
-                    width="50"
-                    height="18"
-                    rx="5"
-                    fill={isTabSelected ? '#6D28D9' : 'rgba(255, 255, 255, 0.05)'}
-                    stroke={isTabSelected ? '#A855F7' : 'rgba(168, 85, 247, 0.2)'}
-                    strokeWidth="0.8"
-                  />
-                  <text
-                    x="25"
-                    y="12"
-                    fill={isTabSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.6)'}
-                    fontSize="7.5"
-                    fontWeight={isTabSelected ? '700' : '500'}
-                    textAnchor="middle"
-                    fontFamily="system-ui, sans-serif"
-                  >
-                    {stg.tabLabel}
-                  </text>
-                </g>
-              );
-            })}
-          </g>
-
-          {/* Status Row with Live Ping */}
-          <g transform="translate(14, 42)">
-            <circle cx="2" cy="0" r="2.5" fill="#10B981" />
-            <circle cx="2" cy="0" r="5.5" stroke="#10B981" strokeWidth="0.6" strokeOpacity="0.5" className="bmoat-ping" />
-            <text x="10" y="2.5" fill="#10B981" fontSize="7.2" fontWeight="700" letterSpacing="0.06em" fontFamily="system-ui, sans-serif">
-              {currentStage.lifecycleStatus}
-            </text>
-            <text x="158" y="2.5" fill="#C084FC" fontSize="6.8" fontWeight="700" textAnchor="end" fontFamily="system-ui, sans-serif">
-              STAGE 0{selectedIdx + 1}
-            </text>
-          </g>
-
-          {/* Target Venue Details */}
-          <AnimatePresence mode="wait">
-            <motion.g
-              key={currentStage.id}
-              initial={{ opacity: 0, y: 3 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -3 }}
-              transition={{ duration: 0.22 }}
-            >
-              <g transform="translate(14, 56)">
-                <text x="0" y="8" fill="#FFFFFF" fontSize="9" fontWeight="700" fontFamily="system-ui, sans-serif">
-                  {currentStage.venue}
-                </text>
-                <text x="0" y="20" fill="#94A3B8" fontSize="7.2" fontFamily="system-ui, sans-serif">
-                  {currentStage.location}
-                </text>
-              </g>
-
-              {/* Divider */}
-              <line x1="14" y1="84" x2="172" y2="84" stroke="rgba(168, 85, 247, 0.15)" strokeWidth="0.75" />
-
-              {/* Barista Evaluation Panel */}
-              <g transform="translate(14, 94)">
-                <rect
-                  x="0"
-                  y="0"
-                  width="158"
-                  height="44"
-                  rx="7"
-                  fill="rgba(147, 51, 234, 0.12)"
-                  stroke="rgba(168, 85, 247, 0.32)"
-                  strokeWidth="0.8"
-                />
-                {/* Evaluator Title & Clean Cupping Score Badge */}
-                <text x="8" y="14" fill="#E9D5FF" fontSize="7.5" fontWeight="600" fontFamily="system-ui, sans-serif">
-                  {currentStage.evaluator}
-                </text>
-                <rect
-                  x="120"
-                  y="5"
-                  width="32"
-                  height="15"
-                  rx="4"
-                  fill="#6D28D9"
-                  stroke="#A855F7"
-                  strokeWidth="0.6"
-                />
-                <text
-                  x="136"
-                  y="15.5"
-                  fill="#FBBF24"
-                  fontSize="8"
-                  fontWeight="800"
-                  textAnchor="middle"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {currentStage.cuppingScore}
-                </text>
-
-                {/* Sensory Quote */}
-                <text x="8" y="30" fill="#CBD5E1" fontSize="7" fontStyle="italic" fontFamily="system-ui, sans-serif">
-                  {currentStage.sensoryQuote}
-                </text>
-              </g>
-            </motion.g>
-          </AnimatePresence>
-        </g>
-      </svg>
+        {/* Sensory Evaluation Box */}
+        <div className="bmoat-hud-sensory-box">
+          <div className="bmoat-hud-sensory-head">
+            <span>{currentStage.evaluator}</span>
+            <span className="bmoat-hud-score-badge">{currentStage.cuppingScore}</span>
+          </div>
+          <p className="bmoat-hud-sensory-quote">{currentStage.sensoryQuote}</p>
+        </div>
+      </div>
     </div>
   );
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   CARD 03: AUTOMATED REORDERS (Actual 3D Oat Carton + Purple Highway Bus)
+   WORKSPACE 03: AUTOMATED REORDERS
+   - Actual 3D Barista Oat Milk Carton with grounded purple stage
+   - Crisp HTML Stacked PO Cards with live delivery status & quantity pills
 ───────────────────────────────────────────────────────────────────────────── */
 interface OrderVelocityRow {
   id: string;
@@ -713,8 +472,8 @@ interface OrderVelocityRow {
   venue: string;
   status: string;
   cases: string;
-  targetY: number;
-  pathD: string;
+  badgeBg: string;
+  statusColor: string;
 }
 
 const VELOCITY_ROWS: OrderVelocityRow[] = [
@@ -724,8 +483,8 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Hillfold Roastery',
     status: 'Net-15 Recurring PO',
     cases: '12 cs',
-    targetY: 61,
-    pathD: 'M74 100 C 104 100, 116 62, 138 62',
+    badgeBg: '#6D28D9',
+    statusColor: '#10B981',
   },
   {
     id: 'tamarind',
@@ -733,8 +492,8 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Tamarind Lane Café',
     status: 'Order Dispatched · Van 04',
     cases: '8 cs',
-    targetY: 105,
-    pathD: 'M74 100 L 138 106',
+    badgeBg: '#4C1D95',
+    statusColor: '#93C5FD',
   },
   {
     id: 'bramblegate',
@@ -742,12 +501,12 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Bramblegate Roasters',
     status: 'Standing PO · Reorder Ready',
     cases: '16 cs',
-    targetY: 149,
-    pathD: 'M74 100 C 104 100, 116 150, 138 150',
+    badgeBg: '#3B0764',
+    statusColor: '#C084FC',
   },
 ];
 
-function RunningOrderVelocity() {
+function OrderVelocityWorkspace() {
   const [activeRowIdx, setActiveRowIdx] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
@@ -759,123 +518,44 @@ function RunningOrderVelocity() {
     return () => clearInterval(interval);
   }, [isPaused]);
 
-  const activeRow = VELOCITY_ROWS[activeRowIdx];
-
   return (
     <div
-      className="bmoat-canvas"
+      className="bmoat-workspace"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <svg
-        viewBox="0 0 340 220"
-        className="bmoat-canvas-svg"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <filter id="purpleGlowFilter2" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
+      {/* 3D Product Stage (Left) */}
+      <div className="bmoat-stage-left">
+        <img
+          src="/brand/carton_3d_cutout.png"
+          alt="Barista Oat Milk Carton 3D"
+          className="bmoat-stage-img"
+        />
+        <div className="bmoat-stage-shadow" />
+      </div>
 
-        {/* ─── Isometric Floor Grid ─── */}
-        <g stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7">
-          <path d="M20 176 L170 134 L320 176 L170 218 Z" fill="rgba(147, 51, 234, 0.025)" />
-          <line x1="55" y1="166" x2="195" y2="208" />
-          <line x1="90" y1="156" x2="230" y2="198" />
-          <line x1="125" y1="146" x2="265" y2="188" />
-          <line x1="195" y1="146" x2="55" y2="188" />
-          <line x1="230" y1="156" x2="90" y2="198" />
-        </g>
+      {/* Crisp HTML Glass HUD (Right) */}
+      <div className="bmoat-hud-right">
+        {/* Scale Header */}
+        <div className="bmoat-hud-row-head">
+          <div className="bmoat-hud-badge-green" style={{ color: '#E9D5FF' }}>
+            <span className="bmoat-live-dot" style={{ background: '#A855F7', boxShadow: '0 0 8px #A855F7' }} />
+            <span>ACTIVE VELOCITY</span>
+          </div>
+          <div className="bmoat-hud-capsule-purple" style={{ background: '#6D28D9', borderColor: '#A855F7' }}>
+            148 CAFÉS
+          </div>
+        </div>
 
-        {/* ─── Top Scale Badge: 148 CAFÉS REORDERING in Brand Purple ─── */}
-        <g transform="translate(182, 14)">
-          <rect
-            x="0"
-            y="0"
-            width="128"
-            height="18"
-            rx="9"
-            fill="#6D28D9"
-            stroke="#A855F7"
-            strokeWidth="0.75"
-            filter="drop-shadow(0 4px 12px rgba(109, 40, 217, 0.4))"
-          />
-          <circle cx="10" cy="9" r="2.5" fill="#A7F3D0" />
-          <circle cx="10" cy="9" r="5" stroke="#A7F3D0" strokeWidth="0.5" strokeOpacity="0.6" className="bmoat-ping" />
-          <text
-            x="18"
-            y="12"
-            fill="#FFFFFF"
-            fontSize="7"
-            fontWeight="700"
-            letterSpacing="0.04em"
-            fontFamily="system-ui, sans-serif"
-          >
-            148 CAFÉS REORDERING
-          </text>
-        </g>
-
-        {/* ─── DYNAMIC 3D HIGHWAY CONNECTOR PATHS IN BRAND PURPLE ─── */}
-        <g>
-          {VELOCITY_ROWS.map((row, rIdx) => {
-            const isRowActive = activeRowIdx === rIdx;
-            return (
-              <path
-                key={row.id}
-                d={row.pathD}
-                stroke={isRowActive ? '#C084FC' : 'rgba(168, 85, 247, 0.3)'}
-                strokeWidth={isRowActive ? '2' : '1'}
-                strokeLinecap="round"
-                className={isRowActive ? 'bmoat-active-path' : ''}
-              />
-            );
-          })}
-
-          {/* Running Luminous White/Purple Packet Streaming into Active Row */}
-          <circle r="3.2" fill="#FFFFFF" filter="url(#purpleGlowFilter2)">
-            <animateMotion
-              dur="1.8s"
-              repeatCount="indefinite"
-              path={activeRow.pathD}
-            />
-          </circle>
-
-          {/* Supplier Carton Direct Connection Node */}
-          <circle cx="74" cy="100" r="3.5" fill="#A855F7" />
-          <circle cx="74" cy="100" r="7" stroke="#C084FC" strokeWidth="0.8" className="bmoat-ping" />
-        </g>
-
-        {/* ─── LEFT: Actual 3D Barista Oat Carton Render ─── */}
-        <g className="bmoat-product-group" transform="translate(14, 20)">
-          {/* Floor Glow & Contact Shadow */}
-          <ellipse cx="56" cy="164" rx="42" ry="14" fill="#7C4DDB" fillOpacity="0.34" filter="blur(9px)" />
-          <ellipse cx="56" cy="164" rx="26" ry="8" fill="#000000" fillOpacity="0.8" filter="blur(3px)" />
-
-          {/* Actual 3D Carton Cutout Image */}
-          <image
-            href="/brand/carton_3d_cutout.png"
-            x="4"
-            y="10"
-            width="106"
-            height="156"
-            preserveAspectRatio="xMidYMid meet"
-            className="bmoat-product-3d"
-          />
-        </g>
-
-        {/* ─── RIGHT: Interactive Purchase Order Slabs in Brand Purple ─── */}
-        <g transform="translate(138, 42)">
+        {/* Stacked Interactive PO Cards */}
+        <div className="bmoat-hud-po-list">
           {VELOCITY_ROWS.map((row, rIdx) => {
             const isSelected = activeRowIdx === rIdx;
-            const offsetY = rIdx * 44;
 
             return (
-              <g
+              <div
                 key={row.id}
-                transform={`translate(0, ${offsetY})`}
+                className={`bmoat-hud-po-row ${isSelected ? 'active' : ''}`}
                 onClick={() => {
                   setActiveRowIdx(rIdx);
                   setIsPaused(true);
@@ -884,102 +564,22 @@ function RunningOrderVelocity() {
                   setActiveRowIdx(rIdx);
                   setIsPaused(true);
                 }}
-                style={{ cursor: 'pointer' }}
-                className="bmoat-interactive-row"
               >
-                {/* 3D Slab Base */}
-                <rect
-                  x="0"
-                  y="0"
-                  width="174"
-                  height="38"
-                  rx="9"
-                  fill={isSelected ? '#1A152E' : '#0E0D18'}
-                  stroke={isSelected ? '#A855F7' : 'rgba(168, 85, 247, 0.22)'}
-                  strokeWidth={isSelected ? '1.4' : '0.8'}
-                />
-
-                {/* Top Specular Line for Active Row */}
-                {isSelected && (
-                  <path d="M1 9 C 1 4, 4 1, 9 1 L 165 1 C 170 1, 173 4, 173 9" stroke="rgba(216, 180, 254, 0.7)" strokeWidth="0.9" fill="none" />
-                )}
-
-                {/* Monogram Avatar Badge in Brand Purple */}
-                <rect
-                  x="10"
-                  y="8"
-                  width="22"
-                  height="22"
-                  rx="5"
-                  fill={isSelected ? '#6D28D9' : '#3B1868'}
-                  stroke={isSelected ? '#C084FC' : 'rgba(168, 85, 247, 0.4)'}
-                  strokeWidth="0.75"
-                />
-                <text
-                  x="21"
-                  y="22.5"
-                  fill="#FFFFFF"
-                  fontSize="10"
-                  fontWeight="800"
-                  textAnchor="middle"
-                  fontFamily="system-ui, sans-serif"
-                >
+                <div className="bmoat-hud-po-avatar" style={{ background: row.badgeBg }}>
                   {row.initial}
-                </text>
-
-                {/* Venue Title & Status */}
-                <text
-                  x="38"
-                  y="17"
-                  fill="#FFFFFF"
-                  fontSize="8.5"
-                  fontWeight={isSelected ? '700' : '600'}
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {row.venue}
-                </text>
-                <circle cx="41" cy="26" r="2" fill={isSelected ? '#10B981' : '#A855F7'} />
-                {isSelected && (
-                  <circle cx="41" cy="26" r="4.5" stroke="#10B981" strokeWidth="0.6" strokeOpacity="0.5" className="bmoat-ping" />
-                )}
-                <text
-                  x="48"
-                  y="28.5"
-                  fill={isSelected ? '#E2E8F0' : 'rgba(255, 255, 255, 0.6)'}
-                  fontSize="7.2"
-                  fontWeight="500"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {row.status}
-                </text>
-
-                {/* Order Quantity Badge in Frosted Capsule */}
-                <rect
-                  x="134"
-                  y="11"
-                  width="30"
-                  height="16"
-                  rx="4"
-                  fill={isSelected ? 'rgba(147, 51, 234, 0.25)' : 'rgba(255, 255, 255, 0.04)'}
-                  stroke={isSelected ? '#C084FC' : 'rgba(168, 85, 247, 0.2)'}
-                  strokeWidth="0.6"
-                />
-                <text
-                  x="149"
-                  y="22"
-                  fill="#FFFFFF"
-                  fontSize="7.8"
-                  fontWeight="700"
-                  textAnchor="middle"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {row.cases}
-                </text>
-              </g>
+                </div>
+                <div className="bmoat-hud-po-info">
+                  <div className="bmoat-hud-po-name">{row.venue}</div>
+                  <div className="bmoat-hud-po-status" style={{ color: row.statusColor }}>
+                    ● {row.status}
+                  </div>
+                </div>
+                <div className="bmoat-hud-po-qty">{row.cases}</div>
+              </div>
             );
           })}
-        </g>
-      </svg>
+        </div>
+      </div>
     </div>
   );
 }
