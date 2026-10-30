@@ -140,8 +140,8 @@ export function BrandMoat() {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    WORKSPACE 01: DEMAND INTELLIGENCE
-   - Actual 3D Coffee Pouch with glowing purple floor ground
-   - Crisp HTML/CSS Telemetry HUD with interactive scrubbable SVG forecast curve
+   - Enhanced 3D Coffee Pouch with floating ambient glow and shadow
+   - Continuous interactive forecast telemetry with scrubbable W1-W5 points
 ───────────────────────────────────────────────────────────────────────────── */
 interface TelemetryPoint {
   week: string;
@@ -182,6 +182,14 @@ function DemandIntelligenceWorkspace() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Background CAD Grid */}
+      <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
+        <line x1="50" y1="178" x2="210" y2="228" stroke="rgba(168, 85, 247, 0.1)" strokeWidth="0.7" />
+        <line x1="90" y1="165" x2="250" y2="215" stroke="rgba(168, 85, 247, 0.1)" strokeWidth="0.7" />
+        <line x1="130" y1="152" x2="290" y2="202" stroke="rgba(168, 85, 247, 0.1)" strokeWidth="0.7" />
+      </svg>
+
       {/* 3D Product Stage (Left) */}
       <div className="bmoat-stage-left">
         <img
@@ -322,8 +330,9 @@ function DemandIntelligenceWorkspace() {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    WORKSPACE 02: DIRECT CAFÉ DISCOVERY
-   - Actual 3D Craft Glass Bottle standing on a glowing purple turntable base
-   - Crisp HTML Tasting Flight HUD with real tabs and barista review score
+   - Enhanced 3D Craft Glass Bottle on Turntable Pedestal
+   - Dynamic Laser Spline Connector with streaming animated photon node
+   - Interactive Venue Tabs & Sensory Cupping HUD
 ───────────────────────────────────────────────────────────────────────────── */
 interface TrialStage {
   id: string;
@@ -389,6 +398,17 @@ function SamplingFlightsWorkspace() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Background CAD Grid & Glowing Laser Spline Connector */}
+      <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
+        {/* Dynamic laser spline connector path from bottle's neck to card */}
+        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(192, 132, 252, 0.75)" strokeWidth="1.6" strokeDasharray="3 3" />
+        {/* Constant Streaming Photon Pulse along the Path */}
+        <circle r="3" fill="#FFFFFF" filter="drop-shadow(0 0 6px #C084FC)">
+          <animateMotion dur="2.2s" repeatCount="indefinite" path="M 72 135 C 92 135, 102 102, 114 98" />
+        </circle>
+      </svg>
+
       {/* 3D Product Stage with Turntable Base (Left) */}
       <div className="bmoat-stage-left">
         <img
@@ -463,8 +483,9 @@ function SamplingFlightsWorkspace() {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    WORKSPACE 03: AUTOMATED REORDERS
-   - Actual 3D Barista Oat Milk Carton with grounded purple stage
-   - Crisp HTML Stacked PO Cards with live delivery status & quantity pills
+   - Enhanced 3D Barista Oat Milk Carton with grounded stage
+   - Branching Highway Connector Lines with continuous streaming packet
+   - Stacked Interactive Purchase Order Rows
 ───────────────────────────────────────────────────────────────────────────── */
 interface OrderVelocityRow {
   id: string;
@@ -474,6 +495,7 @@ interface OrderVelocityRow {
   cases: string;
   badgeBg: string;
   statusColor: string;
+  pathD: string;
 }
 
 const VELOCITY_ROWS: OrderVelocityRow[] = [
@@ -485,6 +507,7 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     cases: '12 cs',
     badgeBg: '#6D28D9',
     statusColor: '#10B981',
+    pathD: 'M 74 110 C 95 110, 102 68, 114 68',
   },
   {
     id: 'tamarind',
@@ -494,15 +517,17 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     cases: '8 cs',
     badgeBg: '#4C1D95',
     statusColor: '#93C5FD',
+    pathD: 'M 74 110 L 114 112',
   },
   {
     id: 'bramblegate',
     initial: 'B',
     venue: 'Bramblegate Roasters',
-    status: 'Standing PO · Reorder Ready',
+    status: 'Standing PO · Ready',
     cases: '16 cs',
     badgeBg: '#3B0764',
     statusColor: '#C084FC',
+    pathD: 'M 74 110 C 95 110, 102 156, 114 156',
   },
 ];
 
@@ -518,12 +543,43 @@ function OrderVelocityWorkspace() {
     return () => clearInterval(interval);
   }, [isPaused]);
 
+  const activeRow = VELOCITY_ROWS[activeRowIdx];
+
   return (
     <div
       className="bmoat-workspace"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Background CAD Grid & Branching Highway Lines */}
+      <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
+        {/* Dynamic Branching Highway Paths */}
+        {VELOCITY_ROWS.map((row, rIdx) => {
+          const isRowActive = activeRowIdx === rIdx;
+          return (
+            <path
+              key={row.id}
+              d={row.pathD}
+              stroke={isRowActive ? '#C084FC' : 'rgba(168, 85, 247, 0.35)'}
+              strokeWidth={isRowActive ? '1.8' : '1.2'}
+              strokeLinecap="round"
+            />
+          );
+        })}
+        {/* Continuous Streaming Packet along Active Row Path */}
+        <circle r="3.2" fill="#FFFFFF" filter="drop-shadow(0 0 6px #C084FC)">
+          <animateMotion
+            dur="1.8s"
+            repeatCount="indefinite"
+            path={activeRow.pathD}
+          />
+        </circle>
+        {/* Connection node on carton */}
+        <circle cx="74" cy="110" r="3.5" fill="#A855F7" />
+        <circle cx="74" cy="110" r="6" stroke="#C084FC" strokeWidth="0.8" opacity="0.6" />
+      </svg>
+
       {/* 3D Product Stage (Left) */}
       <div className="bmoat-stage-left">
         <img
