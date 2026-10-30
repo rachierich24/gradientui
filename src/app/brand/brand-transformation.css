@@ -1,34 +1,40 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Brand Portal Transformation Section ("Before vs With Gradient")
-   Magic UI Animated Beam Integration Architecture (Minimal Light Mode)
-   - Pristine white background (#FFFFFF) with refined slate & obsidian typography
-   - 3-column Animated Beam canvas (Fragmented Inputs → Gradient Hub → Connected Outputs)
-   - Clean horizontal Cubic Bézier S-curves (zero pinching or bundling)
-   - Dynamic animated light gradient beams with round stroke caps
-   - Interactive hover synchronization between nodes and summary cards below
+   Premium Animated Beam Integration Architecture — Minimal Light Mode
+   ─────────────────────────────────────────────────────────────────────────
+   - Pristine white background with refined slate & obsidian typography
+   - 3-column Animated Beam canvas: Fragmented → Gradient Hub → Connected
+   - Clean horizontal Cubic Bézier S-curves with animated light beams
+   - Interactive hover synchronisation between nodes and summary cards
    - Responsive degradation for tablet and mobile screens
-───────────────────────────────────────────────────────────────────────── */
+   ───────────────────────────────────────────────────────────────────────── */
 
+/* ─── 0. Section Wrapper ─────────────────────────────────────────────── */
 .btrans-section {
   position: relative;
   width: 100%;
   background-color: #FFFFFF;
   color: #0F172A;
-  padding: clamp(80px, 11vh, 130px) 0 clamp(90px, 12vh, 140px);
+  padding: clamp(90px, 12vh, 140px) 0 clamp(100px, 13vh, 150px);
   overflow: hidden;
   box-sizing: border-box;
   scroll-margin-top: 90px;
 }
 
-/* Subtle ambient spotlight in brand lavender */
+/* Ambient lavender spotlight behind the whole section */
 .btrans-bg-glow {
   position: absolute;
-  top: 15%;
+  top: 12%;
   left: 50%;
-  transform: translate(-50%, -15%);
-  width: 1100px;
-  height: 520px;
-  background: radial-gradient(ellipse 65% 55% at center, rgba(168, 85, 247, 0.08) 0%, rgba(124, 58, 237, 0.02) 50%, transparent 75%);
+  transform: translate(-50%, -12%);
+  width: 1200px;
+  height: 560px;
+  background: radial-gradient(
+    ellipse 60% 50% at center,
+    rgba(168, 85, 247, 0.06) 0%,
+    rgba(124, 58, 237, 0.015) 55%,
+    transparent 75%
+  );
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
@@ -44,10 +50,10 @@
   z-index: 1;
 }
 
-/* ─── 1. Editorial Section Header ────────────────────────────────── */
+/* ─── 1. Editorial Section Header ────────────────────────────────────── */
 .btrans-header {
-  max-width: 820px;
-  margin-bottom: 44px;
+  max-width: 760px;
+  margin-bottom: 56px;
 }
 
 .btrans-eyebrow {
@@ -56,65 +62,87 @@
   gap: 10px;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #7C3AED;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .btrans-eyebrow-line {
-  width: 20px;
+  width: 22px;
   height: 1.5px;
-  background: #7C3AED;
+  background: linear-gradient(90deg, #7C3AED, #A855F7);
   border-radius: 2px;
 }
 
 .btrans-title {
-  font-size: clamp(34px, 4.2vw, 50px);
+  font-size: clamp(32px, 3.8vw, 48px);
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.04em;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
   color: #0F172A;
-  margin: 0 0 16px 0;
+  margin: 0 0 18px 0;
 }
 
 .btrans-sub {
-  font-size: clamp(15px, 1.25vw, 16.5px);
-  line-height: 1.6;
-  color: #475569;
-  max-width: 640px;
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.65;
+  color: #64748B;
+  max-width: 600px;
   margin: 0;
 }
 
-/* ─── 2. Animated Beam Integration Canvas (White Background) ─────── */
+/* ─── 2. Animated Beam Integration Canvas ────────────────────────────── */
 .btrans-beam-stage {
   position: relative;
   width: 100%;
-  min-height: 560px;
+  min-height: 520px;
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 32px;
-  padding: 44px clamp(28px, 4vw, 56px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 28px;
+  padding: 48px clamp(32px, 4vw, 60px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  box-shadow: 0 24px 64px -16px rgba(124, 58, 237, 0.08), 0 4px 24px rgba(0, 0, 0, 0.03), 0 0 1px rgba(0, 0, 0, 0.06);
-  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.03),
+    0 16px 48px -12px rgba(124, 58, 237, 0.06);
   box-sizing: border-box;
 }
 
-/* Ambient subtle purple spotlight */
-.btrans-beam-stage::before {
+/* Very faint dot grid — almost invisible, adds texture */
+.btrans-beam-stage::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.04) 0%, transparent 60%);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none;
+  z-index: 0;
 }
 
-/* Ensure AnimatedBeam SVGs are strictly absolute overlays and never participate in flex layout */
+/* Soft purple center glow */
+.btrans-beam-stage::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(
+    circle,
+    rgba(168, 85, 247, 0.045) 0%,
+    rgba(124, 58, 237, 0.015) 45%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* AnimatedBeam SVGs — strictly positioned overlays */
 .btrans-beam-stage > svg {
   position: absolute !important;
   top: 0 !important;
@@ -125,7 +153,7 @@
   z-index: 5 !important;
 }
 
-/* Columns */
+/* ─── 2a. Side Columns ───────────────────────────────────────────────── */
 .btrans-beam-col {
   display: flex;
   flex-direction: column;
@@ -143,95 +171,110 @@
 }
 
 .btrans-beam-col-label {
-  font-size: 11px;
-  font-weight: 750;
-  letter-spacing: 0.14em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .btrans-beam-col-label.left {
-  color: #64748B;
+  color: #94A3B8;
   text-align: right;
-  padding-right: 6px;
+  padding-right: 8px;
 }
 
 .btrans-beam-col-label.right {
   color: #7C3AED;
   text-align: left;
-  padding-left: 6px;
+  padding-left: 8px;
 }
 
 .btrans-node-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
-/* Left Node Row: Text on Left, Circle on Right */
+/* ─── 2b. Node Rows ──────────────────────────────────────────────────── */
 .btrans-node-row-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   justify-content: flex-end;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 4px 0;
+  border-radius: 12px;
+}
+
+.btrans-node-row-left:hover {
+  transform: translateX(-3px);
 }
 
 .btrans-node-row-left .btrans-node-info {
   text-align: right;
 }
 
-/* Right Node Row: Circle on Left, Text on Right */
 .btrans-node-row-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   justify-content: flex-start;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 4px 0;
+  border-radius: 12px;
+}
+
+.btrans-node-row-right:hover {
+  transform: translateX(3px);
 }
 
 .btrans-node-row-right .btrans-node-info {
   text-align: left;
 }
 
+/* ─── 2c. Node Circles ───────────────────────────────────────────────── */
 .btrans-node-circle {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
 
+/* Left nodes: muted slate */
 .btrans-circle-muted {
-  background: #FFFFFF;
-  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  background: #F8FAFC;
+  border: 1.5px solid rgba(0, 0, 0, 0.07);
   color: #64748B;
-  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.06);
 }
 
+/* Right nodes: purple accent */
 .btrans-circle-accent {
   background: #FAF5FF;
-  border: 1.5px solid rgba(124, 58, 237, 0.35);
+  border: 1.5px solid rgba(124, 58, 237, 0.25);
   color: #7C3AED;
-  box-shadow: 0 8px 20px -6px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 2px 8px -2px rgba(124, 58, 237, 0.12);
 }
 
-.btrans-node-circle:hover,
+/* Hover / active state for node circles */
 .btrans-node-row-left:hover .btrans-node-circle,
 .btrans-node-row-right:hover .btrans-node-circle,
 .btrans-node-row-left.is-active .btrans-node-circle,
 .btrans-node-row-right.is-active .btrans-node-circle {
   border-color: #7C3AED;
-  box-shadow: 0 10px 25px -4px rgba(124, 58, 237, 0.28);
+  box-shadow: 0 4px 16px -4px rgba(124, 58, 237, 0.3);
   transform: scale(1.08);
 }
 
+/* ─── 2d. Node Labels ────────────────────────────────────────────────── */
 .btrans-node-info {
   display: flex;
   flex-direction: column;
@@ -241,9 +284,9 @@
 }
 
 .btrans-node-label {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #0F172A;
+  font-size: 13px;
+  font-weight: 650;
+  color: #1E293B;
   letter-spacing: -0.01em;
   transition: color 0.2s ease;
   white-space: nowrap;
@@ -256,153 +299,197 @@
 
 .btrans-node-desc {
   font-size: 11.5px;
-  color: #64748B;
+  color: #94A3B8;
   line-height: 1.35;
   white-space: nowrap;
 }
 
-/* ─── Center Column: The Gradient Platform Hub ────────────────────── */
+/* ─── 2e. Center Hub ─────────────────────────────────────────────────── */
 .btrans-beam-center {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   z-index: 10;
-  margin: 0 20px;
+  margin: 0 24px;
   align-self: center;
-  margin-top: 28px;
+  margin-top: 24px;
 }
 
+/* Soft concentric halo behind the circle */
 .btrans-hub-halo {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 190px;
-  height: 190px;
+  transform: translate(-50%, -55%);
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(124, 58, 237, 0.08) 50%, transparent 70%);
-  filter: blur(22px);
+  background: radial-gradient(
+    circle,
+    rgba(168, 85, 247, 0.15) 0%,
+    rgba(124, 58, 237, 0.04) 50%,
+    transparent 70%
+  );
+  filter: blur(28px);
   pointer-events: none;
+  animation: btrans-halo-pulse 4s ease-in-out infinite;
 }
 
+@keyframes btrans-halo-pulse {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -55%) scale(1); }
+  50%      { opacity: 1;   transform: translate(-50%, -55%) scale(1.06); }
+}
+
+/* Outer ring */
 .btrans-hub-circle {
-  width: 92px;
-  height: 92px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   background: #FFFFFF;
-  border: 2px solid rgba(124, 58, 237, 0.4);
+  border: 2px solid rgba(124, 58, 237, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 16px 40px -10px rgba(124, 58, 237, 0.32), 0 0 0 6px rgba(124, 58, 237, 0.06);
+  box-shadow:
+    0 0 0 6px rgba(124, 58, 237, 0.04),
+    0 0 0 12px rgba(124, 58, 237, 0.02),
+    0 12px 32px -8px rgba(124, 58, 237, 0.2);
   position: relative;
   z-index: 2;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease;
 }
 
 .btrans-hub-circle:hover {
-  transform: scale(1.05);
-  box-shadow: 0 20px 48px -10px rgba(124, 58, 237, 0.4), 0 0 0 8px rgba(124, 58, 237, 0.1);
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 8px rgba(124, 58, 237, 0.06),
+    0 0 0 16px rgba(124, 58, 237, 0.03),
+    0 16px 40px -8px rgba(124, 58, 237, 0.32);
 }
 
+/* Inner gradient logo */
 .btrans-hub-logo {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  font-weight: 850;
-  font-size: 24px;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
 }
 
 .btrans-hub-label-wrap {
-  margin-top: 14px;
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .btrans-hub-title {
-  font-size: 14.5px;
-  font-weight: 750;
-  color: #0F172A;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1E293B;
   letter-spacing: -0.01em;
 }
 
 .btrans-hub-badge {
-  font-size: 9.5px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #7C3AED;
-  background: rgba(124, 58, 237, 0.08);
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  padding: 2px 8px;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  padding: 3px 10px;
   border-radius: 20px;
 }
 
-/* ─── 3. Five Transformation Topic Cards Below ────────────────────── */
+/* ─── 3. Five Transformation Topic Cards ─────────────────────────────── */
 .btrans-workflow-strip {
-  margin-top: 32px;
+  margin-top: 40px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 .btrans-workflow-card {
-  background: #FAFAFC;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  padding: 18px 16px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #FAFAFA;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+  padding: 20px 18px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   box-sizing: border-box;
+  position: relative;
+}
+
+/* Purple top accent line — hidden by default */
+.btrans-workflow-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background: linear-gradient(90deg, #7C3AED, #A855F7);
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .btrans-workflow-card:hover,
 .btrans-workflow-card.is-active {
   background: #FFFFFF;
-  border-color: rgba(124, 58, 237, 0.35);
-  box-shadow: 0 10px 28px -8px rgba(124, 58, 237, 0.16), 0 0 0 1px rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.2);
+  box-shadow:
+    0 4px 16px -4px rgba(124, 58, 237, 0.1),
+    0 0 0 1px rgba(124, 58, 237, 0.08);
   transform: translateY(-2px);
+}
+
+.btrans-workflow-card:hover::before,
+.btrans-workflow-card.is-active::before {
+  opacity: 1;
 }
 
 .btrans-wf-topic {
   font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #7C3AED;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .btrans-wf-from {
-  font-size: 11.5px;
-  color: #64748B;
+  font-size: 12px;
+  color: #94A3B8;
   margin-bottom: 6px;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .btrans-wf-to {
   font-size: 12.5px;
   font-weight: 600;
-  color: #0F172A;
-  line-height: 1.35;
+  color: #1E293B;
+  line-height: 1.4;
 }
 
-/* ─── 4. Responsive Breakpoints ──────────────────────────────────── */
+/* ─── 4. Responsive Breakpoints ──────────────────────────────────────── */
 @media (max-width: 1100px) {
   .btrans-node-info {
     width: 155px;
   }
   .btrans-node-label {
-    font-size: 12.5px;
+    font-size: 12px;
   }
   .btrans-node-desc {
     font-size: 10.5px;
@@ -431,24 +518,24 @@
   }
 
   .btrans-beam-col-label {
-    font-size: 9.5px;
-    margin-bottom: 14px;
+    font-size: 9px;
+    margin-bottom: 16px;
   }
 
   .btrans-node-circle {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
   }
 
   .btrans-hub-circle {
-    width: 76px;
-    height: 76px;
+    width: 72px;
+    height: 72px;
   }
 
   .btrans-hub-logo {
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
   }
 
   .btrans-workflow-strip {
@@ -457,19 +544,24 @@
 }
 
 @media (max-width: 480px) {
+  .btrans-section {
+    padding: clamp(60px, 10vh, 100px) 0 clamp(70px, 10vh, 110px);
+  }
+
   .btrans-beam-stage {
-    min-height: 460px;
+    min-height: 440px;
     padding: 24px 10px;
+    border-radius: 20px;
   }
 
   .btrans-node-circle {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
 
   .btrans-node-circle svg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
   }
 
   .btrans-node-list {
@@ -477,28 +569,33 @@
   }
 
   .btrans-hub-circle {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
   }
 
   .btrans-hub-logo {
-    width: 36px;
-    height: 36px;
-    font-size: 17px;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
   }
 
   .btrans-hub-title {
-    font-size: 12.5px;
+    font-size: 12px;
   }
 
   .btrans-hub-badge {
-    font-size: 8.5px;
+    font-size: 8px;
   }
 }
 
-/* Reduced Motion Support */
+/* ─── 5. Reduced Motion Support ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .btrans-workflow-card:hover {
+  .btrans-workflow-card:hover,
+  .btrans-node-row-left:hover,
+  .btrans-node-row-right:hover {
     transform: none !important;
+  }
+  .btrans-hub-halo {
+    animation: none !important;
   }
 }
