@@ -7,6 +7,7 @@ import {
   SupplierChaosFlow,
   SupplierBentoFeatures,
   SupplierBillSyncAudit,
+  SupplierGrowth,
   SupplierLogos,
   SupplierBenefits,
   SupplierWorkflowSteps,
@@ -50,6 +51,9 @@ export default function SupplierPortalPage() {
 
       {/* ─── 04. Five-Tile Asymmetric Bento Feature Section (Core Supplier Capabilities) ─── */}
       <SupplierBentoFeatures />
+
+      {/* ─── 04a. Results: what selling through Gradient did to a supplier's month ─── */}
+      <SupplierGrowth />
 
       {/* ─── 04b. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
       <SupplierBillSyncAudit />

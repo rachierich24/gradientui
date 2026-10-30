@@ -3,6 +3,7 @@ import './supplier.css';
 import './bento.css';
 import './bill-sync.css';
 import './supplier-flow.css';
+import './supplier-growth.css';
 
 export const metadata: Metadata = {
   title: 'Gradient Supplier Portal — Every Café Order. Ready to Fulfill.',
