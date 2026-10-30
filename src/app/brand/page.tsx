@@ -1,6 +1,6 @@
 'use client';
 
-import { BrandNavbar, BrandHero, BrandDashboard, BrandMoat, BrandMarketing } from '@/components/brand';
+import { BrandNavbar, BrandHero, BrandDashboard, BrandMoat, BrandTransformation, BrandMarketing } from '@/components/brand';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
 import { G365Footer } from '@/components/landing/G365';
 
@@ -18,6 +18,9 @@ export default function BrandPortalPage() {
 
       {/* ─── 02c. The 3 Brand Network Moats: Demand Telemetry, Piggyback Sampling & PO Conversion ─── */}
       <BrandMoat />
+
+      {/* ─── 02d. Transformation: From fragmented supplier operations to one connected ecosystem ─── */}
+      <BrandTransformation />
 
       {/* ─── 03. How we market for you: a wall of cells that acts out each move, from reading demand to the reorder ─── */}
       <BrandMarketing />

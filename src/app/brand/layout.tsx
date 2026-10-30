@@ -3,6 +3,7 @@ import './brand.css';
 import './brand-dashboard.css';
 import './brand-marketing.css';
 import './brand-moat.css';
+import './brand-transformation.css';
 
 export const metadata: Metadata = {
   title: 'Gradient Brand Portal — Get your product into India’s best cafés',
