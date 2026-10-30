@@ -84,7 +84,7 @@ export function BrandMoat() {
 
             return (
               <div key={card.id} className="bmoat-card-wrap">
-                {/* Oversized Background Number — peeks above and sinks behind the frosted card */}
+                {/* Oversized Background Number in Sleek Monochrome Titanium */}
                 <div
                   className={`bmoat-bg-num ${isHovered ? 'is-lit' : ''}`}
                   aria-hidden="true"
@@ -102,13 +102,13 @@ export function BrandMoat() {
                   transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <div className="bmoat-card-inner">
-                    {/* Card Title & Minimal Category Pill */}
+                    {/* Card Title & Monochrome Category Pill */}
                     <div className="bmoat-card-top">
                       <h3 className="bmoat-card-title">{card.title}</h3>
                       <div className="bmoat-pill">{card.pill}</div>
                     </div>
 
-                    {/* Interactive, Running Capability Workspace */}
+                    {/* Interactive, Super 3D Monochrome Capability Workspace */}
                     <div className="bmoat-graphic-frame">
                       {idx === 0 && <RunningDemandIntelligence />}
                       {idx === 1 && <RunningSamplingFlights />}
@@ -139,27 +139,26 @@ export function BrandMoat() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   MOCKUP 01: RUNNING DEMAND TELEMETRY
-   - Continuous ambient telemetry scrubber running W1 -> W5 with smooth Framer springs.
-   - User hover / scrub instantly locks to any point to inspect volume & roast burn.
-   - Authentic B2B metrics: Batch Roast Run-rate, Depletion Velocity, Peak Demand.
+   MOCKUP 01: SUPER 3D MONOCHROME DEMAND TELEMETRY
+   - True isometric 3D coffee pouch with faceted gussets, crimp seal, and degassing valve
+   - 3D isometric coordinate floor grid with technical CAD crosshairs
+   - Floating 3D frosted glass telemetry HUD with luminous white curve and interactive scrub
 ───────────────────────────────────────────────────────────────────────────── */
 interface TelemetryPoint {
   week: string;
   stageLabel: string;
   volumeKg: number;
   growth: string;
-  burnRate: string;
   x: number;
   y: number;
 }
 
 const TELEMETRY_SERIES: TelemetryPoint[] = [
-  { week: 'W1', stageLabel: 'Baseline Roast Cycle', volumeKg: 48, growth: '+12%', burnRate: 'Normal', x: 22, y: 104 },
-  { week: 'W2', stageLabel: 'Secondary Roaster Pull', volumeKg: 68, growth: '+19%', burnRate: 'Steady', x: 58, y: 94 },
-  { week: 'W3', stageLabel: 'Hauz Khas Cluster Surge', volumeKg: 94, growth: '+25%', burnRate: 'Elevated', x: 96, y: 80 },
-  { week: 'W4', stageLabel: 'Multi-Outlet Depletion', volumeKg: 118, growth: '+29%', burnRate: 'High Velocity', x: 132, y: 66 },
-  { week: 'W5', stageLabel: 'Peak Forecast Order Window', volumeKg: 142, growth: '+34%', burnRate: 'Batch Surge', x: 162, y: 50 },
+  { week: 'W1', stageLabel: 'Baseline Roast Cycle', volumeKg: 48, growth: '+12%', x: 20, y: 104 },
+  { week: 'W2', stageLabel: 'Secondary Roaster Pull', volumeKg: 68, growth: '+19%', x: 56, y: 94 },
+  { week: 'W3', stageLabel: 'Hauz Khas Cluster Surge', volumeKg: 94, growth: '+25%', x: 94, y: 78 },
+  { week: 'W4', stageLabel: 'Multi-Outlet Depletion', volumeKg: 118, growth: '+29%', x: 130, y: 64 },
+  { week: 'W5', stageLabel: 'Peak Forecast Order Window', volumeKg: 142, growth: '+34%', x: 162, y: 48 },
 ];
 
 function RunningDemandIntelligence() {
@@ -167,7 +166,6 @@ function RunningDemandIntelligence() {
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isBagHovered, setIsBagHovered] = useState<boolean>(false);
 
-  // Running ambient telemetry transition loop (advances smoothly every 2.4s unless hovered)
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -177,8 +175,8 @@ function RunningDemandIntelligence() {
   }, [isPaused]);
 
   const activePoint = TELEMETRY_SERIES[activeIdx];
-  const tooltipX = Math.max(14, Math.min(116, activePoint.x - 24));
-  const tooltipY = Math.max(30, activePoint.y - 24);
+  const tooltipX = Math.max(12, Math.min(118, activePoint.x - 24));
+  const tooltipY = Math.max(24, activePoint.y - 24);
 
   return (
     <div
@@ -193,140 +191,188 @@ function RunningDemandIntelligence() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="v1LineGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#8B5CF6" />
-            <stop offset="65%" stopColor="#C084FC" />
-            <stop offset="100%" stopColor="#F3E8FF" />
+          {/* Pure Monochrome & Glass Gradients */}
+          <linearGradient id="monoCurveGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#94A3B8" />
+            <stop offset="60%" stopColor="#E2E8F0" />
+            <stop offset="100%" stopColor="#FFFFFF" />
           </linearGradient>
-          <linearGradient id="v1AreaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#A855F7" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#7E22CE" stopOpacity="0.0" />
+          <linearGradient id="monoAreaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.22" />
+            <stop offset="60%" stopColor="#94A3B8" stopOpacity="0.05" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.0" />
           </linearGradient>
-          <linearGradient id="bagFrontFace" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1E1C2B" />
-            <stop offset="100%" stopColor="#0F0D17" />
+          <linearGradient id="pouchFront3D" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#2D3040" />
+            <stop offset="45%" stopColor="#1E202C" />
+            <stop offset="100%" stopColor="#0F1017" />
           </linearGradient>
-          <linearGradient id="bagSideFace" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#151322" />
-            <stop offset="100%" stopColor="#090812" />
+          <linearGradient id="pouchSide3D" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#191B26" />
+            <stop offset="100%" stopColor="#0A0B10" />
           </linearGradient>
-          <filter id="softGlowV1" x="-25%" y="-25%" width="150%" height="150%">
-            <feGaussianBlur stdDeviation="4.5" result="blur" />
+          <linearGradient id="pouchTopCrimp" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3E4256" />
+            <stop offset="100%" stopColor="#222432" />
+          </linearGradient>
+          <linearGradient id="hudCardGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#141620" stopOpacity="0.96" />
+            <stop offset="100%" stopColor="#0A0B10" stopOpacity="0.98" />
+          </linearGradient>
+          <filter id="whiteGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
-        {/* Isometric Foundation Floor Grid with Coordinate Dots */}
-        <g stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.75">
-          <path
-            d="M45 174 L170 126 L295 174 L170 210 Z"
-            fill="rgba(147, 51, 234, 0.025)"
-          />
-          <line x1="82" y1="160" x2="207" y2="198" />
-          <line x1="120" y1="145" x2="245" y2="183" />
-          <circle cx="82" cy="160" r="1.5" fill="#8B5CF6" fillOpacity="0.4" />
-          <circle cx="207" cy="198" r="1.5" fill="#8B5CF6" fillOpacity="0.4" />
-          <circle cx="120" cy="145" r="1.5" fill="#8B5CF6" fillOpacity="0.4" />
-          <circle cx="245" cy="183" r="1.5" fill="#8B5CF6" fillOpacity="0.4" />
+        {/* ─── 3D Isometric CAD Foundation Grid ─── */}
+        <g stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.7">
+          <path d="M30 168 L170 122 L310 168 L170 214 Z" fill="rgba(255, 255, 255, 0.015)" />
+          <line x1="65" y1="156" x2="205" y2="202" />
+          <line x1="100" y1="145" x2="240" y2="191" />
+          <line x1="135" y1="133" x2="275" y2="179" />
+          <line x1="205" y1="133" x2="65" y2="179" />
+          <line x1="240" y1="145" x2="100" y2="191" />
+          <line x1="275" y1="156" x2="135" y2="202" />
+          <path d="M168 168 H172 M170 166 V170" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.8" />
+          <path d="M98 168 H102 M100 166 V170" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="0.8" />
+          <path d="M238 168 H242 M240 166 V170" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="0.8" />
         </g>
 
-        {/* ─── LEFT: 2.5D Specialty Coffee Bag with Degassing Valve ─── */}
+        {/* ─── LEFT: True 3D Specialty Coffee Pouch with Precision Crimp ─── */}
         <g
           className="bmoat-product-group"
-          transform="translate(36, 52)"
+          transform="translate(32, 46)"
           onMouseEnter={() => setIsBagHovered(true)}
           onMouseLeave={() => setIsBagHovered(false)}
           style={{ cursor: 'pointer' }}
         >
-          {/* Base Drop Shadow */}
-          <ellipse cx="38" cy="120" rx="30" ry="8" fill="#000000" fillOpacity="0.55" filter="blur(4px)" />
+          {/* Dual-Stage Ambient Occlusion Floor Shadow */}
+          <ellipse cx="40" cy="124" rx="34" ry="10" fill="#000000" fillOpacity="0.7" filter="blur(6px)" />
+          <ellipse cx="40" cy="124" rx="20" ry="5.5" fill="#000000" fillOpacity="0.85" filter="blur(2.5px)" />
 
-          {/* Top Folded Seal */}
-          <path d="M12 12 L64 12 L58 18 L6 18 Z" fill="#26213A" stroke="#8B5CF6" strokeWidth="0.75" />
-          <line x1="10" y1="15" x2="60" y2="15" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.5" strokeDasharray="2 1.5" />
+          {/* 3D Isometric Scanner Rings */}
+          <ellipse cx="40" cy="123" rx="28" ry="8.5" fill="none" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="0.75" />
+          <ellipse cx="40" cy="123" rx="18" ry="5.5" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.5" strokeDasharray="3 2" />
 
-          {/* Side Gusset */}
+          {/* Top Seal Crimp Ridge with Beveled Teeth */}
           <path
-            d="M6 18 L18 24 L18 114 L6 108 Z"
-            fill="url(#bagSideFace)"
-            stroke="rgba(168, 85, 247, 0.3)"
+            d="M10 16 L66 12 L60 22 L6 26 Z"
+            fill="url(#pouchTopCrimp)"
+            stroke="rgba(255, 255, 255, 0.4)"
             strokeWidth="0.75"
           />
+          {[14, 20, 26, 32, 38, 44, 50, 56, 62].map((kx) => (
+            <line
+              key={kx}
+              x1={kx}
+              y1={14 + (kx - 14) * -0.07}
+              x2={kx - 5}
+              y2={24 + (kx - 14) * -0.07}
+              stroke="rgba(255, 255, 255, 0.25)"
+              strokeWidth="0.6"
+            />
+          ))}
 
-          {/* Front Face with subtle hover illumination */}
+          {/* Side Gusset (Faceted in 3D Perspective) */}
           <path
-            d="M18 24 L58 18 L68 108 L18 114 Z"
-            fill="url(#bagFrontFace)"
-            stroke={isBagHovered ? 'rgba(192, 132, 252, 0.75)' : 'rgba(168, 85, 247, 0.55)'}
-            strokeWidth={isBagHovered ? '1.1' : '0.9'}
+            d="M6 26 L20 34 L18 118 L6 110 Z"
+            fill="url(#pouchSide3D)"
+            stroke="rgba(255, 255, 255, 0.2)"
+            strokeWidth="0.75"
+          />
+          <line x1="12" y1="30" x2="11" y2="114" stroke="rgba(0, 0, 0, 0.55)" strokeWidth="0.9" />
+          <line x1="13" y1="30" x2="12" y2="114" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="0.5" />
+
+          {/* Front Face with Curvature Gradient */}
+          <path
+            d="M20 34 L60 22 L72 108 L18 118 Z"
+            fill="url(#pouchFront3D)"
+            stroke={isBagHovered ? '#FFFFFF' : 'rgba(255, 255, 255, 0.45)'}
+            strokeWidth={isBagHovered ? '1.2' : '0.9'}
           />
 
-          {/* Lavender Rim Highlight */}
-          <path d="M18 24 L58 18 L68 108" stroke="rgba(216, 180, 254, 0.5)" strokeWidth="0.75" fill="none" />
+          {/* High-Contrast Razor Specular Edge Highlight */}
+          <path d="M20 34 L60 22 L72 108" stroke="rgba(255, 255, 255, 0.65)" strokeWidth="0.8" fill="none" />
+          <line x1="20" y1="34" x2="18" y2="118" stroke="#FFFFFF" strokeWidth="1.1" strokeOpacity="0.8" />
 
-          {/* Degassing Aroma Valve with Continuous Pulse Wave */}
-          <circle cx="38" cy="45" r="4.2" fill="#171424" stroke="#8B5CF6" strokeWidth="0.8" />
-          <circle cx="38" cy="45" r="1.5" fill="#C084FC" />
-          <circle cx="38" cy="45" r="7" stroke="#A855F7" strokeWidth="0.6" strokeOpacity={isBagHovered ? 0.7 : 0.35} className="bmoat-ping" />
+          {/* 3D Recessed Aroma Degassing Valve */}
+          <ellipse cx="42" cy="50" rx="5.5" ry="5.5" fill="#15161F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="0.8" />
+          <ellipse cx="42" cy="50" rx="3.5" ry="3.5" fill="#0C0D12" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.6" />
+          <circle cx="42" cy="50" r="1.2" fill="#FFFFFF" />
+          <circle cx="42" cy="50" r="8" stroke="#FFFFFF" strokeWidth="0.6" strokeOpacity={isBagHovered ? 0.6 : 0.25} className="bmoat-ping" />
 
-          {/* Pouch Label */}
+          {/* Technical Monochrome Architectural Label */}
           <rect
-            x="24"
-            y="58"
-            width="34"
-            height="38"
-            rx="3"
-            fill="#151221"
-            stroke="rgba(255, 255, 255, 0.12)"
-            strokeWidth="0.6"
+            x="26"
+            y="64"
+            width="36"
+            height="40"
+            rx="2.5"
+            fill="#0F1017"
+            stroke="rgba(255, 255, 255, 0.25)"
+            strokeWidth="0.7"
           />
-          <rect x="27" y="63" width="28" height="2" rx="1" fill="#8B5CF6" />
-          <text x="28" y="73" fill="#FFFFFF" fontSize="5" fontWeight="800" fontFamily="system-ui, sans-serif">
+          <line x1="29" y1="68" x2="59" y2="68" stroke="#FFFFFF" strokeWidth="1" />
+          <text x="30" y="77" fill="#FFFFFF" fontSize="5.2" fontWeight="800" letterSpacing="0.06em" fontFamily="system-ui, sans-serif">
             HILLFOLD
           </text>
-          <text x="28" y="80" fill="#C084FC" fontSize="4.2" fontWeight="600" fontFamily="system-ui, sans-serif">
+          <text x="30" y="84" fill="#CBD5E1" fontSize="4.2" fontWeight="600" letterSpacing="0.04em" fontFamily="system-ui, sans-serif">
             ARABICA AA
           </text>
-          <text x="28" y="91" fill="#94A3B8" fontSize="3.6" fontFamily="system-ui, sans-serif">
-            500G ROAST
+          <text x="30" y="93" fill="#64748B" fontSize="3.5" fontFamily="system-ui, sans-serif">
+            BATCH ROAST · 500G
           </text>
+          <g stroke="rgba(255, 255, 255, 0.4)" strokeWidth="0.6">
+            <line x1="30" y1="98" x2="30" y2="101" />
+            <line x1="32" y1="98" x2="32" y2="101" />
+            <line x1="33" y1="98" x2="33" y2="101" />
+            <line x1="36" y1="98" x2="36" y2="101" />
+            <line x1="38" y1="98" x2="38" y2="101" />
+            <line x1="41" y1="98" x2="41" y2="101" />
+            <line x1="44" y1="98" x2="44" y2="101" />
+          </g>
         </g>
 
-        {/* ─── RIGHT: Running Demand Forecast Telemetry Interface ─── */}
-        <g transform="translate(132, 40)">
-          {/* Card Base */}
+        {/* ─── RIGHT: Super 3D Frosted Glass Telemetry HUD ─── */}
+        <g transform="translate(132, 36)">
+          <rect x="0" y="4" width="180" height="144" rx="10" fill="#000000" fillOpacity="0.6" filter="blur(5px)" />
+
           <rect
             x="0"
             y="0"
-            width="178"
-            height="140"
+            width="180"
+            height="144"
             rx="10"
-            fill="#0C0B14"
-            stroke="rgba(255, 255, 255, 0.08)"
+            fill="url(#hudCardGrad)"
+            stroke="rgba(255, 255, 255, 0.12)"
             strokeWidth="0.8"
           />
 
-          {/* Header Row: Live Telemetry Status + Dynamic Growth Badge */}
+          {/* High-Tech Specular Rim Highlight */}
+          <path d="M1 10 C 1 5, 5 1, 10 1 L 170 1 C 175 1, 179 5, 179 10" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="0.9" fill="none" />
+
+          {/* Header Row: Live Telemetry Status + Monochrome Growth Capsule */}
           <g transform="translate(14, 18)">
-            <circle cx="0" cy="-2.5" r="2.5" fill="#22C55E" />
-            <circle cx="0" cy="-2.5" r="5" stroke="#22C55E" strokeWidth="0.6" strokeOpacity="0.4" className="bmoat-ping" />
-            <text x="8" y="0.5" fill="#F8FAFC" fontSize="8" fontWeight="700" fontFamily="system-ui, sans-serif">
+            <circle cx="0" cy="-2.5" r="2.5" fill="#FFFFFF" />
+            <circle cx="0" cy="-2.5" r="5.5" stroke="#FFFFFF" strokeWidth="0.6" strokeOpacity="0.45" className="bmoat-ping" />
+            <text x="8" y="0.5" fill="#FFFFFF" fontSize="8" fontWeight="700" fontFamily="system-ui, sans-serif">
               Arabica AA Roast
             </text>
             <rect
               x="104"
               y="-10"
-              width="46"
+              width="48"
               height="15"
               rx="7.5"
-              fill="rgba(168, 85, 247, 0.14)"
-              stroke="rgba(168, 85, 247, 0.35)"
+              fill="rgba(255, 255, 255, 0.08)"
+              stroke="rgba(255, 255, 255, 0.25)"
               strokeWidth="0.75"
             />
             <text
-              x="127"
+              x="128"
               y="0.5"
-              fill="#C084FC"
+              fill="#FFFFFF"
               fontSize="6.8"
               fontWeight="700"
               textAnchor="middle"
@@ -336,42 +382,42 @@ function RunningDemandIntelligence() {
             </text>
           </g>
 
-          {/* Divider */}
-          <line x1="14" y1="28" x2="164" y2="28" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="0.75" />
+          <line x1="14" y1="28" x2="166" y2="28" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.75" />
 
           {/* Chart Grid Lines */}
-          <g stroke="rgba(255, 255, 255, 0.04)" strokeDasharray="3 3" strokeWidth="0.75">
-            <line x1="14" y1="52" x2="164" y2="52" />
-            <line x1="14" y1="76" x2="164" y2="76" />
-            <line x1="14" y1="104" x2="164" y2="104" />
+          <g stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="3 3" strokeWidth="0.75">
+            <line x1="14" y1="52" x2="166" y2="52" />
+            <line x1="14" y1="76" x2="166" y2="76" />
+            <line x1="14" y1="104" x2="166" y2="104" />
           </g>
 
-          {/* Shaded Area Under Forecast Curve */}
+          {/* Shaded Area Under Curve */}
           <path
-            d="M22 104 C 48 98, 78 86, 102 78 C 126 70, 148 56, 162 50 L 162 104 L 22 104 Z"
-            fill="url(#v1AreaGrad)"
+            d="M20 104 C 46 98, 76 86, 100 78 C 124 70, 146 54, 162 48 L 162 104 L 20 104 Z"
+            fill="url(#monoAreaGrad)"
           />
 
-          {/* Smooth Forecast Trendline */}
+          {/* High-Luminance White Forecast Trendline */}
           <path
-            d="M22 104 C 48 98, 78 86, 102 78 C 126 70, 148 56, 162 50"
-            stroke="url(#v1LineGrad)"
-            strokeWidth="1.8"
+            d="M20 104 C 46 98, 76 86, 100 78 C 124 70, 146 54, 162 48"
+            stroke="url(#monoCurveGrad)"
+            strokeWidth="2"
             strokeLinecap="round"
           />
 
-          {/* Dynamic Scrub Vertical Cursor Guide Line */}
+          {/* Dynamic Laser Vertical Cursor Guide */}
           <line
             x1={activePoint.x}
             y1={activePoint.y}
             x2={activePoint.x}
             y2="104"
-            stroke="rgba(192, 132, 252, 0.6)"
+            stroke="#FFFFFF"
             strokeWidth="1"
             strokeDasharray="2 2"
+            strokeOpacity="0.7"
           />
 
-          {/* 5 Weekly Points with Generous Interactive Hit Areas */}
+          {/* 5 Weekly Points */}
           {TELEMETRY_SERIES.map((pt, pIdx) => {
             const isSelected = activeIdx === pIdx;
             return (
@@ -387,24 +433,22 @@ function RunningDemandIntelligence() {
                 }}
                 style={{ cursor: 'pointer' }}
               >
-                {/* Hit area */}
-                <circle cx={pt.x} cy={pt.y} r="10" fill="transparent" />
+                <circle cx={pt.x} cy={pt.y} r="12" fill="transparent" />
 
                 {isSelected ? (
                   <>
-                    <circle cx={pt.x} cy={pt.y} r="5" fill="#C084FC" filter="url(#softGlowV1)" />
-                    <circle cx={pt.x} cy={pt.y} r="2.2" fill="#FFFFFF" />
+                    <circle cx={pt.x} cy={pt.y} r="5" fill="#FFFFFF" filter="url(#whiteGlowFilter)" />
+                    <circle cx={pt.x} cy={pt.y} r="2.2" fill="#0C0D12" />
                   </>
                 ) : (
-                  <circle cx={pt.x} cy={pt.y} r="2.5" fill="#2E2840" stroke="#7C3AED" strokeWidth="0.8" />
+                  <circle cx={pt.x} cy={pt.y} r="2.6" fill="#1A1C26" stroke="#94A3B8" strokeWidth="0.8" />
                 )}
 
-                {/* X-Axis Week Labels */}
                 <text
                   x={pt.x}
-                  y="116"
-                  fill={isSelected ? '#C084FC' : 'rgba(148, 163, 184, 0.6)'}
-                  fontSize="6.5"
+                  y="117"
+                  fill={isSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.4)'}
+                  fontSize="6.8"
                   fontWeight={isSelected ? '700' : '500'}
                   textAnchor="middle"
                   fontFamily="system-ui, sans-serif"
@@ -415,7 +459,7 @@ function RunningDemandIntelligence() {
             );
           })}
 
-          {/* Floating Data Tooltip Centered Above the Active Point */}
+          {/* Floating 3D Data Tooltip */}
           <g
             transform={`translate(${tooltipX}, ${tooltipY})`}
             className="bmoat-dynamic-tooltip"
@@ -424,18 +468,18 @@ function RunningDemandIntelligence() {
               x="0"
               y="0"
               width="48"
-              height="17"
+              height="18"
               rx="4"
-              fill="#161324"
-              stroke="#A855F7"
-              strokeWidth="0.85"
+              fill="#0F1017"
+              stroke="#FFFFFF"
+              strokeWidth="0.9"
             />
             <text
               x="24"
-              y="11.5"
+              y="12"
               fill="#FFFFFF"
-              fontSize="7.5"
-              fontWeight="700"
+              fontSize="8"
+              fontWeight="800"
               textAnchor="middle"
               fontFamily="system-ui, sans-serif"
             >
@@ -444,11 +488,11 @@ function RunningDemandIntelligence() {
           </g>
 
           {/* Live Telemetry Status Footnote */}
-          <g transform="translate(14, 130)">
+          <g transform="translate(14, 133)">
             <text
               x="0"
               y="0"
-              fill="rgba(203, 213, 225, 0.85)"
+              fill="rgba(255, 255, 255, 0.85)"
               fontSize="6.5"
               fontWeight="600"
               fontFamily="system-ui, sans-serif"
@@ -456,9 +500,9 @@ function RunningDemandIntelligence() {
               {activePoint.stageLabel}
             </text>
             <text
-              x="150"
+              x="152"
               y="0"
-              fill={isPaused ? '#C084FC' : 'rgba(148, 163, 184, 0.6)'}
+              fill={isPaused ? '#FFFFFF' : 'rgba(255, 255, 255, 0.45)'}
               fontSize="6"
               fontWeight={isPaused ? '700' : '500'}
               textAnchor="end"
@@ -474,10 +518,10 @@ function RunningDemandIntelligence() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   MOCKUP 02: RUNNING SAMPLING FLIGHTS & SENSORY LIFECYCLE
-   - Continuous lifecycle transitions across 3 specialty café trial stages.
-   - Live progress indicator showing dispatch -> barista cupping -> MOQ unlock.
-   - Authentic B2B metrics: Microfoam Curdling Test, Extraction Balance, MOQ PO.
+   MOCKUP 02: SUPER 3D CYLINDRICAL CRAFT BOTTLE & SAMPLING HUD
+   - True 3D glass cylinder bottle on multi-tier extruded turntable pedestal
+   - Knurled titanium cap, double-wall glass refractions, and liquid core
+   - Dynamic 3D laser spline feeding into floating barista cupping capsule
 ───────────────────────────────────────────────────────────────────────────── */
 interface TrialStage {
   id: string;
@@ -485,13 +529,9 @@ interface TrialStage {
   venue: string;
   location: string;
   lifecycleStatus: string;
-  statusColor: string;
   evaluator: string;
   sensoryQuote: string;
   cuppingScore: string;
-  actionNote: string;
-  dockX: number;
-  dockY: number;
 }
 
 const TRIAL_LIFECYCLE: TrialStage[] = [
@@ -501,13 +541,9 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
     venue: 'Tamarind Lane Roastery',
     location: 'Hauz Khas · Roaster Tier 1 (42 Venues)',
     lifecycleStatus: 'TRIAL ACTIVE · IN BREW',
-    statusColor: '#10B981',
     evaluator: 'Head Barista Tasting Evaluation',
     sensoryQuote: '"Dense microfoam balance & zero curdling approved"',
     cuppingScore: '★ 4.8',
-    actionNote: 'Opening Net-15 MOQ Unlocked (12 Cases)',
-    dockX: 74,
-    dockY: 172,
   },
   {
     id: 'hillfold',
@@ -515,13 +551,9 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
     venue: 'Hillfold Espresso Lab',
     location: 'Indiranagar · Multi-Outlet Barista Team',
     lifecycleStatus: 'EN ROUTE · VAN SLOT 02',
-    statusColor: '#60A5FA',
     evaluator: 'Cold-Chain Dispatch Verification',
-    sensoryQuote: '"Sample flight scheduled for morning calibration"',
+    sensoryQuote: '"Sample flight scheduled for calibration"',
     cuppingScore: 'CALIB',
-    actionNote: 'Batch tracking active · ETA 08:30 AM',
-    dockX: 74,
-    dockY: 172,
   },
   {
     id: 'bramblegate',
@@ -529,13 +561,9 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
     venue: 'Bramblegate Roasters',
     location: 'Bandra West · Artisanal Single Origin',
     lifecycleStatus: 'EVALUATED · STANDING PO',
-    statusColor: '#C084FC',
     evaluator: 'Lead Roaster Sensory Protocol',
     sensoryQuote: '"Signature iced vanilla latte test approved"',
     cuppingScore: '★ 5.0',
-    actionNote: 'Recurring standing order confirmed (16 cs)',
-    dockX: 74,
-    dockY: 172,
   },
 ];
 
@@ -543,7 +571,6 @@ function RunningSamplingFlights() {
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
-  // Running ambient transition loop (rotates stage every 3.2s unless paused)
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
@@ -567,105 +594,140 @@ function RunningSamplingFlights() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="v2FluidGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#7E22CE" stopOpacity="0.85" />
-            <stop offset="60%" stopColor="#4A1D72" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#2E0854" />
+          <linearGradient id="bottleGlass3D" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#1E202B" />
+            <stop offset="25%" stopColor="#2E3245" />
+            <stop offset="50%" stopColor="#181924" />
+            <stop offset="85%" stopColor="#101118" />
+            <stop offset="100%" stopColor="#08090D" />
           </linearGradient>
-          <linearGradient id="v2BeamGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#C084FC" />
-            <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.3" />
+          <linearGradient id="capMetal3D" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#64748B" />
+            <stop offset="35%" stopColor="#F1F5F9" />
+            <stop offset="70%" stopColor="#94A3B8" />
+            <stop offset="100%" stopColor="#334155" />
           </linearGradient>
-          <filter id="softGlowV2" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
+          <linearGradient id="turntable3D" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#282A38" />
+            <stop offset="100%" stopColor="#101118" />
+          </linearGradient>
+          <linearGradient id="beamLaserWhite" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="100%" stopColor="#64748B" stopOpacity="0.4" />
+          </linearGradient>
         </defs>
 
-        {/* Understated Isometric Foundation Plane */}
-        <g stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.75">
-          <path
-            d="M45 174 L170 126 L295 174 L170 210 Z"
-            fill="rgba(147, 51, 234, 0.025)"
-          />
-          <line x1="82" y1="160" x2="207" y2="198" />
-          <line x1="120" y1="145" x2="245" y2="183" />
+        {/* ─── 3D Isometric CAD Foundation Grid ─── */}
+        <g stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.7">
+          <path d="M30 168 L170 122 L310 168 L170 214 Z" fill="rgba(255, 255, 255, 0.015)" />
+          <line x1="65" y1="156" x2="205" y2="202" />
+          <line x1="100" y1="145" x2="240" y2="191" />
+          <line x1="205" y1="133" x2="65" y2="179" />
+          <line x1="240" y1="145" x2="100" y2="191" />
         </g>
 
-        {/* ─── LEFT: Featured Craft Syrup Bottle & Glowing Pedestal Platform ─── */}
-        <g transform="translate(50, 46)">
-          {/* Circular Pedestal Platform Base */}
-          <ellipse cx="24" cy="126" rx="22" ry="7.5" fill="rgba(168, 85, 247, 0.12)" stroke="rgba(192, 132, 252, 0.6)" strokeWidth="0.8" />
-          <ellipse cx="24" cy="126" rx="14" ry="4.5" fill="#000000" fillOpacity="0.5" filter="blur(3px)" />
+        {/* ─── LEFT: 3D Cylindrical Bottle on Extruded Turntable Pedestal ─── */}
+        <g transform="translate(42, 40)">
+          {/* Base Floor Shadows */}
+          <ellipse cx="32" cy="134" rx="30" ry="10" fill="#000000" fillOpacity="0.7" filter="blur(5px)" />
 
-          {/* Gold Screw Cap */}
-          <rect x="18" y="14" width="12" height="12" rx="1.5" fill="#D4AF37" stroke="#FDE047" strokeWidth="0.6" />
-          <line x1="18" y1="18" x2="30" y2="18" stroke="#854D0E" strokeWidth="0.5" />
-          <path d="M17 26 L31 26 L34 38 L14 38 Z" fill="#1C142A" stroke="rgba(216, 180, 254, 0.35)" strokeWidth="0.75" />
+          {/* 3D Extruded Turntable Platform (Lower Tier) */}
+          <path
+            d="M6 130 C 6 137, 58 137, 58 130 L 58 134 C 58 141, 6 141, 6 134 Z"
+            fill="#101118"
+            stroke="rgba(255, 255, 255, 0.15)"
+            strokeWidth="0.6"
+          />
+          <ellipse cx="32" cy="130" rx="26" ry="8" fill="url(#turntable3D)" stroke="rgba(255, 255, 255, 0.35)" strokeWidth="0.75" />
 
-          {/* Glass Bottle Body */}
+          {/* Upper Turntable Platform (Elevated) */}
+          <path
+            d="M12 124 C 12 130, 52 130, 52 124 L 52 127 C 52 133, 12 133, 12 127 Z"
+            fill="#090A0F"
+          />
+          <ellipse cx="32" cy="124" rx="20" ry="6" fill="#1C1E2A" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="0.8" />
+          <ellipse cx="32" cy="124" rx="14" ry="4.2" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.5" strokeDasharray="2 2" />
+
+          {/* Knurled Titanium Screw Cap in 3D */}
+          <ellipse cx="32" cy="14" rx="6.5" ry="2.2" fill="#F8FAFC" stroke="#FFFFFF" strokeWidth="0.6" />
+          <rect x="25.5" y="14" width="13" height="12" fill="url(#capMetal3D)" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="0.6" />
+          {[27, 29, 31, 33, 35, 37].map((kx) => (
+            <line key={kx} x1={kx} y1="15" x2={kx} y2="25" stroke="rgba(0, 0, 0, 0.35)" strokeWidth="0.5" />
+          ))}
+
+          {/* Tapered Glass Neck */}
+          <path d="M25 26 L39 26 L42 38 L22 38 Z" fill="#161722" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="0.75" />
+          <line x1="28" y1="27" x2="26" y2="37" stroke="rgba(255, 255, 255, 0.6)" strokeWidth="0.75" />
+
+          {/* 3D Glass Cylinder Body */}
           <rect
-            x="10"
+            x="18"
             y="38"
             width="28"
-            height="86"
-            rx="5.5"
-            fill="url(#v2FluidGrad)"
-            stroke="rgba(168, 85, 247, 0.6)"
-            strokeWidth="1"
+            height="84"
+            rx="5"
+            fill="url(#bottleGlass3D)"
+            stroke="rgba(255, 255, 255, 0.45)"
+            strokeWidth="0.9"
           />
 
-          {/* Specular Highlight Streak */}
-          <path d="M13 42 L15.5 42 L15.5 118 L13 118 Z" fill="rgba(255, 255, 255, 0.22)" />
+          {/* Hard Specular Reflection Streak down Left Flank */}
+          <line x1="21" y1="40" x2="21" y2="120" stroke="#FFFFFF" strokeWidth="1.2" strokeOpacity="0.75" />
+          <line x1="23" y1="42" x2="23" y2="118" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="0.6" />
 
-          {/* Bottle Front Label */}
-          <rect x="14" y="58" width="20" height="46" rx="2" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="0.5" />
-          <rect x="16" y="62" width="16" height="2" fill="#6B21A8" />
-          <text x="24" y="71" fill="#1E1B4B" fontSize="4.2" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          {/* Subtle Ambient Bounce Highlight down Right Flank */}
+          <line x1="43" y1="42" x2="43" y2="118" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.8" />
+
+          {/* Technical Monochrome Bottle Label */}
+          <rect x="22" y="58" width="20" height="46" rx="2" fill="#0C0D12" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="0.6" />
+          <rect x="24" y="62" width="16" height="1.5" fill="#FFFFFF" />
+          <text x="32" y="71" fill="#FFFFFF" fontSize="4.2" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
             VANILLA
           </text>
-          <text x="24" y="76" fill="#7E22CE" fontSize="3.6" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <text x="32" y="76" fill="#E2E8F0" fontSize="3.6" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">
             CRAFT
           </text>
-          <text x="24" y="81" fill="#64748B" fontSize="3" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <text x="32" y="81" fill="#94A3B8" fontSize="3" textAnchor="middle" fontFamily="system-ui, sans-serif">
             SYRUP
           </text>
-          <line x1="17" y1="87" x2="31" y2="87" stroke="#CBD5E1" strokeWidth="0.4" />
-          <text x="24" y="96" fill="#475569" fontSize="2.8" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <line x1="25" y1="86" x2="39" y2="86" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="0.4" />
+          <text x="32" y="94" fill="#64748B" fontSize="2.8" textAnchor="middle" fontFamily="system-ui, sans-serif">
             700 ML
           </text>
         </g>
 
-        {/* Dynamic Dispatch Connector Beam to Card */}
+        {/* 3D Laser Spline Connector from Bottle to HUD */}
         <path
-          d="M86 150 C 110 142, 118 104, 132 98"
-          stroke="url(#v2BeamGrad)"
+          d="M86 148 C 108 140, 116 102, 132 96"
+          stroke="url(#beamLaserWhite)"
           strokeWidth="1.2"
           strokeDasharray="4 3"
         />
 
-        {/* Flowing particle along beam */}
-        <circle r="2.4" fill="#F3E8FF" filter="url(#softGlowV2)">
+        {/* Flowing White Photon Node */}
+        <circle r="2.5" fill="#FFFFFF" filter="url(#whiteGlowFilter)">
           <animateMotion
             dur="2.4s"
             repeatCount="indefinite"
-            path="M86 150 C 110 142, 118 104, 132 98"
+            path="M86 148 C 108 140, 116 102, 132 96"
           />
         </circle>
 
-        {/* ─── RIGHT: Interactive Sampling Flight Interface Card ─── */}
-        <g transform="translate(132, 40)">
-          {/* Card Base */}
+        {/* ─── RIGHT: Super 3D Frosted Glass Sampling HUD ─── */}
+        <g transform="translate(132, 36)">
+          <rect x="0" y="4" width="180" height="144" rx="10" fill="#000000" fillOpacity="0.6" filter="blur(5px)" />
+
           <rect
             x="0"
             y="0"
-            width="178"
-            height="140"
+            width="180"
+            height="144"
             rx="10"
-            fill="#0C0B14"
-            stroke="rgba(255, 255, 255, 0.08)"
+            fill="url(#hudCardGrad)"
+            stroke="rgba(255, 255, 255, 0.12)"
             strokeWidth="0.8"
           />
+          <path d="M1 10 C 1 5, 5 1, 10 1 L 170 1 C 175 1, 179 5, 179 10" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="0.9" fill="none" />
 
           {/* Interactive Café Flight Tabs on Top */}
           <g transform="translate(12, 10)">
@@ -685,16 +747,16 @@ function RunningSamplingFlights() {
                     x="0"
                     y="0"
                     width="48"
-                    height="16"
-                    rx="4"
-                    fill={isTabSelected ? 'rgba(168, 85, 247, 0.22)' : 'rgba(255, 255, 255, 0.03)'}
-                    stroke={isTabSelected ? '#A855F7' : 'rgba(255, 255, 255, 0.07)'}
+                    height="17"
+                    rx="4.5"
+                    fill={isTabSelected ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.03)'}
+                    stroke={isTabSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)'}
                     strokeWidth="0.75"
                   />
                   <text
                     x="24"
-                    y="10.5"
-                    fill={isTabSelected ? '#F3E8FF' : 'rgba(148, 163, 184, 0.7)'}
+                    y="11"
+                    fill={isTabSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.5)'}
                     fontSize="6.8"
                     fontWeight={isTabSelected ? '700' : '500'}
                     textAnchor="middle"
@@ -709,17 +771,17 @@ function RunningSamplingFlights() {
 
           {/* Status Row with Live Ping */}
           <g transform="translate(14, 38)">
-            <circle cx="2" cy="0" r="2.5" fill={currentStage.statusColor} />
-            <circle cx="2" cy="0" r="5" stroke={currentStage.statusColor} strokeWidth="0.6" strokeOpacity="0.4" className="bmoat-ping" />
-            <text x="10" y="2.5" fill={currentStage.statusColor} fontSize="7" fontWeight="700" letterSpacing="0.06em" fontFamily="system-ui, sans-serif">
+            <circle cx="2" cy="0" r="2.5" fill="#FFFFFF" />
+            <circle cx="2" cy="0" r="5.5" stroke="#FFFFFF" strokeWidth="0.6" strokeOpacity="0.45" className="bmoat-ping" />
+            <text x="10" y="2.5" fill="#FFFFFF" fontSize="7" fontWeight="700" letterSpacing="0.06em" fontFamily="system-ui, sans-serif">
               {currentStage.lifecycleStatus}
             </text>
-            <text x="150" y="2.5" fill="rgba(148, 163, 184, 0.6)" fontSize="6.5" textAnchor="end" fontFamily="system-ui, sans-serif">
+            <text x="152" y="2.5" fill="rgba(255, 255, 255, 0.45)" fontSize="6.5" textAnchor="end" fontFamily="system-ui, sans-serif">
               STAGE 0{selectedIdx + 1}
             </text>
           </g>
 
-          {/* Target Venue Details with Smooth Transition */}
+          {/* Target Venue Details */}
           <AnimatePresence mode="wait">
             <motion.g
               key={currentStage.id}
@@ -729,7 +791,7 @@ function RunningSamplingFlights() {
               transition={{ duration: 0.22 }}
             >
               <g transform="translate(14, 52)">
-                <text x="0" y="8" fill="#F8FAFC" fontSize="8.5" fontWeight="700" fontFamily="system-ui, sans-serif">
+                <text x="0" y="8" fill="#FFFFFF" fontSize="8.5" fontWeight="700" fontFamily="system-ui, sans-serif">
                   {currentStage.venue}
                 </text>
                 <text x="0" y="19" fill="#94A3B8" fontSize="7" fontFamily="system-ui, sans-serif">
@@ -738,36 +800,49 @@ function RunningSamplingFlights() {
               </g>
 
               {/* Divider */}
-              <line x1="14" y1="78" x2="164" y2="78" stroke="rgba(255, 255, 255, 0.05)" strokeWidth="0.75" />
+              <line x1="14" y1="78" x2="166" y2="78" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.75" />
 
-              {/* Barista Evaluation Block */}
+              {/* Barista Evaluation Panel */}
               <g transform="translate(14, 88)">
                 <rect
                   x="0"
                   y="0"
-                  width="150"
-                  height="38"
+                  width="152"
+                  height="40"
                   rx="6"
-                  fill="rgba(168, 85, 247, 0.06)"
-                  stroke="rgba(168, 85, 247, 0.2)"
+                  fill="rgba(255, 255, 255, 0.04)"
+                  stroke="rgba(255, 255, 255, 0.15)"
                   strokeWidth="0.75"
                 />
-                <text x="8" y="13" fill="#F8FAFC" fontSize="7" fontWeight="600" fontFamily="system-ui, sans-serif">
+                {/* Evaluator Title & Clean Cupping Score Badge */}
+                <text x="8" y="13" fill="#E2E8F0" fontSize="7" fontWeight="600" fontFamily="system-ui, sans-serif">
                   {currentStage.evaluator}
                 </text>
-                <text x="8" y="25" fill="#C084FC" fontSize="6.8" fontFamily="system-ui, sans-serif">
-                  {currentStage.sensoryQuote}
-                </text>
+                <rect
+                  x="116"
+                  y="4"
+                  width="30"
+                  height="14"
+                  rx="3"
+                  fill="rgba(255, 255, 255, 0.09)"
+                  stroke="rgba(255, 255, 255, 0.3)"
+                  strokeWidth="0.6"
+                />
                 <text
-                  x="142"
-                  y="21"
-                  fill="#FBBF24"
-                  fontSize="9"
-                  fontWeight="700"
-                  textAnchor="end"
+                  x="131"
+                  y="14"
+                  fill="#FFFFFF"
+                  fontSize="7.5"
+                  fontWeight="800"
+                  textAnchor="middle"
                   fontFamily="system-ui, sans-serif"
                 >
                   {currentStage.cuppingScore}
+                </text>
+
+                {/* Sensory Quote on Separate Row */}
+                <text x="8" y="28" fill="#CBD5E1" fontSize="6.5" fontFamily="system-ui, sans-serif">
+                  {currentStage.sensoryQuote}
                 </text>
               </g>
             </motion.g>
@@ -779,21 +854,17 @@ function RunningSamplingFlights() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   MOCKUP 03: RUNNING PURCHASE ORDER VELOCITY STREAM
-   - Continuous live dispatch stream routing order packets into the 3 venues.
-   - Highlights the active PO path with glowing lavender energy flow.
-   - User hover / click locks to any venue to inspect order frequency & cases.
-   - Authentic B2B terms: Net-15 PO, Cold-Chain Delivery Slot, Recurring Cadence.
+   MOCKUP 03: SUPER 3D GABLE-TOP CARTON & HIGHWAY DISTRIBUTION BUS
+   - Authentic 3D tetra-pack gable carton with slanted roof, crimp, and angled screw cap
+   - 3D branching network traces routing order packets into 3D floating venue slabs
+   - Pure monochrome high-velocity purchase order telemetry
 ───────────────────────────────────────────────────────────────────────────── */
 interface OrderVelocityRow {
   id: string;
   initial: string;
-  avatarColor: string;
   venue: string;
   status: string;
-  statusColor: string;
   cases: string;
-  terms: string;
   targetY: number;
   pathD: string;
 }
@@ -802,38 +873,29 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
   {
     id: 'hillfold',
     initial: 'H',
-    avatarColor: '#8B5CF6',
     venue: 'Hillfold Roastery',
     status: 'Net-15 Recurring PO',
-    statusColor: '#34D399',
     cases: '12 cs',
-    terms: 'Standing Monday Auto-Trigger',
     targetY: 61,
-    pathD: 'M96 108 C 112 108, 122 61, 142 61',
+    pathD: 'M66 94 C 98 94, 114 62, 140 62',
   },
   {
     id: 'tamarind',
     initial: 'T',
-    avatarColor: '#6B21A8',
     venue: 'Tamarind Lane Café',
     status: 'Order Dispatched · Van 04',
-    statusColor: '#60A5FA',
     cases: '8 cs',
-    terms: 'Bi-Weekly Tuesday Cycle',
     targetY: 105,
-    pathD: 'M96 108 L 142 105',
+    pathD: 'M66 94 L 140 106',
   },
   {
     id: 'bramblegate',
     initial: 'B',
-    avatarColor: '#4C1D95',
     venue: 'Bramblegate Roasters',
     status: 'Standing PO · Reorder Ready',
-    statusColor: '#C084FC',
     cases: '16 cs',
-    terms: 'Net-30 Digital Verified PO',
     targetY: 149,
-    pathD: 'M96 108 C 112 108, 122 149, 142 149',
+    pathD: 'M66 94 C 98 94, 114 150, 140 150',
   },
 ];
 
@@ -841,7 +903,6 @@ function RunningOrderVelocity() {
   const [activeRowIdx, setActiveRowIdx] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
-  // Running order stream (rotates active PO route every 2.6s unless hovered)
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -865,48 +926,47 @@ function RunningOrderVelocity() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="v3OatFront" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#221E31" />
-            <stop offset="100%" stopColor="#12101B" />
+          <linearGradient id="cartonFront3D" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#2E3040" />
+            <stop offset="100%" stopColor="#12131A" />
           </linearGradient>
-          <linearGradient id="v3OatSide" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#181523" />
-            <stop offset="100%" stopColor="#0B0912" />
+          <linearGradient id="cartonSide3D" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#181A24" />
+            <stop offset="100%" stopColor="#0B0C12" />
           </linearGradient>
-          <filter id="softGlowV3" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
+          <linearGradient id="cartonRoof3D" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3C3F54" />
+            <stop offset="100%" stopColor="#202230" />
+          </linearGradient>
         </defs>
 
-        {/* Understated Isometric Foundation Plane */}
-        <g stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.75">
-          <path
-            d="M45 174 L170 126 L295 174 L170 210 Z"
-            fill="rgba(147, 51, 234, 0.025)"
-          />
-          <line x1="82" y1="160" x2="207" y2="198" />
-          <line x1="120" y1="145" x2="245" y2="183" />
+        {/* ─── 3D Isometric CAD Foundation Grid ─── */}
+        <g stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.7">
+          <path d="M30 168 L170 122 L310 168 L170 214 Z" fill="rgba(255, 255, 255, 0.015)" />
+          <line x1="65" y1="156" x2="205" y2="202" />
+          <line x1="100" y1="145" x2="240" y2="191" />
+          <line x1="205" y1="133" x2="65" y2="179" />
+          <line x1="240" y1="145" x2="100" y2="191" />
         </g>
 
-        {/* ─── Scale Badge: 148 CAFÉS REORDERING ─── */}
-        <g transform="translate(186, 14)">
+        {/* ─── Scale Badge: 148 CAFÉS REORDERING in Monochrome Frosted Glass ─── */}
+        <g transform="translate(186, 12)">
           <rect
             x="0"
             y="0"
-            width="122"
+            width="124"
             height="18"
             rx="9"
-            fill="rgba(147, 51, 234, 0.15)"
-            stroke="rgba(168, 85, 247, 0.4)"
+            fill="rgba(255, 255, 255, 0.08)"
+            stroke="rgba(255, 255, 255, 0.25)"
             strokeWidth="0.75"
           />
-          <circle cx="10" cy="9" r="2.5" fill="#C084FC" />
-          <circle cx="10" cy="9" r="5" stroke="#C084FC" strokeWidth="0.5" strokeOpacity="0.4" className="bmoat-ping" />
+          <circle cx="10" cy="9" r="2.5" fill="#FFFFFF" />
+          <circle cx="10" cy="9" r="5.5" stroke="#FFFFFF" strokeWidth="0.5" strokeOpacity="0.45" className="bmoat-ping" />
           <text
             x="18"
             y="12"
-            fill="#E9D5FF"
+            fill="#FFFFFF"
             fontSize="6.8"
             fontWeight="700"
             letterSpacing="0.04em"
@@ -916,7 +976,7 @@ function RunningOrderVelocity() {
           </text>
         </g>
 
-        {/* ─── DYNAMIC RUNNING CONNECTOR PATHS ─── */}
+        {/* ─── DYNAMIC 3D HIGHWAY CONNECTOR PATHS ─── */}
         <g>
           {VELOCITY_ROWS.map((row, rIdx) => {
             const isRowActive = activeRowIdx === rIdx;
@@ -924,16 +984,16 @@ function RunningOrderVelocity() {
               <path
                 key={row.id}
                 d={row.pathD}
-                stroke={isRowActive ? 'rgba(192, 132, 252, 0.85)' : 'rgba(168, 85, 247, 0.2)'}
-                strokeWidth={isRowActive ? '1.5' : '0.8'}
+                stroke={isRowActive ? '#FFFFFF' : 'rgba(255, 255, 255, 0.16)'}
+                strokeWidth={isRowActive ? '1.8' : '0.8'}
                 strokeLinecap="round"
                 className={isRowActive ? 'bmoat-active-path' : ''}
               />
             );
           })}
 
-          {/* Running Order Packet Streaming into Active Row */}
-          <circle r="2.8" fill="#F3E8FF" filter="url(#softGlowV3)">
+          {/* Running Luminous White Packet Streaming into Active Row */}
+          <circle r="3" fill="#FFFFFF" filter="url(#whiteGlowFilter)">
             <animateMotion
               dur="1.8s"
               repeatCount="indefinite"
@@ -941,66 +1001,71 @@ function RunningOrderVelocity() {
             />
           </circle>
 
-          {/* Supplier Carton Edge Origin Port with Pulse */}
-          <circle cx="96" cy="108" r="3" fill="#8B5CF6" />
-          <circle cx="96" cy="108" r="5.5" stroke="#C084FC" strokeWidth="0.7" className="bmoat-ping" />
+          {/* Supplier Carton Direct Connection Node */}
+          <circle cx="66" cy="94" r="3" fill="#FFFFFF" />
+          <circle cx="66" cy="94" r="6" stroke="#FFFFFF" strokeWidth="0.7" className="bmoat-ping" />
         </g>
 
-        {/* ─── LEFT: 2.5D Barista Oat Milk Carton ─── */}
-        <g className="bmoat-product-group" transform="translate(36, 54)">
-          <ellipse cx="36" cy="118" rx="26" ry="8" fill="#000000" fillOpacity="0.5" filter="blur(4px)" />
+        {/* ─── LEFT: True 3D Gable-Top Barista Carton ─── */}
+        <g className="bmoat-product-group" transform="translate(34, 48)">
+          <ellipse cx="38" cy="120" rx="28" ry="8.5" fill="#000000" fillOpacity="0.7" filter="blur(5px)" />
 
-          <path d="M12 28 L38 16 L64 28 L38 40 Z" fill="#29243E" stroke="#8B5CF6" strokeWidth="0.75" />
-          <path d="M38 16 L38 10 L44 13 L44 19 Z" fill="#312E81" stroke="#818CF8" strokeWidth="0.5" />
+          {/* Gable Roof Structure */}
+          <path d="M38 14 L42 16 L42 11 L38 9 Z" fill="#4B4E63" stroke="rgba(255, 255, 255, 0.4)" strokeWidth="0.5" />
+          <path d="M12 26 L38 14 L64 24 L38 36 Z" fill="url(#cartonRoof3D)" stroke="rgba(255, 255, 255, 0.35)" strokeWidth="0.75" />
 
-          {/* Screw Cap with Inner Lip */}
-          <ellipse cx="44" cy="25" rx="4" ry="2.2" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="0.5" />
-          <ellipse cx="44" cy="25" rx="2" ry="1.1" fill="#E2E8F0" />
+          {/* 3D Angled Screw Cap with perspective cylindrical lip */}
+          <ellipse cx="44" cy="22" rx="4.5" ry="2.2" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="0.6" />
+          <ellipse cx="44" cy="22" rx="2.5" ry="1.2" fill="#E2E8F0" />
 
+          {/* Carton Left Side (Shadowed 3D Plane) */}
           <path
-            d="M12 28 L38 40 L38 112 L12 100 Z"
-            fill="url(#v3OatSide)"
-            stroke="rgba(168, 85, 247, 0.35)"
+            d="M12 26 L38 36 L38 114 L12 102 Z"
+            fill="url(#cartonSide3D)"
+            stroke="rgba(255, 255, 255, 0.2)"
             strokeWidth="0.8"
           />
 
+          {/* Carton Front Face (Lighted 3D Plane) */}
           <path
-            d="M38 40 L64 28 L64 100 L38 112 Z"
-            fill="url(#v3OatFront)"
-            stroke="rgba(168, 85, 247, 0.6)"
+            d="M38 36 L66 24 L66 102 L38 114 Z"
+            fill="url(#cartonFront3D)"
+            stroke="rgba(255, 255, 255, 0.45)"
             strokeWidth="0.9"
           />
 
-          <line x1="38" y1="40" x2="38" y2="112" stroke="rgba(216, 180, 254, 0.5)" strokeWidth="0.8" />
+          {/* Center Vertical Corner Bevel Highlight */}
+          <line x1="38" y1="36" x2="38" y2="114" stroke="#FFFFFF" strokeWidth="1" strokeOpacity="0.85" />
 
+          {/* Technical Monochrome Carton Graphic */}
           <rect
             x="42"
             y="48"
-            width="18"
+            width="20"
             height="46"
             rx="2"
-            fill="rgba(255, 255, 255, 0.04)"
-            stroke="rgba(255, 255, 255, 0.08)"
+            fill="#0C0D12"
+            stroke="rgba(255, 255, 255, 0.2)"
             strokeWidth="0.5"
           />
-          <text x="51" y="58" fill="#F8FAFC" fontSize="4.8" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <text x="52" y="58" fill="#FFFFFF" fontSize="5" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">
             OAT
           </text>
-          <text x="51" y="64" fill="#C084FC" fontSize="4" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <text x="52" y="64" fill="#CBD5E1" fontSize="4.2" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">
             BARISTA
           </text>
-          <circle cx="51" cy="73" r="4" stroke="#8B5CF6" strokeWidth="0.7" fill="none" />
-          <path d="M49 73 L50.5 74.5 L53.5 71.5" stroke="#8B5CF6" strokeWidth="0.7" />
-          <text x="51" y="83" fill="#94A3B8" fontSize="3" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <circle cx="52" cy="73" r="4.2" stroke="#FFFFFF" strokeWidth="0.7" fill="none" />
+          <path d="M50 73 L51.5 74.5 L54.5 71.5" stroke="#FFFFFF" strokeWidth="0.8" />
+          <text x="52" y="83" fill="#94A3B8" fontSize="3" textAnchor="middle" fontFamily="system-ui, sans-serif">
             MICROFOAM
           </text>
-          <text x="51" y="89" fill="#CBD5E1" fontSize="2.8" textAnchor="middle" fontFamily="system-ui, sans-serif">
+          <text x="52" y="89" fill="#64748B" fontSize="2.8" textAnchor="middle" fontFamily="system-ui, sans-serif">
             1 LITRE
           </text>
         </g>
 
-        {/* ─── RIGHT: Interactive Purchase Order Rows with Live Highlighting ─── */}
-        <g transform="translate(142, 42)">
+        {/* ─── RIGHT: Interactive Purchase Order Slabs ─── */}
+        <g transform="translate(140, 42)">
           {VELOCITY_ROWS.map((row, rIdx) => {
             const isSelected = activeRowIdx === rIdx;
             const offsetY = rIdx * 44;
@@ -1020,27 +1085,33 @@ function RunningOrderVelocity() {
                 style={{ cursor: 'pointer' }}
                 className="bmoat-interactive-row"
               >
-                {/* Row Frame with Dynamic Selection Illumination */}
+                {/* 3D Slab Base */}
                 <rect
                   x="0"
                   y="0"
-                  width="166"
+                  width="170"
                   height="38"
                   rx="8"
-                  fill={isSelected ? '#141024' : '#0B0A12'}
-                  stroke={isSelected ? 'rgba(168, 85, 247, 0.65)' : 'rgba(255, 255, 255, 0.07)'}
-                  strokeWidth={isSelected ? '1.1' : '0.75'}
+                  fill={isSelected ? '#141622' : '#0B0C12'}
+                  stroke={isSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)'}
+                  strokeWidth={isSelected ? '1.2' : '0.75'}
                 />
 
-                {/* Avatar Badge */}
+                {/* Top Rim Specular Line for Active Row */}
+                {isSelected && (
+                  <path d="M1 8 C 1 4, 4 1, 8 1 L 162 1 C 166 1, 169 4, 169 8" stroke="rgba(255, 255, 255, 0.6)" strokeWidth="0.9" fill="none" />
+                )}
+
+                {/* Monogram Avatar Badge in Charcoal / Silver */}
                 <rect
                   x="10"
                   y="9"
                   width="20"
                   height="20"
-                  rx="4"
-                  fill={row.avatarColor}
-                  fillOpacity={isSelected ? 1 : 0.75}
+                  rx="4.5"
+                  fill={isSelected ? '#2A2D3D' : '#161822'}
+                  stroke="rgba(255, 255, 255, 0.2)"
+                  strokeWidth="0.6"
                 />
                 <text
                   x="20"
@@ -1058,21 +1129,21 @@ function RunningOrderVelocity() {
                 <text
                   x="36"
                   y="17"
-                  fill={isSelected ? '#FFFFFF' : '#E2E8F0'}
+                  fill="#FFFFFF"
                   fontSize="8.2"
                   fontWeight={isSelected ? '700' : '600'}
                   fontFamily="system-ui, sans-serif"
                 >
                   {row.venue}
                 </text>
-                <circle cx="39" cy="26" r="2" fill={row.statusColor} />
+                <circle cx="39" cy="26" r="2" fill="#FFFFFF" />
                 {isSelected && (
-                  <circle cx="39" cy="26" r="4" stroke={row.statusColor} strokeWidth="0.6" strokeOpacity="0.4" className="bmoat-ping" />
+                  <circle cx="39" cy="26" r="4" stroke="#FFFFFF" strokeWidth="0.6" strokeOpacity="0.45" className="bmoat-ping" />
                 )}
                 <text
                   x="45"
                   y="28.5"
-                  fill={row.statusColor}
+                  fill="rgba(255, 255, 255, 0.65)"
                   fontSize="7"
                   fontWeight="500"
                   fontFamily="system-ui, sans-serif"
@@ -1080,21 +1151,21 @@ function RunningOrderVelocity() {
                   {row.status}
                 </text>
 
-                {/* Order Quantity Badge with Active Highlight */}
+                {/* Order Quantity Badge in Frosted Capsule */}
                 <rect
-                  x="128"
+                  x="132"
                   y="11"
                   width="28"
                   height="16"
                   rx="4"
-                  fill={isSelected ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255, 255, 255, 0.04)'}
-                  stroke={isSelected ? 'rgba(168, 85, 247, 0.45)' : 'rgba(255, 255, 255, 0.08)'}
+                  fill={isSelected ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)'}
+                  stroke={isSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.12)'}
                   strokeWidth="0.6"
                 />
                 <text
-                  x="142"
+                  x="146"
                   y="22"
-                  fill={isSelected ? '#E9D5FF' : '#94A3B8'}
+                  fill="#FFFFFF"
                   fontSize="7.5"
                   fontWeight="700"
                   textAnchor="middle"

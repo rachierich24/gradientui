@@ -58,17 +58,21 @@
 /* hero: clean white band with interactive <CrystalizedBall /> in the brand purple */
 .brd-hero { --b-night: #FFFFFF; background: #FFFFFF; position: relative; overflow: visible; }
 .brd-band {
-  min-height: 540px;
-  padding-top: clamp(100px, 14vh, 140px);
-  padding-bottom: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 600px;
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  padding-top: clamp(80px, 12vh, 120px);
+  padding-bottom: 0;
   color: #1A0C38;
   background: radial-gradient(75% 100% at 50% 35%, rgba(124, 77, 219, 0.04) 0%, rgba(255, 255, 255, 0) 70%), #FFFFFF;
-  position: relative;
-  overflow: visible;
+  z-index: 1;
+  box-sizing: border-box;
 }
 
 .brd-brands-stage {
@@ -205,17 +209,17 @@
   color: #FFFFFF !important;
 }
 
-/* hero: the film, rising under the band; overlaps the bottom of BRANDS */
+/* hero: the film, rising over the sticky band; overlaps BRANDS on scroll */
 .brd-film {
   --p: 0;
   position: relative;
   z-index: 4;
+  height: 100vh;
   height: 100svh;
   overflow: hidden;
-  clip-path: inset(0);
   background: #0B0A0D;
-  margin-top: calc(-1 * clamp(20px, 3.8vw, 54px));
-  box-shadow: 0 -24px 60px rgba(18, 8, 48, 0.55);
+  margin-top: -42vh;
+  box-shadow: 0 -24px 60px rgba(18, 8, 48, 0.45);
 }
 .brd-film video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(calc(1.14 - 0.14 * var(--p))); transform-origin: 50% 40%; will-change: transform; }
 .brd-film-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(43, 23, 96, 0.38), rgba(43, 23, 96, 0) 26%, rgba(18, 16, 21, 0) 72%, rgba(18, 16, 21, 0.35)); }
