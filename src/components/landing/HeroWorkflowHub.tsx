@@ -4,32 +4,22 @@ import React, { useState, useEffect } from 'react';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    GRADIENT HERO — 3D CONTINUOUS CONVEYOR WORKFLOW ANIMATION
-   Inspired by Gradient 365 (gradient365.com) hero flow:
-   - LEFT: Continuous stream of 3D incoming cards (fragmented café & supplier
-     orders, trial flights, raw demand) moving from the left into the center hub.
-   - CENTER: Elevated 3D platform hub with royal-blue dial, rotating holographic
-     laser rings, glowing entrance notch, and upward ambient light beam.
-   - RIGHT: Continuous stream of 3D connected workflow cards (automated Net-15 POs,
-     smart reorders, live telemetry sync) emerging from the hub and moving towards
-     the right into the distance.
-   - TRANSITION: Constant running, silky-smooth 60fps continuous conveyor motion.
+   Design Reference: Chatsheet 3D automation hero workflow + Gradient 365
+   
+   Architecture:
+   - LEFT: Organic branching network of dotted guide lines carrying floating
+     3D isometric procurement tiles (WhatsApp, Spreadsheets, Roast Beans,
+     Oat Milk, Syrups, PDF Invoices) gliding continuously into the hub tunnel.
+   - CENTER: Elevated 3D circular cylinder platform hub with dark sidewall,
+     entrance tunnel notch on left, royal-blue target dial, rotating concentric
+     laser rings, central aperture jewel, and upward vertical light flare.
+   - RIGHT: 3D translucent conveyor belt carrying continuous 3D isometric
+     workflow sheets (Net-15 POs, Smart Reorders, Telemetry Sync) with glossy
+     action pill buttons, spreadsheet grids, and miniature connected app badges.
+   - MOTION: Constant running, silky-smooth 60fps continuous animation.
 ───────────────────────────────────────────────────────────────────────────── */
 
-interface LeftCardData {
-  id: string;
-  category: string;
-  catColor: string;
-  catBg: string;
-  title: string;
-  detail: string;
-  metric: string;
-  badge: string;
-  badgeColor: string;
-  badgeBg: string;
-  iconType: 'oatmilk' | 'coffee' | 'syrup' | 'cups';
-}
-
-interface RightCardData {
+interface WorkflowCardData {
   id: string;
   pillText: string;
   pillGrad: string;
@@ -41,64 +31,9 @@ interface RightCardData {
   badgeBg: string;
 }
 
-const LEFT_CARDS: LeftCardData[] = [
+const WORKFLOW_CARDS: WorkflowCardData[] = [
   {
-    id: 'left-milk',
-    category: 'CAFÉ REQUISITION',
-    catColor: '#7C3AED',
-    catBg: 'rgba(124, 58, 237, 0.08)',
-    title: 'Barista Oat Milk · 80 L',
-    detail: 'Blue Tokai Roastery · Delhi NCR',
-    metric: '₹16,800',
-    badge: 'UNSTRUCTURED CHAT',
-    badgeColor: '#D97706',
-    badgeBg: 'rgba(217, 119, 6, 0.1)',
-    iconType: 'oatmilk',
-  },
-  {
-    id: 'left-coffee',
-    category: 'ROAST BATCH',
-    catColor: '#059669',
-    catBg: 'rgba(5, 150, 105, 0.08)',
-    title: 'Arabica AA Roast · 120 kg',
-    detail: 'Southfield Roastery · Lot #402',
-    metric: '₹1,850/kg',
-    badge: 'DEMAND SIGNAL',
-    badgeColor: '#7C3AED',
-    badgeBg: 'rgba(124, 58, 237, 0.1)',
-    iconType: 'coffee',
-  },
-  {
-    id: 'left-syrup',
-    category: 'SAMPLE FLIGHT',
-    catColor: '#0284C7',
-    catBg: 'rgba(2, 132, 199, 0.08)',
-    title: 'Vanilla & Hazelnut Syrups',
-    detail: 'Tamarind Lane · 42 Cafés',
-    metric: '★ 4.9 Cupping',
-    badge: 'TRIAL PACK',
-    badgeColor: '#0055D4',
-    badgeBg: 'rgba(0, 85, 212, 0.1)',
-    iconType: 'syrup',
-  },
-  {
-    id: 'left-cups',
-    category: 'PACKAGING PO',
-    catColor: '#D97706',
-    catBg: 'rgba(217, 119, 6, 0.08)',
-    title: '12oz Ripple Cups · 5k pcs',
-    detail: 'Subko Roasters · Bandra Hub',
-    metric: '₹32,500',
-    badge: 'MANUAL ORDER',
-    badgeColor: '#DC2626',
-    badgeBg: 'rgba(220, 38, 38, 0.1)',
-    iconType: 'cups',
-  },
-];
-
-const RIGHT_CARDS: RightCardData[] = [
-  {
-    id: 'right-po',
+    id: 'card-po',
     pillText: 'AUTOMATED ORDER',
     pillGrad: 'bluePillGrad',
     title: 'Net-15 Recurring PO #8492',
@@ -109,7 +44,7 @@ const RIGHT_CARDS: RightCardData[] = [
     badgeBg: 'rgba(22, 163, 74, 0.12)',
   },
   {
-    id: 'right-reorder',
+    id: 'card-reorder',
     pillText: 'DISPATCH WORKFLOW',
     pillGrad: 'purplePillGrad',
     title: 'Hillfold Roastery · Net-15',
@@ -120,7 +55,7 @@ const RIGHT_CARDS: RightCardData[] = [
     badgeBg: 'rgba(37, 99, 235, 0.12)',
   },
   {
-    id: 'right-telemetry',
+    id: 'card-telemetry',
     pillText: 'TELEMETRY SYNC',
     pillGrad: 'emeraldPillGrad',
     title: 'Catalogue Telemetry Stream',
@@ -131,7 +66,7 @@ const RIGHT_CARDS: RightCardData[] = [
     badgeBg: 'rgba(5, 150, 105, 0.12)',
   },
   {
-    id: 'right-trial',
+    id: 'card-trial',
     pillText: 'PO CONVERSION',
     pillGrad: 'indigoPillGrad',
     title: 'Sampling Flight → Standing PO',
@@ -151,7 +86,7 @@ export function HeroWorkflowHub() {
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
-      setCaptionIndex((prev) => (prev + 1) % RIGHT_CARDS.length);
+      setCaptionIndex((prev) => (prev + 1) % WORKFLOW_CARDS.length);
     }, 3500);
     return () => clearInterval(interval);
   }, [isPaused]);
@@ -168,7 +103,7 @@ export function HeroWorkflowHub() {
 
       <div className="hflow-container">
         <svg
-          viewBox="0 0 1240 580"
+          viewBox="0 0 1240 600"
           className="hflow-svg"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -181,16 +116,16 @@ export function HeroWorkflowHub() {
               <stop offset="100%" stopColor="#0B0F19" />
             </linearGradient>
 
-            {/* Hub Royal Blue Dial/Well Gradient */}
+            {/* Hub Royal Blue Dial/Well Gradient (Chatsheet Signature) */}
             <linearGradient id="hubRoyalBlueWell" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#2563EB" />
               <stop offset="45%" stopColor="#1D4ED8" />
               <stop offset="100%" stopColor="#1E3A8A" />
             </linearGradient>
 
-            {/* Upward Vertical Light Flare */}
+            {/* Upward Vertical Light Flare (Strictly upward; NO bottom spill) */}
             <linearGradient id="hubUpwardBeam" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.22" />
               <stop offset="45%" stopColor="#0055D4" stopOpacity="0.08" />
               <stop offset="90%" stopColor="#FFFFFF" stopOpacity="0" />
             </linearGradient>
@@ -223,29 +158,27 @@ export function HeroWorkflowHub() {
               <stop offset="100%" stopColor="#3730A3" />
             </linearGradient>
 
-            {/* Right Conveyor Bed Gradient */}
-            <linearGradient id="conveyorBedGradRight" x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0%" stopColor="#0055D4" stopOpacity="0.08" />
+            {/* Conveyor Bed Gradient */}
+            <linearGradient id="conveyorBedGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stopColor="#0055D4" stopOpacity="0.07" />
               <stop offset="50%" stopColor="#38BDF8" stopOpacity="0.03" />
               <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
             </linearGradient>
 
-            {/* Left Conveyor Bed Gradient */}
-            <linearGradient id="conveyorBedGradLeft" x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-              <stop offset="50%" stopColor="#7C3AED" stopOpacity="0.03" />
-              <stop offset="100%" stopColor="#0055D4" stopOpacity="0.08" />
-            </linearGradient>
-
             {/* Realistic Contact Shadow on Floor Under Hub */}
             <filter id="hubFloorShadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="24" stdDeviation="18" floodColor="#0F172A" floodOpacity="0.16" />
+              <feDropShadow dx="0" dy="24" stdDeviation="18" floodColor="#0F172A" floodOpacity="0.14" />
             </filter>
 
-            {/* Card Drop Shadows */}
+            {/* Sheet Drop Shadows */}
             <filter id="sheetDropShadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="2" dy="14" stdDeviation="12" floodColor="#0F172A" floodOpacity="0.10" />
+              <feDropShadow dx="2" dy="16" stdDeviation="14" floodColor="#0F172A" floodOpacity="0.10" />
               <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#0055D4" floodOpacity="0.05" />
+            </filter>
+
+            {/* Floating 3D Tile Shadow */}
+            <filter id="tileDropShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="1" dy="8" stdDeviation="6" floodColor="#0F172A" floodOpacity="0.11" />
             </filter>
 
             {/* Action Pill Shadow */}
@@ -261,297 +194,242 @@ export function HeroWorkflowHub() {
           </defs>
 
           {/* Background Ambient Vignette & Ground Rays */}
-          <ellipse cx="510" cy="335" rx="460" ry="210" fill="rgba(0, 85, 212, 0.015)" />
-          <ellipse cx="510" cy="315" rx="320" ry="140" fill="rgba(238, 246, 255, 0.55)" />
+          <ellipse cx="510" cy="355" rx="460" ry="210" fill="rgba(0, 85, 212, 0.015)" />
+          <ellipse cx="510" cy="335" rx="320" ry="140" fill="rgba(238, 246, 255, 0.55)" />
 
-          {/* Perspective Ground Grid Lines */}
+          {/* Perspective Ground Grid Rays */}
           <g stroke="rgba(0, 85, 212, 0.035)" strokeWidth="1" strokeDasharray="3 4">
-            <line x1="60" y1="335" x2="1180" y2="335" />
-            <line x1="40" y1="490" x2="510" y2="335" />
-            <line x1="80" y1="180" x2="510" y2="335" />
+            <line x1="60" y1="355" x2="1180" y2="355" />
+            <line x1="40" y1="510" x2="510" y2="355" />
+            <line x1="80" y1="180" x2="510" y2="355" />
           </g>
 
           {/* Upward Vertical Light Flare behind Central Hub */}
           <path
-            d="M 405 332 C 420 220, 440 120, 510 95 C 580 120, 600 220, 615 332 Z"
+            d="M 405 352 C 420 230, 440 130, 510 105 C 580 130, 600 230, 615 352 Z"
             fill="url(#hubUpwardBeam)"
             className="hflow-hub-aura"
           />
 
-          {/* ─── LEFT: 3D CONVEYOR BED (Entering into the Center Hub) ─── */}
-          <path
-            d="M -90 460 L 360 325 L 420 355 L -30 490 Z"
-            fill="url(#conveyorBedGradLeft)"
-            stroke="rgba(124, 58, 237, 0.07)"
-            strokeWidth="1"
-            strokeDasharray="6 6"
-            className="hflow-conveyor-rail-left"
-          />
+          {/* ─── LEFT: DOTTED BRANCHING NETWORK (Chatsheet Signature Delta) ─── */}
+          <g stroke="#94A3B8" strokeWidth="1.6" strokeDasharray="4 5" opacity="0.65" fill="none">
+            {/* Branch 1: Top-Left Outer Curve */}
+            <path id="branchPath1" d="M 40 330 C 130 305, 210 340, 270 380 C 330 420, 385 410, 436 405" />
 
-          {/* Left Incoming Laser Guide Track */}
-          <path
-            d="M -70 475 C 130 425, 260 380, 390 335"
-            stroke="rgba(148, 163, 184, 0.45)"
-            strokeWidth="1.8"
-            strokeDasharray="5 5"
-            fill="none"
-          />
+            {/* Branch 2: Top-Left Mid Curve */}
+            <path id="branchPath2" d="M 100 395 C 180 375, 245 400, 305 420 C 365 435, 400 415, 436 405" />
+
+            {/* Branch 3: Left-Mid Trunk Curve */}
+            <path id="branchPath3" d="M 70 470 C 160 455, 245 440, 325 430 C 375 425, 405 415, 436 405" />
+
+            {/* Branch 4: Bottom-Left Curve */}
+            <path id="branchPath4" d="M 150 545 C 220 530, 280 485, 340 455 C 380 435, 410 415, 436 405" />
+
+            {/* Branch 5: Bottom-Center Curve */}
+            <path id="branchPath5" d="M 250 580 C 310 555, 350 505, 380 465 C 400 435, 420 415, 436 405" />
+
+            {/* Branch 6: Foreground Direct Feeder */}
+            <path id="branchPath6" d="M 335 465 C 375 450, 405 425, 436 405" />
+          </g>
+
+          {/* Convergence Node Glow right at Tunnel Mouth */}
+          <circle cx="436" cy="405" r="4" fill="#38BDF8" filter="url(#glow)" />
+          <circle cx="436" cy="405" r="2" fill="#FFFFFF" />
+
+          {/* ─── LEFT: CONTINUOUS RUNNING 3D ISOMETRIC TILES ─── */}
+          {/* Tile 1: WhatsApp Chat (Green) on Branch 1 */}
+          <g>
+            <animateMotion dur="11s" repeatCount="indefinite" begin="0s" path="M 40 330 C 130 305, 210 340, 270 380 C 330 420, 385 410, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.12;0.82;0.94;1" dur="11s" repeatCount="indefinite" begin="0s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#DCFCE7" />
+              {/* WhatsApp Chat Speech Bubble Glyph */}
+              <path d="M -7 -4 C -7 -7, 7 -7, 7 -4 C 7 -1, 3 1, 0 1 L -4 4 L -3 1 C -6 1, -7 -1, -7 -4 Z" fill="#25D366" />
+              <circle cx="0" cy="-3" r="1.5" fill="#FFFFFF" />
+            </g>
+          </g>
+
+          {/* Tile 2: PDF Purchase Order (Coral) on Branch 1 (Offset) */}
+          <g>
+            <animateMotion dur="11s" repeatCount="indefinite" begin="-5.5s" path="M 40 330 C 130 305, 210 340, 270 380 C 330 420, 385 410, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.12;0.82;0.94;1" dur="11s" repeatCount="indefinite" begin="-5.5s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#FEE2E2" />
+              {/* PDF Document Glyph */}
+              <path d="M -5 -7 L 2 -7 L 6 -3 L 6 7 L -5 7 Z" fill="none" stroke="#E11D48" strokeWidth="1.5" strokeLinejoin="round" />
+              <polygon points="2,-7 6,-3 2,-3" fill="#E11D48" />
+              <line x1="-3" y1="1" x2="3" y2="1" stroke="#E11D48" strokeWidth="1.2" />
+              <line x1="-3" y1="4" x2="1" y2="4" stroke="#E11D48" strokeWidth="1.2" />
+            </g>
+          </g>
+
+          {/* Tile 3: Specialty Roast Bean (Amber) on Branch 2 */}
+          <g>
+            <animateMotion dur="12s" repeatCount="indefinite" begin="0s" path="M 100 395 C 180 375, 245 400, 305 420 C 365 435, 400 415, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.12;0.82;0.94;1" dur="12s" repeatCount="indefinite" begin="0s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#FEF3C7" />
+              {/* Coffee Bean Glyph */}
+              <ellipse cx="0" cy="0" rx="6" ry="4" fill="#B45309" transform="rotate(-30 0 0)" />
+              <path d="M -3 -3 Q 0 0, 3 3" stroke="#FEF3C7" strokeWidth="1" fill="none" />
+            </g>
+          </g>
+
+          {/* Tile 4: Excel / Sheets Table (Emerald) on Branch 3 */}
+          <g>
+            <animateMotion dur="10s" repeatCount="indefinite" begin="0s" path="M 70 470 C 160 455, 245 440, 325 430 C 375 425, 405 415, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.12;0.82;0.94;1" dur="10s" repeatCount="indefinite" begin="0s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#ECFDF5" />
+              {/* Spreadsheet Grid Glyph */}
+              <rect x="-6" y="-6" width="12" height="12" rx="1.5" stroke="#107C41" strokeWidth="1.3" fill="none" />
+              <line x1="-6" y1="-2" x2="6" y2="-2" stroke="#107C41" strokeWidth="1" />
+              <line x1="-6" y1="2" x2="6" y2="2" stroke="#107C41" strokeWidth="1" />
+              <line x1="-1" y1="-6" x2="-1" y2="6" stroke="#107C41" strokeWidth="1" />
+            </g>
+          </g>
+
+          {/* Tile 5: Barista Oat Milk Carton (Purple) on Branch 4 */}
+          <g>
+            <animateMotion dur="12s" repeatCount="indefinite" begin="0s" path="M 150 545 C 220 530, 280 485, 340 455 C 380 435, 410 415, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.12;0.82;0.94;1" dur="12s" repeatCount="indefinite" begin="0s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#F3EEFD" />
+              {/* Milk Carton Glyph */}
+              <rect x="-5" y="-5" width="10" height="12" rx="1.5" stroke="#7C3AED" strokeWidth="1.4" fill="none" />
+              <polygon points="-5,-5 0,-8 5,-5" stroke="#7C3AED" strokeWidth="1.3" fill="none" />
+              <circle cx="0" cy="1" r="1.5" fill="#7C3AED" />
+            </g>
+          </g>
+
+          {/* Tile 6: Vanilla Syrup Bottle (Cyan) on Branch 5 */}
+          <g>
+            <animateMotion dur="13s" repeatCount="indefinite" begin="0s" path="M 250 580 C 310 555, 350 505, 380 465 C 400 435, 420 415, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.12;0.82;0.94;1" dur="13s" repeatCount="indefinite" begin="0s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#EFF6FF" />
+              {/* Syrup Bottle Glyph */}
+              <rect x="-4" y="-2" width="8" height="10" rx="1.5" stroke="#0284C7" strokeWidth="1.3" fill="none" />
+              <rect x="-2" y="-6" width="4" height="4" rx="0.8" stroke="#0284C7" strokeWidth="1.1" fill="none" />
+              <rect x="-3" y="1" width="6" height="4" fill="#0284C7" opacity="0.4" />
+            </g>
+          </g>
+
+          {/* Tile 7: Foreground Feeder (Google Drive / Cloud Folder style) on Branch 6 */}
+          <g>
+            <animateMotion dur="9s" repeatCount="indefinite" begin="-2s" path="M 335 465 C 375 450, 405 425, 436 405" />
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.15;0.80;0.92;1" dur="9s" repeatCount="indefinite" begin="-2s" />
+            <g transform="matrix(0.866025, 0.5, -0.866025, 0.5, 0, 0)">
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="rgba(15, 23, 42, 0.12)" filter="url(#tileDropShadow)" />
+              <rect x="-21" y="-16" width="42" height="42" rx="9" fill="#CBD5E1" />
+              <rect x="-21" y="-21" width="42" height="42" rx="9" fill="#FFFFFF" stroke="rgba(226, 232, 240, 0.95)" strokeWidth="1.2" />
+              <rect x="-14" y="-14" width="28" height="28" rx="6" fill="#FEF2F2" />
+              {/* Cold-Chain Dispatch Box Glyph */}
+              <polygon points="0,-6 6,-3 0,0 -6,-3" stroke="#DC2626" strokeWidth="1.2" fill="none" />
+              <polygon points="-6,-3 0,0 0,6 -6,3" stroke="#DC2626" strokeWidth="1.2" fill="none" />
+              <polygon points="0,0 6,-3 6,3 0,6" stroke="#DC2626" strokeWidth="1.2" fill="none" />
+            </g>
+          </g>
 
           {/* ─── RIGHT: 3D CONVEYOR BED (Rolling Belt towards Top-Right) ─── */}
           <path
-            d="M 545 332 L 1180 -36 L 1255 6 L 620 372 Z"
-            fill="url(#conveyorBedGradRight)"
+            d="M 555 352 L 1180 -16 L 1255 26 L 630 392 Z"
+            fill="url(#conveyorBedGrad)"
             stroke="rgba(0, 85, 212, 0.08)"
             strokeWidth="1"
             strokeDasharray="6 6"
             className="hflow-conveyor-rail"
           />
 
-          {/* ─── LEFT: CONTINUOUS RUNNING CARDS (Moving into Center Hub) ─── */}
-          {LEFT_CARDS.map((card, idx) => (
+          {/* ─── RIGHT: CONTINUOUS 3D WORKFLOW SHEETS (Chatsheet Signature) ─── */}
+          {WORKFLOW_CARDS.map((card, idx) => (
             <g
               key={card.id}
-              className={`hflow-stream-card-left hflow-stream-left-${idx}`}
+              className={`hflow-stream-sheet hflow-stream-sheet-${idx}`}
             >
-              {/* 3D Isometric Card Container */}
+              {/* 3D Isometric Workflow Sheet (Matrix 30° slant) */}
               <g transform="matrix(0.866025, -0.5, 0.866025, 0.5, 0, 0)">
                 {/* Drop Shadow */}
                 <rect
-                  x="-96"
-                  y="-62"
-                  width="192"
-                  height="124"
-                  rx="14"
+                  x="-106"
+                  y="-72"
+                  width="212"
+                  height="144"
+                  rx="16"
                   fill="rgba(15, 23, 42, 0.12)"
                   filter="url(#sheetDropShadow)"
                 />
 
                 {/* 3D Sidewall Bevel Edge */}
                 <rect
-                  x="-96"
-                  y="-56"
-                  width="192"
-                  height="124"
-                  rx="14"
-                  fill="#CBD5E1"
-                />
-
-                {/* Card Surface */}
-                <rect
-                  x="-96"
-                  y="-62"
-                  width="192"
-                  height="124"
-                  rx="14"
-                  fill="#FFFFFF"
-                  stroke="rgba(148, 163, 184, 0.35)"
-                  strokeWidth="1.2"
-                />
-
-                {/* Category Pill Tag on Left Card */}
-                <rect
-                  x="-82"
-                  y="-52"
-                  width="92"
-                  height="18"
-                  rx="9"
-                  fill={card.catBg}
-                />
-                <text
-                  x="-36"
-                  y="-40"
-                  fill={card.catColor}
-                  fontSize="7.5"
-                  fontWeight="750"
-                  letterSpacing="0.06em"
-                  textAnchor="middle"
-                  fontFamily="system-ui, -apple-system, sans-serif"
-                >
-                  {card.category}
-                </text>
-
-                {/* Top-Right Raw Status Badge */}
-                <rect
-                  x="20"
-                  y="-52"
-                  width="64"
-                  height="18"
-                  rx="4"
-                  fill={card.badgeBg}
-                />
-                <text
-                  x="52"
-                  y="-40"
-                  fill={card.badgeColor}
-                  fontSize="7"
-                  fontWeight="750"
-                  letterSpacing="0.04em"
-                  textAnchor="middle"
-                  fontFamily="system-ui, -apple-system, sans-serif"
-                >
-                  {card.badge}
-                </text>
-
-                {/* Card Title & Subtitle */}
-                <text
-                  x="-82"
-                  y="-14"
-                  fill="#0F172A"
-                  fontSize="11.5"
-                  fontWeight="750"
-                  fontFamily="system-ui, -apple-system, sans-serif"
-                >
-                  {card.title}
-                </text>
-                <text
-                  x="-82"
-                  y="1"
-                  fill="#64748B"
-                  fontSize="8.5"
-                  fontWeight="500"
-                  fontFamily="system-ui, -apple-system, sans-serif"
-                >
-                  {card.detail}
-                </text>
-
-                {/* Divider Line */}
-                <line
-                  x1="-84"
-                  y1="12"
-                  x2="84"
-                  y2="12"
-                  stroke="rgba(0, 0, 0, 0.06)"
-                  strokeWidth="1"
-                />
-
-                {/* Bottom Row: Metric & 3D Product Miniature Icon */}
-                <g transform="translate(-82, 22)">
-                  {/* Miniature Product Icon */}
-                  {card.iconType === 'oatmilk' && (
-                    <g transform="translate(0, 2)">
-                      <rect x="0" y="2" width="12" height="18" rx="2" fill="#7C3AED" />
-                      <polygon points="0,2 6,-3 12,2" fill="#6D28D9" />
-                      <text x="6" y="14" fill="#FFFFFF" fontSize="6" fontWeight="800" textAnchor="middle">OAT</text>
-                    </g>
-                  )}
-                  {card.iconType === 'coffee' && (
-                    <g transform="translate(0, 2)">
-                      <rect x="0" y="0" width="14" height="20" rx="3" fill="#B45309" />
-                      <ellipse cx="7" cy="8" rx="4" ry="2.5" fill="#FEF3C7" />
-                      <line x1="7" y1="6" x2="7" y2="10" stroke="#B45309" strokeWidth="0.8" />
-                    </g>
-                  )}
-                  {card.iconType === 'syrup' && (
-                    <g transform="translate(2, 2)">
-                      <rect x="2" y="6" width="10" height="14" rx="2" fill="#0284C7" />
-                      <rect x="5" y="1" width="4" height="6" rx="1" fill="#0369A1" />
-                      <rect x="4" y="10" width="6" height="6" fill="#FFFFFF" opacity="0.85" />
-                    </g>
-                  )}
-                  {card.iconType === 'cups' && (
-                    <g transform="translate(0, 2)">
-                      <polygon points="1,2 13,2 10,20 4,20" fill="#059669" />
-                      <rect x="0" y="0" width="14" height="3" rx="1.5" fill="#10B981" />
-                    </g>
-                  )}
-
-                  <text
-                    x="22"
-                    y="14"
-                    fill="#0F172A"
-                    fontSize="11"
-                    fontWeight="800"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                  >
-                    {card.metric}
-                  </text>
-                  <text
-                    x="166"
-                    y="14"
-                    fill="#94A3B8"
-                    fontSize="7.5"
-                    fontWeight="600"
-                    textAnchor="end"
-                    fontFamily="system-ui, -apple-system, sans-serif"
-                  >
-                    RAW INFLOW →
-                  </text>
-                </g>
-              </g>
-            </g>
-          ))}
-
-          {/* ─── RIGHT: CONTINUOUS RUNNING CARDS (Moving towards Right) ─── */}
-          {RIGHT_CARDS.map((card, idx) => (
-            <g
-              key={card.id}
-              className={`hflow-stream-card-right hflow-stream-right-${idx}`}
-            >
-              {/* 3D Isometric Workflow Sheet */}
-              <g transform="matrix(0.866025, -0.5, 0.866025, 0.5, 0, 0)">
-                {/* Drop Shadow */}
-                <rect
-                  x="-96"
-                  y="-62"
-                  width="192"
-                  height="124"
-                  rx="14"
-                  fill="rgba(15, 23, 42, 0.12)"
-                  filter="url(#sheetDropShadow)"
-                />
-
-                {/* 3D Sidewall Bevel Edge */}
-                <rect
-                  x="-96"
-                  y="-56"
-                  width="192"
-                  height="124"
-                  rx="14"
+                  x="-106"
+                  y="-66"
+                  width="212"
+                  height="144"
+                  rx="16"
                   fill="#94A3B8"
                 />
 
                 {/* Top White Frosted Sheet Surface */}
                 <rect
-                  x="-96"
-                  y="-62"
-                  width="192"
-                  height="124"
-                  rx="14"
+                  x="-106"
+                  y="-72"
+                  width="212"
+                  height="144"
+                  rx="16"
                   fill="#FFFFFF"
                   stroke="#0055D4"
                   strokeWidth="1.6"
                 />
 
-                {/* Corner Anchor Node */}
-                <circle cx="-80" cy="-48" r="4.5" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.2" />
-                <circle cx="-80" cy="-48" r="2" fill="#0055D4" />
+                {/* Corner Anchor Node (Chatsheet signature detail) */}
+                <circle cx="-88" cy="-56" r="4.5" fill="#EFF6FF" stroke="#93C5FD" strokeWidth="1.2" />
+                <circle cx="-88" cy="-56" r="2" fill="#0055D4" />
 
                 {/* Subtle Spreadsheet Grid Lines */}
-                <line x1="-88" y1="-20" x2="88" y2="-20" stroke="rgba(0, 85, 212, 0.08)" strokeWidth="1" />
-                <line x1="-88" y1="16" x2="88" y2="16" stroke="rgba(0, 85, 212, 0.08)" strokeWidth="1" />
-                <line x1="-8" y1="-56" x2="-8" y2="52" stroke="rgba(0, 85, 212, 0.08)" strokeWidth="1" />
+                <line x1="-96" y1="-22" x2="96" y2="-22" stroke="rgba(0, 85, 212, 0.08)" strokeWidth="1" />
+                <line x1="-96" y1="18" x2="96" y2="18" stroke="rgba(0, 85, 212, 0.08)" strokeWidth="1" />
+                <line x1="-8" y1="-64" x2="-8" y2="60" stroke="rgba(0, 85, 212, 0.08)" strokeWidth="1" />
 
-                {/* 3D Glossy Action Pill */}
+                {/* 3D Glossy Action Pill (Chatsheet Signature) */}
                 <rect
-                  x="-12"
-                  y="-54"
-                  width="100"
-                  height="22"
-                  rx="11"
+                  x="-14"
+                  y="-62"
+                  width="114"
+                  height="26"
+                  rx="13"
                   fill={`url(#${card.pillGrad})`}
                   filter="url(#pillShadow)"
                 />
                 <path
-                  d="M 0 -52 L 76 -52"
+                  d="M -1 -60 L 86 -60"
                   stroke="rgba(255, 255, 255, 0.55)"
                   strokeWidth="1"
                   strokeLinecap="round"
                 />
                 <text
-                  x="38"
-                  y="-40"
+                  x="43"
+                  y="-45"
                   fill="#FFFFFF"
-                  fontSize="7.5"
+                  fontSize="8.5"
                   fontWeight="750"
                   letterSpacing="0.04em"
                   textAnchor="middle"
@@ -562,32 +440,32 @@ export function HeroWorkflowHub() {
 
                 {/* Workflow Card Content */}
                 <text
-                  x="-80"
+                  x="-88"
                   y="-2"
                   fill="#0F172A"
-                  fontSize="11"
+                  fontSize="12.5"
                   fontWeight="750"
                   fontFamily="system-ui, -apple-system, sans-serif"
                 >
                   {card.title}
                 </text>
                 <text
-                  x="-80"
-                  y="10"
+                  x="-88"
+                  y="11"
                   fill="#64748B"
-                  fontSize="8"
+                  fontSize="9"
                   fontWeight="500"
                   fontFamily="system-ui, -apple-system, sans-serif"
                 >
                   {card.detail}
                 </text>
 
-                {/* Metric & Status Badge */}
+                {/* Metric & Status Badge on Right of Grid */}
                 <text
-                  x="86"
+                  x="96"
                   y="-2"
                   fill="#0055D4"
-                  fontSize="10.5"
+                  fontSize="11.5"
                   fontWeight="800"
                   textAnchor="end"
                   fontFamily="system-ui, -apple-system, sans-serif"
@@ -595,18 +473,18 @@ export function HeroWorkflowHub() {
                   {card.metric}
                 </text>
                 <rect
-                  x="48"
+                  x="54"
                   y="4"
-                  width="38"
-                  height="12"
+                  width="42"
+                  height="13"
                   rx="3.5"
                   fill={card.badgeBg}
                 />
                 <text
-                  x="67"
-                  y="13"
+                  x="75"
+                  y="13.5"
                   fill={card.badgeColor}
-                  fontSize="7"
+                  fontSize="7.5"
                   fontWeight="750"
                   textAnchor="middle"
                   fontFamily="system-ui, -apple-system, sans-serif"
@@ -614,44 +492,44 @@ export function HeroWorkflowHub() {
                   {card.badge}
                 </text>
 
-                {/* Row of Miniature Connected Procurement App Badges */}
-                <g transform="translate(-80, 26)">
+                {/* Row of Miniature Connected App / Product Badges (Chatsheet Signature) */}
+                <g transform="translate(-88, 29)">
                   {/* Badge 1: Coffee Bean */}
-                  <rect x="0" y="0" width="18" height="18" rx="5" fill="#FEF3C7" stroke="#FDE68A" strokeWidth="0.8" />
-                  <ellipse cx="9" cy="9" rx="4" ry="2.8" fill="#B45309" transform="rotate(-30 9 9)" />
-                  <line x1="6.5" y1="6.5" x2="11.5" y2="11.5" stroke="#FEF3C7" strokeWidth="0.8" />
+                  <rect x="0" y="0" width="20" height="20" rx="5.5" fill="#FEF3C7" stroke="#FDE68A" strokeWidth="0.8" />
+                  <ellipse cx="10" cy="10" rx="4.5" ry="3.2" fill="#B45309" transform="rotate(-30 10 10)" />
+                  <line x1="7.5" y1="7.5" x2="12.5" y2="12.5" stroke="#FEF3C7" strokeWidth="0.8" />
 
                   {/* Badge 2: Oat Milk */}
-                  <rect x="23" y="0" width="18" height="18" rx="5" fill="#EDE9FE" stroke="#DDD6FE" strokeWidth="0.8" />
-                  <rect x="29" y="5" width="6.5" height="9" rx="1.2" fill="#7C3AED" />
-                  <polygon points="29,5 32.25,2.5 35.5,5" fill="#6D28D9" />
+                  <rect x="25" y="0" width="20" height="20" rx="5.5" fill="#EDE9FE" stroke="#DDD6FE" strokeWidth="0.8" />
+                  <rect x="32" y="5.5" width="7" height="10" rx="1.3" fill="#7C3AED" />
+                  <polygon points="32,5.5 35.5,2.5 39,5.5" fill="#6D28D9" />
 
                   {/* Badge 3: Vanilla Syrup */}
-                  <rect x="46" y="0" width="18" height="18" rx="5" fill="#EFF6FF" stroke="#BFDBFE" strokeWidth="0.8" />
-                  <rect x="53" y="6.5" width="4" height="7.5" rx="1.2" fill="#0284C7" />
-                  <rect x="54" y="4" width="2" height="2.5" fill="#0369A1" />
+                  <rect x="50" y="0" width="20" height="20" rx="5.5" fill="#EFF6FF" stroke="#BFDBFE" strokeWidth="0.8" />
+                  <rect x="58" y="7" width="4.5" height="8.5" rx="1.3" fill="#0284C7" />
+                  <rect x="59" y="4.5" width="2.2" height="2.8" fill="#0369A1" />
 
                   {/* Badge 4: Verified Check */}
-                  <rect x="69" y="0" width="18" height="18" rx="5" fill="#DCFCE7" stroke="#BBF7D0" strokeWidth="0.8" />
-                  <polyline points="73,9 76.5,12.5 83,6" fill="none" stroke="#16A34A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect x="75" y="0" width="20" height="20" rx="5.5" fill="#DCFCE7" stroke="#BBF7D0" strokeWidth="0.8" />
+                  <polyline points="79.5,10 83.5,14 90.5,7" fill="none" stroke="#16A34A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
               </g>
             </g>
           ))}
 
-          {/* ─── CENTER: 3D CYLINDER PLATFORM HUB ─── */}
-          <g transform="translate(510, 335)">
+          {/* ─── CENTER: 3D CYLINDER PLATFORM HUB (Elevated, Rendered ON TOP) ─── */}
+          <g transform="translate(520, 365)">
             {/* Soft Neutral Ground Contact Shadow on Floor */}
             <ellipse
               cx="0"
               cy="52"
-              rx="124"
+              rx="126"
               ry="42"
-              fill="rgba(15, 23, 42, 0.15)"
+              fill="rgba(15, 23, 42, 0.14)"
               filter="url(#hubFloorShadow)"
             />
 
-            {/* 3D Cylinder Sidewall */}
+            {/* 3D Cylinder Sidewall (Dark Charcoal Matte) */}
             <path
               d="M -118 0 L -118 32 C -118 68, 118 68, 118 32 L 118 0 Z"
               fill="url(#hubSideGrad)"
@@ -665,7 +543,7 @@ export function HeroWorkflowHub() {
               fill="none"
             />
 
-            {/* PHYSICAL ENTRANCE TUNNEL NOTCH (Where left incoming cards feed) */}
+            {/* PHYSICAL ENTRANCE TUNNEL NOTCH (Where left incoming lines feed) */}
             <path
               d="M -98 12 L -70 19 L -70 34 L -98 27 Z"
               fill="#060912"
@@ -680,7 +558,7 @@ export function HeroWorkflowHub() {
               className="hflow-portal-flash"
             />
 
-            {/* Outer Beveled White Rim */}
+            {/* Outer Beveled White Rim (Crisp White/Silver Chamfer) */}
             <ellipse
               cx="0"
               cy="0"
@@ -701,7 +579,7 @@ export function HeroWorkflowHub() {
               strokeWidth="1.2"
             />
 
-            {/* THE ROYAL BLUE SUNKEN CORE / WELL */}
+            {/* THE ROYAL BLUE SUNKEN CORE / WELL (Chatsheet Signature) */}
             <ellipse
               cx="0"
               cy="0"
@@ -782,7 +660,7 @@ export function HeroWorkflowHub() {
             <span className="hflow-pill-label">LIVE ECOSYSTEM PIPELINE</span>
             <span className="hflow-pill-sep">·</span>
             <span className="hflow-pill-metric">
-              {LEFT_CARDS[captionIndex].title} → {RIGHT_CARDS[captionIndex].title} ({RIGHT_CARDS[captionIndex].pillText})
+              {WORKFLOW_CARDS[captionIndex].title} → {WORKFLOW_CARDS[captionIndex].pillText}
             </span>
           </div>
         </div>
