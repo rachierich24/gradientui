@@ -1,10 +1,10 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Brand Portal Moat & Capabilities Section ("What We Do For Brands")
-   Super 3D Isometric Monochrome Visuals ("No Colours" Precision Engineering):
-   - 3D Isometric Specialty Coffee Pouch with CAD Floor Grid & Telemetry HUD
-   - 3D Glass Cylinder Bottle on Extruded Turntable with Sensory Cupping HUD
-   - 3D Gable-Top Barista Carton with Multi-Node Distribution Bus
-   - Clean, quiet, and ultra-high-end luxury monochrome technical aesthetic
+   Interactive, Photorealistic 3D Product Visuals with Luxury Brand Purple:
+   - Actual 3D Specialty Coffee Pouch with glowing purple telemetry HUD
+   - Actual 3D Craft Glass Bottle with interactive barista tasting flight HUD
+   - Actual 3D Barista Oat Milk Carton with dynamic highway PO routing bus
+   - Deep obsidian glassmorphism, electric purple accents, and rich micro-interactions
 ───────────────────────────────────────────────────────────────────────── */
 
 .bmoat-section {
@@ -18,7 +18,7 @@
   scroll-margin-top: 100px;
 }
 
-/* Ambient Radial Glow */
+/* Ambient Radial Glow in Brand Purple */
 .bmoat-bg-glow {
   position: absolute;
   top: 15%;
@@ -26,7 +26,7 @@
   transform: translate(-50%, -15%);
   width: 1200px;
   height: 600px;
-  background: radial-gradient(ellipse 65% 55% at center, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 50%, transparent 75%);
+  background: radial-gradient(ellipse 65% 55% at center, rgba(126, 34, 206, 0.16) 0%, rgba(79, 70, 229, 0.04) 50%, transparent 75%);
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
@@ -56,14 +56,14 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #CBD5E1;
+  color: #C084FC;
   margin-bottom: 16px;
 }
 
 .bmoat-eyebrow-line {
   width: 24px;
   height: 1.5px;
-  background: linear-gradient(90deg, #FFFFFF, rgba(255, 255, 255, 0.25));
+  background: linear-gradient(90deg, #C084FC, #9333EA);
   border-radius: 2px;
 }
 
@@ -80,7 +80,7 @@
 .bmoat-sub {
   font-size: clamp(15px, 1.2vw, 17.5px);
   line-height: 1.55;
-  color: rgba(226, 232, 240, 0.7);
+  color: rgba(226, 232, 240, 0.75);
   max-width: 680px;
   margin: 0;
   font-weight: 400;
@@ -116,7 +116,7 @@
   flex-direction: column;
 }
 
-/* Oversized Background Number in Sleek Monochrome Titanium */
+/* Oversized Background Number in Electric Purple */
 .bmoat-bg-num {
   position: absolute;
   top: -108px;
@@ -125,8 +125,8 @@
   font-weight: 900;
   font-family: var(--font-sans);
   line-height: 0.82;
-  color: rgba(255, 255, 255, 0.04);
-  -webkit-text-stroke: 1.6px rgba(255, 255, 255, 0.16);
+  color: rgba(168, 85, 247, 0.14);
+  -webkit-text-stroke: 1.8px rgba(192, 132, 252, 0.44);
   pointer-events: none;
   user-select: none;
   z-index: 0;
@@ -134,23 +134,23 @@
               color 380ms ease,
               text-shadow 380ms ease,
               transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
-  text-shadow: 0 0 40px rgba(255, 255, 255, 0.06);
+  text-shadow: 0 0 40px rgba(147, 51, 234, 0.35);
 }
 
 .bmoat-card-wrap:hover .bmoat-bg-num,
 .bmoat-bg-num.is-lit {
-  color: rgba(255, 255, 255, 0.09);
-  -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.45);
+  color: rgba(192, 132, 252, 0.28);
+  -webkit-text-stroke: 1.8px rgba(216, 180, 254, 0.85);
   transform: translateY(-6px);
-  text-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 60px rgba(168, 85, 247, 0.65);
 }
 
-/* ─── Minimalist Dark Card Frame ─────────────────────────────────── */
+/* ─── Minimalist Dark Card Frame with Purple Glow ─────────────────── */
 .bmoat-card {
   position: relative;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(16, 18, 26, 0.88) 0%, rgba(9, 10, 16, 0.96) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(20, 16, 32, 0.88) 0%, rgba(10, 10, 17, 0.96) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 24px;
   padding: clamp(26px, 2.8vw, 34px);
   box-sizing: border-box;
@@ -168,11 +168,11 @@
 
 .bmoat-card.is-hovered {
   transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(168, 85, 247, 0.48);
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgba(168, 85, 247, 0.25),
     0 20px 48px -10px rgba(0, 0, 0, 0.8),
-    0 0 32px -8px rgba(255, 255, 255, 0.08);
+    0 0 36px -6px rgba(126, 34, 206, 0.3);
 }
 
 .bmoat-card-inner {
@@ -205,33 +205,33 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(233, 213, 255, 0.95);
+  background: rgba(147, 51, 234, 0.16);
+  border: 1px solid rgba(168, 85, 247, 0.32);
   border-radius: 999px;
   padding: 3.5px 10px;
 }
 
-/* ─── Enhanced Super 3D Graphic Frame with Ambient Radial Light ───── */
+/* ─── Enhanced 3D Graphic Frame with Ambient Radial Light ─────────── */
 .bmoat-graphic-frame {
   width: 100%;
-  height: 224px;
+  height: 230px;
   margin: 10px 0 18px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.04) 0%, rgba(12, 13, 19, 0.95) 60%, #07080D 100%);
+  background: radial-gradient(ellipse at 35% 55%, rgba(139, 92, 246, 0.14) 0%, rgba(12, 13, 20, 0.96) 65%, #07080D 100%);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.2);
   box-sizing: border-box;
   overflow: hidden;
   transition: border-color 300ms ease, box-shadow 300ms ease;
 }
 
 .bmoat-card:hover .bmoat-graphic-frame {
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.04);
+  border-color: rgba(168, 85, 247, 0.45);
+  box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.12);
 }
 
 .bmoat-canvas {
@@ -250,15 +250,17 @@
   display: block;
 }
 
-/* Subtle, stationary hover on featured 3D product */
-.bmoat-product-group {
-  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), filter 300ms ease;
+/* 3D Product Image Hover Effect */
+.bmoat-product-3d {
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), filter 320ms ease;
   transform-origin: center bottom;
+  filter: drop-shadow(0 14px 28px rgba(126, 34, 206, 0.45));
 }
 
-.bmoat-product-group:hover {
-  transform: translate(32px, 44px) scale(1.02);
-  filter: drop-shadow(0 8px 24px rgba(255, 255, 255, 0.18));
+.bmoat-product-3d:hover,
+.bmoat-card:hover .bmoat-product-3d {
+  transform: translateY(-3px) scale(1.02);
+  filter: drop-shadow(0 18px 36px rgba(168, 85, 247, 0.65));
 }
 
 /* Dynamic Tooltip Transition */
@@ -272,12 +274,12 @@
 }
 
 .bmoat-interactive-row:hover {
-  filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 2px 12px rgba(168, 85, 247, 0.4));
 }
 
 /* Active Path Glow */
 .bmoat-active-path {
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.75));
+  filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.85));
 }
 
 /* Live Status Pulse Dot (Ping) */
@@ -301,15 +303,15 @@
 .bmoat-card-desc {
   font-size: 13.5px;
   line-height: 1.5;
-  color: rgba(203, 213, 225, 0.72);
-  margin: 0 0 18px 0;
-  font-weight: 450;
+  color: rgba(226, 232, 240, 0.75);
+  margin: 0 0 16px 0;
+  font-weight: 400;
 }
 
 .bmoat-pointers {
   list-style: none;
+  margin: 0;
   padding: 0;
-  margin: auto 0 0 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -321,10 +323,10 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: rgba(226, 232, 240, 0.82);
-  transition: color 220ms ease;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(203, 213, 225, 0.85);
+  transition: color 200ms ease;
 }
 
 .bmoat-card:hover .bmoat-pointer-item {
@@ -335,31 +337,14 @@
   width: 4.5px;
   height: 4.5px;
   border-radius: 50%;
-  background: #FFFFFF;
-  box-shadow: 0 0 7px rgba(255, 255, 255, 0.6);
+  background: #A855F7;
+  box-shadow: 0 0 7px #A855F7;
   margin-top: 6px;
   flex-shrink: 0;
   transition: box-shadow 300ms ease, transform 300ms ease;
 }
 
 .bmoat-card:hover .bmoat-pointer-dot {
-  box-shadow: 0 0 11px #FFFFFF;
+  box-shadow: 0 0 11px #C084FC;
   transform: scale(1.15);
-}
-
-.bmoat-pointer-text {
-  flex: 1;
-}
-
-/* Reduced Motion Respect */
-@media (prefers-reduced-motion: reduce) {
-  .bmoat-card,
-  .bmoat-product-group,
-  .bmoat-bg-num,
-  .bmoat-dynamic-tooltip {
-    transition: none;
-  }
-  .bmoat-ping {
-    animation: none;
-  }
 }
