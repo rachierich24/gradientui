@@ -70,7 +70,7 @@ export function BrandMoat() {
           </div>
           <h2 id="bmoat-title" className="bmoat-title">
             Built for brands selling into<br />
-            India’s café economy.
+            India&apos;s café economy.
           </h2>
           <p className="bmoat-sub">
             Three interconnected capabilities that replace blind cold outreach and speculative production with verified demand telemetry, structured sampling flights, and automated reorders.
@@ -168,7 +168,7 @@ function DemandIntelligenceWorkspace() {
     if (isPaused) return;
     const interval = setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % TELEMETRY_SERIES.length);
-    }, 2400);
+    }, 4200);
     return () => clearInterval(interval);
   }, [isPaused]);
 
@@ -309,6 +309,10 @@ function DemandIntelligenceWorkspace() {
                   setActiveIdx(pIdx);
                   setIsPaused(true);
                 }}
+                onMouseEnter={() => {
+                  setActiveIdx(pIdx);
+                  setIsPaused(true);
+                }}
               >
                 {pt.week}
               </span>
@@ -316,12 +320,10 @@ function DemandIntelligenceWorkspace() {
           </div>
         </div>
 
-        {/* Footer Meta Row */}
+        {/* Dynamic Footer Meta */}
         <div className="bmoat-hud-footer-row">
           <span className="bmoat-hud-footer-desc">{activePoint.stageLabel}</span>
-          <span className="bmoat-hud-footer-tag">
-            {isPaused ? 'PAUSED' : 'AUTO-RUNNING'}
-          </span>
+          <span className="bmoat-hud-footer-tag">AUTO-RUNNING</span>
         </div>
       </div>
     </div>
@@ -353,7 +355,7 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
     location: 'Hauz Khas · Roaster Tier 1 (42 Venues)',
     lifecycleStatus: 'TRIAL ACTIVE · IN BREW',
     evaluator: 'Head Barista Tasting Evaluation',
-    sensoryQuote: '“Dense microfoam balance & zero curdling approved”',
+    sensoryQuote: '"Dense microfoam balance & zero curdling approved"',
     cuppingScore: '★ 4.8',
   },
   {
@@ -363,7 +365,7 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
     location: 'Indiranagar · Multi-Outlet Barista Team',
     lifecycleStatus: 'EN ROUTE · VAN SLOT 02',
     evaluator: 'Cold-Chain Dispatch Verification',
-    sensoryQuote: '“Sample flight scheduled for calibration”',
+    sensoryQuote: '"Sample flight scheduled for calibration"',
     cuppingScore: 'CALIB',
   },
   {
@@ -373,7 +375,7 @@ const TRIAL_LIFECYCLE: TrialStage[] = [
     location: 'Bandra West · Artisanal Single Origin',
     lifecycleStatus: 'EVALUATED · STANDING PO',
     evaluator: 'Lead Roaster Sensory Protocol',
-    sensoryQuote: '“Signature iced vanilla latte test approved”',
+    sensoryQuote: '"Signature iced vanilla latte test approved"',
     cuppingScore: '★ 5.0',
   },
 ];
@@ -386,7 +388,7 @@ function SamplingFlightsWorkspace() {
     if (isPaused) return;
     const timer = setInterval(() => {
       setSelectedIdx((prev) => (prev + 1) % TRIAL_LIFECYCLE.length);
-    }, 3200);
+    }, 4200);
     return () => clearInterval(timer);
   }, [isPaused]);
 
@@ -402,10 +404,10 @@ function SamplingFlightsWorkspace() {
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
         <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(168, 85, 247, 0.12)" strokeWidth="0.7" fill="rgba(147, 51, 234, 0.02)" />
         {/* Dynamic laser spline connector path from bottle's neck to card */}
-        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(192, 132, 252, 0.75)" strokeWidth="1.6" strokeDasharray="3 3" />
+        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(192, 132, 252, 0.65)" strokeWidth="1.2" strokeDasharray="3 3" />
         {/* Constant Streaming Photon Pulse along the Path */}
-        <circle r="3" fill="#FFFFFF" filter="drop-shadow(0 0 6px #C084FC)">
-          <animateMotion dur="2.2s" repeatCount="indefinite" path="M 72 135 C 92 135, 102 102, 114 98" />
+        <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 5px #C084FC)">
+          <animateMotion dur="2.8s" repeatCount="indefinite" path="M 72 135 C 92 135, 102 102, 114 98" />
         </circle>
       </svg>
 
@@ -453,14 +455,14 @@ function SamplingFlightsWorkspace() {
           </div>
         </div>
 
-        {/* Venue Information */}
+        {/* Venue Information with smooth crossfade */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStage.id}
             initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -3 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.22 }}
             className="bmoat-hud-venue-block"
           >
             <div className="bmoat-hud-venue-title">{currentStage.venue}</div>
@@ -468,14 +470,23 @@ function SamplingFlightsWorkspace() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Sensory Evaluation Box */}
-        <div className="bmoat-hud-sensory-box">
-          <div className="bmoat-hud-sensory-head">
-            <span>{currentStage.evaluator}</span>
-            <span className="bmoat-hud-score-badge">{currentStage.cuppingScore}</span>
-          </div>
-          <p className="bmoat-hud-sensory-quote">{currentStage.sensoryQuote}</p>
-        </div>
+        {/* Sensory Evaluation Box with smooth crossfade */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStage.id + '-sensory'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="bmoat-hud-sensory-box"
+          >
+            <div className="bmoat-hud-sensory-head">
+              <span>{currentStage.evaluator}</span>
+              <span className="bmoat-hud-score-badge">{currentStage.cuppingScore}</span>
+            </div>
+            <p className="bmoat-hud-sensory-quote">{currentStage.sensoryQuote}</p>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -539,7 +550,7 @@ function OrderVelocityWorkspace() {
     if (isPaused) return;
     const interval = setInterval(() => {
       setActiveRowIdx((prev) => (prev + 1) % VELOCITY_ROWS.length);
-    }, 2600);
+    }, 4200);
     return () => clearInterval(interval);
   }, [isPaused]);
 
@@ -561,16 +572,16 @@ function OrderVelocityWorkspace() {
             <path
               key={row.id}
               d={row.pathD}
-              stroke={isRowActive ? '#C084FC' : 'rgba(168, 85, 247, 0.35)'}
-              strokeWidth={isRowActive ? '1.8' : '1.2'}
+              stroke={isRowActive ? '#C084FC' : 'rgba(168, 85, 247, 0.25)'}
+              strokeWidth={isRowActive ? '1.6' : '1.1'}
               strokeLinecap="round"
             />
           );
         })}
         {/* Continuous Streaming Packet along Active Row Path */}
-        <circle r="3.2" fill="#FFFFFF" filter="drop-shadow(0 0 6px #C084FC)">
+        <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 5px #C084FC)">
           <animateMotion
-            dur="1.8s"
+            dur="2.4s"
             repeatCount="indefinite"
             path={activeRow.pathD}
           />
