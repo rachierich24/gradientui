@@ -33,13 +33,13 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   toRef,
   curvature = 0,
   reverse = false,
-  duration = 5,
+  duration = 4,
   delay = 0,
-  pathColor = 'gray',
+  pathColor = '#E2E8F0',
   pathWidth = 2,
-  pathOpacity = 0.2,
-  gradientStartColor = '#ffaa40',
-  gradientStopColor = '#9c40ff',
+  pathOpacity = 0.8,
+  gradientStartColor = '#94A3B8',
+  gradientStopColor = '#7C3AED',
   repeat = Infinity,
   repeatDelay = 0,
   startXOffset = 0,
@@ -51,7 +51,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   const [pathD, setPathD] = useState('');
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
 
-  // Calculate the gradient coordinates based on the reverse prop
+  // Calculate moving gradient coordinates for light beam motion
   const gradientCoordinates = reverse
     ? {
         x1: ['90%', '-10%'],
@@ -60,8 +60,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         y2: ['0%', '0%'],
       }
     : {
-        x1: ['10%', '110%'],
-        x2: ['0%', '100%'],
+        x1: ['0%', '100%'],
+        x2: ['15%', '115%'],
         y1: ['0%', '0%'],
         y2: ['0%', '0%'],
       };
@@ -77,19 +77,27 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         const svgHeight = containerRect.height;
         setSvgDimensions({ width: svgWidth, height: svgHeight });
 
-        const startX =
-          rectA.left - containerRect.left + rectA.width / 2 + startXOffset;
-        const startY =
-          rectA.top - containerRect.top + rectA.height / 2 + startYOffset;
-        const endX =
-          rectB.left - containerRect.left + rectB.width / 2 + endXOffset;
-        const endY =
-          rectB.top - containerRect.top + rectB.height / 2 + endYOffset;
+        const isLeftToRight = rectA.left < rectB.left;
 
-        const controlY = startY - curvature;
-        const d = `M ${startX},${startY} Q ${
-          (startX + endX) / 2
-        },${controlY} ${endX},${endY}`;
+        // Clean edge-to-edge attachment
+        const startX = isLeftToRight
+          ? rectA.right - containerRect.left + startXOffset
+          : rectA.left - containerRect.left + startXOffset;
+        const startY = rectA.top - containerRect.top + rectA.height / 2 + startYOffset;
+
+        const endX = isLeftToRight
+          ? rectB.left - containerRect.left + endXOffset
+          : rectB.right - containerRect.left + endXOffset;
+        const endY = rectB.top - containerRect.top + rectB.height / 2 + endYOffset;
+
+        // Clean Horizontal S-Curve (Cubic Bézier) - eliminates pinching
+        const dx = endX - startX;
+        const cp1X = startX + dx * 0.45;
+        const cp1Y = startY;
+        const cp2X = endX - dx * 0.45;
+        const cp2Y = endY;
+
+        const d = `M ${startX},${startY} C ${cp1X},${cp1Y} ${cp2X},${cp2Y} ${endX},${endY}`;
         setPathD(d);
       }
     };
@@ -99,15 +107,12 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       updatePath();
     });
 
-    // Observe the container element
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
 
-    // Call updatePath initially
     updatePath();
 
-    // Clean up observer on unmount
     return () => {
       resizeObserver.disconnect();
     };
@@ -143,6 +148,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       )}
       viewBox={`0 0 ${svgDimensions.width || 100} ${svgDimensions.height || 100}`}
     >
+      {/* Underlying Track Path */}
       <path
         d={pathD}
         stroke={pathColor}
@@ -150,9 +156,10 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         strokeOpacity={pathOpacity}
         strokeLinecap="round"
       />
+      {/* Animated Light Beam Path */}
       <path
         d={pathD}
-        strokeWidth={pathWidth}
+        strokeWidth={pathWidth + 0.5}
         stroke={`url(#${id})`}
         strokeOpacity="1"
         strokeLinecap="round"
@@ -183,8 +190,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
           }}
         >
           <stop stopColor={gradientStartColor} stopOpacity="0" />
-          <stop stopColor={gradientStartColor} />
-          <stop offset="32.5%" stopColor={gradientStopColor} />
+          <stop stopColor={gradientStartColor} stopOpacity="1" />
+          <stop offset="35%" stopColor={gradientStopColor} stopOpacity="1" />
           <stop offset="100%" stopColor={gradientStopColor} stopOpacity="0" />
         </motion.linearGradient>
       </defs>
