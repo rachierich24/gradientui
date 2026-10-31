@@ -39,8 +39,8 @@ export function BrandFeatures() {
   const sec = useRef<HTMLElement>(null);
   const scenes = useRef<(HTMLDivElement | null)[]>([]);
   const items = useRef<(HTMLLIElement | null)[]>([]);
-  const heard = useRef<((k: number) => void)[]>([]);
-  const listen = useMemo(() => CHAPTERS.map((_, i) => (fn: (k: number) => void) => { heard.current[i] = fn; }), []);
+  const heard = useRef<((k: number, u: number) => void)[]>([]);
+  const listen = useMemo(() => CHAPTERS.map((_, i) => (fn: (k: number, u: number) => void) => { heard.current[i] = fn; }), []);
   const [act, setAct] = useState(0);
   const geo = useRef({ L: 1 });
 
@@ -72,7 +72,7 @@ export function BrandFeatures() {
         sc.style.setProperty('--k', k.toFixed(4));
         sc.style.setProperty('--u', (still ? 1 : clamp(u)).toFixed(4));
         sc.style.setProperty('--x', (wide && i < N - 1 ? clamp((u - 0.9) / 0.1) : 0).toFixed(4));
-        heard.current[i]?.(k);
+        heard.current[i]?.(k, still ? 1 : clamp(u));
         items.current[i]?.style.setProperty('--p', clamp(u).toFixed(4));
       }
       const a = wide ? Math.min(N - 1, Math.max(0, Math.floor(s / L))) : near;

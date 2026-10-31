@@ -557,7 +557,7 @@ export function BrandDashboard() {
                         <b>Day {scan}{scanEv && <small>{scanEv.title}</small>}</b>
                       </span>
                     )}
-                    <span className="bdb-rail-head" aria-hidden="true"><b>{!calm && day === 1 ? 'Scroll to play' : `Day ${today}`}</b></span>
+                    <span className="bdb-rail-head" aria-hidden="true"><b>{`Day ${today}`}</b></span>
                     <span className="bdb-rail-marks" aria-hidden="true">
                       {MARKS.map((m) => (
                         <span key={m.label} className={day >= m.day ? 'is-on' : undefined} style={{ left: `${along(m.day) * 100}%` }}>{m.label}</span>

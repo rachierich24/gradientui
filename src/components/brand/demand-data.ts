@@ -110,6 +110,13 @@ export function batch(p: Product, id: string) {
   return { make, usual: Math.max(make + step, Math.round((make * 1.65) / step) * step) };
 }
 
+/** Each neighbourhood's index now and in four weeks, per product, in the order of AREAS in ./trial-data.ts. Sample figures. */
+export const AREA_DEMAND: Record<string, [number, number][]> = {
+  oat: [[148, 160], [176, 184], [121, 138], [188, 201], [171, 186], [109, 121], [142, 150], [158, 166], [97, 104]],
+  brew: [[102, 110], [184, 199], [133, 151], [162, 170], [192, 214], [118, 124], [96, 103], [149, 161], [88, 93]],
+  almond: [[84, 90], [139, 147], [92, 104], [151, 163], [128, 140], [64, 71], [117, 122], [133, 146], [106, 118]],
+};
+
 export const BANDS = [
   { label: 'Low', to: 50 },
   { label: 'Moderate', to: 100 },

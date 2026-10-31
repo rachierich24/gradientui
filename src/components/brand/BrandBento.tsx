@@ -117,7 +117,6 @@ export function BrandBento() {
             <span className="bbo-eye">The whole system</span>
             <h2 id="bbo-title">Every café you sell to,<br /> on one board.</h2>
           </div>
-          <span className="bbo-hint"><i />Every tile is live. Try one.</span>
         </header>
 
         <div className="bbo-grid" onPointerMove={glow}>
