@@ -4,17 +4,23 @@ import React, { useState } from 'react';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    ORCHID-INSPIRED WHOLESALE ARCHITECTURE FOR GRADIENT
-   White background · Minimal & Creative Workflow
-   Interactive Mode Switcher: "Before Gradient" vs "With Gradient"
+   Strict Purple & White Colorway · Minimal & Researched Workflow
+   Authentic Industry Vector SVGs · Micro-Animations & Micro-Interactions
    ───────────────────────────────────────────────────────────────────────────── */
 
 type Mode = 'with' | 'without';
+
+interface SupplierBrand {
+  name: string;
+  tag: string;
+  icon: React.ReactNode;
+}
 
 interface SupplierCategory {
   id: string;
   category: string;
   icon: React.ReactNode;
-  brands: { name: string; tag: string }[];
+  brands: SupplierBrand[];
   withStatus: string;
   withoutStatus: string;
 }
@@ -45,25 +51,58 @@ interface CafeNode {
   withoutInventory: string;
 }
 
-/* ─── 1. TOP TIER: 4 SUPPLIER CATEGORIES ─────────────────────────────────── */
+/* ─── 1. TOP TIER: 4 SPECIALTY WHOLESALE SOURCE CATEGORIES ───────────────── */
 const SUPPLIERS: SupplierCategory[] = [
   {
     id: 'roasters',
     category: 'SPECIALTY ROASTERS',
     icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-        <line x1="6" y1="1" x2="6" y2="4" />
-        <line x1="10" y1="1" x2="10" y2="4" />
-        <line x1="14" y1="1" x2="14" y2="4" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="7" rx="8" ry="4" />
+        <path d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7" />
+        <path d="M4 12c0 2.21 3.58 4 8 4s8-1.79 8-4" />
+        <path d="M12 10.5c-1.2 0-1.8.7-1.8 1.4 0 1.1 1.4 1.4 1.8 2.2.4-.8 1.8-1.1 1.8-2.2 0-.7-.6-1.4-1.8-1.4z" fill="currentColor" stroke="none" />
       </svg>
     ),
     brands: [
-      { name: 'Blue Tokai', tag: 'Estate Arabica' },
-      { name: 'Araku Coffee', tag: 'Biodynamic' },
-      { name: 'Subko Specialty', tag: 'Micro-lots' },
-      { name: 'Kapi Kottai', tag: 'Single Origin' },
+      {
+        name: 'Blue Tokai',
+        tag: 'Estate Arabica',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Araku Coffee',
+        tag: 'Biodynamic',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 20l7-12 5 7 6-10" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Subko Specialty',
+        tag: 'Micro-Lots',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9 12h6M12 9v6" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Kapi Kottai',
+        tag: 'Single Origin',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+        ),
+      },
     ],
     withStatus: '48-Hr Batch Roast Sync',
     withoutStatus: 'Speculative Roast Guesswork',
@@ -72,18 +111,51 @@ const SUPPLIERS: SupplierCategory[] = [
     id: 'milks',
     category: 'BARISTA MILKS',
     icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8 2h8v3H8z" />
-        <path d="M7 5h10l2 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9l2-4z" />
-        <path d="M10 12h4" />
-        <path d="M12 10v4" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 4h9l3 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4z" />
+        <path d="M18 10h2a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-2" />
+        <path d="M10 12c1.2-1 2.8-1 4 0" />
+        <circle cx="12" cy="15.5" r="1" fill="currentColor" />
       </svg>
     ),
     brands: [
-      { name: 'Oat Barista Pro', tag: 'Microfoam Std' },
-      { name: 'Amul Barista', tag: 'Fresh Dairy' },
-      { name: 'Epigamia Almond', tag: 'Plant Base' },
-      { name: 'Raw Pressery', tag: 'Cold-Pressed' },
+      {
+        name: 'Oat Barista Pro',
+        tag: 'Microfoam Std',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 22s5-5 8-12c1-2 3-2 4 0 3 7 8 12 8 12" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Amul Barista',
+        tag: 'Fresh Dairy',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Epigamia Almond',
+        tag: 'Plant Base',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <ellipse cx="12" cy="12" rx="7" ry="10" transform="rotate(45 12 12)" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Raw Pressery',
+        tag: 'Cold-Pressed',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="8" />
+            <path d="M12 8v8M8 12h8" />
+          </svg>
+        ),
+      },
     ],
     withStatus: 'Cold-Chain Par Replenished',
     withoutStatus: 'Frequent Spoilage & Stockouts',
@@ -92,15 +164,53 @@ const SUPPLIERS: SupplierCategory[] = [
     id: 'syrups',
     category: 'BEVERAGE BASES',
     icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10 2h4" />
+        <path d="M12 2v4" />
+        <path d="M8 6h8l2 4v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V10l2-4z" />
+        <line x1="9" y1="13" x2="15" y2="13" />
+        <line x1="9" y1="16" x2="13" y2="16" />
       </svg>
     ),
     brands: [
-      { name: 'Monin Gourmet', tag: 'Puree & Sauce' },
-      { name: '1883 Maison', tag: 'Craft Syrups' },
-      { name: 'Torani Artisan', tag: 'Botanicals' },
-      { name: 'Uji Matcha', tag: 'Ceremonial' },
+      {
+        name: 'Monin Gourmet',
+        tag: 'Puree & Sauce',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v18M7 8l10 8M17 8L7 16" />
+          </svg>
+        ),
+      },
+      {
+        name: '1883 Maison',
+        tag: 'Craft Syrups',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 15 8 21 9 17 14 18 20 12 17 6 20 7 14 3 9 9 8 12 2" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Torani Artisan',
+        tag: 'Botanicals',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Uji Matcha',
+        tag: 'Ceremonial',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 11a8 8 0 0 0 16 0H4z" />
+            <path d="M12 4v7" />
+          </svg>
+        ),
+      },
     ],
     withStatus: 'Wholesale Tier Volume Rates',
     withoutStatus: 'Inconsistent Ad-hoc Pricing',
@@ -109,16 +219,56 @@ const SUPPLIERS: SupplierCategory[] = [
     id: 'packaging',
     category: 'BAR PACK & GEAR',
     icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="9" r="6" />
+        <path d="M13.2 13.2L20 20" />
+        <path d="M18 22l4-4" />
+        <path d="M8 15v3a1 1 0 0 0 1 1h0a1 1 0 0 0 1-1v-3" />
       </svg>
     ),
     brands: [
-      { name: 'Bio-Cup Compostable', tag: 'Eco Cups' },
-      { name: 'Kraft Sleeves', tag: 'Heat Ribbed' },
-      { name: 'La Marzocco Spares', tag: 'Portafilters' },
-      { name: 'Mahlkönig Burrs', tag: 'Precision' },
+      {
+        name: 'Bio-Cup Compostable',
+        tag: 'Eco Cups',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 20A7 7 0 0 1 4 13a7 7 0 0 1 14-3v7" />
+            <path d="M14 17l4 4 4-4" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Kraft Sleeves',
+        tag: 'Heat Ribbed',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="6" width="18" height="12" rx="2" />
+            <line x1="7" y1="6" x2="7" y2="18" />
+            <line x1="12" y1="6" x2="12" y2="18" />
+            <line x1="17" y1="6" x2="17" y2="18" />
+          </svg>
+        ),
+      },
+      {
+        name: 'La Marzocco Spares',
+        tag: 'Portafilters',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="8" />
+            <path d="M12 6v12M6 12h12" />
+          </svg>
+        ),
+      },
+      {
+        name: 'Mahlkönig Burrs',
+        tag: 'Precision',
+        icon: (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        ),
+      },
     ],
     withStatus: 'Consolidated Route Dispatch',
     withoutStatus: 'Separate High-Cost Shipping',
@@ -131,61 +281,64 @@ const PROTOCOLS: ProtocolNode[] = [
     id: 'net15',
     shortLabel: 'Net-15',
     withLabel: 'Net-15 PO',
-    withDesc: 'Automated Standing Purchase Orders',
+    withDesc: 'Automated Standing Purchase Orders on Net-15 Terms',
     withIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
         <polyline points="14 2 14 8 20 8" />
-        <polyline points="9 15 11 17 15 13" />
+        <path d="M9 15l2 2 4-4" />
       </svg>
     ),
     withoutShortLabel: 'WhatsApp',
     withoutLabel: 'WhatsApp Chats',
-    withoutDesc: 'Unconfirmed Audio Notes & Text Threads',
+    withoutDesc: 'Unconfirmed Audio Notes & Lost Text Threads',
     withoutIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
     ),
-    metric: '< 90s PO Approval',
+    metric: '< 90s Standing PO Approval',
   },
   {
     id: 'api',
     shortLabel: 'EDI / API',
     withLabel: 'EDI / API',
-    withDesc: 'Live Wholesale Catalog & Price Sync',
+    withDesc: 'Live Wholesale Inventory & Catalog Sync',
     withIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="16 18 22 12 16 6" />
-        <polyline points="8 6 2 12 8 18" />
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="6" height="6" rx="1.5" />
+        <rect x="16" y="3" width="6" height="6" rx="1.5" />
+        <rect x="9" y="15" width="6" height="6" rx="1.5" />
+        <path d="M5 9v3a2 2 0 0 0 2 2h2" />
+        <path d="M19 9v3a2 2 0 0 1-2 2h-2" />
       </svg>
     ),
     withoutShortLabel: 'Calling',
     withoutLabel: 'Phone Calls',
-    withoutDesc: 'Endless Roaster Lead Chasing',
+    withoutDesc: 'Endless Roaster Lead Chasing & Manual Follow-ups',
     withoutIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
       </svg>
     ),
-    metric: 'Real-Time Sync',
+    metric: 'Real-Time Catalog Sync',
   },
   {
     id: 'telemetry',
     shortLabel: 'Telemetry',
     withLabel: 'Telemetry',
-    withDesc: 'Real-Time Bean Velocity & Consumption',
+    withDesc: 'Real-Time Bean Velocity & Consumption Signals',
     withIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 12h3.5l2.5-7 4 14 3.5-9 2 4H22" />
       </svg>
     ),
     withoutShortLabel: 'Spreadsheet',
     withoutLabel: 'Excel Drift',
-    withoutDesc: 'Broken Formulas & Stock Discrepancies',
+    withoutDesc: 'Broken Spreadsheet Formulas & Stock Discrepancies',
     withoutIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
         <line x1="3" y1="9" x2="21" y2="9" />
         <line x1="3" y1="15" x2="21" y2="15" />
         <line x1="9" y1="3" x2="9" y2="21" />
@@ -200,18 +353,19 @@ const PROTOCOLS: ProtocolNode[] = [
     withLabel: 'Cold-Chain',
     withDesc: 'GPS Route-Dispatched Consolidated Logistics',
     withIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="1" y="3" width="15" height="13" />
-        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="4" width="14" height="12" rx="1" />
+        <path d="M15 8h4l3 3v5h-7V8z" />
         <circle cx="5.5" cy="18.5" r="2.5" />
-        <circle cx="18.5" cy="18.5" r="2.5" />
+        <circle cx="17.5" cy="18.5" r="2.5" />
+        <path d="M8 8v4M6 10h4" strokeWidth="1.5" />
       </svg>
     ),
     withoutShortLabel: 'Receipts',
     withoutLabel: 'Paper Chits',
-    withoutDesc: 'Lost Delivery Receipts & Tax Mismatch',
+    withoutDesc: 'Lost Delivery Receipts & Tax Mismatch Errors',
     withoutIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V8z" />
       </svg>
     ),
@@ -221,17 +375,17 @@ const PROTOCOLS: ProtocolNode[] = [
     id: 'restock',
     shortLabel: 'Restock',
     withLabel: 'Auto Restock',
-    withDesc: 'Algorithmic Safety Par Buffering',
+    withDesc: 'Algorithmic Safety Par Buffering & Dynamic Reorder',
     withIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
       </svg>
     ),
     withoutShortLabel: 'Deadstock',
     withoutLabel: 'Deadstock Batches',
-    withoutDesc: 'Overproduced Roast Stock & Staleness',
+    withoutDesc: 'Overproduced Roast Stock & Staleness Waste',
     withoutIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
         <line x1="12" y1="9" x2="12" y2="13" />
         <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -243,9 +397,9 @@ const PROTOCOLS: ProtocolNode[] = [
     id: 'erp',
     shortLabel: 'ERP Sync',
     withLabel: 'ERP Sync',
-    withDesc: 'Instant Tally, Zoho & SAP Reconciliation',
+    withDesc: 'Instant Tally, Zoho Books & SAP Reconciliation',
     withIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <ellipse cx="12" cy="5" rx="9" ry="3" />
         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
@@ -253,28 +407,28 @@ const PROTOCOLS: ProtocolNode[] = [
     ),
     withoutShortLabel: 'Panic Run',
     withoutLabel: 'Retail Panic',
-    withoutDesc: 'Emergency Supermarket Runs at Full Retail',
+    withoutDesc: 'Emergency Supermarket Runs at Full Retail Prices',
     withoutIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
         <line x1="3" y1="6" x2="21" y2="6" />
         <path d="M16 10a4 4 0 0 1-8 0" />
       </svg>
     ),
-    metric: '100% Tax Compliant',
+    metric: '100% Tax Compliant Sync',
   },
 ];
 
-/* ─── 3. BOTTOM TIER: 5 CAFÉ OUTLETS ──────────────────────────────────────── */
+/* ─── 3. BOTTOM TIER: 5 CAFÉ & OUTLET DESTINATIONS ────────────────────────── */
 const CAFES: CafeNode[] = [
   {
     id: 'cafe-1',
     name: 'Roastery Lab',
     type: 'Specialty Espresso Bar',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 3h6M10 3v5l-5 8.5A2 2 0 0 0 6.7 20h10.6a2 2 0 0 0 1.7-3.5L14 8V3" />
+        <line x1="8.5" y1="14" x2="15.5" y2="14" />
       </svg>
     ),
     withBadge: 'Standing PO Verified',
@@ -289,10 +443,11 @@ const CAFES: CafeNode[] = [
     name: 'Regional Chain',
     type: '14 Outlets Sync HQ',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" />
         <line x1="8" y1="21" x2="16" y2="21" />
         <line x1="12" y1="17" x2="12" y2="21" />
+        <path d="M7 8h2M11 8h2M15 8h2M7 11h2M11 11h2M15 11h2" />
       </svg>
     ),
     withBadge: '14 Outlets Synced',
@@ -307,8 +462,10 @@ const CAFES: CafeNode[] = [
     name: 'Artisan Espresso',
     type: 'Single-Origin Focus',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+        <path d="M6 1v3M10 1v3M14 1v3" />
       </svg>
     ),
     withBadge: 'Fresh Roast Match',
@@ -323,8 +480,9 @@ const CAFES: CafeNode[] = [
     name: 'Hotel Lounge F&B',
     type: 'High-Volume Hospitality',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 21h18M5 21V7l8-4v18M13 21V3l6 3v15" />
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 21h18M4 18h16M12 3a9 9 0 0 1 9 9H3a9 9 0 0 1 9-9z" />
+        <circle cx="12" cy="3" r="1" fill="currentColor" />
       </svg>
     ),
     withBadge: 'Enterprise Synced',
@@ -339,7 +497,7 @@ const CAFES: CafeNode[] = [
     name: 'Airport Express',
     type: 'Zero-Downtime Station',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
       </svg>
     ),
@@ -352,7 +510,7 @@ const CAFES: CafeNode[] = [
   },
 ];
 
-/* ─── 4. SUMMARY IMPACT PILLARS ───────────────────────────────────────────── */
+/* ─── 4. BOTTOM 3 SUMMARY PILLARS ─────────────────────────────────────────── */
 const SUMMARY_WITH = [
   {
     metric: '< 90s / Week',
@@ -392,6 +550,7 @@ const SUMMARY_WITHOUT = [
 export function BrandTransformation() {
   const [mode, setMode] = useState<Mode>('with');
   const [hoveredProtocol, setHoveredProtocol] = useState<number | null>(null);
+  const [hoveredSupplier, setHoveredSupplier] = useState<number | null>(null);
 
   const isWith = mode === 'with';
 
@@ -422,7 +581,7 @@ export function BrandTransformation() {
               ) : (
                 <>
                   Fragmented, Manual,{' '}
-                  <span className="btrans-title-warning">Slow.</span>
+                  <span className="btrans-title-muted">Slow.</span>
                 </>
               )}
             </h2>
@@ -434,7 +593,7 @@ export function BrandTransformation() {
             </p>
           </div>
 
-          {/* Interactive Orchid-Style Toggle Switch */}
+          {/* Interactive Orchid-Style Toggle Switch (Strict Purple & White) */}
           <div className="btrans-toggle-container" role="tablist" aria-label="Transformation View Mode">
             <button
               type="button"
@@ -465,7 +624,7 @@ export function BrandTransformation() {
           {/* Top Frame: 4 Verified Supplier Categories */}
           <div className="btrans-top-frame">
             <div className="btrans-frame-header">
-              <span className={`btrans-frame-tag ${isWith ? 'tag-verified' : 'tag-warning'}`}>
+              <span className={`btrans-frame-tag ${isWith ? 'tag-verified' : 'tag-muted'}`}>
                 {isWith ? (
                   <>
                     <span className="btrans-live-pulse-dot" />
@@ -473,7 +632,7 @@ export function BrandTransformation() {
                   </>
                 ) : (
                   <>
-                    <span className="btrans-alert-dot">⚠</span>
+                    <span className="btrans-hollow-dot" />
                     DISCONNECTED SUPPLIER SILOS · UNCOORDINATED OUTREACH
                   </>
                 )}
@@ -481,8 +640,13 @@ export function BrandTransformation() {
             </div>
 
             <div className="btrans-suppliers-grid">
-              {SUPPLIERS.map((sup) => (
-                <div key={sup.id} className="btrans-supplier-card">
+              {SUPPLIERS.map((sup, sIdx) => (
+                <div
+                  key={sup.id}
+                  className={`btrans-supplier-card ${hoveredSupplier === sIdx ? 'is-hovered' : ''}`}
+                  onMouseEnter={() => setHoveredSupplier(sIdx)}
+                  onMouseLeave={() => setHoveredSupplier(null)}
+                >
                   <div className="btrans-supplier-head">
                     <span className="btrans-supplier-icon" aria-hidden="true">
                       {sup.icon}
@@ -493,7 +657,9 @@ export function BrandTransformation() {
                   <div className="btrans-brand-pills">
                     {sup.brands.map((b) => (
                       <div key={b.name} className="btrans-brand-badge">
-                        <span className="btrans-brand-bullet" />
+                        <span className="btrans-brand-icon" aria-hidden="true">
+                          {b.icon}
+                        </span>
                         <span className="btrans-brand-name">{b.name}</span>
                         <span className="btrans-brand-sub">{b.tag}</span>
                       </div>
@@ -501,8 +667,8 @@ export function BrandTransformation() {
                   </div>
 
                   <div className="btrans-supplier-footer">
-                    <span className={`btrans-supplier-status ${isWith ? 'status-ok' : 'status-bad'}`}>
-                      {isWith ? '● ' + sup.withStatus : '⚠ ' + sup.withoutStatus}
+                    <span className={`btrans-supplier-status ${isWith ? 'status-ok' : 'status-muted'}`}>
+                      {isWith ? '● ' + sup.withStatus : '○ ' + sup.withoutStatus}
                     </span>
                   </div>
                 </div>
@@ -522,16 +688,19 @@ export function BrandTransformation() {
               aria-hidden="true"
             >
               <defs>
-                <linearGradient id="beamGradPulse" x1="0%" y1="0%" x2="100%" y2="0%">
+                {/* Purple Laser Beam Sweep Gradient */}
+                <linearGradient id="purpleLaserGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.2" />
-                  <stop offset="45%" stopColor="#A855F7" stopOpacity="0.95" />
-                  <stop offset="55%" stopColor="#C084FC" stopOpacity="1" />
+                  <stop offset="40%" stopColor="#8B5CF6" stopOpacity="0.9" />
+                  <stop offset="50%" stopColor="#C084FC" stopOpacity="1" />
+                  <stop offset="60%" stopColor="#8B5CF6" stopOpacity="0.9" />
                   <stop offset="100%" stopColor="#7C3AED" stopOpacity="0.2" />
                 </linearGradient>
 
-                <linearGradient id="dropGradPulse" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#A855F7" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.8" />
+                {/* Vertical Drop Purple Conduit */}
+                <linearGradient id="purpleDropConduit" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#C084FC" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#7C3AED" stopOpacity="0.9" />
                 </linearGradient>
               </defs>
 
@@ -539,51 +708,51 @@ export function BrandTransformation() {
                 /* ── WITH GRADIENT: Exact alignment with cards & horizontal bus ── */
                 <g className="btrans-rails-connected">
                   {/* 4 Upper Trunks dropping dead-center from Top 4 Supplier Cards to Bus (y=70) */}
-                  <line x1="177" y1="0" x2="177" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="459" y1="0" x2="459" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="741" y1="0" x2="741" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="1023" y1="0" x2="1023" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="177" y1="0" x2="177" y2="70" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="459" y1="0" x2="459" y2="70" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="741" y1="0" x2="741" y2="70" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="1023" y1="0" x2="1023" y2="70" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
 
-                  {/* Upper Animated Pulses */}
+                  {/* Upper Animated Laser Pulses */}
                   <line x1="177" y1="0" x2="177" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" />
                   <line x1="459" y1="0" x2="459" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.7s' }} />
                   <line x1="741" y1="0" x2="741" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.4s' }} />
                   <line x1="1023" y1="0" x2="1023" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-2.1s' }} />
 
                   {/* Central Horizontal Bus Highway (y=70) */}
-                  <line x1="100" y1="70" x2="1100" y2="70" stroke="#E2E8F0" strokeWidth="2" />
-                  <line x1="100" y1="70" x2="1100" y2="70" stroke="url(#beamGradPulse)" strokeWidth="2.5" className="btrans-anim-beam-horizontal" />
+                  <line x1="100" y1="70" x2="1100" y2="70" stroke="rgba(124, 58, 237, 0.18)" strokeWidth="2" />
+                  <line x1="100" y1="70" x2="1100" y2="70" stroke="url(#purpleLaserGrad)" strokeWidth="2.5" className="btrans-anim-beam-horizontal" />
 
                   {/* 5 Lower Trunks dropping dead-center to 5 Bottom Café Cards (y=70 to 140) */}
-                  <line x1="134" y1="70" x2="134" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="367" y1="70" x2="367" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="600" y1="70" x2="600" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="833" y1="70" x2="833" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
-                  <line x1="1066" y1="70" x2="1066" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="134" y1="70" x2="134" y2="140" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="367" y1="70" x2="367" y2="140" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="600" y1="70" x2="600" y2="140" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="833" y1="70" x2="833" y2="140" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
+                  <line x1="1066" y1="70" x2="1066" y2="140" stroke="rgba(124, 58, 237, 0.2)" strokeWidth="1.5" />
 
-                  {/* Lower Animated Pulses */}
-                  <line x1="134" y1="70" x2="134" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.3s' }} />
-                  <line x1="367" y1="70" x2="367" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.0s' }} />
-                  <line x1="600" y1="70" x2="600" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.7s' }} />
-                  <line x1="833" y1="70" x2="833" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.8s' }} />
-                  <line x1="1066" y1="70" x2="1066" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.5s' }} />
+                  {/* Lower Animated Laser Pulses */}
+                  <line x1="134" y1="70" x2="134" y2="140" stroke="url(#purpleDropConduit)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.3s' }} />
+                  <line x1="367" y1="70" x2="367" y2="140" stroke="url(#purpleDropConduit)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.0s' }} />
+                  <line x1="600" y1="70" x2="600" y2="140" stroke="url(#purpleDropConduit)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.7s' }} />
+                  <line x1="833" y1="70" x2="833" y2="140" stroke="url(#purpleDropConduit)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.8s' }} />
+                  <line x1="1066" y1="70" x2="1066" y2="140" stroke="url(#purpleDropConduit)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.5s' }} />
                 </g>
               ) : (
-                /* ── WITHOUT GRADIENT: Tangled chaotic spaghetti hairball lines ── */
+                /* ── WITHOUT GRADIENT: Muted slate-lavender tangled criss-cross hairball ── */
                 <g className="btrans-rails-fragmented">
-                  <path d="M 177 0 C 260 70, 750 60, 833 140" stroke="#FCA5A5" strokeWidth="1.5" strokeDasharray="5 5" />
-                  <path d="M 177 0 C 220 50, 340 80, 367 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <path d="M 459 0 C 350 60, 150 80, 134 140" stroke="#F87171" strokeWidth="1.5" strokeDasharray="6 4" />
-                  <path d="M 459 0 C 650 40, 950 60, 1066 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <path d="M 741 0 C 580 70, 390 60, 367 140" stroke="#FCA5A5" strokeWidth="1.5" strokeDasharray="5 5" />
-                  <path d="M 741 0 C 700 70, 620 80, 600 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <path d="M 1023 0 C 850 70, 250 60, 134 140" stroke="#EF4444" strokeWidth="1.5" strokeDasharray="6 4" />
-                  <path d="M 1023 0 C 950 60, 870 70, 833 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="5 5" />
+                  <path d="M 177 0 C 260 70, 750 60, 833 140" stroke="rgba(148, 163, 184, 0.45)" strokeWidth="1.5" strokeDasharray="5 5" />
+                  <path d="M 177 0 C 220 50, 340 80, 367 140" stroke="rgba(203, 213, 225, 0.7)" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <path d="M 459 0 C 350 60, 150 80, 134 140" stroke="rgba(148, 163, 184, 0.55)" strokeWidth="1.5" strokeDasharray="6 4" />
+                  <path d="M 459 0 C 650 40, 950 60, 1066 140" stroke="rgba(203, 213, 225, 0.7)" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <path d="M 741 0 C 580 70, 390 60, 367 140" stroke="rgba(148, 163, 184, 0.45)" strokeWidth="1.5" strokeDasharray="5 5" />
+                  <path d="M 741 0 C 700 70, 620 80, 600 140" stroke="rgba(203, 213, 225, 0.7)" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <path d="M 1023 0 C 850 70, 250 60, 134 140" stroke="rgba(148, 163, 184, 0.55)" strokeWidth="1.5" strokeDasharray="6 4" />
+                  <path d="M 1023 0 C 950 60, 870 70, 833 140" stroke="rgba(203, 213, 225, 0.7)" strokeWidth="1.5" strokeDasharray="5 5" />
 
-                  {/* Warning friction points */}
-                  <circle cx="510" cy="62" r="3.5" fill="#EF4444" />
-                  <circle cx="340" cy="74" r="3" fill="#F87171" />
-                  <circle cx="810" cy="68" r="3.5" fill="#EF4444" />
+                  {/* Warning friction points in muted slate */}
+                  <circle cx="510" cy="62" r="3.5" fill="#94A3B8" />
+                  <circle cx="340" cy="74" r="3" fill="#CBD5E1" />
+                  <circle cx="810" cy="68" r="3.5" fill="#94A3B8" />
                 </g>
               )}
             </svg>
@@ -618,7 +787,7 @@ export function BrandTransformation() {
                     <div className="btrans-protocol-tooltip" role="tooltip">
                       <div className="btrans-tooltip-title">{fullDesc}</div>
                       <div className="btrans-tooltip-metric">
-                        {isWith ? p.metric : '⚠ Unverified Manual Bottleneck'}
+                        {isWith ? p.metric : '○ Unverified Manual Bottleneck'}
                       </div>
                     </div>
                   </div>
@@ -648,7 +817,7 @@ export function BrandTransformation() {
                         </div>
                       </div>
 
-                      <span className={`btrans-cafe-badge ${isWith ? 'badge-ok' : 'badge-bad'}`}>
+                      <span className={`btrans-cafe-badge ${isWith ? 'badge-ok' : 'badge-muted'}`}>
                         {badge}
                       </span>
                     </div>
@@ -657,11 +826,11 @@ export function BrandTransformation() {
                     <div className="btrans-cafe-specs">
                       <div className="btrans-spec-row">
                         <span className="btrans-spec-label">PO CHANNEL</span>
-                        <span className={`btrans-spec-val ${isWith ? 'val-ok' : 'val-bad'}`}>{poVal}</span>
+                        <span className={`btrans-spec-val ${isWith ? 'val-ok' : 'val-muted'}`}>{poVal}</span>
                       </div>
                       <div className="btrans-spec-row">
                         <span className="btrans-spec-label">INVENTORY</span>
-                        <span className={`btrans-spec-val ${isWith ? 'val-ok' : 'val-bad'}`}>{invVal}</span>
+                        <span className={`btrans-spec-val ${isWith ? 'val-ok' : 'val-muted'}`}>{invVal}</span>
                       </div>
                     </div>
                   </div>

@@ -1,9 +1,9 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Brand Portal Transformation Section ("Before vs With Gradient")
-   Orchid-Inspired Wholesale Network Architecture — Minimal Light Mode
+   Strict Purple & White Colorway · Minimal & Researched Workflow
    ───────────────────────────────────────────────────────────────────────── */
 
-/* ─── 0. Section Wrapper & Background ────────────────────────────────── */
+/* ─── 0. Section Wrapper & Ambient Purple Glow ───────────────────────── */
 .btrans-section {
   position: relative;
   width: 100%;
@@ -15,17 +15,18 @@
   scroll-margin-top: 80px;
 }
 
+/* Subtle, pure purple ambient radial backlight */
 .btrans-bg-glow {
   position: absolute;
-  top: 15%;
+  top: 14%;
   left: 50%;
-  transform: translate(-50%, -15%);
-  width: 1100px;
-  height: 550px;
+  transform: translate(-50%, -14%);
+  width: 1200px;
+  height: 580px;
   background: radial-gradient(
-    ellipse 60% 50% at center,
-    rgba(168, 85, 247, 0.05) 0%,
-    rgba(124, 58, 237, 0.015) 55%,
+    ellipse 65% 50% at center,
+    rgba(124, 58, 237, 0.05) 0%,
+    rgba(168, 85, 247, 0.02) 50%,
     transparent 75%
   );
   pointer-events: none;
@@ -92,8 +93,8 @@
   -webkit-text-fill-color: transparent;
 }
 
-.btrans-title-warning {
-  color: #EF4444;
+.btrans-title-muted {
+  color: #64748B;
 }
 
 .btrans-sub {
@@ -105,15 +106,15 @@
   transition: opacity 0.25s ease;
 }
 
-/* ─── Interactive Orchid-Style Toggle Switch ─── */
+/* ─── Interactive Orchid-Style Toggle Switch (Strict Purple & White) ─── */
 .btrans-toggle-container {
   display: inline-flex;
   align-items: center;
-  background: #F1F5F9;
+  background: #FAF5FF;
   padding: 5px;
   border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  box-shadow: inset 0 1px 3px rgba(124, 58, 237, 0.04);
 }
 
 .btrans-toggle-pill {
@@ -129,74 +130,73 @@
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
 .btrans-toggle-pill:hover {
-  color: #0F172A;
+  color: #7C3AED;
 }
 
 .btrans-toggle-pill.is-active {
   background: #FFFFFF;
   color: #0F172A;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .btrans-toggle-pill.is-active.is-with {
   color: #7C3AED;
-  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.16), 0 1px 3px rgba(0, 0, 0, 0.04);
+  font-weight: 700;
+  box-shadow: 0 2px 14px rgba(124, 58, 237, 0.18), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .btrans-toggle-pill.is-active.is-without {
-  color: #DC2626;
-  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.14), 0 1px 3px rgba(0, 0, 0, 0.04);
+  color: #475569;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .btrans-toggle-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #94A3B8;
-  transition: background 0.2s ease, transform 0.2s ease;
+  background: #CBD5E1;
+  transition: all 0.2s ease;
 }
 
 .btrans-toggle-pill.is-active .btrans-toggle-dot.with {
   background: #7C3AED;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
   transform: scale(1.15);
 }
 
 .btrans-toggle-pill.is-active .btrans-toggle-dot.without {
-  background: #EF4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
-  transform: scale(1.15);
+  background: #94A3B8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+  transform: scale(1.1);
 }
 
-/* ─── 2. Architecture Canvas (Pure White Minimal) ─────────────────────── */
+/* ─── 2. Architecture Canvas (Pure White Minimal Theme) ───────────────── */
 .btrans-canvas {
   position: relative;
   width: 100%;
   background-color: #FFFFFF;
-  background-image: radial-gradient(rgba(124, 58, 237, 0.09) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 24px;
-  box-shadow: 0 24px 60px -15px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   padding: 28px 24px 32px;
   box-sizing: border-box;
   overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btrans-canvas.is-connected {
-  border-color: rgba(124, 58, 237, 0.18);
-  box-shadow: 0 24px 60px -15px rgba(124, 58, 237, 0.07), 0 0 0 1px rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  box-shadow: 0 24px 60px -15px rgba(124, 58, 237, 0.08), 0 0 0 1px rgba(124, 58, 237, 0.06);
 }
 
 .btrans-canvas.is-fragmented {
-  border-color: rgba(239, 68, 68, 0.2);
-  box-shadow: 0 24px 60px -15px rgba(239, 68, 68, 0.06), 0 0 0 1px rgba(239, 68, 68, 0.05);
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.03);
 }
 
 /* ─── Tier 1: Top Suppliers Frame ─── */
@@ -209,15 +209,14 @@
 }
 
 .btrans-canvas.is-connected .btrans-top-frame {
-  background: linear-gradient(180deg, rgba(245, 243, 255, 0.6) 0%, rgba(255, 255, 255, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(250, 245, 255, 0.7) 0%, rgba(255, 255, 255, 0.95) 100%);
   border: 1px solid rgba(124, 58, 237, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 16px rgba(124, 58, 237, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 16px rgba(124, 58, 237, 0.04);
 }
 
 .btrans-canvas.is-fragmented .btrans-top-frame {
-  background: linear-gradient(180deg, rgba(254, 242, 242, 0.5) 0%, rgba(255, 255, 255, 0.95) 100%);
-  border: 1px dashed rgba(239, 68, 68, 0.3);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.7) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1px dashed rgba(148, 163, 184, 0.4);
 }
 
 .btrans-frame-header {
@@ -242,37 +241,41 @@
 .btrans-frame-tag.tag-verified {
   background: #F5F3FF;
   color: #7C3AED;
-  border: 1px solid rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(124, 58, 237, 0.25);
 }
 
-.btrans-frame-tag.tag-warning {
-  background: #FEF2F2;
-  color: #DC2626;
-  border: 1px dashed rgba(239, 68, 68, 0.3);
+.btrans-frame-tag.tag-muted {
+  background: #F8FAFC;
+  color: #64748B;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
 }
 
+/* Concentric beacon ripple animation (Pure Purple) */
 .btrans-live-pulse-dot {
+  position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10B981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  background: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
   animation: btransPulse 1.8s infinite;
 }
 
-.btrans-alert-dot {
-  font-size: 12px;
-  color: #EF4444;
+.btrans-hollow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid #94A3B8;
 }
 
 @keyframes btransPulse {
   0%, 100% {
     transform: scale(1);
-    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
   }
   50% {
-    transform: scale(1.4);
-    opacity: 0.6;
+    transform: scale(1.3);
+    box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.1);
   }
 }
 
@@ -286,17 +289,18 @@
 .btrans-supplier-card {
   position: relative;
   background: #FFFFFF;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.12);
   border-radius: 14px;
   padding: 14px 13px 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-  transition: all 0.22s ease;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btrans-supplier-card:hover {
+.btrans-supplier-card:hover,
+.btrans-supplier-card.is-hovered {
   transform: translateY(-2px);
-  border-color: rgba(124, 58, 237, 0.25);
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 10px 26px rgba(124, 58, 237, 0.1);
 }
 
 .btrans-supplier-head {
@@ -310,11 +314,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: #F5F3FF;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #FAF5FF;
   color: #7C3AED;
+  border: 1px solid rgba(124, 58, 237, 0.15);
 }
 
 .btrans-supplier-title {
@@ -336,18 +341,24 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  background: #F8FAFC;
-  border: 1px solid rgba(15, 23, 42, 0.05);
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.06);
   padding: 4px 8px;
   border-radius: 7px;
   font-size: 11px;
+  transition: all 0.18s ease;
 }
 
-.btrans-brand-bullet {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #A855F7;
+.btrans-brand-badge:hover {
+  background: #FAF5FF;
+  border-color: rgba(124, 58, 237, 0.22);
+}
+
+.btrans-brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7C3AED;
   flex-shrink: 0;
 }
 
@@ -362,8 +373,11 @@
 
 .btrans-brand-sub {
   font-size: 9.5px;
-  color: #94A3B8;
+  color: #7C3AED;
   font-weight: 500;
+  background: #FAF5FF;
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 
 .btrans-supplier-footer {
@@ -381,11 +395,11 @@
 }
 
 .btrans-supplier-status.status-ok {
-  color: #059669;
+  color: #7C3AED;
 }
 
-.btrans-supplier-status.status-bad {
-  color: #DC2626;
+.btrans-supplier-status.status-muted {
+  color: #64748B;
 }
 
 /* ─── Tier 2: The Middle Integration Bus & Protocol Highway ──────────── */
@@ -408,12 +422,12 @@
   z-index: 1;
 }
 
-/* SVG Line Animations */
+/* Micro-Animation: Running Laser Pulses (Purple) */
 .btrans-anim-dash-down {
-  animation: btransDashDown 2.2s linear infinite;
+  animation: btransLaserDashDown 2.2s linear infinite;
 }
 
-@keyframes btransDashDown {
+@keyframes btransLaserDashDown {
   0% {
     stroke-dashoffset: 70;
   }
@@ -424,10 +438,10 @@
 
 .btrans-anim-beam-horizontal {
   stroke-dasharray: 120 400;
-  animation: btransBeamSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: btransLaserSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes btransBeamSweep {
+@keyframes btransLaserSweep {
   0% {
     stroke-dashoffset: 520;
   }
@@ -465,33 +479,43 @@
   height: 48px;
   border-radius: 50%;
   background: #FFFFFF;
-  border: 1.5px solid rgba(124, 58, 237, 0.24);
+  border: 1.5px solid rgba(124, 58, 237, 0.25);
   box-shadow: 0 6px 18px rgba(124, 58, 237, 0.1), 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btrans-protocol-node.is-with .btrans-protocol-disc {
   border-color: rgba(124, 58, 237, 0.35);
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1), 0 6px 20px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.09), 0 6px 20px rgba(124, 58, 237, 0.12);
+  animation: btransPulseGlow 3.5s ease-in-out infinite;
+}
+
+@keyframes btransPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08), 0 6px 20px rgba(124, 58, 237, 0.12);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(124, 58, 237, 0.16), 0 8px 24px rgba(124, 58, 237, 0.18);
+  }
 }
 
 .btrans-protocol-node.is-with:hover .btrans-protocol-disc,
 .btrans-protocol-node.is-with.is-hovered .btrans-protocol-disc {
-  transform: translateY(-3px) scale(1.1);
+  transform: translateY(-4px) scale(1.1);
   border-color: #7C3AED;
-  box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.2), 0 10px 28px rgba(124, 58, 237, 0.22);
+  box-shadow: 0 0 0 7px rgba(124, 58, 237, 0.22), 0 12px 30px rgba(124, 58, 237, 0.25);
 }
 
 .btrans-protocol-node.is-without .btrans-protocol-disc {
-  border: 1.5px dashed rgba(239, 68, 68, 0.35);
-  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.08);
+  border: 1.5px dashed rgba(148, 163, 184, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .btrans-protocol-node.is-without:hover .btrans-protocol-disc,
 .btrans-protocol-node.is-without.is-hovered .btrans-protocol-disc {
-  transform: translateY(-3px) scale(1.08);
-  border-color: #EF4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15), 0 8px 20px rgba(239, 68, 68, 0.16);
+  transform: translateY(-3px) scale(1.06);
+  border-color: #64748B;
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.2);
 }
 
 .btrans-protocol-icon {
@@ -499,11 +523,15 @@
   align-items: center;
   justify-content: center;
   color: #7C3AED;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .btrans-protocol-node.is-without .btrans-protocol-icon {
-  color: #EF4444;
+  color: #64748B;
+}
+
+.btrans-protocol-node:hover .btrans-protocol-icon {
+  transform: scale(1.1);
 }
 
 .btrans-protocol-pill-label {
@@ -511,9 +539,9 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #1E293B;
-  background: #F8FAFC;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  padding: 2px 7px;
+  background: #FFFFFF;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  padding: 2.5px 8px;
   border-radius: 999px;
   white-space: nowrap;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
@@ -521,20 +549,15 @@
 }
 
 .btrans-protocol-node.is-with:hover .btrans-protocol-pill-label {
-  background: #F5F3FF;
+  background: #FAF5FF;
   color: #7C3AED;
-  border-color: rgba(124, 58, 237, 0.25);
+  border-color: #7C3AED;
 }
 
 .btrans-protocol-node.is-without .btrans-protocol-pill-label {
   color: #64748B;
+  border-color: rgba(148, 163, 184, 0.35);
   border-style: dashed;
-}
-
-.btrans-protocol-node.is-without:hover .btrans-protocol-pill-label {
-  background: #FEF2F2;
-  color: #DC2626;
-  border-color: rgba(239, 68, 68, 0.25);
 }
 
 /* Tooltip on hover */
@@ -543,17 +566,18 @@
   bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background: #0F172A;
+  background: #181135;
+  border: 1px solid rgba(124, 58, 237, 0.35);
   color: #FFFFFF;
-  padding: 7px 11px;
+  padding: 8px 12px;
   border-radius: 8px;
   font-size: 11px;
   line-height: 1.35;
   white-space: nowrap;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 28px rgba(24, 17, 53, 0.3);
   pointer-events: none;
   opacity: 0;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
 }
 
@@ -565,7 +589,7 @@
   transform: translateX(-50%);
   border-width: 5px;
   border-style: solid;
-  border-color: #0F172A transparent transparent transparent;
+  border-color: #181135 transparent transparent transparent;
 }
 
 .btrans-protocol-node:hover .btrans-protocol-tooltip,
@@ -582,12 +606,8 @@
 .btrans-tooltip-metric {
   font-size: 10px;
   font-weight: 700;
-  color: #A855F7;
+  color: #C084FC;
   margin-top: 2px;
-}
-
-.btrans-protocol-node.is-without .btrans-tooltip-metric {
-  color: #F87171;
 }
 
 /* ─── Tier 3: Bottom 5 Café Outlet Cards ──────────────────────────────── */
@@ -613,25 +633,19 @@
 }
 
 .btrans-cafe-card.card-with {
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.03);
 }
 
 .btrans-cafe-card.card-with:hover {
   transform: translateY(-3px);
-  border-color: rgba(124, 58, 237, 0.3);
-  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.09);
+  border-color: rgba(124, 58, 237, 0.4);
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.12);
 }
 
 .btrans-cafe-card.card-without {
-  border: 1px dashed rgba(239, 68, 68, 0.28);
-  background: #FFFAFA;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-}
-
-.btrans-cafe-card.card-without:hover {
-  transform: translateY(-2px);
-  border-color: rgba(239, 68, 68, 0.4);
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  background: #F8FAFC;
 }
 
 .btrans-cafe-header {
@@ -652,14 +666,16 @@
   width: 28px;
   height: 28px;
   border-radius: 7px;
-  background: #F1F5F9;
-  color: #475569;
+  background: #FAF5FF;
+  color: #7C3AED;
+  border: 1px solid rgba(124, 58, 237, 0.15);
   flex-shrink: 0;
 }
 
-.btrans-cafe-card.card-with .btrans-cafe-avatar {
-  background: #F5F3FF;
-  color: #7C3AED;
+.btrans-cafe-card.card-without .btrans-cafe-avatar {
+  background: #F1F5F9;
+  color: #64748B;
+  border-color: rgba(148, 163, 184, 0.3);
 }
 
 .btrans-cafe-text-wrap {
@@ -700,15 +716,15 @@
 }
 
 .btrans-cafe-badge.badge-ok {
-  background: #ECFDF5;
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: #FAF5FF;
+  color: #7C3AED;
+  border: 1px solid rgba(124, 58, 237, 0.25);
 }
 
-.btrans-cafe-badge.badge-bad {
-  background: #FEF2F2;
-  color: #DC2626;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+.btrans-cafe-badge.badge-muted {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
 }
 
 .btrans-cafe-specs {
@@ -729,8 +745,12 @@
   font-size: 8.5px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #94A3B8;
+  color: #7C3AED;
   text-transform: uppercase;
+}
+
+.btrans-cafe-card.card-without .btrans-spec-label {
+  color: #94A3B8;
 }
 
 .btrans-spec-val {
@@ -745,8 +765,8 @@
   color: #0F172A;
 }
 
-.btrans-spec-val.val-bad {
-  color: #B91C1C;
+.btrans-spec-val.val-muted {
+  color: #64748B;
 }
 
 /* ─── 3. High-Impact Summary Comparison Bar ─────────────────────────── */
@@ -770,19 +790,19 @@
 }
 
 .btrans-summary-card.card-with {
-  border: 1px solid rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.18);
   box-shadow: 0 8px 24px rgba(124, 58, 237, 0.04);
 }
 
 .btrans-summary-card.card-with:hover {
   transform: translateY(-2px);
-  border-color: rgba(124, 58, 237, 0.3);
-  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 14px 34px rgba(124, 58, 237, 0.1);
 }
 
 .btrans-summary-card.card-without {
-  border: 1px dashed rgba(239, 68, 68, 0.28);
-  background: #FFFAFA;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  background: #F8FAFC;
 }
 
 .btrans-summary-metric {
@@ -800,7 +820,7 @@
 }
 
 .btrans-summary-metric.metric-without {
-  color: #EF4444;
+  color: #64748B;
 }
 
 .btrans-summary-title {
@@ -855,7 +875,7 @@
   }
 }
 
-/* Mobile & Small Tablets (768px and below) */
+/* Mobile (768px and below) */
 @media (max-width: 768px) {
   .btrans-section {
     padding: 56px 0 76px;
@@ -907,6 +927,10 @@
   .btrans-cafes-grid {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .btrans-cafes-grid > :last-child {
+    grid-column: auto;
   }
 
   .btrans-summary-grid {
