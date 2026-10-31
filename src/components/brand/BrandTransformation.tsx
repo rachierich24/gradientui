@@ -1,83 +1,190 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { AnimatedBeam } from '@/components/ui/animated-beam';
+import React, { useState } from 'react';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   5 WORKFLOW TRANSFORMATIONS
-   Fragmented Supplier Operations → Gradient Hub → Connected Commerce
-───────────────────────────────────────────────────────────────────────────── */
+   ORCHID-INSPIRED WHOLESALE ARCHITECTURE FOR GRADIENT
+   White background · Minimal & Creative Workflow
+   Interactive Mode Switcher: "Before Gradient" vs "With Gradient"
+   ───────────────────────────────────────────────────────────────────────────── */
 
-interface WorkflowItem {
+type Mode = 'with' | 'without';
+
+interface SupplierCategory {
   id: string;
-  topic: string;
-  // Left: Fragmented Old Way
-  leftLabel: string;
-  leftDesc: string;
-  leftIcon: React.ReactNode;
-  // Right: Connected Gradient Way
-  rightLabel: string;
-  rightDesc: string;
-  rightIcon: React.ReactNode;
-  // Summary for bottom card
-  fromSummary: string;
-  toSummary: string;
-  curvature: number;
+  category: string;
+  icon: React.ReactNode;
+  brands: { name: string; tag: string }[];
+  withStatus: string;
+  withoutStatus: string;
 }
 
-const WORKFLOWS: WorkflowItem[] = [
+interface ProtocolNode {
+  id: string;
+  shortLabel: string;
+  withLabel: string;
+  withDesc: string;
+  withIcon: React.ReactNode;
+  withoutShortLabel: string;
+  withoutLabel: string;
+  withoutDesc: string;
+  withoutIcon: React.ReactNode;
+  metric: string;
+}
+
+interface CafeNode {
+  id: string;
+  name: string;
+  type: string;
+  icon: React.ReactNode;
+  withBadge: string;
+  withPo: string;
+  withInventory: string;
+  withoutBadge: string;
+  withoutPo: string;
+  withoutInventory: string;
+}
+
+/* ─── 1. TOP TIER: 4 SUPPLIER CATEGORIES ─────────────────────────────────── */
+const SUPPLIERS: SupplierCategory[] = [
   {
-    id: 'purchase-orders',
-    topic: '01 · Purchase Orders',
-    leftLabel: 'WhatsApp Chats',
-    leftDesc: 'Unconfirmed orders & lost notes',
-    leftIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    id: 'roasters',
+    category: 'SPECIALTY ROASTERS',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+        <line x1="6" y1="1" x2="6" y2="4" />
+        <line x1="10" y1="1" x2="10" y2="4" />
+        <line x1="14" y1="1" x2="14" y2="4" />
+      </svg>
+    ),
+    brands: [
+      { name: 'Blue Tokai', tag: 'Estate Arabica' },
+      { name: 'Araku Coffee', tag: 'Biodynamic' },
+      { name: 'Subko Specialty', tag: 'Micro-lots' },
+      { name: 'Kapi Kottai', tag: 'Single Origin' },
+    ],
+    withStatus: '48-Hr Batch Roast Sync',
+    withoutStatus: 'Speculative Roast Guesswork',
+  },
+  {
+    id: 'milks',
+    category: 'BARISTA MILKS',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 2h8v3H8z" />
+        <path d="M7 5h10l2 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9l2-4z" />
+        <path d="M10 12h4" />
+        <path d="M12 10v4" />
+      </svg>
+    ),
+    brands: [
+      { name: 'Oat Barista Pro', tag: 'Microfoam Std' },
+      { name: 'Amul Barista', tag: 'Fresh Dairy' },
+      { name: 'Epigamia Almond', tag: 'Plant Base' },
+      { name: 'Raw Pressery', tag: 'Cold-Pressed' },
+    ],
+    withStatus: 'Cold-Chain Par Replenished',
+    withoutStatus: 'Frequent Spoilage & Stockouts',
+  },
+  {
+    id: 'syrups',
+    category: 'BEVERAGE BASES',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+      </svg>
+    ),
+    brands: [
+      { name: 'Monin Gourmet', tag: 'Puree & Sauce' },
+      { name: '1883 Maison', tag: 'Craft Syrups' },
+      { name: 'Torani Artisan', tag: 'Botanicals' },
+      { name: 'Uji Matcha', tag: 'Ceremonial' },
+    ],
+    withStatus: 'Wholesale Tier Volume Rates',
+    withoutStatus: 'Inconsistent Ad-hoc Pricing',
+  },
+  {
+    id: 'packaging',
+    category: 'BAR PACK & GEAR',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+      </svg>
+    ),
+    brands: [
+      { name: 'Bio-Cup Compostable', tag: 'Eco Cups' },
+      { name: 'Kraft Sleeves', tag: 'Heat Ribbed' },
+      { name: 'La Marzocco Spares', tag: 'Portafilters' },
+      { name: 'Mahlkönig Burrs', tag: 'Precision' },
+    ],
+    withStatus: 'Consolidated Route Dispatch',
+    withoutStatus: 'Separate High-Cost Shipping',
+  },
+];
+
+/* ─── 2. MIDDLE TIER: 6 PROTOCOL NODES ────────────────────────────────────── */
+const PROTOCOLS: ProtocolNode[] = [
+  {
+    id: 'net15',
+    shortLabel: 'Net-15',
+    withLabel: 'Net-15 PO',
+    withDesc: 'Automated Standing Purchase Orders',
+    withIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <polyline points="9 15 11 17 15 13" />
+      </svg>
+    ),
+    withoutShortLabel: 'WhatsApp',
+    withoutLabel: 'WhatsApp Chats',
+    withoutDesc: 'Unconfirmed Audio Notes & Text Threads',
+    withoutIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
     ),
-    rightLabel: 'Digital Net-15 POs',
-    rightDesc: 'Automated recurring reorders',
-    rightIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-    ),
-    fromSummary: 'WhatsApp chat threads →',
-    toSummary: 'Digital Net-15 standing POs & automated reorders',
-    curvature: -32,
+    metric: '< 90s PO Approval',
   },
   {
-    id: 'cafe-discovery',
-    topic: '02 · Café Discovery',
-    leftLabel: 'Cold Calling',
-    leftDesc: 'Unverified café leads & outreach',
-    leftIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    id: 'api',
+    shortLabel: 'EDI / API',
+    withLabel: 'EDI / API',
+    withDesc: 'Live Wholesale Catalog & Price Sync',
+    withIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+    withoutShortLabel: 'Calling',
+    withoutLabel: 'Phone Calls',
+    withoutDesc: 'Endless Roaster Lead Chasing',
+    withoutIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
       </svg>
     ),
-    rightLabel: '40+ Verified Cafés',
-    rightDesc: 'Direct structured roastery network',
-    rightIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-    fromSummary: 'Manual cold calling →',
-    toSummary: 'Direct access to 40+ verified specialty roasteries',
-    curvature: -16,
+    metric: 'Real-Time Sync',
   },
   {
-    id: 'demand-planning',
-    topic: '03 · Demand Planning',
-    leftLabel: 'Spreadsheets',
-    leftDesc: 'Formula errors & stock drift',
-    leftIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    id: 'telemetry',
+    shortLabel: 'Telemetry',
+    withLabel: 'Telemetry',
+    withDesc: 'Real-Time Bean Velocity & Consumption',
+    withIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
+    withoutShortLabel: 'Spreadsheet',
+    withoutLabel: 'Excel Drift',
+    withoutDesc: 'Broken Formulas & Stock Discrepancies',
+    withoutIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
         <line x1="3" y1="9" x2="21" y2="9" />
         <line x1="3" y1="15" x2="21" y2="15" />
@@ -85,89 +192,208 @@ const WORKFLOWS: WorkflowItem[] = [
         <line x1="15" y1="3" x2="15" y2="21" />
       </svg>
     ),
-    rightLabel: 'Live Telemetry',
-    rightDesc: 'Real-time demand signals & velocity',
-    rightIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-      </svg>
-    ),
-    fromSummary: 'Speculative guesswork →',
-    toSummary: 'Real-time demand telemetry informing production',
-    curvature: 0,
+    metric: 'Live Velocity Tracking',
   },
   {
-    id: 'product-launches',
-    topic: '04 · Product Launches',
-    leftLabel: 'Manual Sampling',
-    leftDesc: 'Loose PDFs & uncertain trials',
-    leftIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
-    rightLabel: 'Sampling Flights',
-    rightDesc: 'Verified ★ 4.9 cupping feedback',
-    rightIcon: (
+    id: 'coldchain',
+    shortLabel: 'Cold Chain',
+    withLabel: 'Cold-Chain',
+    withDesc: 'GPS Route-Dispatched Consolidated Logistics',
+    withIcon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        <rect x="1" y="3" width="15" height="13" />
+        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+        <circle cx="5.5" cy="18.5" r="2.5" />
+        <circle cx="18.5" cy="18.5" r="2.5" />
       </svg>
     ),
-    fromSummary: 'Loose PDF spec sheets →',
-    toSummary: 'Targeted barista sampling flights with ★ 4.9 feedback',
-    curvature: 16,
+    withoutShortLabel: 'Receipts',
+    withoutLabel: 'Paper Chits',
+    withoutDesc: 'Lost Delivery Receipts & Tax Mismatch',
+    withoutIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V8z" />
+      </svg>
+    ),
+    metric: '99.4% On-Time Delivery',
   },
   {
-    id: 'inventory-wastage',
-    topic: '05 · Inventory & Wastage',
-    leftLabel: 'Assumed Batches',
-    leftDesc: 'Speculative roast deadstock',
-    leftIcon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    id: 'restock',
+    shortLabel: 'Restock',
+    withLabel: 'Auto Restock',
+    withDesc: 'Algorithmic Safety Par Buffering',
+    withIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+      </svg>
+    ),
+    withoutShortLabel: 'Deadstock',
+    withoutLabel: 'Deadstock Batches',
+    withoutDesc: 'Overproduced Roast Stock & Staleness',
+    withoutIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
         <line x1="12" y1="9" x2="12" y2="13" />
         <line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
     ),
-    rightLabel: 'Connected Catalogue',
-    rightDesc: 'Live synced wholesale inventory',
-    rightIcon: (
+    metric: 'Zero Deadstock Waste',
+  },
+  {
+    id: 'erp',
+    shortLabel: 'ERP Sync',
+    withLabel: 'ERP Sync',
+    withDesc: 'Instant Tally, Zoho & SAP Reconciliation',
+    withIcon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 2 7 12 12 22 7 12 2" />
-        <polyline points="2 17 12 22 22 17" />
-        <polyline points="2 12 12 17 22 12" />
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
       </svg>
     ),
-    fromSummary: 'Overproduction risk →',
-    toSummary: 'Coordinated wholesale stock with zero deadstock waste',
-    curvature: 32,
+    withoutShortLabel: 'Panic Run',
+    withoutLabel: 'Retail Panic',
+    withoutDesc: 'Emergency Supermarket Runs at Full Retail',
+    withoutIcon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <path d="M16 10a4 4 0 0 1-8 0" />
+      </svg>
+    ),
+    metric: '100% Tax Compliant',
+  },
+];
+
+/* ─── 3. BOTTOM TIER: 5 CAFÉ OUTLETS ──────────────────────────────────────── */
+const CAFES: CafeNode[] = [
+  {
+    id: 'cafe-1',
+    name: 'Roastery Lab',
+    type: 'Specialty Espresso Bar',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+      </svg>
+    ),
+    withBadge: 'Standing PO Verified',
+    withPo: 'Net-15 Standing PO',
+    withInventory: '0% Stockout Drift',
+    withoutBadge: 'WhatsApp Order Lost',
+    withoutPo: 'Loose Audio Note',
+    withoutInventory: '18% Bean Deadstock',
+  },
+  {
+    id: 'cafe-2',
+    name: 'Regional Chain',
+    type: '14 Outlets Sync HQ',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+      </svg>
+    ),
+    withBadge: '14 Outlets Synced',
+    withPo: 'Central EDI Dispatch',
+    withInventory: '99.8% On-Time Par',
+    withoutBadge: '4-Day Reconcile Lag',
+    withoutPo: 'Phone Call Matrix',
+    withoutInventory: 'Excel Formula Drift',
+  },
+  {
+    id: 'cafe-3',
+    name: 'Artisan Espresso',
+    type: 'Single-Origin Focus',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+    ),
+    withBadge: 'Fresh Roast Match',
+    withPo: 'Consumption Trigger',
+    withInventory: 'Zero Deadstock Waste',
+    withoutBadge: 'Stale Beans (Roast Gap)',
+    withoutPo: 'Ad-hoc Urgent Order',
+    withoutInventory: 'Oat Milk Shortage',
+  },
+  {
+    id: 'cafe-4',
+    name: 'Hotel Lounge F&B',
+    type: 'High-Volume Hospitality',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 21h18M5 21V7l8-4v18M13 21V3l6 3v15" />
+      </svg>
+    ),
+    withBadge: 'Enterprise Synced',
+    withPo: 'Direct SAP/Tally PO',
+    withInventory: 'Buffer Par Locked',
+    withoutBadge: 'Invoice Tax Mismatch',
+    withoutPo: 'Paper Delivery Chits',
+    withoutInventory: 'Weekend Par Shortage',
+  },
+  {
+    id: 'cafe-5',
+    name: 'Airport Express',
+    type: 'Zero-Downtime Station',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+    withBadge: 'Zero Downtime',
+    withPo: 'Daily Route Van Run',
+    withInventory: 'Rush Par Protected',
+    withoutBadge: 'Morning Rush Outage',
+    withoutPo: 'Panic WhatsApp Ping',
+    withoutInventory: 'Peak Revenue Loss',
+  },
+];
+
+/* ─── 4. SUMMARY IMPACT PILLARS ───────────────────────────────────────────── */
+const SUMMARY_WITH = [
+  {
+    metric: '< 90s / Week',
+    title: 'Automated Standing POs',
+    desc: 'Replaces 6+ hours of fragmented WhatsApp messaging with automated weekly standing PO approvals on Net-15 terms.',
+  },
+  {
+    metric: '99.4% On-Time',
+    title: 'Cold-Chain Consolidated Van Dispatch',
+    desc: 'Roastery beans, fresh barista oat, and consumables arrive bundled in a single scheduled delivery route.',
+  },
+  {
+    metric: 'Zero Deadstock',
+    title: 'Telemetry-Matched Batches',
+    desc: 'Roasters roast exactly what verified cafés consume, eliminating overproduction waste and stale bags.',
+  },
+];
+
+const SUMMARY_WITHOUT = [
+  {
+    metric: '6–8 Hours / Wk',
+    title: 'Lost in Manual Coordination',
+    desc: 'Hours wasted every week texting roasters, sending audio reminders, and cross-checking handwritten delivery chits.',
+  },
+  {
+    metric: '18–24% Wastage',
+    title: 'Deadstock & Supermarket Panics',
+    desc: 'Speculative roasting creates stale beans, while unexpected spikes force baristas to buy emergency retail milk.',
+  },
+  {
+    metric: '7+ Broken Tools',
+    title: 'Siloed Friction Channels',
+    desc: 'Procurement scattered across personal WhatsApp, phone calls, spreadsheets, sticky notes, and paper receipts.',
   },
 ];
 
 export function BrandTransformation() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const centerRef = useRef<HTMLDivElement>(null);
+  const [mode, setMode] = useState<Mode>('with');
+  const [hoveredProtocol, setHoveredProtocol] = useState<number | null>(null);
 
-  // 5 left node refs
-  const leftRef0 = useRef<HTMLDivElement>(null);
-  const leftRef1 = useRef<HTMLDivElement>(null);
-  const leftRef2 = useRef<HTMLDivElement>(null);
-  const leftRef3 = useRef<HTMLDivElement>(null);
-  const leftRef4 = useRef<HTMLDivElement>(null);
-  const leftRefs = [leftRef0, leftRef1, leftRef2, leftRef3, leftRef4];
-
-  // 5 right node refs
-  const rightRef0 = useRef<HTMLDivElement>(null);
-  const rightRef1 = useRef<HTMLDivElement>(null);
-  const rightRef2 = useRef<HTMLDivElement>(null);
-  const rightRef3 = useRef<HTMLDivElement>(null);
-  const rightRef4 = useRef<HTMLDivElement>(null);
-  const rightRefs = [rightRef0, rightRef1, rightRef2, rightRef3, rightRef4];
-
-  const [activeWorkflow, setActiveWorkflow] = useState<number | null>(null);
+  const isWith = mode === 'with';
 
   return (
     <section
@@ -175,153 +401,289 @@ export function BrandTransformation() {
       id="transformation"
       aria-labelledby="btrans-heading"
     >
+      {/* Background ambient lighting */}
       <div className="btrans-bg-glow" aria-hidden="true" />
 
       <div className="btrans-container">
-        {/* ─── 1. Editorial Header ─── */}
-        <div className="btrans-header">
+        {/* ─── 1. Editorial Header & Toggle Switcher ─── */}
+        <div className="btrans-header-wrap">
           <div className="btrans-eyebrow">
             <span className="btrans-eyebrow-line" aria-hidden="true" />
-            <span>THE GRADIENT DIFFERENCE</span>
-          </div>
-          <h2 id="btrans-heading" className="btrans-title">
-            The old way was fragmented.<br />
-            The new way is connected.
-          </h2>
-          <p className="btrans-sub">
-            From scattered conversations and manual procurement to a connected
-            ecosystem for brands, suppliers and cafés.
-          </p>
-        </div>
-
-        {/* ─── 2. Animated Beam Integration Canvas ─── */}
-        <div className="btrans-beam-stage" ref={containerRef}>
-          {/* Left Column: Fragmented Operations */}
-          <div className="btrans-beam-col btrans-col-left">
-            <div className="btrans-beam-col-label left">
-              The Old Way · Fragmented
-            </div>
-
-            <div className="btrans-node-list">
-              {WORKFLOWS.map((wf, idx) => (
-                <div
-                  key={`left-${wf.id}`}
-                  className={`btrans-node-row-left ${activeWorkflow === idx ? 'is-active' : ''}`}
-                  onMouseEnter={() => setActiveWorkflow(idx)}
-                  onMouseLeave={() => setActiveWorkflow(null)}
-                >
-                  <div className="btrans-node-info">
-                    <span className="btrans-node-label">{wf.leftLabel}</span>
-                    <span className="btrans-node-desc">{wf.leftDesc}</span>
-                  </div>
-
-                  <div
-                    ref={leftRefs[idx]}
-                    className="btrans-node-circle btrans-circle-muted"
-                    aria-label={wf.leftLabel}
-                  >
-                    {wf.leftIcon}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <span>WHOLESALE ARCHITECTURE · BEFORE VS WITH GRADIENT</span>
           </div>
 
-          {/* Center Column: The Gradient Platform Hub */}
-          <div className="btrans-beam-center" ref={centerRef}>
-            <div className="btrans-hub-halo" aria-hidden="true" />
-            <div className="btrans-hub-circle">
-              <div className="btrans-hub-logo">G</div>
-            </div>
-            <div className="btrans-hub-label-wrap">
-              <span className="btrans-hub-title">Gradient Hub</span>
-              <span className="btrans-hub-badge">Connected Core</span>
-            </div>
+          <div className="btrans-header-content">
+            <h2 id="btrans-heading" className="btrans-title">
+              {isWith ? (
+                <>
+                  Simple, Fast,{' '}
+                  <span className="btrans-title-highlight">Automated.</span>
+                </>
+              ) : (
+                <>
+                  Fragmented, Manual,{' '}
+                  <span className="btrans-title-warning">Slow.</span>
+                </>
+              )}
+            </h2>
+
+            <p className="btrans-sub">
+              {isWith
+                ? 'Replacing the need for brittle WhatsApp ordering, loose audio notes, and speculative roast batches with an automated, synchronized wholesale network.'
+                : 'Scattered conversations, lost paper receipts, formula errors, and emergency supermarket runs leave roasters and café operators stranded in manual chaos.'}
+            </p>
           </div>
 
-          {/* Right Column: Connected Commerce */}
-          <div className="btrans-beam-col btrans-col-right">
-            <div className="btrans-beam-col-label right">
-              The Gradient Way · Connected
-            </div>
-
-            <div className="btrans-node-list">
-              {WORKFLOWS.map((wf, idx) => (
-                <div
-                  key={`right-${wf.id}`}
-                  className={`btrans-node-row-right ${activeWorkflow === idx ? 'is-active' : ''}`}
-                  onMouseEnter={() => setActiveWorkflow(idx)}
-                  onMouseLeave={() => setActiveWorkflow(null)}
-                >
-                  <div
-                    ref={rightRefs[idx]}
-                    className="btrans-node-circle btrans-circle-accent"
-                    aria-label={wf.rightLabel}
-                  >
-                    {wf.rightIcon}
-                  </div>
-
-                  <div className="btrans-node-info">
-                    <span className="btrans-node-label">{wf.rightLabel}</span>
-                    <span className="btrans-node-desc">{wf.rightDesc}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Animated Beams: Left Nodes → Center Hub */}
-          {WORKFLOWS.map((wf, idx) => (
-            <AnimatedBeam
-              key={`beam-in-${wf.id}`}
-              containerRef={containerRef}
-              fromRef={leftRefs[idx]}
-              toRef={centerRef}
-              curvature={wf.curvature}
-              duration={5}
-              delay={idx * 0.5}
-              pathColor="#E2E8F0"
-              pathWidth={activeWorkflow === idx ? 2.4 : 1.5}
-              pathOpacity={activeWorkflow !== null && activeWorkflow !== idx ? 0.15 : 0.5}
-              gradientStartColor="#CBD5E1"
-              gradientStopColor="#7C3AED"
-            />
-          ))}
-
-          {/* Animated Beams: Center Hub → Right Nodes */}
-          {WORKFLOWS.map((wf, idx) => (
-            <AnimatedBeam
-              key={`beam-out-${wf.id}`}
-              containerRef={containerRef}
-              fromRef={centerRef}
-              toRef={rightRefs[idx]}
-              curvature={wf.curvature}
-              duration={5}
-              delay={idx * 0.5 + 0.3}
-              pathColor="#E2E8F0"
-              pathWidth={activeWorkflow === idx ? 2.4 : 1.5}
-              pathOpacity={activeWorkflow !== null && activeWorkflow !== idx ? 0.15 : 0.5}
-              gradientStartColor="#7C3AED"
-              gradientStopColor="#C084FC"
-            />
-          ))}
-        </div>
-
-        {/* ─── 3. Five Transformation Topic Cards ─── */}
-        <div className="btrans-workflow-strip" role="list">
-          {WORKFLOWS.map((wf, idx) => (
-            <div
-              key={`card-${wf.id}`}
-              role="listitem"
-              className={`btrans-workflow-card ${activeWorkflow === idx ? 'is-active' : ''}`}
-              onMouseEnter={() => setActiveWorkflow(idx)}
-              onMouseLeave={() => setActiveWorkflow(null)}
+          {/* Interactive Orchid-Style Toggle Switch */}
+          <div className="btrans-toggle-container" role="tablist" aria-label="Transformation View Mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={!isWith}
+              className={`btrans-toggle-pill ${!isWith ? 'is-active is-without' : ''}`}
+              onClick={() => setMode('without')}
             >
-              <div className="btrans-wf-topic">{wf.topic}</div>
-              <div className="btrans-wf-from">{wf.fromSummary}</div>
-              <div className="btrans-wf-to">{wf.toSummary}</div>
+              <span className="btrans-toggle-dot without" aria-hidden="true" />
+              <span>Before Gradient</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              aria-selected={isWith}
+              className={`btrans-toggle-pill ${isWith ? 'is-active is-with' : ''}`}
+              onClick={() => setMode('with')}
+            >
+              <span className="btrans-toggle-dot with" aria-hidden="true" />
+              <span>With Gradient</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ─── 2. Architecture Canvas (Pure White Minimal Theme) ─── */}
+        <div className={`btrans-canvas ${isWith ? 'is-connected' : 'is-fragmented'}`}>
+          {/* Top Frame: 4 Verified Supplier Categories */}
+          <div className="btrans-top-frame">
+            <div className="btrans-frame-header">
+              <span className={`btrans-frame-tag ${isWith ? 'tag-verified' : 'tag-warning'}`}>
+                {isWith ? (
+                  <>
+                    <span className="btrans-live-pulse-dot" />
+                    VERIFIED WHOLESALE SUPPLIERS · UNIFIED ECOSYSTEM
+                  </>
+                ) : (
+                  <>
+                    <span className="btrans-alert-dot">⚠</span>
+                    DISCONNECTED SUPPLIER SILOS · UNCOORDINATED OUTREACH
+                  </>
+                )}
+              </span>
             </div>
-          ))}
+
+            <div className="btrans-suppliers-grid">
+              {SUPPLIERS.map((sup) => (
+                <div key={sup.id} className="btrans-supplier-card">
+                  <div className="btrans-supplier-head">
+                    <span className="btrans-supplier-icon" aria-hidden="true">
+                      {sup.icon}
+                    </span>
+                    <span className="btrans-supplier-title">{sup.category}</span>
+                  </div>
+
+                  <div className="btrans-brand-pills">
+                    {sup.brands.map((b) => (
+                      <div key={b.name} className="btrans-brand-badge">
+                        <span className="btrans-brand-bullet" />
+                        <span className="btrans-brand-name">{b.name}</span>
+                        <span className="btrans-brand-sub">{b.tag}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="btrans-supplier-footer">
+                    <span className={`btrans-supplier-status ${isWith ? 'status-ok' : 'status-bad'}`}>
+                      {isWith ? '● ' + sup.withStatus : '⚠ ' + sup.withoutStatus}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ─── Middle Tier: The Integration Bus with 6 Protocol Nodes & Dynamic SVG Beams ─── */}
+          <div className="btrans-middle-bus-zone">
+            {/* SVG Data Rails / Beam Cables with Dead-Center Coordinates */}
+            <svg
+              className="btrans-svg-bus"
+              viewBox="0 0 1200 140"
+              fill="none"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="beamGradPulse" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.2" />
+                  <stop offset="45%" stopColor="#A855F7" stopOpacity="0.95" />
+                  <stop offset="55%" stopColor="#C084FC" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#7C3AED" stopOpacity="0.2" />
+                </linearGradient>
+
+                <linearGradient id="dropGradPulse" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#A855F7" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.8" />
+                </linearGradient>
+              </defs>
+
+              {isWith ? (
+                /* ── WITH GRADIENT: Exact alignment with cards & horizontal bus ── */
+                <g className="btrans-rails-connected">
+                  {/* 4 Upper Trunks dropping dead-center from Top 4 Supplier Cards to Bus (y=70) */}
+                  <line x1="177" y1="0" x2="177" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="459" y1="0" x2="459" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="741" y1="0" x2="741" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="1023" y1="0" x2="1023" y2="70" stroke="#CBD5E1" strokeWidth="1.5" />
+
+                  {/* Upper Animated Pulses */}
+                  <line x1="177" y1="0" x2="177" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" />
+                  <line x1="459" y1="0" x2="459" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.7s' }} />
+                  <line x1="741" y1="0" x2="741" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.4s' }} />
+                  <line x1="1023" y1="0" x2="1023" y2="70" stroke="#A855F7" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-2.1s' }} />
+
+                  {/* Central Horizontal Bus Highway (y=70) */}
+                  <line x1="100" y1="70" x2="1100" y2="70" stroke="#E2E8F0" strokeWidth="2" />
+                  <line x1="100" y1="70" x2="1100" y2="70" stroke="url(#beamGradPulse)" strokeWidth="2.5" className="btrans-anim-beam-horizontal" />
+
+                  {/* 5 Lower Trunks dropping dead-center to 5 Bottom Café Cards (y=70 to 140) */}
+                  <line x1="134" y1="70" x2="134" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="367" y1="70" x2="367" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="600" y1="70" x2="600" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="833" y1="70" x2="833" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <line x1="1066" y1="70" x2="1066" y2="140" stroke="#CBD5E1" strokeWidth="1.5" />
+
+                  {/* Lower Animated Pulses */}
+                  <line x1="134" y1="70" x2="134" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.3s' }} />
+                  <line x1="367" y1="70" x2="367" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.0s' }} />
+                  <line x1="600" y1="70" x2="600" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.7s' }} />
+                  <line x1="833" y1="70" x2="833" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-0.8s' }} />
+                  <line x1="1066" y1="70" x2="1066" y2="140" stroke="url(#dropGradPulse)" strokeWidth="2.5" strokeDasharray="18 52" className="btrans-anim-dash-down" style={{ animationDelay: '-1.5s' }} />
+                </g>
+              ) : (
+                /* ── WITHOUT GRADIENT: Tangled chaotic spaghetti hairball lines ── */
+                <g className="btrans-rails-fragmented">
+                  <path d="M 177 0 C 260 70, 750 60, 833 140" stroke="#FCA5A5" strokeWidth="1.5" strokeDasharray="5 5" />
+                  <path d="M 177 0 C 220 50, 340 80, 367 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <path d="M 459 0 C 350 60, 150 80, 134 140" stroke="#F87171" strokeWidth="1.5" strokeDasharray="6 4" />
+                  <path d="M 459 0 C 650 40, 950 60, 1066 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <path d="M 741 0 C 580 70, 390 60, 367 140" stroke="#FCA5A5" strokeWidth="1.5" strokeDasharray="5 5" />
+                  <path d="M 741 0 C 700 70, 620 80, 600 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 4" />
+                  <path d="M 1023 0 C 850 70, 250 60, 134 140" stroke="#EF4444" strokeWidth="1.5" strokeDasharray="6 4" />
+                  <path d="M 1023 0 C 950 60, 870 70, 833 140" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="5 5" />
+
+                  {/* Warning friction points */}
+                  <circle cx="510" cy="62" r="3.5" fill="#EF4444" />
+                  <circle cx="340" cy="74" r="3" fill="#F87171" />
+                  <circle cx="810" cy="68" r="3.5" fill="#EF4444" />
+                </g>
+              )}
+            </svg>
+
+            {/* 6 Protocol Badges positioned along the central line */}
+            <div className="btrans-protocols-row">
+              {PROTOCOLS.map((p, idx) => {
+                const shortLabel = isWith ? p.shortLabel : p.withoutShortLabel;
+                const fullDesc = isWith ? p.withDesc : p.withoutDesc;
+                const icon = isWith ? p.withIcon : p.withoutIcon;
+
+                return (
+                  <div
+                    key={p.id}
+                    className={`btrans-protocol-node ${isWith ? 'is-with' : 'is-without'} ${
+                      hoveredProtocol === idx ? 'is-hovered' : ''
+                    }`}
+                    onMouseEnter={() => setHoveredProtocol(idx)}
+                    onMouseLeave={() => setHoveredProtocol(null)}
+                  >
+                    <div className="btrans-protocol-disc">
+                      <span className="btrans-protocol-icon" aria-hidden="true">
+                        {icon}
+                      </span>
+                    </div>
+
+                    <span className="btrans-protocol-pill-label">
+                      {shortLabel}
+                    </span>
+
+                    {/* Quick hover intelligence tooltip */}
+                    <div className="btrans-protocol-tooltip" role="tooltip">
+                      <div className="btrans-tooltip-title">{fullDesc}</div>
+                      <div className="btrans-tooltip-metric">
+                        {isWith ? p.metric : '⚠ Unverified Manual Bottleneck'}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ─── Bottom Tier: 5 Destination Café Outlets ─── */}
+          <div className="btrans-bottom-cafes">
+            <div className="btrans-cafes-grid">
+              {CAFES.map((c) => {
+                const badge = isWith ? c.withBadge : c.withoutBadge;
+                const poVal = isWith ? c.withPo : c.withoutPo;
+                const invVal = isWith ? c.withInventory : c.withoutInventory;
+
+                return (
+                  <div key={c.id} className={`btrans-cafe-card ${isWith ? 'card-with' : 'card-without'}`}>
+                    <div className="btrans-cafe-header">
+                      <div className="btrans-cafe-icon-title">
+                        <span className="btrans-cafe-avatar" aria-hidden="true">
+                          {c.icon}
+                        </span>
+                        <div className="btrans-cafe-text-wrap">
+                          <div className="btrans-cafe-name">{c.name}</div>
+                          <div className="btrans-cafe-type">{c.type}</div>
+                        </div>
+                      </div>
+
+                      <span className={`btrans-cafe-badge ${isWith ? 'badge-ok' : 'badge-bad'}`}>
+                        {badge}
+                      </span>
+                    </div>
+
+                    {/* Structured Specs */}
+                    <div className="btrans-cafe-specs">
+                      <div className="btrans-spec-row">
+                        <span className="btrans-spec-label">PO CHANNEL</span>
+                        <span className={`btrans-spec-val ${isWith ? 'val-ok' : 'val-bad'}`}>{poVal}</span>
+                      </div>
+                      <div className="btrans-spec-row">
+                        <span className="btrans-spec-label">INVENTORY</span>
+                        <span className={`btrans-spec-val ${isWith ? 'val-ok' : 'val-bad'}`}>{invVal}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 3. High-Impact Summary Comparison Bar ─── */}
+        <div className="btrans-summary-strip">
+          <div className="btrans-summary-grid">
+            {(isWith ? SUMMARY_WITH : SUMMARY_WITHOUT).map((item, idx) => (
+              <div key={idx} className={`btrans-summary-card ${isWith ? 'card-with' : 'card-without'}`}>
+                <div className={`btrans-summary-metric ${isWith ? 'metric-with' : 'metric-without'}`}>
+                  {item.metric}
+                </div>
+                <h3 className="btrans-summary-title">{item.title}</h3>
+                <p className="btrans-summary-desc">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,37 +1,30 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Brand Portal Transformation Section ("Before vs With Gradient")
-   Premium Animated Beam Integration Architecture — Minimal Light Mode
-   ─────────────────────────────────────────────────────────────────────────
-   - Pristine white background with refined slate & obsidian typography
-   - 3-column Animated Beam canvas: Fragmented → Gradient Hub → Connected
-   - Clean horizontal Cubic Bézier S-curves with animated light beams
-   - Interactive hover synchronisation between nodes and summary cards
-   - Responsive degradation for tablet and mobile screens
+   Orchid-Inspired Wholesale Network Architecture — Minimal Light Mode
    ───────────────────────────────────────────────────────────────────────── */
 
-/* ─── 0. Section Wrapper ─────────────────────────────────────────────── */
+/* ─── 0. Section Wrapper & Background ────────────────────────────────── */
 .btrans-section {
   position: relative;
   width: 100%;
   background-color: #FFFFFF;
   color: #0F172A;
-  padding: clamp(90px, 12vh, 140px) 0 clamp(100px, 13vh, 150px);
+  padding: clamp(72px, 9vh, 120px) 0 clamp(84px, 10vh, 130px);
   overflow: hidden;
   box-sizing: border-box;
-  scroll-margin-top: 90px;
+  scroll-margin-top: 80px;
 }
 
-/* Ambient lavender spotlight behind the whole section */
 .btrans-bg-glow {
   position: absolute;
-  top: 12%;
+  top: 15%;
   left: 50%;
-  transform: translate(-50%, -12%);
-  width: 1200px;
-  height: 560px;
+  transform: translate(-50%, -15%);
+  width: 1100px;
+  height: 550px;
   background: radial-gradient(
     ellipse 60% 50% at center,
-    rgba(168, 85, 247, 0.06) 0%,
+    rgba(168, 85, 247, 0.05) 0%,
     rgba(124, 58, 237, 0.015) 55%,
     transparent 75%
   );
@@ -45,15 +38,18 @@
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 0 clamp(20px, 4vw, 40px);
+  padding: 0 clamp(20px, 3.5vw, 40px);
   box-sizing: border-box;
   z-index: 1;
 }
 
-/* ─── 1. Editorial Section Header ────────────────────────────────────── */
-.btrans-header {
-  max-width: 760px;
-  margin-bottom: 56px;
+/* ─── 1. Editorial Header & Toggle Switcher ──────────────────────────── */
+.btrans-header-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 44px;
 }
 
 .btrans-eyebrow {
@@ -62,541 +58,859 @@
   gap: 10px;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #7C3AED;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .btrans-eyebrow-line {
-  width: 22px;
+  width: 20px;
   height: 1.5px;
   background: linear-gradient(90deg, #7C3AED, #A855F7);
   border-radius: 2px;
 }
 
+.btrans-header-content {
+  max-width: 760px;
+  margin: 0 auto 24px;
+}
+
 .btrans-title {
-  font-size: clamp(32px, 3.8vw, 48px);
+  font-size: clamp(34px, 4vw, 52px);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.08;
   letter-spacing: -0.035em;
   color: #0F172A;
-  margin: 0 0 18px 0;
+  margin: 0 0 14px 0;
+  transition: color 0.25s ease;
+}
+
+.btrans-title-highlight {
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 60%, #C084FC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btrans-title-warning {
+  color: #EF4444;
 }
 
 .btrans-sub {
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.65;
+  font-size: clamp(15px, 1.2vw, 16.5px);
+  line-height: 1.6;
   color: #64748B;
-  max-width: 600px;
-  margin: 0;
+  max-width: 640px;
+  margin: 0 auto;
+  transition: opacity 0.25s ease;
 }
 
-/* ─── 2. Animated Beam Integration Canvas ────────────────────────────── */
-.btrans-beam-stage {
+/* ─── Interactive Orchid-Style Toggle Switch ─── */
+.btrans-toggle-container {
+  display: inline-flex;
+  align-items: center;
+  background: #F1F5F9;
+  padding: 5px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btrans-toggle-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.btrans-toggle-pill:hover {
+  color: #0F172A;
+}
+
+.btrans-toggle-pill.is-active {
+  background: #FFFFFF;
+  color: #0F172A;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btrans-toggle-pill.is-active.is-with {
+  color: #7C3AED;
+  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.16), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.btrans-toggle-pill.is-active.is-without {
+  color: #DC2626;
+  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.14), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.btrans-toggle-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94A3B8;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btrans-toggle-pill.is-active .btrans-toggle-dot.with {
+  background: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  transform: scale(1.15);
+}
+
+.btrans-toggle-pill.is-active .btrans-toggle-dot.without {
+  background: #EF4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  transform: scale(1.15);
+}
+
+/* ─── 2. Architecture Canvas (Pure White Minimal) ─────────────────────── */
+.btrans-canvas {
   position: relative;
   width: 100%;
-  min-height: 520px;
+  background-color: #FFFFFF;
+  background-image: radial-gradient(rgba(124, 58, 237, 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px -15px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+  padding: 28px 24px 32px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btrans-canvas.is-connected {
+  border-color: rgba(124, 58, 237, 0.18);
+  box-shadow: 0 24px 60px -15px rgba(124, 58, 237, 0.07), 0 0 0 1px rgba(124, 58, 237, 0.06);
+}
+
+.btrans-canvas.is-fragmented {
+  border-color: rgba(239, 68, 68, 0.2);
+  box-shadow: 0 24px 60px -15px rgba(239, 68, 68, 0.06), 0 0 0 1px rgba(239, 68, 68, 0.05);
+}
+
+/* ─── Tier 1: Top Suppliers Frame ─── */
+.btrans-top-frame {
+  position: relative;
+  border-radius: 18px;
+  padding: 18px 20px 20px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.btrans-canvas.is-connected .btrans-top-frame {
+  background: linear-gradient(180deg, rgba(245, 243, 255, 0.6) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 16px rgba(124, 58, 237, 0.03);
+}
+
+.btrans-canvas.is-fragmented .btrans-top-frame {
+  background: linear-gradient(180deg, rgba(254, 242, 242, 0.5) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1px dashed rgba(239, 68, 68, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.btrans-frame-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btrans-frame-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 5px 14px;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.btrans-frame-tag.tag-verified {
+  background: #F5F3FF;
+  color: #7C3AED;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.btrans-frame-tag.tag-warning {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px dashed rgba(239, 68, 68, 0.3);
+}
+
+.btrans-live-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  animation: btransPulse 1.8s infinite;
+}
+
+.btrans-alert-dot {
+  font-size: 12px;
+  color: #EF4444;
+}
+
+@keyframes btransPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
+}
+
+/* 4 Supplier Cards Grid */
+.btrans-suppliers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.btrans-supplier-card {
+  position: relative;
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 28px;
-  padding: 48px clamp(32px, 4vw, 60px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 14px;
+  padding: 14px 13px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.22s ease;
+}
+
+.btrans-supplier-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124, 58, 237, 0.25);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.08);
+}
+
+.btrans-supplier-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.btrans-supplier-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: #F5F3FF;
+  color: #7C3AED;
+}
+
+.btrans-supplier-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #0F172A;
+  text-transform: uppercase;
+}
+
+.btrans-brand-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.btrans-brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #F8FAFC;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  padding: 4px 8px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.btrans-brand-bullet {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #A855F7;
+  flex-shrink: 0;
+}
+
+.btrans-brand-name {
+  font-weight: 600;
+  color: #1E293B;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-brand-sub {
+  font-size: 9.5px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.btrans-supplier-footer {
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+  padding-top: 8px;
+}
+
+.btrans-supplier-status {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-supplier-status.status-ok {
+  color: #059669;
+}
+
+.btrans-supplier-status.status-bad {
+  color: #DC2626;
+}
+
+/* ─── Tier 2: The Middle Integration Bus & Protocol Highway ──────────── */
+.btrans-middle-bus-zone {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btrans-svg-bus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* SVG Line Animations */
+.btrans-anim-dash-down {
+  animation: btransDashDown 2.2s linear infinite;
+}
+
+@keyframes btransDashDown {
+  0% {
+    stroke-dashoffset: 70;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.btrans-anim-beam-horizontal {
+  stroke-dasharray: 120 400;
+  animation: btransBeamSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes btransBeamSweep {
+  0% {
+    stroke-dashoffset: 520;
+  }
+  100% {
+    stroke-dashoffset: -520;
+  }
+}
+
+/* 6 Protocol Badges positioned along the central line */
+.btrans-protocols-row {
+  position: relative;
+  z-index: 2;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  overflow: hidden;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 4px 16px rgba(0, 0, 0, 0.03),
-    0 16px 48px -12px rgba(124, 58, 237, 0.06);
+  padding: 0 20px;
   box-sizing: border-box;
 }
 
-/* Very faint dot grid — almost invisible, adds texture */
-.btrans-beam-stage::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Soft purple center glow */
-.btrans-beam-stage::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(
-    circle,
-    rgba(168, 85, 247, 0.045) 0%,
-    rgba(124, 58, 237, 0.015) 45%,
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* AnimatedBeam SVGs — strictly positioned overlays */
-.btrans-beam-stage > svg {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  pointer-events: none !important;
-  z-index: 5 !important;
-}
-
-/* ─── 2a. Side Columns ───────────────────────────────────────────────── */
-.btrans-beam-col {
-  display: flex;
-  flex-direction: column;
+.btrans-protocol-node {
   position: relative;
-  z-index: 10;
-  min-width: 0;
-}
-
-.btrans-col-left {
-  width: 270px;
-}
-
-.btrans-col-right {
-  width: 270px;
-}
-
-.btrans-beam-col-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-
-.btrans-beam-col-label.left {
-  color: #94A3B8;
-  text-align: right;
-  padding-right: 8px;
-}
-
-.btrans-beam-col-label.right {
-  color: #7C3AED;
-  text-align: left;
-  padding-left: 8px;
-}
-
-.btrans-node-list {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-}
-
-/* ─── 2b. Node Rows ──────────────────────────────────────────────────── */
-.btrans-node-row-left {
-  display: flex;
   align-items: center;
-  gap: 14px;
-  justify-content: flex-end;
+  gap: 6px;
   cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 4px 0;
-  border-radius: 12px;
 }
 
-.btrans-node-row-left:hover {
-  transform: translateX(-3px);
-}
-
-.btrans-node-row-left .btrans-node-info {
-  text-align: right;
-}
-
-.btrans-node-row-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  justify-content: flex-start;
-  cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 4px 0;
-  border-radius: 12px;
-}
-
-.btrans-node-row-right:hover {
-  transform: translateX(3px);
-}
-
-.btrans-node-row-right .btrans-node-info {
-  text-align: left;
-}
-
-/* ─── 2c. Node Circles ───────────────────────────────────────────────── */
-.btrans-node-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+.btrans-protocol-disc {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(124, 58, 237, 0.24);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.1), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Left nodes: muted slate */
-.btrans-circle-muted {
-  background: #F8FAFC;
-  border: 1.5px solid rgba(0, 0, 0, 0.07);
-  color: #64748B;
-  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.06);
+.btrans-protocol-node.is-with .btrans-protocol-disc {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1), 0 6px 20px rgba(124, 58, 237, 0.12);
 }
 
-/* Right nodes: purple accent */
-.btrans-circle-accent {
-  background: #FAF5FF;
-  border: 1.5px solid rgba(124, 58, 237, 0.25);
-  color: #7C3AED;
-  box-shadow: 0 2px 8px -2px rgba(124, 58, 237, 0.12);
-}
-
-/* Hover / active state for node circles */
-.btrans-node-row-left:hover .btrans-node-circle,
-.btrans-node-row-right:hover .btrans-node-circle,
-.btrans-node-row-left.is-active .btrans-node-circle,
-.btrans-node-row-right.is-active .btrans-node-circle {
+.btrans-protocol-node.is-with:hover .btrans-protocol-disc,
+.btrans-protocol-node.is-with.is-hovered .btrans-protocol-disc {
+  transform: translateY(-3px) scale(1.1);
   border-color: #7C3AED;
-  box-shadow: 0 4px 16px -4px rgba(124, 58, 237, 0.3);
-  transform: scale(1.08);
+  box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.2), 0 10px 28px rgba(124, 58, 237, 0.22);
 }
 
-/* ─── 2d. Node Labels ────────────────────────────────────────────────── */
-.btrans-node-info {
+.btrans-protocol-node.is-without .btrans-protocol-disc {
+  border: 1.5px dashed rgba(239, 68, 68, 0.35);
+  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.08);
+}
+
+.btrans-protocol-node.is-without:hover .btrans-protocol-disc,
+.btrans-protocol-node.is-without.is-hovered .btrans-protocol-disc {
+  transform: translateY(-3px) scale(1.08);
+  border-color: #EF4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15), 0 8px 20px rgba(239, 68, 68, 0.16);
+}
+
+.btrans-protocol-icon {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 195px;
-  min-width: 0;
-}
-
-.btrans-node-label {
-  font-size: 13px;
-  font-weight: 650;
-  color: #1E293B;
-  letter-spacing: -0.01em;
-  transition: color 0.2s ease;
-  white-space: nowrap;
-}
-
-.btrans-node-row-left.is-active .btrans-node-label,
-.btrans-node-row-right.is-active .btrans-node-label {
+  align-items: center;
+  justify-content: center;
   color: #7C3AED;
+  transition: color 0.2s ease;
 }
 
-.btrans-node-desc {
-  font-size: 11.5px;
-  color: #94A3B8;
+.btrans-protocol-node.is-without .btrans-protocol-icon {
+  color: #EF4444;
+}
+
+.btrans-protocol-pill-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #1E293B;
+  background: #F8FAFC;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.btrans-protocol-node.is-with:hover .btrans-protocol-pill-label {
+  background: #F5F3FF;
+  color: #7C3AED;
+  border-color: rgba(124, 58, 237, 0.25);
+}
+
+.btrans-protocol-node.is-without .btrans-protocol-pill-label {
+  color: #64748B;
+  border-style: dashed;
+}
+
+.btrans-protocol-node.is-without:hover .btrans-protocol-pill-label {
+  background: #FEF2F2;
+  color: #DC2626;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* Tooltip on hover */
+.btrans-protocol-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0F172A;
+  color: #FFFFFF;
+  padding: 7px 11px;
+  border-radius: 8px;
+  font-size: 11px;
   line-height: 1.35;
   white-space: nowrap;
-}
-
-/* ─── 2e. Center Hub ─────────────────────────────────────────────────── */
-.btrans-beam-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 10;
-  margin: 0 24px;
-  align-self: stretch;
-  padding-top: 54px; /* offset for side-column header labels + hub label compensation */
-}
-
-/* Soft concentric halo behind the circle */
-.btrans-hub-halo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(168, 85, 247, 0.15) 0%,
-    rgba(124, 58, 237, 0.04) 50%,
-    transparent 70%
-  );
-  filter: blur(28px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   pointer-events: none;
-  animation: btrans-halo-pulse 4s ease-in-out infinite;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
-@keyframes btrans-halo-pulse {
-  0%, 100% { opacity: 0.7; transform: translate(-50%, -55%) scale(1); }
-  50%      { opacity: 1;   transform: translate(-50%, -55%) scale(1.06); }
-}
-
-/* Outer ring */
-.btrans-hub-circle {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background: #FFFFFF;
-  border: 2px solid rgba(124, 58, 237, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 0 0 6px rgba(124, 58, 237, 0.04),
-    0 0 0 12px rgba(124, 58, 237, 0.02),
-    0 12px 32px -8px rgba(124, 58, 237, 0.2);
-  position: relative;
-  z-index: 2;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.35s ease;
-}
-
-.btrans-hub-circle:hover {
-  transform: scale(1.06);
-  box-shadow:
-    0 0 0 8px rgba(124, 58, 237, 0.06),
-    0 0 0 16px rgba(124, 58, 237, 0.03),
-    0 16px 40px -8px rgba(124, 58, 237, 0.32);
-}
-
-/* Inner gradient logo */
-.btrans-hub-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  font-weight: 800;
-  font-size: 22px;
-  letter-spacing: -0.02em;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
-}
-
-.btrans-hub-label-wrap {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
-.btrans-hub-title {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #1E293B;
-  letter-spacing: -0.01em;
-}
-
-.btrans-hub-badge {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7C3AED;
-  background: rgba(124, 58, 237, 0.06);
-  border: 1px solid rgba(124, 58, 237, 0.15);
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-/* ─── 3. Five Transformation Topic Cards ─────────────────────────────── */
-.btrans-workflow-strip {
-  margin-top: 40px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-}
-
-.btrans-workflow-card {
-  background: #FAFAFA;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 14px;
-  padding: 20px 18px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  box-sizing: border-box;
-  position: relative;
-}
-
-/* Purple top accent line — hidden by default */
-.btrans-workflow-card::before {
+.btrans-protocol-tooltip::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 18px;
-  right: 18px;
-  height: 2px;
-  background: linear-gradient(90deg, #7C3AED, #A855F7);
-  border-radius: 0 0 2px 2px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #0F172A transparent transparent transparent;
 }
 
-.btrans-workflow-card:hover,
-.btrans-workflow-card.is-active {
-  background: #FFFFFF;
-  border-color: rgba(124, 58, 237, 0.2);
-  box-shadow:
-    0 4px 16px -4px rgba(124, 58, 237, 0.1),
-    0 0 0 1px rgba(124, 58, 237, 0.08);
-  transform: translateY(-2px);
-}
-
-.btrans-workflow-card:hover::before,
-.btrans-workflow-card.is-active::before {
+.btrans-protocol-node:hover .btrans-protocol-tooltip,
+.btrans-protocol-node.is-hovered .btrans-protocol-tooltip {
   opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-.btrans-wf-topic {
+.btrans-tooltip-title {
+  font-weight: 600;
+  color: #F8FAFC;
+}
+
+.btrans-tooltip-metric {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  color: #A855F7;
+  margin-top: 2px;
+}
+
+.btrans-protocol-node.is-without .btrans-tooltip-metric {
+  color: #F87171;
+}
+
+/* ─── Tier 3: Bottom 5 Café Outlet Cards ──────────────────────────────── */
+.btrans-bottom-cafes {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.btrans-cafes-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.btrans-cafe-card {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 14px 12px 12px;
+  box-sizing: border-box;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btrans-cafe-card.card-with {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+}
+
+.btrans-cafe-card.card-with:hover {
+  transform: translateY(-3px);
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.09);
+}
+
+.btrans-cafe-card.card-without {
+  border: 1px dashed rgba(239, 68, 68, 0.28);
+  background: #FFFAFA;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.btrans-cafe-card.card-without:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.btrans-cafe-header {
+  margin-bottom: 10px;
+}
+
+.btrans-cafe-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+
+.btrans-cafe-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #F1F5F9;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.btrans-cafe-card.card-with .btrans-cafe-avatar {
+  background: #F5F3FF;
   color: #7C3AED;
-  margin-bottom: 8px;
 }
 
-.btrans-wf-from {
-  font-size: 12px;
-  color: #94A3B8;
-  margin-bottom: 6px;
-  line-height: 1.4;
+.btrans-cafe-text-wrap {
+  min-width: 0;
 }
 
-.btrans-wf-to {
+.btrans-cafe-name {
   font-size: 12.5px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-cafe-type {
+  font-size: 10px;
+  color: #64748B;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-cafe-badge {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 3px 7px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.btrans-cafe-badge.badge-ok {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.btrans-cafe-badge.badge-bad {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.btrans-cafe-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+  padding-top: 8px;
+}
+
+.btrans-spec-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+}
+
+.btrans-spec-label {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+.btrans-spec-val {
+  font-size: 10.5px;
   font-weight: 600;
-  color: #1E293B;
-  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-spec-val.val-ok {
+  color: #0F172A;
+}
+
+.btrans-spec-val.val-bad {
+  color: #B91C1C;
+}
+
+/* ─── 3. High-Impact Summary Comparison Bar ─────────────────────────── */
+.btrans-summary-strip {
+  margin-top: 36px;
+}
+
+.btrans-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.btrans-summary-card {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 22px 20px;
+  box-sizing: border-box;
+  transition: all 0.24s ease;
+}
+
+.btrans-summary-card.card-with {
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.04);
+}
+
+.btrans-summary-card.card-with:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.08);
+}
+
+.btrans-summary-card.card-without {
+  border: 1px dashed rgba(239, 68, 68, 0.28);
+  background: #FFFAFA;
+}
+
+.btrans-summary-metric {
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+
+.btrans-summary-metric.metric-with {
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btrans-summary-metric.metric-without {
+  color: #EF4444;
+}
+
+.btrans-summary-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 5px 0;
+}
+
+.btrans-summary-desc {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #64748B;
+  margin: 0;
 }
 
 /* ─── 4. Responsive Breakpoints ──────────────────────────────────────── */
-@media (max-width: 1100px) {
-  .btrans-node-info {
-    width: 155px;
-  }
-  .btrans-node-label {
-    font-size: 12px;
-  }
-  .btrans-node-desc {
-    font-size: 10.5px;
-  }
-  .btrans-col-left,
-  .btrans-col-right {
-    width: 220px;
-  }
-  .btrans-workflow-strip {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
 
-@media (max-width: 860px) {
-  .btrans-beam-stage {
-    padding: 32px 16px;
-  }
-
-  .btrans-col-left,
-  .btrans-col-right {
-    width: auto;
-  }
-
-  .btrans-node-info {
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+  .btrans-svg-bus {
     display: none;
   }
 
-  .btrans-beam-col-label {
-    font-size: 9px;
-    margin-bottom: 16px;
+  .btrans-middle-bus-zone {
+    height: auto;
+    padding: 24px 0;
   }
 
-  .btrans-node-circle {
+  .btrans-suppliers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .btrans-cafes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .btrans-cafes-grid > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .btrans-protocols-row {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .btrans-protocol-disc {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Mobile & Small Tablets (768px and below) */
+@media (max-width: 768px) {
+  .btrans-section {
+    padding: 56px 0 76px;
+  }
+
+  .btrans-header-wrap {
+    margin-bottom: 28px;
+  }
+
+  .btrans-canvas {
+    padding: 18px 14px 22px;
+    border-radius: 18px;
+  }
+
+  .btrans-suppliers-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .btrans-middle-bus-zone {
+    height: auto;
+    padding: 20px 0;
+  }
+
+  .btrans-svg-bus {
+    display: none;
+  }
+
+  .btrans-protocols-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 0;
+  }
+
+  .btrans-protocol-node {
+    gap: 4px;
+  }
+
+  .btrans-protocol-disc {
     width: 42px;
     height: 42px;
   }
 
-  .btrans-hub-circle {
-    width: 72px;
-    height: 72px;
+  .btrans-protocol-pill-label {
+    font-size: 9px;
   }
 
-  .btrans-hub-logo {
-    width: 40px;
-    height: 40px;
-    font-size: 19px;
-  }
-
-  .btrans-workflow-strip {
+  .btrans-cafes-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .btrans-section {
-    padding: clamp(60px, 10vh, 100px) 0 clamp(70px, 10vh, 110px);
+    gap: 10px;
   }
 
-  .btrans-beam-stage {
-    min-height: 440px;
-    padding: 24px 10px;
-    border-radius: 20px;
-  }
-
-  .btrans-node-circle {
-    width: 36px;
-    height: 36px;
-  }
-
-  .btrans-node-circle svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .btrans-node-list {
-    gap: 14px;
-  }
-
-  .btrans-hub-circle {
-    width: 60px;
-    height: 60px;
-  }
-
-  .btrans-hub-logo {
-    width: 34px;
-    height: 34px;
-    font-size: 16px;
-  }
-
-  .btrans-hub-title {
-    font-size: 12px;
-  }
-
-  .btrans-hub-badge {
-    font-size: 8px;
-  }
-}
-
-/* ─── 5. Reduced Motion Support ──────────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  .btrans-workflow-card:hover,
-  .btrans-node-row-left:hover,
-  .btrans-node-row-right:hover {
-    transform: none !important;
-  }
-  .btrans-hub-halo {
-    animation: none !important;
+  .btrans-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
