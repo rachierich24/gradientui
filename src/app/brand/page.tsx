@@ -1,6 +1,6 @@
 'use client';
 
-import { BrandNavbar, BrandHero, BrandDashboard, BrandMoat, BrandTransformation, BrandFeatures } from '@/components/brand';
+import { BrandNavbar, BrandHero, BrandDashboard, BrandMoat, BrandTransformation, BrandFeatures, BrandBento } from '@/components/brand';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
 import { G365Footer } from '@/components/landing/G365';
 
@@ -24,6 +24,9 @@ export default function BrandPortalPage() {
 
       {/* ─── 02e. Built for brands: four chapters that assemble as you scroll, from the demand heat map to the network ─── */}
       <BrandFeatures />
+
+      {/* ─── 02f. The whole system: a bento board that flies together on scroll, every tile live ─── */}
+      <BrandBento />
 
       {/* ─── 04. Footer: the same animated gradient wordmark as the main site, in brand purple ─── */}
       <G365Footer />

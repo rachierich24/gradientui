@@ -1,5 +1,5 @@
 // The sample trial behind the brand dashboard (BrandDashboard.tsx, TrialMap.tsx): 120 cafés across
-// Bangalore, the 9 suppliers who carry the kits on delivery runs they already make, and the day each café
+// Delhi NCR, the 9 suppliers who carry the kits on delivery runs they already make, and the day each café
 // got its kit, tried it, rated it and started ordering every week. The 8 named cafés are written out by
 // hand; the rest come from a fixed seed, so the server and the browser build the same map. Café and
 // supplier names are made up and every figure is a sample.
@@ -27,15 +27,15 @@ export type Cafe = {
 
 // neighbourhoods, where their cafés cluster and where their name sits on the map
 export const AREAS = [
-  { name: 'Hebbal', x: 322, y: 70, n: 8, lx: 372, ly: 50 },
-  { name: 'Malleshwaram', x: 248, y: 122, n: 12, lx: 222, ly: 86 },
-  { name: 'Rajajinagar', x: 190, y: 172, n: 6, lx: 170, ly: 204 },
-  { name: 'Indiranagar', x: 402, y: 150, n: 22, lx: 402, ly: 112 },
-  { name: 'Whitefield', x: 552, y: 146, n: 12, lx: 552, ly: 110 },
-  { name: 'Koramangala', x: 364, y: 216, n: 22, lx: 356, ly: 257 },
-  { name: 'HSR Layout', x: 420, y: 276, n: 14, lx: 470, ly: 312 },
-  { name: 'Jayanagar', x: 282, y: 232, n: 14, lx: 252, ly: 196 },
-  { name: 'JP Nagar', x: 262, y: 298, n: 10, lx: 314, ly: 306 },
+  { name: 'Rajouri Garden', x: 322, y: 70, n: 8, lx: 372, ly: 50 },
+  { name: 'Connaught Place', x: 248, y: 122, n: 12, lx: 222, ly: 86 },
+  { name: 'Noida', x: 190, y: 172, n: 6, lx: 170, ly: 204 },
+  { name: 'Hauz Khas', x: 402, y: 150, n: 22, lx: 402, ly: 112 },
+  { name: 'Gurugram', x: 552, y: 146, n: 12, lx: 552, ly: 110 },
+  { name: 'Kamla Nagar', x: 364, y: 216, n: 22, lx: 356, ly: 257 },
+  { name: 'Lajpat Nagar', x: 420, y: 276, n: 14, lx: 470, ly: 312 },
+  { name: 'Saket', x: 282, y: 232, n: 14, lx: 252, ly: 196 },
+  { name: 'Vasant Kunj', x: 262, y: 298, n: 10, lx: 314, ly: 306 },
 ];
 
 const HUB_AT: [string, number, number][] = [
@@ -43,7 +43,7 @@ const HUB_AT: [string, number, number][] = [
   ['Fresh Lane Foods', 336, 186],
   ['Hill Roasters', 224, 214],
   ['Northgate Dairy', 272, 80],
-  ['Kaveri Provisions', 184, 124],
+  ['Yamuna Provisions', 184, 124],
   ['Eastline Supply', 510, 188],
   ['Lakeside Foods', 480, 258],
   ['Southfield Dairy', 212, 300],
@@ -51,14 +51,14 @@ const HUB_AT: [string, number, number][] = [
 ];
 
 const NAMED: Omit<Cafe, 'id' | 'x' | 'y' | 'hub' | 'ship'>[] = [
-  { name: 'Little Brew Room', area: 'Indiranagar', d: 1.9, t: 2.8, r: 4.7, stars: 4.8, o: 10.6, litres: 24 },
-  { name: 'Tiny Tamper', area: 'Indiranagar', d: 4.6, t: 8.7, r: 12.7, stars: 4.5, o: 19.6, litres: 20 },
-  { name: 'Second Crack Coffee', area: 'Koramangala', d: 2.2, t: 3.6, r: 5.8, stars: 4.6, o: 13.4, litres: 18 },
-  { name: 'Slow Sip', area: 'Koramangala', d: 5.4, t: 9.6, r: null, stars: null, o: null, litres: null },
-  { name: 'Morning Ritual', area: 'Jayanagar', d: 2.7, t: 5.6, r: 8.6, stars: 4.9, o: 14.7, litres: 30 },
-  { name: 'Copper Kettle', area: 'HSR Layout', d: 3.1, t: 4.8, r: 7.7, stars: 4.2, o: null, litres: null },
-  { name: 'Brew & Bloom', area: 'Whitefield', d: 3.8, t: 6.7, r: 9.6, stars: 3.8, o: null, litres: null },
-  { name: 'Steam Theory', area: 'Malleshwaram', d: 3.6, t: 7.6, r: 11.6, stars: 4.7, o: 17.8, litres: 12 },
+  { name: 'Little Brew Room', area: 'Hauz Khas', d: 1.9, t: 2.8, r: 4.7, stars: 4.8, o: 10.6, litres: 24 },
+  { name: 'Tiny Tamper', area: 'Hauz Khas', d: 4.6, t: 8.7, r: 12.7, stars: 4.5, o: 19.6, litres: 20 },
+  { name: 'Second Crack Coffee', area: 'Kamla Nagar', d: 2.2, t: 3.6, r: 5.8, stars: 4.6, o: 13.4, litres: 18 },
+  { name: 'Slow Sip', area: 'Kamla Nagar', d: 5.4, t: 9.6, r: null, stars: null, o: null, litres: null },
+  { name: 'Morning Ritual', area: 'Saket', d: 2.7, t: 5.6, r: 8.6, stars: 4.9, o: 14.7, litres: 30 },
+  { name: 'Copper Kettle', area: 'Lajpat Nagar', d: 3.1, t: 4.8, r: 7.7, stars: 4.2, o: null, litres: null },
+  { name: 'Brew & Bloom', area: 'Gurugram', d: 3.8, t: 6.7, r: 9.6, stars: 3.8, o: null, litres: null },
+  { name: 'Steam Theory', area: 'Connaught Place', d: 3.6, t: 7.6, r: 11.6, stars: 4.7, o: 17.8, litres: 12 },
 ];
 
 // the city's outline, smoothed into curves below
@@ -235,7 +235,7 @@ const rateEvent = (name: string, meta: string): TrialEvent => {
 };
 const EVENT_LIST: TrialEvent[] = [
   { id: 'ship', day: 1.05, icon: 'truck', title: `${KITS} kits left ${HUBS.length} suppliers`, meta: 'On delivery runs they already make' },
-  { id: 'first', day: named('Little Brew Room').d, icon: 'box', title: 'Kit delivered to Little Brew Room', meta: `Indiranagar · via ${HUBS[named('Little Brew Room').hub].name}` },
+  { id: 'first', day: named('Little Brew Room').d, icon: 'box', title: 'Kit delivered to Little Brew Room', meta: `Hauz Khas · via ${HUBS[named('Little Brew Room').hub].name}` },
   rateEvent('Little Brew Room', '“Holds a rosetta better than ours”'),
   { id: 'all', day: allIn, icon: 'check', title: `All ${KITS} kits delivered`, meta: 'No couriers, no extra trips' },
   rateEvent('Copper Kettle', 'Wants a better price on a case'),

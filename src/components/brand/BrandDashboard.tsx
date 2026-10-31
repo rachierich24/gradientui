@@ -118,7 +118,7 @@ const Island = memo(function Island({ ev, done }: { ev: TrialEvent | null; done:
             </motion.span>
           ) : (
             <motion.span key={done ? 'done' : 'idle'} layout="position" className={`bdb-island-idle${done ? ' is-done' : ''}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-              <i />{done ? 'Trial complete' : 'Live · Bangalore'}
+              <i />{done ? 'Trial complete' : 'Live · Delhi NCR'}
             </motion.span>
           )}
         </AnimatePresence>
@@ -393,7 +393,7 @@ export function BrandDashboard() {
                   <span className="bdb-logo" aria-hidden="true"><Icon d={OAT} /></span>
                   <span className="bdb-product">
                     <b>Barista Oat Milk</b>
-                    <small>Bangalore trial · {KITS} kits · {HUBS.length} suppliers</small>
+                    <small>Delhi NCR trial · {KITS} kits · {HUBS.length} suppliers</small>
                   </span>
                   <em className="bdb-sample">Sample figures</em>
                 </header>

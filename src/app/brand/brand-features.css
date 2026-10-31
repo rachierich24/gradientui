@@ -262,6 +262,29 @@
 .bfx-aud-row { position: absolute; left: 10px; right: 10px; top: calc(var(--y) * 1px); height: 40px; border-radius: 10px; background: #FAF8FE; box-shadow: inset 0 0 0 1px #F1ECF9; }
 .bfx-aud-more { position: absolute; left: 20px; bottom: 16px; font-size: 12px; font-weight: 550; color: var(--b-ink-3); }
 
+/* the reach list, refined: names set in the page's type with an initial, places marked, kinds left quiet, and
+   each status turning from verified to sent, row by row, once the campaign goes live (--sl) */
+.bfx-s-reach .bfx-tag { --sl: clamp(0, (var(--u) - 0.73 - var(--row, 0) * 0.025) * 22, 1); }
+.bfx-s-reach .t-w { gap: 9px; height: 30px; padding: 0 12px 0 4px; border-radius: 10px; font-family: inherit; font-size: 13.5px; font-weight: 650; letter-spacing: -0.01em; text-transform: none; }
+.bfx-s-reach .t-w i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; background: #F3EEFD; font-style: normal; font-size: 11px; font-weight: 750; color: #5A2CBE; }
+.bfx-s-reach .t-l { gap: 7px; font-family: inherit; font-size: 12.5px; font-weight: 650; letter-spacing: 0; text-transform: none; box-shadow: none; }
+.bfx-s-reach .t-l:not(.bfx-nocall)::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #7C4DDB; box-shadow: 0 0 0 3px rgba(124, 77, 219, 0.16); }
+.bfx-s-reach .t-s { padding: 0; background: none; font-family: inherit; font-size: 12.5px; font-weight: 550; letter-spacing: 0; text-transform: none; color: var(--b-ink-3); box-shadow: none; }
+.bfx-s-reach .t-d { display: grid; place-items: center start; min-width: 104px; overflow: hidden; background: #F3EEFD; color: #5A2CBE; box-shadow: inset 0 0 0 1px #E6DCFA; }
+.bfx-s-reach .t-d::before { content: ""; position: absolute; inset: 0; background: #2B1760; opacity: var(--sl); }
+.bfx-s-reach .t-d em { grid-area: 1 / 1; position: relative; font-style: normal; }
+.bfx-s-reach .t-d .is-a { opacity: calc(1 - var(--sl)); }
+.bfx-s-reach .t-d .is-b { opacity: var(--sl); color: #fff; transform: translateY(calc((1 - var(--sl)) * 6px)); }
+.bfx-s-reach .t-d .is-b::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%; background: #B79DF7; box-shadow: 0 0 0 3px rgba(183, 157, 247, 0.25); vertical-align: 1px; }
+.bfx-s-reach .bfx-aud-row { --sl: clamp(0, (var(--u) - 0.73 - var(--row, 0) * 0.025) * 22, 1); background: rgba(124, 77, 219, calc(0.02 + var(--sl) * 0.05)); box-shadow: inset 0 0 0 1px rgba(124, 77, 219, calc(0.07 + var(--sl) * 0.06)); }
+.bfx-aud-head span { display: inline-flex; align-items: center; gap: 5px; }
+.bfx-aud-head svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bfx-aud-more { display: flex; align-items: center; gap: 10px; }
+.bfx-aud-more > span { display: flex; }
+.bfx-aud-more i { width: 18px; height: 18px; margin-left: -6px; border-radius: 50%; background: #E6DCFA; box-shadow: 0 0 0 2px #fff; }
+.bfx-aud-more i:first-child { margin-left: 0; background: #C9B6F6; }
+.bfx-aud-more i:nth-child(2) { background: #D6C7F8; }
+
 .bfx-launch { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 64px; padding: 0 10px 0 20px; border-radius: 18px; background: #15111D; color: #fff; box-shadow: 0 30px 50px -28px rgba(21, 17, 29, 0.8); }
 .bfx-launch small { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
 .bfx-launch b { display: block; margin-top: 4px; font-size: 14px; font-weight: 650; }
@@ -303,6 +326,26 @@
 .bfx-rating p { margin: 6px 0 0; font-size: 14px; line-height: 1.45; color: var(--b-ink); }
 .bfx-rating small { display: block; margin-top: 6px; font-size: 11.5px; color: var(--b-ink-3); }
 
+/* kits, refined: what the road is doing, the step that's next (pulsing), and the weekly order as the payoff */
+.bfx-road-say { --dv: clamp(0, (var(--ru) - 0.97) * 40, 1); position: absolute; left: 50%; top: 13px; display: grid; transform: translateX(-50%); font-size: 11px; font-weight: 600; white-space: nowrap; color: var(--b-ink-3); }
+.bfx-road-say em, .bfx-steps-live em { grid-area: 1 / 1; font-style: normal; text-align: center; }
+.bfx-road-say .is-a { opacity: calc(1 - var(--dv)); }
+.bfx-road-say .is-b { opacity: var(--dv); color: #5A2CBE; }
+.bfx-steps-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.bfx-steps-live { --win: clamp(0, (var(--u) - 0.72) * 25, 1); display: grid; height: 24px; padding: 0 9px; border-radius: 8px; background: #F3EEFD; font-size: 11px; font-weight: 700; line-height: 24px; color: #5A2CBE; }
+.bfx-steps .bfx-steps-live em { font-family: inherit; font-size: 11px; font-weight: 700; line-height: 24px; letter-spacing: 0; color: #5A2CBE; }
+.bfx-steps-live .is-a { opacity: calc(1 - var(--win)); }
+.bfx-steps-live .is-a::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: #7C4DDB; vertical-align: 1px; animation: bfxLive 1.6s ease-in-out infinite; }
+.bfx-steps-live .is-b { opacity: var(--win); }
+.bfx-steps li { --pre: clamp(0, (var(--u) - var(--at) + 0.13) * 25, 1); }
+.bfx-steps i::before { content: ""; position: absolute; inset: -5px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(124, 77, 219, 0.4); opacity: calc(var(--pre) * (1 - var(--done))); animation: bfxNext 1.6s ease-in-out infinite; }
+.bfx-steps li:last-child { margin: 4px -10px 0; padding: 0 10px; border-radius: 12px; background: rgba(124, 77, 219, calc(var(--done) * 0.08)); }
+.bfx-steps li:last-child span { font-weight: 700; color: #4322C2; }
+.bfx-rating small { display: flex; align-items: center; gap: 7px; }
+.bfx-rating small i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #F3EEFD; font-style: normal; font-size: 9.5px; font-weight: 750; color: #5A2CBE; }
+@keyframes bfxLive { 50% { opacity: 0.35; } }
+@keyframes bfxNext { 50% { transform: scale(1.18); } }
+
 /* ---------- 4. network ---------- */
 .bfx-wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; opacity: clamp(0, var(--k) * 4, 1); }
 .bfx-wire-bg { fill: none; stroke: #E4DCF2; stroke-width: 1.5; stroke-dasharray: 4 5; }
@@ -314,6 +357,21 @@
 .bfx-hub small { margin-top: 2px; font-size: 11.5px; color: var(--b-ink-3); }
 .bfx-s-network .bfx-at { transform: translate(-50%, -50%); }
 .bfx-pill { position: relative; left: auto; top: auto; height: 32px; padding: 0 14px; border-radius: 999px; }
+
+/* network, refined: every node one white chip (icon, what it is, a sample figure); pointing at one lights its line */
+.bfx-s-network .bfx-pill { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px 0 8px; border-radius: 14px; background: #fff; font-family: inherit; letter-spacing: 0; text-transform: none; color: var(--b-ink); box-shadow: 0 0 0 1px rgba(43, 23, 96, 0.08), 0 14px 26px -16px rgba(43, 23, 96, 0.4); cursor: default; transition: box-shadow 0.3s, translate 0.3s; }
+.bfx-s-network .bfx-pill.is-on { translate: 0 -2px; box-shadow: 0 0 0 1.5px #7C4DDB, 0 18px 30px -16px rgba(124, 77, 219, 0.55); }
+.bfx-s-network .bfx-pill:focus-visible { outline: 2px solid #7C4DDB; outline-offset: 3px; }
+.bfx-s-network .bfx-pill i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: #F3EEFD; color: #6A3BC8; transition: background 0.3s, color 0.3s; }
+.bfx-s-network .bfx-pill.is-on i { background: #2B1760; color: #fff; }
+.bfx-s-network .bfx-pill svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.bfx-s-network .bfx-pill b { display: block; font-size: 13px; font-weight: 700; }
+.bfx-s-network .bfx-pill small { display: block; margin-top: 2px; font-size: 11px; font-weight: 550; color: var(--b-ink-3); }
+.bfx-wire { transition: stroke 0.3s, opacity 0.3s, stroke-width 0.3s; }
+.bfx-wires.has-on .bfx-wire { opacity: 0.18; }
+.bfx-wires.has-on .bfx-wire.is-on { opacity: 1; stroke: #7C4DDB; stroke-width: 2.2; }
+.bfx-hub small { animation: braIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes braIn { from { opacity: 0; transform: translateY(4px); } }
 
 @keyframes bfxProg { to { transform: none; } }
 @keyframes bfxBlink { 50% { box-shadow: 0 0 0 6px rgba(182, 160, 250, 0.04); } }
@@ -371,11 +429,18 @@
   .bdg-rank button { grid-template-columns: minmax(0, 1fr) 30px; height: 30px; }
   .bdg-rank i { display: none; }
   .bfx-launch-btn { min-width: 0; padding: 0 14px; }
+  .bfx-s-reach .t-w { padding-left: 10px; font-size: 12.5px; }
+  .bfx-s-reach .t-w i, .bfx-s-reach .t-l::before { display: none; }
+  .bfx-s-reach .t-l { font-size: 12px; }
+  .bfx-s-reach .t-d { min-width: 0; }
+  .bfx-s-network .bfx-pill { height: 34px; padding: 0 12px; border-radius: 10px; }
+  .bfx-s-network .bfx-pill i, .bfx-s-network .bfx-pill small { display: none; }
+  .bfx-s-network .bfx-pill b { font-size: 12px; }
   .bfx-launch b { font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bfx-text, .bdg-pin, .bdg-t { transition: none; }
-  .bfx-kit img, .bfx-hub-mark, .bdg-ring { animation: none; }
+  .bfx-kit img, .bfx-hub-mark, .bdg-ring, .bfx-steps i::before, .bfx-steps-live .is-a::before, .bfx-hub small { animation: none; }
   .bdg-ring, .bfx-spark { display: none; }
 }

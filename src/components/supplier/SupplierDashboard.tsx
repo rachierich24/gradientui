@@ -11,6 +11,7 @@ import {
   init, reducer, rupees, orderTotal, itemsSummary, isOpen, STEPS, KPI, SERIES, BASE_ESCROW, INCOMING,
   type Action, type State, type Status, type Channel as ChannelT, type View, type Range, type Filter, type Order, type Van, type FeedKind, type Series,
 } from './supplier-dashboard-data';
+import { niceMax, smooth } from './chart-utils';
 
 const ui = Geist({ subsets: ['latin'], variable: '--font-ui', display: 'swap' });
 const uiMono = Geist_Mono({ subsets: ['latin'], variable: '--font-ui-mono', display: 'swap' });
@@ -180,28 +181,7 @@ function PageHead({ title, sub, right }: { title: string; sub: string; right?: R
 }
 
 /* ───────────── Home ───────────── */
-const niceMax = (m: number) => { const p = 10 ** Math.floor(Math.log10(Math.max(1, m))); return Math.ceil((m / p) * 2) / 2 * p; };
 const compact = (n: number) => (n >= 1e5 ? `₹${+(n / 1e5).toFixed(1)}L` : n >= 1e3 ? `₹${Math.round(n / 1e3)}K` : `₹${n}`);
-// monotone cubic spline (no overshoot), as in d3's curveMonotoneX
-function smooth(pts: [number, number][]) {
-  const n = pts.length;
-  if (n < 2) return '';
-  const dx: number[] = [], m: number[] = [], t: number[] = [];
-  for (let i = 0; i < n - 1; i++) { dx[i] = pts[i + 1][0] - pts[i][0]; m[i] = (pts[i + 1][1] - pts[i][1]) / (dx[i] || 1); }
-  t[0] = m[0]; t[n - 1] = m[n - 2];
-  for (let i = 1; i < n - 1; i++) t[i] = m[i - 1] * m[i] <= 0 ? 0 : (m[i - 1] + m[i]) / 2;
-  for (let i = 0; i < n - 1; i++) {
-    if (m[i] === 0) { t[i] = t[i + 1] = 0; continue; }
-    const a = t[i] / m[i], b = t[i + 1] / m[i], h = a * a + b * b;
-    if (h > 9) { const k = 3 / Math.sqrt(h); t[i] = k * a * m[i]; t[i + 1] = k * b * m[i]; }
-  }
-  let path = `M${pts[0][0]},${pts[0][1]}`;
-  for (let i = 0; i < n - 1; i++) {
-    const h = dx[i] / 3;
-    path += `C${pts[i][0] + h},${pts[i][1] + h * t[i]} ${pts[i + 1][0] - h},${pts[i + 1][1] - h * t[i + 1]} ${pts[i + 1][0]},${pts[i + 1][1]}`;
-  }
-  return path;
-}
 
 function RevenueChart({ series, extra }: { series: Series; extra: number }) {
   const box = useRef<HTMLDivElement>(null);

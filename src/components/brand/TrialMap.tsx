@@ -1,5 +1,5 @@
 'use client';
-// The live map inside the brand dashboard (BrandDashboard.tsx): Bangalore as a field of dots, the 9
+// The live map inside the brand dashboard (BrandDashboard.tsx): Delhi NCR as a field of dots, the 9
 // suppliers as small squares and the 120 cafés in the trial as faint rings. Nothing here re-renders as the
 // trial plays; the moving parts are CSS reading --day from the dashboard. Each kit's route draws itself from
 // its supplier while the kit is on the way, with a bright dot riding its front, and each café fills in as
@@ -81,7 +81,7 @@ export const TrialMap = memo(function TrialMap({ sx, ms, hot, onPoint }: Props) 
         viewBox={g.viewBox}
         preserveAspectRatio="xMidYMid meet"
         role="group"
-        aria-label={`Map of the trial: ${CAFES.length} cafés and ${HUBS.length} suppliers across Bangalore`}
+        aria-label={`Map of the trial: ${CAFES.length} cafés and ${HUBS.length} suppliers across Delhi NCR`}
         onPointerOver={pick}
         onPointerLeave={() => onPoint(null)}
         onFocus={pick}

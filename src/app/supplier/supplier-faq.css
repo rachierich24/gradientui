@@ -1,0 +1,91 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Supplier FAQ, "ask anything" (components/supplier/SupplierFaq.tsx)
+   One ask box, the answer as a short thread under it, and two rows of questions
+   looping underneath (pause on hover). Same quiet language as the rest of the page.
+───────────────────────────────────────────────────────────────────────── */
+.sfq { overflow-x: clip; --q-ink: #111813; --q-ink-2: #4B564F; --q-ink-3: #7B857F; --q-line: #E5EAE7; --q-green: #15934A; --q-soft: #EAF6EF; }
+.sfq *, .sfq *::before, .sfq *::after { box-sizing: border-box; }
+:where(.sfq) button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.sfq button:focus-visible, .sfq input:focus-visible { outline: 2px solid var(--q-green); outline-offset: 2px; }
+
+.sfq-box { max-width: 760px; margin: 0 auto; }
+
+/* ask box */
+.sfq-ask { display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 8px 0 18px; border-radius: 16px; background: #fff; border: 1px solid var(--q-line); box-shadow: 0 1px 2px rgba(17, 24, 19, 0.04), 0 18px 40px -24px rgba(13, 60, 32, 0.3); transition: border-color .2s, box-shadow .2s; }
+.sfq-ask.is-focus { border-color: rgba(21, 147, 74, 0.55); box-shadow: 0 0 0 4px rgba(31, 169, 82, 0.12), 0 18px 40px -24px rgba(13, 60, 32, 0.3); }
+.sfq-ico { flex: none; color: var(--q-ink-3); }
+.sfq-ask input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none !important; background: none; font: inherit; font-size: 16px; color: var(--q-ink); }
+.sfq-ask input::placeholder { color: #9AA59F; }
+.sfq-ask button { flex: none; display: inline-flex; align-items: center; gap: 7px; height: 44px; padding: 0 16px; border-radius: 11px; background: var(--q-ink); color: #fff; font-size: 14px; font-weight: 600; transition: background .2s, opacity .2s, transform .15s; }
+.sfq-ask button:hover:not(:disabled) { background: #1E2A22; }
+.sfq-ask button:active:not(:disabled) { transform: scale(.97); }
+.sfq-ask button:disabled { opacity: .35; cursor: default; }
+
+/* the answer */
+.sfq-thread { display: grid; gap: 12px; margin-top: 18px; animation: sfq-rise .35s cubic-bezier(.2, .8, .2, 1) backwards; }
+.sfq-you { display: flex; justify-content: flex-end; }
+.sfq-you span { max-width: 85%; padding: 10px 14px; border-radius: 14px 14px 4px 14px; background: var(--q-ink); color: #fff; font-size: 14.5px; line-height: 1.45; }
+.sfq-reply { display: flex; gap: 12px; align-items: flex-start; }
+.sfq-mark { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--q-green); color: #fff; font-size: 14px; font-weight: 800; }
+.sfq-reply-body { flex: 1; min-width: 0; padding: 14px 16px; border-radius: 4px 14px 14px 14px; background: #fff; border: 1px solid var(--q-line); }
+.sfq-reply-body > p, .sfq-more > p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--q-ink); }
+.sfq-caret { display: inline-block; width: 7px; height: 15px; margin-left: 2px; vertical-align: -2px; border-radius: 2px; background: var(--q-green); animation: sfq-blink 1s steps(2) infinite; }
+.sfq-dots { display: inline-flex; gap: 5px; padding: 6px 0; }
+.sfq-dots i { width: 7px; height: 7px; border-radius: 50%; background: #B8C2BC; animation: sfq-dot 1s ease-in-out infinite; }
+.sfq-dots i:nth-child(2) { animation-delay: .15s; }
+.sfq-dots i:nth-child(3) { animation-delay: .3s; }
+
+.sfq-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #F0F3F1; font-size: 12.5px; color: var(--q-ink-3); opacity: 0; transition: opacity .3s; }
+.sfq-meta.is-on { opacity: 1; }
+.sfq-src { display: inline-flex; align-items: center; gap: 6px; }
+.sfq-src::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--q-green); }
+.sfq-vote { display: inline-flex; align-items: center; gap: 4px; }
+.sfq-vote button { width: 28px; height: 28px; border-radius: 8px; font-size: 13px; filter: grayscale(1); opacity: .6; transition: background .15s, opacity .15s, filter .15s; }
+.sfq-vote button:hover { background: #F3F6F4; opacity: 1; }
+.sfq-vote button[aria-pressed="true"] { background: var(--q-soft); filter: none; opacity: 1; }
+
+.sfq-more { display: grid; gap: 10px; margin-top: 4px; }
+.sfq-meta + .sfq-more { margin-top: 12px; }
+.sfq-team { display: flex; flex-wrap: wrap; gap: 8px; }
+.sfq-team input { flex: 1; min-width: 200px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--q-line); font: inherit; font-size: 14px; color: var(--q-ink); }
+.sfq-team input:focus { outline: none; border-color: rgba(21, 147, 74, 0.55); box-shadow: 0 0 0 3px rgba(31, 169, 82, 0.12); }
+.sfq-team button { height: 40px; padding: 0 14px; border-radius: 10px; background: var(--q-green); color: #fff; font-size: 13.5px; font-weight: 600; }
+.sfq-team button:disabled { opacity: .6; }
+.sfq-err { width: 100%; font-size: 12.5px; color: #B4533A; }
+.sfq-sent { margin: 8px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--q-soft); font-size: 13.5px; color: var(--q-ink-2); }
+
+.sfq-related { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; animation: sfq-rise .35s ease backwards; }
+.sfq-related small { width: 100%; font-size: 12px; font-weight: 600; color: var(--q-ink-3); }
+.sfq-related button { padding: 7px 11px; border-radius: 999px; border: 1px solid var(--q-line); font-size: 13px; color: var(--q-ink-2); text-align: left; transition: border-color .15s, background .15s, color .15s; }
+.sfq-related button:hover { border-color: rgba(21, 147, 74, 0.45); background: var(--q-soft); color: var(--q-ink); }
+
+/* the loop of questions */
+.sfq-loop { display: grid; gap: 10px; margin: 44px calc(50% - 50vw) 0; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.sfq-row { overflow: hidden; }
+.sfq-track { display: flex; gap: 10px; width: max-content; animation: sfq-marquee 70s linear infinite; }
+.sfq-row.is-rev .sfq-track { animation-direction: reverse; animation-duration: 80s; }
+.sfq-loop:hover .sfq-track, .sfq-loop:focus-within .sfq-track, .sfq-loop.is-paused .sfq-track { animation-play-state: paused; }
+.sfq-chip { display: inline-flex; align-items: center; gap: 9px; flex: none; height: 42px; padding: 0 16px 0 6px; border-radius: 999px; background: #fff; border: 1px solid var(--q-line); font-size: 14px; color: var(--q-ink-2); white-space: nowrap; transition: border-color .2s, color .2s, transform .2s, box-shadow .2s; }
+.sfq-chip .t { padding: 5px 9px; border-radius: 999px; background: #F2F5F3; font-size: 11.5px; font-weight: 600; color: var(--q-ink-3); transition: background .2s, color .2s; }
+.sfq-chip:hover { border-color: rgba(21, 147, 74, 0.45); color: var(--q-ink); transform: translateY(-2px); box-shadow: 0 10px 22px -14px rgba(13, 60, 32, 0.45); }
+.sfq-chip:hover .t { background: var(--q-soft); color: var(--q-green); }
+
+@keyframes sfq-marquee { to { transform: translateX(-50%); } }
+@keyframes sfq-rise { from { opacity: 0; transform: translateY(8px); } }
+@keyframes sfq-blink { 50% { opacity: 0; } }
+@keyframes sfq-dot { 0%, 100% { opacity: .35; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+
+@media (max-width: 640px) {
+  .sfq-ask { height: 54px; padding-left: 14px; }
+  .sfq-ask input { font-size: 15px; }
+  .sfq-ask button { height: 40px; padding: 0 12px; }
+  .sfq-ask button span { display: none; }
+  .sfq-reply-body { padding: 12px 13px; }
+  .sfq-mark { width: 26px; height: 26px; font-size: 12px; }
+  .sfq-chip { height: 38px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sfq-track { animation: none; }
+  .sfq-row { overflow-x: auto; }
+  .sfq-thread, .sfq-related, .sfq-caret, .sfq-dots i { animation: none; }
+}

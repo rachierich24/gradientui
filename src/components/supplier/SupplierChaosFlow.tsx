@@ -381,7 +381,7 @@ export function SupplierChaosFlow() {
                       <circle r="22" fill="url(#sfl-rim)" />
                       <circle r="15" fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
                       {[0, 60, 120, 180, 240, 300].map((deg) => (
-                        <circle key={deg} r="1.9" cx={Math.cos((deg * Math.PI) / 180) * 10} cy={Math.sin((deg * Math.PI) / 180) * 10} fill="#39433D" />
+                        <circle key={deg} r="1.9" cx={+(Math.cos((deg * Math.PI) / 180) * 10).toFixed(3)} cy={+(Math.sin((deg * Math.PI) / 180) * 10).toFixed(3)} fill="#39433D" />
                       ))}
                       <circle r="5.5" fill="#46514A" />
                     </g>

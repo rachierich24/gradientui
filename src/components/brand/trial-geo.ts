@@ -1,26 +1,26 @@
-// Where the sample trial sits on a real map of Bangalore, for the 3D map (TrialMap3D.tsx). Kilometres from the
+// Where the sample trial sits on a real map of Delhi NCR, for the 3D map (TrialMap3D.tsx). Kilometres from the
 // map's centre, east = +x and south = +z, so north runs into the screen. The streets and lakes in
-// public/brand/blr-map.bin use the same projection: OpenStreetMap's motorways down to tertiary roads, and lakes
+// public/brand/del-map.bin use the same projection: OpenStreetMap's motorways down to tertiary roads, and lakes
 // over 2 hectares, simplified below a pixel and stored in decametres (© OpenStreetMap contributors). Each
 // neighbourhood sits at its real centre; its cafés keep their places around it from the flat layout in
 // trial-data.ts, scaled to kilometres, and each supplier keeps its place beside the cafés it serves.
 import { AREAS, CAFES, HUBS } from './trial-data';
 
-export const MAP_FILE = '/brand/blr-map.bin';
-const LAT0 = 12.968, LON0 = 77.648;
+export const MAP_FILE = '/brand/del-map.bin';
+const LAT0 = 28.575, LON0 = 77.21;
 const KX = 111.32 * Math.cos((LAT0 * Math.PI) / 180), KZ = 110.57;
 const project = (lat: number, lon: number) => [(lon - LON0) * KX, -(lat - LAT0) * KZ] as const;
 
 const CENTRES: Record<string, [number, number]> = {
-  Hebbal: [13.0358, 77.597],
-  Malleshwaram: [13.002, 77.569],
-  Rajajinagar: [12.989, 77.552],
-  Indiranagar: [12.975, 77.64],
-  Whitefield: [12.97, 77.745],
-  Koramangala: [12.9352, 77.6245],
-  'HSR Layout': [12.912, 77.644],
-  Jayanagar: [12.929, 77.584],
-  'JP Nagar': [12.904, 77.584],
+  'Rajouri Garden': [28.6415, 77.1209],
+  'Connaught Place': [28.6315, 77.2167],
+  Noida: [28.570, 77.326],
+  'Hauz Khas': [28.5494, 77.2001],
+  Gurugram: [28.495, 77.089],
+  'Kamla Nagar': [28.6814, 77.2066],
+  'Lajpat Nagar': [28.5677, 77.2433],
+  Saket: [28.5245, 77.2066],
+  'Vasant Kunj': [28.52, 77.158],
 };
 const K = 0.035; // kilometres per unit of the flat layout
 

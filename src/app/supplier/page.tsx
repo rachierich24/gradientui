@@ -5,6 +5,7 @@ import {
   SupplierNavbar,
   SupplierHeroScene,
   SupplierChaosFlow,
+  SupplierGrowth,
   SupplierBentoFeatures,
   SupplierBillSyncAudit,
   SupplierLogos,
@@ -51,7 +52,10 @@ export default function SupplierPortalPage() {
       {/* ─── 04. Five-Tile Asymmetric Bento Feature Section (Core Supplier Capabilities) ─── */}
       <SupplierBentoFeatures />
 
-      {/* ─── 04b. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
+      {/* ─── 04b. Results: what selling through Gradient did to a supplier's month (after order history) ─── */}
+      <SupplierGrowth />
+
+      {/* ─── 04c. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
       <SupplierBillSyncAudit />
 
       {/* ─── 05. Relume-Style Partner Logo Ticker (Section Immediately after Dashboard) ─── */}

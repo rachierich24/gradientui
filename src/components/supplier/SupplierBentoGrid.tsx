@@ -59,7 +59,7 @@ const CARDS: CardDef[] = [
     render: (run, still) => <WhatsAppCard run={run} still={still} />,
   },
   {
-    area: 'history', label: 'Order history and bill sync', title: 'Order history', muted: 'and bill sync, all in one place',
+    area: 'history', label: 'Order history', title: 'Order history', muted: 'and every bill, searchable in one place',
     desc: 'Every order, invoice and payment in one searchable history. Bills sync to your accounting software the moment they are raised, and payments are matched to the right invoice on their own.',
     points: ['Every order and invoice, searchable in seconds', 'Bills synced to Tally and Zoho Books automatically', 'UPI and bank payments matched to invoices', 'Payment reminders sent on WhatsApp for dues'],
     render: (run, still) => <HistoryCard run={run} still={still} />,

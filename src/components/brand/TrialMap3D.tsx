@@ -1,5 +1,5 @@
 'use client';
-// The live map inside the brand dashboard (BrandDashboard.tsx), in 3D: Bangalore at night, seen from above at a
+// The live map inside the brand dashboard (BrandDashboard.tsx), in 3D: Delhi NCR at night, seen from above at a
 // tilt, its real streets a fine violet web and its lakes dark. The trial plays on it as the day moves: kits arc
 // out from the 9 suppliers to the 120 cafés, each café brightens as it's delivered, tried and rated, and a
 // column of light rises from every café that orders every week, as tall as its weekly litres, so by day 21 the
