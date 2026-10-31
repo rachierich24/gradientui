@@ -4,6 +4,7 @@ export { BrandPlanner } from './BrandPlanner';
 export { BrandDashboard } from './BrandDashboard';
 export { BrandMoat } from './BrandMoat';
 export { BrandTransformation } from './BrandTransformation';
+export { BrandFeatures } from './BrandFeatures';
 export { BrandMarketing } from './BrandMarketing';
 export { FoldText } from './FoldText';
 export { CrystalizedBall } from './CrystalizedBall';

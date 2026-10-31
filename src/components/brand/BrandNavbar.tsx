@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { BorderBeam } from '@/components/ui/border-beam';
 
 const LINKS = [
-  ['How it works', '#journey'],
+  ['How it works', '#capabilities'],
   ['Platform', '#platform'],
   ['Results', '#results'],
   ['FAQ', '#faq'],

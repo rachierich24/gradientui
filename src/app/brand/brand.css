@@ -55,7 +55,7 @@
 .brd-nav.is-dark .brd-btn-dark:hover { background: #2B1760; }
 .brd-nav, .brd-nav .brd-logo, .brd-nav .brd-nav-links a, .brd-nav .brd-login, .brd-nav .brd-btn-dark { transition: background .3s, color .3s, box-shadow .3s; }
 
-/* hero: clean white band with interactive <CrystalizedBall /> in the brand purple */
+/* hero: clean white band */
 .brd-hero { --b-night: #FFFFFF; background: #FFFFFF; position: relative; overflow: visible; }
 .brd-band {
   height: auto;
@@ -79,18 +79,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
-}
-
-.brd-hero-ball-bg {
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -42%);
-  width: clamp(100px, 17vw, 240px);
-  height: clamp(100px, 17vw, 240px);
-  pointer-events: auto;
-  z-index: 0;
   overflow: visible;
 }
 

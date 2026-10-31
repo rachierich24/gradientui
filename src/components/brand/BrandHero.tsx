@@ -1,10 +1,9 @@
 'use client';
 // Brand Portal hero: Central editorial design.
 // "Gradient for Brands" with "Gradient" medium, "for" small, and "BRANDS" large typography
-// on a clean white background with interactive <CrystalizedBall /> in the brand purple.
+// on a clean white background.
 import { useEffect, useRef } from 'react';
 import { reduced } from './shared';
-import CrystalizedBall from './CrystalizedBall';
 import FoldText from './FoldText';
 
 export function BrandHero() {
@@ -48,11 +47,8 @@ export function BrandHero() {
               <span className="brd-txt-for">for</span>
             </div>
 
-            {/* The giant BRANDS with FoldText and CrystalizedBall centered right behind 'AN' */}
+            {/* The giant BRANDS with FoldText */}
             <div className="brd-brands-stage">
-              <div className="brd-hero-ball-bg" aria-hidden="true">
-
-              </div>
               <FoldText
                 text="BRANDS"
                 foldStyle="paper"

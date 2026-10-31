@@ -251,6 +251,21 @@ const EVENT_LIST: TrialEvent[] = [
 ];
 export const EVENTS = EVENT_LIST.sort((a, b) => a.day - b.day);
 
+/** The day the first café starts ordering every week. */
+export const FIRST_ORDER = firstOrder;
+
+/**
+ * Gradient's forecast of the weekly orders, made from each area's demand before the trial began: a band of
+ * litres a week that opens when reorders can first start and ends at 370–460 L. The cafés end up ordering
+ * 420 L, inside it all the way.
+ */
+export const FORECAST = { from: 9.4, lo: 370, hi: 460 };
+export function forecastAt(day: number) {
+  const x = Math.min(1, Math.max(0, (day - FORECAST.from) / (DAYS - FORECAST.from))), k = x * x * (3 - 2 * x);
+  const mid = ((FORECAST.lo + FORECAST.hi) / 2) * k, half = ((FORECAST.hi - FORECAST.lo) / 2) * Math.sqrt(k);
+  return [Math.max(0, mid - half), mid + half] as const;
+}
+
 export const MARKS = [
   { day: 1, label: 'Kits ship' },
   { day: Math.ceil(allIn), label: 'All delivered' },
