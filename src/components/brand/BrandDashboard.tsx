@@ -937,49 +937,15 @@ export function BrandDashboard() {
             <div className="bdb-header-row">
               <div className="bdb-title-wrap">
                 <h2 className="bdb-title">
-                  Watch your trial turn into <span className="bdb-title-purple">weekly orders.</span>
+                  Live analytics <span className="bdb-title-purple">dashboard for brands.</span>
                 </h2>
                 <p className="bdb-sub">
-                  Every kit, every barista's verdict, every café that starts ordering — all the signals behind your brand's growth, in one place.
+                  Track trial dispatches, barista sensory ratings, and weekly reorders across your café network in real time.
                 </p>
               </div>
 
               {/* Trajectory Phase Switcher (Interactive Pills) */}
-              <div className="bdb-bay-switcher" role="tablist" aria-label="Dashboard Motion Trajectory">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={motionPhase === 'entrance'}
-                  className={`bdb-bay-btn ${motionPhase === 'entrance' ? 'is-active' : ''}`}
-                  onClick={() => jumpToPhase('entrance')}
-                  title="Coming from the left side of the screen"
-                >
-                  <span className="bdb-bay-dot" />
-                  <span>← From Left</span>
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={motionPhase === 'center'}
-                  className={`bdb-bay-btn ${motionPhase === 'center' ? 'is-active' : ''}`}
-                  onClick={() => jumpToPhase('center')}
-                  title="Centered on screen"
-                >
-                  <span className="bdb-bay-dot" />
-                  <span>● In Center</span>
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={motionPhase === 'exit'}
-                  className={`bdb-bay-btn ${motionPhase === 'exit' ? 'is-active' : ''}`}
-                  onClick={() => jumpToPhase('exit')}
-                  title="Exiting towards the right side of the screen"
-                >
-                  <span className="bdb-bay-dot" />
-                  <span>Exit Right →</span>
-                </button>
-              </div>
+             
             </div>
           </div>
 
