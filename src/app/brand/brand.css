@@ -27,9 +27,30 @@
 .brd-btn-ghost { background: #fff; color: var(--b-ink); border: 1px solid var(--b-line); }
 .brd-btn-ghost:hover { border-color: #D9D1E8; background: var(--b-sub); }
 
-/* navbar */
-.brd-nav { position: fixed; inset: 0 0 auto; z-index: 90; height: 68px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(14px); transition: box-shadow .3s; }
-.brd-nav.is-scrolled { box-shadow: 0 4px 20px rgba(21, 17, 29, 0.05); }
+/* navbar: transparent over hero section, blurred white frosted backdrop once scrolled down */
+.brd-nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 90;
+  height: 68px;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  border-bottom: 1px solid transparent;
+  transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              -webkit-backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brd-nav.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(21, 17, 29, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
 .brd-nav-in { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brd-logo { display: flex; align-items: center; gap: 12px; color: #000; text-decoration: none; }
 .brd-logo-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: #000; color: #fff; font-size: 17px; font-weight: 850; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
@@ -42,9 +63,22 @@
 .brd-login { padding: 8px 14px; border-radius: 8px; font-size: 14.5px; font-weight: 600; color: var(--b-ink); text-decoration: none; }
 .brd-login:hover { background: rgba(0, 0, 0, 0.04); }
 
-/* nav over the light hero */
-.brd-nav.is-dark { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06); }
-.brd-nav.is-dark.is-scrolled { background: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 20px rgba(21, 17, 29, 0.05); }
+/* nav over hero: completely transparent, then as it is after scrolling down */
+.brd-nav.is-hero-transparent,
+.brd-nav.is-dark:not(.is-scrolled) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid transparent !important;
+}
+.brd-nav.is-dark.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(21, 17, 29, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
 .brd-nav.is-dark .brd-logo, .brd-nav.is-dark .brd-login { color: #1A0C38; }
 .brd-nav.is-dark .brd-logo-mark { background: #1A0C38; color: #fff; }
 .brd-nav.is-dark .brd-logo-tag { border-color: rgba(124, 77, 219, 0.35); background: var(--b-soft); color: var(--b-accent-2); }
@@ -53,7 +87,12 @@
 .brd-nav.is-dark .brd-login:hover { background: rgba(0, 0, 0, 0.04); }
 .brd-nav.is-dark .brd-btn-dark { background: #1A0C38; color: #fff; box-shadow: 0 4px 14px rgba(26, 12, 56, 0.2); }
 .brd-nav.is-dark .brd-btn-dark:hover { background: #2B1760; }
-.brd-nav, .brd-nav .brd-logo, .brd-nav .brd-nav-links a, .brd-nav .brd-login, .brd-nav .brd-btn-dark { transition: background .3s, color .3s, box-shadow .3s; }
+.brd-nav, .brd-nav .brd-logo, .brd-nav .brd-nav-links a, .brd-nav .brd-login, .brd-nav .brd-btn-dark {
+  transition: background .3s cubic-bezier(0.16, 1, 0.3, 1),
+              color .3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow .3s cubic-bezier(0.16, 1, 0.3, 1),
+              backdrop-filter .3s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 /* hero: clean white band */
 .brd-hero { --b-night: #FFFFFF; background: #FFFFFF; position: relative; overflow: visible; }

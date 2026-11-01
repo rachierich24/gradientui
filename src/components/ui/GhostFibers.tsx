@@ -1151,3 +1151,4 @@ export const GhostFibers: React.FC<GhostFibersProps> = ({
 };
 
 export default GhostFibers;
+

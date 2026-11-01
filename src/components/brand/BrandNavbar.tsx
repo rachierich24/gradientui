@@ -1,6 +1,6 @@
 'use client';
-// Brand Portal top bar: same shape as the Supplier Portal's, in the brand purple. Transparent with light
-// text while it's over the dark hero, white once the page moves past it.
+// Brand Portal top bar: same shape as the Supplier Portal's, in the brand purple.
+// Transparent over the hero section, blurred white frosted backdrop once the page moves past it or scrolls down.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { BorderBeam } from '@/components/ui/border-beam';
@@ -15,8 +15,8 @@ const LINKS = [
 export function BrandNavbar({ onStart }: { onStart: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(true);
+
   useEffect(() => {
-    // light text while the bar sits over the dark hero
     const on = () => {
       setScrolled(window.scrollY > 20);
       const hero = document.getElementById('brd-top');
@@ -25,11 +25,14 @@ export function BrandNavbar({ onStart }: { onStart: () => void }) {
     on();
     window.addEventListener('scroll', on, { passive: true });
     window.addEventListener('resize', on);
-    return () => { window.removeEventListener('scroll', on); window.removeEventListener('resize', on); };
+    return () => {
+      window.removeEventListener('scroll', on);
+      window.removeEventListener('resize', on);
+    };
   }, []);
 
   return (
-    <header className={`brd-nav${scrolled ? ' is-scrolled' : ''}${dark ? ' is-dark' : ''}`}>
+    <header className={`brd-nav${scrolled ? ' is-scrolled' : ' is-hero-transparent'}${dark ? ' is-dark' : ''}`}>
       <div className="brd-wrap brd-nav-in">
         <Link href="/brand" className="brd-logo" aria-label="Gradient Brand Portal">
           <span className="brd-logo-mark" aria-hidden="true">G</span>
