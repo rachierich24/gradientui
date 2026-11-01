@@ -1,15 +1,19 @@
 /* ─────────────────────────────────────────────────────────────────────────────
    GRADIENT — BRAND ANALYTICS DASHBOARD SHOWCASE SECTION
    Design System: White & Purple (#502B9A)
-   Inspiration: Gradient Bento System · Linear · Stripe · Ramp · Vercel
+   Inspiration: Linear Precision · Stripe Analytics Clarity · Ramp Elegance
+   Palette:
+     • Primary Purple: #502B9A
+     • Background: #FFFFFF
+     • Secondary Surface: #F8F7FA
+     • Light Purple Surface: #F1ECF8
+     • Primary Text: #19171E
+     • Secondary Text: #77727F
+     • Border: #EAE7EF
    Layout & Proportions:
      • Max Content Container: ~1400px
      • Dashboard Frame Height: 520px (Strictly verified above horizon on 768p laptop displays)
      • Aspect Ratio: ~2.65:1
-     • Three Visual Layers:
-       1. Editorial Eyebrow
-       2. Confident Headline & Secondary Supporting Copy
-       3. Signature Product Showcase: Horizontally Gliding Pinned Frame
    ───────────────────────────────────────────────────────────────────────────── */
 
 /* ─── 0. Section Wrapper & Ambient Lighting ───────────────────────────────── */
@@ -23,7 +27,7 @@
   overflow: visible;
 }
 
-/* Subtle ambient radial glow centered behind showcase */
+/* Subtle, restrained ambient radial glow centered behind showcase */
 .bdb-bg-ambient {
   position: absolute;
   top: 10%;
@@ -33,8 +37,8 @@
   height: 600px;
   background: radial-gradient(
     ellipse 60% 50% at center,
-    rgba(80, 43, 154, 0.04) 0%,
-    rgba(80, 43, 154, 0.01) 50%,
+    rgba(80, 43, 154, 0.035) 0%,
+    rgba(80, 43, 154, 0.008) 50%,
     transparent 75%
   );
   pointer-events: none;
@@ -78,7 +82,7 @@
   align-items: center;
   gap: 5px;
   font-size: 9.5px;
-  font-weight: 750;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #502B9A;
@@ -133,7 +137,7 @@
   background: #F8F7FA;
   padding: 2px;
   border-radius: 999px;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
 }
 
 .bdb-bay-btn {
@@ -160,14 +164,14 @@
   background: #FFFFFF;
   color: #502B9A;
   font-weight: 700;
-  box-shadow: 0 2px 5px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .bdb-bay-dot {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #EBE8F0;
+  background: #EAE7EF;
   transition: background 0.2s ease;
 }
 
@@ -182,12 +186,12 @@
   max-width: 1380px;
   height: 520px;
   border-radius: 14px;
-  border: 1px solid #EAE6F2;
+  border: 1px solid #EAE7EF;
   background: #FFFFFF;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8),
-    0 16px 36px -10px rgba(80, 43, 154, 0.06),
-    0 1px 3px rgba(0, 0, 0, 0.03);
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 28px -8px rgba(80, 43, 154, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   will-change: transform;
   display: flex;
@@ -198,7 +202,7 @@
 .bdb-app-header {
   width: 100%;
   background: #FFFFFF;
-  border-bottom: 1px solid #EBE8F0;
+  border-bottom: 1px solid #EAE7EF;
   flex-shrink: 0;
 }
 
@@ -208,7 +212,7 @@
   justify-content: space-between;
   height: 36px;
   padding: 0 14px;
-  border-bottom: 1px solid #F4F1F8;
+  border-bottom: 1px solid #F1EDF6;
   font-size: 11.5px;
 }
 
@@ -235,7 +239,7 @@
 .bdb-nav-divider {
   width: 1px;
   height: 12px;
-  background: #EBE8F0;
+  background: #EAE7EF;
 }
 
 .bdb-brand-tag {
@@ -245,7 +249,7 @@
   padding: 1.5px 6px;
   border-radius: 5px;
   background: #FAF9FC;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
 }
 
 .bdb-brand-avatar {
@@ -272,7 +276,7 @@
   gap: 4px;
   padding: 1.5px 7px;
   border-radius: 5px;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   background: #FFFFFF;
   font-size: 10.5px;
   font-weight: 600;
@@ -306,7 +310,7 @@
   gap: 4px;
   padding: 1.5px 7px;
   border-radius: 5px;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   font-size: 10px;
   font-weight: 600;
   color: #77727F;
@@ -318,7 +322,7 @@
   gap: 4px;
   padding: 2px 7px;
   border-radius: 5px;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   background: #FFFFFF;
   font-size: 10px;
   font-weight: 600;
@@ -340,7 +344,7 @@
   width: 22px;
   height: 22px;
   border-radius: 5px;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   color: #77727F;
   cursor: pointer;
 }
@@ -368,20 +372,20 @@
   cursor: pointer;
 }
 
-/* ─── 4. KPI Summary Strip (Horizontal 52px Height) ──────────────────────── */
+/* ─── 4. KPI Summary Strip (Horizontal 52px Height, Balanced Hierarchy) ───── */
 .bdb-kpi-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   background: #FAF9FB;
   border-top: 1px solid #FFFFFF;
-  border-bottom: 1px solid #EBE8F0;
+  border-bottom: 1px solid #EAE7EF;
   height: 52px;
   flex-shrink: 0;
 }
 
 .bdb-kpi-cell {
   padding: 6px 14px;
-  border-right: 1px solid #EBE8F0;
+  border-right: 1px solid #EAE7EF;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -433,8 +437,9 @@
   gap: 6px;
 }
 
+/* Level 1: Main Metric Number — Prominent, Bold, Scannable */
 .bdb-kpi-val {
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 800;
   color: #19171E;
   letter-spacing: -0.02em;
@@ -442,93 +447,37 @@
   white-space: nowrap;
 }
 
-/* Stepper Chips Cluster (Packed · Delivered · Tried · Reordered) */
-.bdb-kpi-steps-cluster {
-  display: inline-flex;
-  align-items: center;
-  gap: 2.5px;
-  background: #ECE7F5;
-  padding: 1.5px 3px;
+/* Subtle Progress Indicator */
+.bdb-kpi-track-wrap {
+  width: 48px;
+  height: 3.5px;
   border-radius: 999px;
+  background: #EAE7EF;
+  overflow: hidden;
 }
 
-.bdb-kpi-step-chip {
-  padding: 1px 4.5px;
+.bdb-kpi-track-fill {
+  height: 100%;
   border-radius: 999px;
-  font-size: 7.5px;
-  font-weight: 700;
-  color: rgba(80, 43, 154, 0.65);
-  transition: all 0.2s ease;
-}
-
-.bdb-kpi-step-chip.is-done {
   background: #502B9A;
-  color: #FFFFFF;
 }
 
-/* Barista Avatar Cluster ([LB] [MR] [BK] +82) */
-.bdb-kpi-avatar-cluster {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.bdb-kpi-avatars-stack {
-  display: inline-flex;
-  align-items: center;
-}
-
-.bdb-avatar-bubble {
-  display: grid;
-  place-items: center;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  border: 1.5px solid #FAF9FB;
-  font-size: 7px;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-right: -4px;
-}
-
-.bdb-av-0 { background: #502B9A; }
-.bdb-av-1 { background: #6E44BE; }
-.bdb-av-2 { background: #8E68D8; }
-.bdb-av-3 { background: #2A1752; }
-
-.bdb-kpi-avatar-more {
-  font-size: 8px;
-  font-weight: 750;
-  color: #502B9A;
-  margin-left: 5px;
-}
-
-/* Sensory Pill (Foams for latte art ↗) */
-.bdb-kpi-sensory-tag {
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: #F1ECF8;
-  border: 1px solid rgba(80, 43, 154, 0.2);
-  color: #502B9A;
-  font-size: 8px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
+/* Restrained KPI Badges */
 .bdb-kpi-badge {
   display: inline-block;
   padding: 1.5px 6px;
   border-radius: 4px;
   font-size: 8.5px;
-  font-weight: 700;
+  font-weight: 650;
   background: #F1ECF8;
   color: #502B9A;
+  white-space: nowrap;
 }
 
 .bdb-kpi-badge.badge-purple {
   background: #502B9A;
   color: #FFFFFF;
+  font-weight: 700;
 }
 
 /* ─── 5. Main 3-Column Body Grid (412px Available Height) ────────────────── */
@@ -550,13 +499,12 @@
   height: 100%;
 }
 
-/* Base Card Styling */
+/* Base Card Styling: Clean White Surface, Consistent Radii, Unified Borders */
 .bdb-card {
   background: #FFFFFF;
-  border: 1px solid #EBE8F0;
-  border-radius: 11px;
-  padding: 9px 11px;
-  box-shadow: 0 1px 2px rgba(21, 17, 29, 0.02);
+  border: 1px solid #EAE7EF;
+  border-radius: 10px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -568,18 +516,18 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
-  margin-bottom: 5px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #F4F1F8;
+  margin-bottom: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #F1EDF6;
   flex-shrink: 0;
 }
 
 .bdb-card-title {
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 700;
   color: #19171E;
   margin: 0;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.01em;
 }
 
@@ -589,19 +537,19 @@
   line-height: 1.2;
 }
 
-.bdb-pill-indicator {
+.bdb-card-meta-pill {
   display: inline-block;
-  padding: 1.5px 5.5px;
+  padding: 1.5px 6px;
   border-radius: 4px;
   font-size: 8.5px;
-  font-weight: 700;
+  font-weight: 650;
   background: #FAF9FC;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   color: #77727F;
   white-space: nowrap;
 }
 
-.bdb-pill-indicator.text-purple {
+.bdb-card-meta-pill.text-purple {
   color: #502B9A;
   background: #F1ECF8;
   border-color: rgba(80, 43, 154, 0.2);
@@ -615,17 +563,17 @@
 .bdb-funnel-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   justify-content: space-between;
 }
 
 .bdb-funnel-row {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) 50px;
+  grid-template-columns: 82px minmax(0, 1fr) 52px;
   align-items: center;
-  gap: 6px;
-  padding: 2.5px 5px;
+  gap: 8px;
+  padding: 3px 6px;
   border-radius: 5px;
   background: #FAF9FC;
   border: 1px solid transparent;
@@ -634,41 +582,17 @@
 
 .bdb-funnel-row:hover {
   background: #FFFFFF;
-  border-color: #EBE8F0;
+  border-color: #EAE7EF;
 }
 
 .bdb-funnel-row.is-highlight {
-  background: #F1ECF8;
-  border-color: rgba(80, 43, 154, 0.25);
-}
-
-.bdb-f-left {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.bdb-f-icon-chip {
-  display: grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 3.5px;
-  background: #FFFFFF;
-  border: 1px solid #EBE8F0;
-  color: #502B9A;
-  flex-shrink: 0;
-}
-
-.bdb-funnel-row.is-highlight .bdb-f-icon-chip {
-  background: #502B9A;
-  border-color: #502B9A;
-  color: #FFFFFF;
+  background: #F8F6FD;
+  border-color: #E4DDF2;
 }
 
 .bdb-f-name {
   font-size: 9.5px;
-  font-weight: 650;
+  font-weight: 600;
   color: #19171E;
   white-space: nowrap;
   overflow: hidden;
@@ -677,9 +601,9 @@
 
 .bdb-f-bar-wrap {
   width: 100%;
-  height: 3.5px;
+  height: 4px;
   border-radius: 999px;
-  background: #EBE8F0;
+  background: #EAE7EF;
   overflow: hidden;
 }
 
@@ -690,18 +614,18 @@
 }
 
 .bdb-f-bar-fill.bar-neutral {
-  background: #B6B0C2;
+  background: #A39EB0;
 }
 
 .bdb-f-bar-fill.bar-purple {
   background: #502B9A;
 }
 
-.bdb-f-right {
+.bdb-f-metrics {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 3px;
+  gap: 4px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -743,9 +667,9 @@
 
 .bdb-rh-number {
   font-size: 15px;
-  font-weight: 850;
+  font-weight: 800;
   color: #19171E;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -755,78 +679,76 @@
   color: #77727F;
 }
 
-.bdb-rh-tag {
+.bdb-rh-cafes {
   font-size: 8px;
-  font-weight: 750;
-  padding: 1px 5px;
+  font-weight: 700;
+  padding: 1.5px 5px;
   border-radius: 3.5px;
   background: #F1ECF8;
   color: #502B9A;
 }
 
-.bdb-wave-chart-stage {
+.bdb-chart-container {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin: 2px 0;
+  gap: 2px;
+  margin: 1px 0;
 }
 
-.bdb-wave-svg {
+.bdb-trend-svg {
   width: 100%;
-  height: 44px;
+  height: 52px;
   display: block;
   overflow: visible;
 }
 
-.bdb-wave-week-ticks {
+.bdb-chart-axis {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 3px;
+  gap: 2px;
+  padding: 0 4px;
 }
 
-.bdb-week-tick-btn {
-  padding: 1.5px 0;
+.bdb-axis-btn {
+  padding: 1px 0;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 3.5px;
+  border-radius: 3px;
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 650;
   color: #77727F;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.bdb-week-tick-btn:hover {
-  background: #FAF9FC;
+.bdb-axis-btn:hover {
   color: #19171E;
 }
 
-.bdb-week-tick-btn.is-active {
-  background: #FFFFFF;
-  border-color: #EAE6F2;
+.bdb-axis-btn.is-active {
+  background: #F1ECF8;
   color: #502B9A;
-  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.08);
+  font-weight: 750;
 }
 
-.bdb-week-tick-btn.is-projected {
-  border-style: dashed;
-  color: #9A94A4;
+.bdb-axis-btn.is-projected {
+  color: #A39EB0;
 }
 
 .bdb-reorder-stat-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3.5px 7px;
+  padding: 3.5px 8px;
   border-radius: 5px;
   background: #FAF9FC;
-  border: 1px solid #F4F1F8;
+  border: 1px solid #F1EDF6;
   font-size: 8.5px;
   color: #19171E;
 }
 
-.bdb-sep {
-  color: #ABA5B6;
+.bdb-stat-dot {
+  color: #C2BDCB;
 }
 
 /* ─── Column 2: Bangalore Café Distribution Map (412px Height) ───────────── */
@@ -846,36 +768,39 @@
   flex-direction: column;
 }
 
-.bdb-map-filter-tabs {
+.bdb-map-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bdb-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  background: #F4F1F8;
-  padding: 1.5px;
-  border-radius: 999px;
-}
-
-.bdb-map-tab-btn {
-  padding: 2px 7px;
-  border: none;
-  background: transparent;
-  border-radius: 999px;
+  gap: 3.5px;
   font-size: 8px;
-  font-weight: 650;
   color: #77727F;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  font-weight: 600;
 }
 
-.bdb-map-tab-btn:hover {
-  color: #19171E;
+.bdb-legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
 
-.bdb-map-tab-btn.is-active {
+.dot-delivered {
+  background: #F1ECF8;
+  border: 1px solid #502B9A;
+}
+
+.dot-tried {
   background: #FFFFFF;
-  color: #502B9A;
-  font-weight: 750;
-  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.1);
+  border: 1.5px solid #502B9A;
+}
+
+.dot-reordered {
+  background: #502B9A;
 }
 
 .bdb-map-stage {
@@ -886,7 +811,7 @@
   border-radius: 8px;
   background: #FAF9FC;
   overflow: hidden;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   display: flex;
   flex-direction: column;
 }
@@ -910,7 +835,7 @@
 
 .bdb-marker-group:hover circle:not(.bdb-marker-ping),
 .bdb-marker-group.is-selected circle:not(.bdb-marker-ping) {
-  transform: scale(1.3);
+  transform: scale(1.25);
 }
 
 .bdb-marker-group.is-selected circle:first-of-type {
@@ -934,7 +859,7 @@
   border: 1px solid #502B9A;
   border-radius: 5px;
   padding: 3px 6px;
-  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.12);
+  box-shadow: 0 3px 8px rgba(80, 43, 154, 0.1);
   pointer-events: none;
   z-index: 20;
   white-space: nowrap;
@@ -951,7 +876,7 @@
   color: #77727F;
 }
 
-/* Docked Floating Café Intelligence Card */
+/* Integrated Selected Café Telemetry Deck */
 .bdb-cafe-dock-card {
   position: absolute;
   bottom: 8px;
@@ -960,10 +885,10 @@
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
   border-radius: 7px;
   padding: 5px 9px;
-  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.08);
+  box-shadow: 0 2px 6px rgba(80, 43, 154, 0.05);
   z-index: 10;
 }
 
@@ -973,7 +898,7 @@
   justify-content: space-between;
   margin-bottom: 2px;
   padding-bottom: 2px;
-  border-bottom: 1px solid #F4F1F8;
+  border-bottom: 1px solid #F1EDF6;
 }
 
 .bdb-dock-title-group {
@@ -1004,25 +929,25 @@
 .status-reordered {
   background: #F1ECF8;
   color: #502B9A;
-  border: 1px solid rgba(80, 43, 154, 0.3);
+  border: 1px solid rgba(80, 43, 154, 0.25);
 }
 
 .status-tried {
   background: #FAF9FC;
   color: #77727F;
-  border: 1px solid #EBE8F0;
+  border: 1px solid #EAE7EF;
 }
 
 .status-delivered {
   background: #FFFFFF;
-  color: #ABA5B6;
-  border: 1px solid #EBE8F0;
+  color: #A39EB0;
+  border: 1px solid #EAE7EF;
 }
 
 .bdb-dock-quote {
   font-size: 8.5px;
   font-style: italic;
-  color: #19171E;
+  color: #4A4554;
   margin-bottom: 3px;
   line-height: 1.25;
 }
@@ -1049,7 +974,7 @@
 
 .bdb-dock-val {
   font-size: 9.5px;
-  font-weight: 750;
+  font-weight: 700;
   color: #19171E;
   white-space: nowrap;
   overflow: hidden;
@@ -1062,34 +987,6 @@
   justify-content: space-between;
 }
 
-.bdb-feedback-header-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.bdb-header-avatars {
-  display: inline-flex;
-  align-items: center;
-}
-
-.bdb-hav {
-  display: grid;
-  place-items: center;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 1.5px solid #FFFFFF;
-  background: #502B9A;
-  color: #FFFFFF;
-  font-size: 6.5px;
-  font-weight: 800;
-  margin-right: -4px;
-}
-
-.bdb-hav:nth-child(2) { background: #7C53CE; }
-.bdb-hav:nth-child(3) { background: #9F7DE8; }
-
 .bdb-rating-overall {
   display: flex;
   align-items: baseline;
@@ -1097,16 +994,21 @@
 }
 
 .bdb-overall-stars {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 800;
   color: #502B9A;
+}
+
+.bdb-overall-max {
+  font-size: 8.5px;
+  color: #77727F;
 }
 
 .bdb-feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-bottom: 3px;
+  gap: 3.5px;
+  margin-bottom: 4px;
 }
 
 .bdb-attr-compact {
@@ -1123,7 +1025,7 @@
 }
 
 .bdb-attr-name {
-  font-weight: 650;
+  font-weight: 600;
   color: #19171E;
   display: inline-flex;
   align-items: baseline;
@@ -1144,9 +1046,9 @@
 
 .bdb-attr-track {
   width: 100%;
-  height: 3.5px;
+  height: 3px;
   border-radius: 999px;
-  background: #EBE8F0;
+  background: #EAE7EF;
   overflow: hidden;
 }
 
@@ -1157,13 +1059,13 @@
 }
 
 .bdb-quote-pill {
-  padding: 4px 7px;
-  border-radius: 5px;
+  padding: 5px 8px;
+  border-radius: 6px;
   background: #FAF9FC;
   border-left: 2px solid #502B9A;
-  border-top: 1px solid #F4F1F8;
-  border-right: 1px solid #F4F1F8;
-  border-bottom: 1px solid #F4F1F8;
+  border-top: 1px solid #F1EDF6;
+  border-right: 1px solid #F1EDF6;
+  border-bottom: 1px solid #F1EDF6;
 }
 
 .bdb-quote-text {
@@ -1180,7 +1082,7 @@
   font-weight: 600;
 }
 
-/* Live Commercial Activity Feed */
+/* ─── Column 3: Live Commercial Telemetry (188px Height) ─────────────────── */
 .bdb-activity-card {
   height: 188px;
   justify-content: space-between;
@@ -1211,43 +1113,54 @@
   50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-.bdb-activity-list {
+.bdb-timeline-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   justify-content: space-between;
+  padding-top: 2px;
 }
 
-.bdb-act-row {
+.bdb-tl-item {
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  padding: 3px 4px;
-  border-radius: 5px;
-  background: #FAF9FC;
-  border: 1px solid #F4F1F8;
-  transition: all 0.15s ease;
+  gap: 7px;
+  position: relative;
 }
 
-.bdb-act-row:hover {
-  background: #FFFFFF;
-  border-color: #EBE8F0;
+.bdb-tl-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.bdb-act-icon-box {
+.bdb-tl-icon-box {
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 4px;
   background: #F1ECF8;
   color: #502B9A;
-  flex-shrink: 0;
-  margin-top: 1px;
+  z-index: 1;
 }
 
-.bdb-act-content {
+.bdb-tl-line {
+  position: absolute;
+  top: 18px;
+  width: 1px;
+  height: calc(100% + 4px);
+  background: #EAE7EF;
+}
+
+.bdb-tl-item:last-child .bdb-tl-line {
+  display: none;
+}
+
+.bdb-tl-content {
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -1255,35 +1168,32 @@
   min-width: 0;
 }
 
-.bdb-act-header-line {
+.bdb-tl-header-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 4px;
 }
 
-.bdb-act-title {
+.bdb-tl-title {
   font-size: 9.5px;
   font-weight: 700;
   color: #19171E;
-  line-height: 1.15;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.bdb-act-day {
-  font-size: 7.5px;
-  font-weight: 750;
-  color: #502B9A;
-  background: #FFFFFF;
-  padding: 0.5px 4px;
-  border-radius: 3px;
-  border: 1px solid #ECE7F5;
+.bdb-tl-time {
+  font-size: 8px;
+  font-weight: 600;
+  color: #77727F;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
-.bdb-act-cafe {
+.bdb-tl-cafe {
   font-size: 8px;
   color: #77727F;
   white-space: nowrap;
@@ -1292,7 +1202,7 @@
   display: block;
 }
 
-.bdb-act-meta {
+.bdb-tl-meta {
   color: #502B9A;
   font-weight: 600;
 }
@@ -1337,7 +1247,7 @@
   }
 
   .bdb-kpi-cell {
-    border-bottom: 1px solid #EBE8F0;
+    border-bottom: 1px solid #EAE7EF;
     padding: 8px 12px;
   }
 
