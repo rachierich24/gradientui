@@ -630,6 +630,81 @@ function SvgStarFilled() {
   );
 }
 
+
+/* ─── KPI MINI-VISUALIZATIONS ────────────────────────────────────────────── */
+function SvgCardSparkline() {
+  return (
+    <svg width="64" height="24" viewBox="0 0 64 24" fill="none" style={{ display: 'block' }}>
+      <defs>
+        <linearGradient id="heroSpark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <polygon points="0,24 0,18 12,16 24,14 36,10 48,7 64,2 64,24" fill="url(#heroSpark)" />
+      <polyline points="0,18 12,16 24,14 36,10 48,7 64,2" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="64" cy="2" r="2.5" fill="#FFFFFF" />
+    </svg>
+  );
+}
+
+function SvgCohortBars() {
+  return (
+    <svg width="56" height="24" viewBox="0 0 56 24" fill="none" style={{ display: 'block' }}>
+      <rect x="2" y="16" width="6" height="8" rx="1.5" fill="#EAE7EF" />
+      <rect x="11" y="13" width="6" height="11" rx="1.5" fill="#E2DFEC" />
+      <rect x="20" y="10" width="6" height="14" rx="1.5" fill="#D3CDE2" />
+      <rect x="29" y="7" width="6" height="17" rx="1.5" fill="#B9AFD2" />
+      <rect x="38" y="4" width="6" height="20" rx="1.5" fill="#8E78BE" />
+      <rect x="47" y="1" width="6" height="23" rx="1.5" fill="#502B9A" />
+    </svg>
+  );
+}
+
+function SvgRadialProgress({ pct = 93.3 }: { pct?: number }) {
+  const radius = 12;
+  const circ = 2 * Math.PI * radius;
+  const offset = circ - (pct / 100) * circ;
+  return (
+    <div style={{ position: 'relative', width: '30px', height: '30px', display: 'grid', placeItems: 'center' }}>
+      <svg width="30" height="30" viewBox="0 0 30 30" style={{ display: 'block' }}>
+        <circle cx="15" cy="15" r={radius} stroke="#F0EDF5" strokeWidth="2.8" fill="none" />
+        <circle
+          cx="15"
+          cy="15"
+          r={radius}
+          stroke="#502B9A"
+          strokeWidth="2.8"
+          fill="none"
+          strokeDasharray={circ}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          transform="rotate(-90 15 15)"
+        />
+      </svg>
+      <span style={{ position: 'absolute', fontSize: '7.5px', fontWeight: 800, color: '#502B9A' }}>
+        93%
+      </span>
+    </div>
+  );
+}
+
+function SvgSensorySpark() {
+  return (
+    <svg width="60" height="24" viewBox="0 0 60 24" fill="none" style={{ display: 'block' }}>
+      <defs>
+        <linearGradient id="sensoryGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#502B9A" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#502B9A" stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <polygon points="0,24 0,16 12,14 24,10 36,7 48,4 60,2 60,24" fill="url(#sensoryGrad)" />
+      <polyline points="0,16 12,14 24,10 36,7 48,4 60,2" fill="none" stroke="#502B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="60" cy="2" r="2.5" fill="#502B9A" />
+    </svg>
+  );
+}
+
 function SvgGradientLogo() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
@@ -990,61 +1065,113 @@ export function BrandDashboard() {
                 </div>
               </header>
 
-              {/* ─── 3. Top 4 KPI Modular Cards (RestroFlow 4 Distinct Cards) ─── */}
+              {/* ─── 3. Top 4 KPI Modular Cards (Enhanced Split Layout) ─── */}
               <div className="bdb-kpi-modular-grid">
                 {/* Card 1: Purple Hero Card */}
                 <div className="bdb-kpi-card bdb-kpi-hero-card">
                   <div className="bdb-kpi-card-top">
-                    <div className="bdb-kpi-icon-pill hero-icon-pill">
-                      <SvgOrderDoc />
+                    <div className="bdb-kpi-title-left">
+                      <div className="bdb-kpi-icon-pill hero-icon-pill">
+                        <SvgOrderDoc />
+                      </div>
+                      <span className="bdb-kpi-card-title hero-title">Weekly Reorders</span>
                     </div>
-                    <span className="bdb-kpi-card-title hero-text">Weekly Reorders</span>
+                    <span className="bdb-kpi-card-badge hero-badge">+27.9% Conv</span>
                   </div>
-                  <div className="bdb-kpi-card-val hero-text">{CAMPAIGN_META.weeklyReorders} cafés</div>
-                  <div className="bdb-kpi-card-badge hero-badge">
-                    <span>{CAMPAIGN_META.estimatedARR} ARR · {CAMPAIGN_META.conversionRatePct}% conv</span>
+
+                  <div className="bdb-kpi-card-bottom">
+                    <div className="bdb-kpi-val-group">
+                      <div className="bdb-kpi-main-val hero-val">
+                        {CAMPAIGN_META.weeklyReorders} <span className="bdb-kpi-unit hero-unit">cafés</span>
+                      </div>
+                      <span className="bdb-kpi-sub-pill hero-sub-pill">
+                        {CAMPAIGN_META.estimatedARR} ARR
+                      </span>
+                    </div>
+                    <div className="bdb-kpi-viz">
+                      <SvgCardSparkline />
+                    </div>
                   </div>
                 </div>
 
                 {/* Card 2: Trials Completed */}
                 <div className="bdb-kpi-card">
                   <div className="bdb-kpi-card-top">
-                    <div className="bdb-kpi-icon-pill">
-                      <SvgCheckCircle />
+                    <div className="bdb-kpi-title-left">
+                      <div className="bdb-kpi-icon-pill">
+                        <SvgCheckCircle />
+                      </div>
+                      <span className="bdb-kpi-card-title">Trials Completed</span>
                     </div>
-                    <span className="bdb-kpi-card-title">Trials Completed</span>
+                    <span className="bdb-kpi-card-badge badge-green">▲ +14 this wk</span>
                   </div>
-                  <div className="bdb-kpi-card-val">{CAMPAIGN_META.trialsCompleted} baristas</div>
-                  <div className="bdb-kpi-card-badge badge-green">
-                    <span>▲ +14 this week · 76.8%</span>
+
+                  <div className="bdb-kpi-card-bottom">
+                    <div className="bdb-kpi-val-group">
+                      <div className="bdb-kpi-main-val">
+                        {CAMPAIGN_META.trialsCompleted} <span className="bdb-kpi-unit">baristas</span>
+                      </div>
+                      <span className="bdb-kpi-sub-pill">
+                        76.8% trial rate
+                      </span>
+                    </div>
+                    <div className="bdb-kpi-viz">
+                      <SvgCohortBars />
+                    </div>
                   </div>
                 </div>
 
                 {/* Card 3: Kits Delivered */}
                 <div className="bdb-kpi-card">
                   <div className="bdb-kpi-card-top">
-                    <div className="bdb-kpi-icon-pill">
-                      <SvgTruck />
+                    <div className="bdb-kpi-title-left">
+                      <div className="bdb-kpi-icon-pill">
+                        <SvgTruck />
+                      </div>
+                      <span className="bdb-kpi-card-title">Kits Delivered</span>
                     </div>
-                    <span className="bdb-kpi-card-title">Kits Delivered</span>
+                    <span className="bdb-kpi-card-badge badge-purple">93.3% Fulfilled</span>
                   </div>
-                  <div className="bdb-kpi-card-val">{CAMPAIGN_META.deliveredKits} / {CAMPAIGN_META.totalKits}</div>
-                  <div className="bdb-kpi-card-badge badge-purple">
-                    <span>93.3% Fulfilled</span>
+
+                  <div className="bdb-kpi-card-bottom">
+                    <div className="bdb-kpi-val-group">
+                      <div className="bdb-kpi-main-val">
+                        {CAMPAIGN_META.deliveredKits} <span className="bdb-kpi-unit">/ {CAMPAIGN_META.totalKits} kits</span>
+                      </div>
+                      <span className="bdb-kpi-sub-pill">
+                        8 kits in transit
+                      </span>
+                    </div>
+                    <div className="bdb-kpi-viz">
+                      <SvgRadialProgress pct={93.3} />
+                    </div>
                   </div>
                 </div>
 
                 {/* Card 4: Sensory Rating */}
                 <div className="bdb-kpi-card">
                   <div className="bdb-kpi-card-top">
-                    <div className="bdb-kpi-icon-pill">
-                      <SvgStarFilled />
+                    <div className="bdb-kpi-title-left">
+                      <div className="bdb-kpi-icon-pill">
+                        <SvgStarFilled />
+                      </div>
+                      <span className="bdb-kpi-card-title">Sensory Rating</span>
                     </div>
-                    <span className="bdb-kpi-card-title">Sensory Rating</span>
+                    <span className="bdb-kpi-card-badge badge-purple">96% Approved</span>
                   </div>
-                  <div className="bdb-kpi-card-val">★ 4.8 / 5.0</div>
-                  <div className="bdb-kpi-card-badge badge-neutral">
-                    <span>{CAMPAIGN_META.feedbackReceived} verified reviews</span>
+
+                  <div className="bdb-kpi-card-bottom">
+                    <div className="bdb-kpi-val-group">
+                      <div className="bdb-kpi-main-val">
+                        ★ 4.8 <span className="bdb-kpi-unit">/ 5.0</span>
+                      </div>
+                      <span className="bdb-kpi-sub-pill">
+                        {CAMPAIGN_META.feedbackReceived} verified reviews
+                      </span>
+                    </div>
+                    <div className="bdb-kpi-viz">
+                      <SvgSensorySpark />
+                    </div>
                   </div>
                 </div>
               </div>

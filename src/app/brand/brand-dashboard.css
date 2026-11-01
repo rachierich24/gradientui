@@ -2283,12 +2283,12 @@
   line-height: 1;
 }
 
-/* ─── 4. Top 4 KPI Modular Cards (68px Height with Large Scannable Metrics) ─ */
+/* ─── 4. Top 4 KPI Modular Cards (Enhanced Split Layout) ──────────────────── */
 .bdb-kpi-modular-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 9px;
-  padding: 7px 14px 7px 14px;
+  gap: 10px;
+  padding: 6px 14px 6px 14px;
   flex-shrink: 0;
   box-sizing: border-box;
 }
@@ -2296,40 +2296,47 @@
 .bdb-kpi-card {
   background: #FFFFFF;
   border: 1px solid #EAE7EF;
-  border-radius: 10px;
-  padding: 7px 11px;
+  border-radius: 11px;
+  padding: 8px 11px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 68px;
+  height: 74px;
   box-sizing: border-box;
-  box-shadow: 0 1px 2px rgba(20, 16, 30, 0.02);
+  box-shadow: 0 1px 3px rgba(20, 16, 30, 0.02), 0 2px 6px rgba(80, 43, 154, 0.02);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .bdb-kpi-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(20, 16, 30, 0.05);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(20, 16, 30, 0.05), 0 2px 6px rgba(80, 43, 154, 0.04);
 }
 
-/* Card 1: Purple Hero Card */
+/* Card 1: Purple Hero Card with Gradient & Contrast */
 .bdb-kpi-hero-card {
-  background: #502B9A;
+  background: linear-gradient(135deg, #502B9A 0%, #3B1B76 100%);
   border: 1px solid #432284;
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(80, 43, 154, 0.25);
+  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.28), 0 1px 3px rgba(80, 43, 154, 0.15);
 }
 
 .bdb-kpi-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bdb-kpi-title-left {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .bdb-kpi-icon-pill {
-  width: 17px;
-  height: 17px;
-  border-radius: 4.5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
   background: #F1ECF8;
   color: #502B9A;
   display: grid;
@@ -2345,40 +2352,31 @@
 .bdb-kpi-card-title {
   font-size: 8.5px;
   font-weight: 750;
-  color: #77727F;
+  color: #5C5765;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
 
-.hero-text {
+.hero-title {
   color: rgba(255, 255, 255, 0.92);
-}
-
-.bdb-kpi-card-val {
-  font-size: 16px;
-  font-weight: 850;
-  color: #19171E;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
-  margin: 1px 0;
 }
 
 .bdb-kpi-card-badge {
   display: inline-flex;
   align-items: center;
-  align-self: flex-start;
-  padding: 1px 5px;
+  padding: 1.5px 5.5px;
   border-radius: 4px;
   font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .hero-badge {
   background: rgba(255, 255, 255, 0.2);
   color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .badge-green {
@@ -2394,6 +2392,67 @@
 .badge-neutral {
   background: #F5F6FA;
   color: #502B9A;
+}
+
+.bdb-kpi-card-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bdb-kpi-val-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bdb-kpi-main-val {
+  font-size: 18px;
+  font-weight: 850;
+  color: #19171E;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.hero-val {
+  color: #FFFFFF !important;
+}
+
+.bdb-kpi-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #77727F;
+  letter-spacing: 0;
+}
+
+.hero-unit {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bdb-kpi-sub-pill {
+  font-size: 8px;
+  font-weight: 650;
+  color: #77727F;
+  background: #F8F7FA;
+  padding: 1px 5px;
+  border-radius: 3.5px;
+  display: inline-block;
+  align-self: flex-start;
+  white-space: nowrap;
+}
+
+.hero-sub-pill {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+}
+
+.bdb-kpi-viz {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 /* ─── 5. Main 3-Column Body Grid (425px Height Budget) ───────────────────── */
