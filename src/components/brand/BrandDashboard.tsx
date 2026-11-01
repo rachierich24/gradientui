@@ -2,16 +2,20 @@
 
 /* ─────────────────────────────────────────────────────────────────────────────
    GRADIENT — BRAND ANALYTICS DASHBOARD SHOWCASE SECTION
-   Design System: White & Purple (#502B9A)
-   Inspiration: Linear · Stripe · Ramp · Vercel
-   Composition:
-     1. Editorial Eyebrow
-     2. Confident Headline & Secondary Supporting Description
-     3. Signature Product Showcase: Wide, Beautifully Proportioned Dashboard (Aspect Ratio ~2.26:1)
+   Role: Principal Staff Design Engineer (Linear · Stripe · Ramp · Notion)
+   Design System: Stripe/Linear Hairline System · Electric Indigo (#5B3DF5)
+   
+   Architecture:
+     Tier 1: Global Workspace Header (h: 50px)
+     Tier 2: Executive KPI Telemetry Strip (h: 84px)
+     Tier 3: Main Analytical Bento Grid (h: 418px)
+       • Left: Trial Conversion Funnel + Weekly Reorder Volume
+       • Center: Bangalore Café Distribution Cartography + Docked HUD
+       • Right: Barista Feedback Sensory Scorecard + Live Commercial Telemetry
+       
    Scroll Interaction:
-     • Heading remains stationary as the visual anchor.
-     • The dashboard glides in from the left, settles stably under the heading,
-       and moves towards the right and exits as the user continues scrolling.
+     • Stationary editorial heading block
+     • GSAP ScrollTrigger horizontal glide: Left Entrance → Center Dwell → Right Exit
    ───────────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -24,7 +28,7 @@ if (typeof window !== 'undefined') {
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
-/* ─── DATA SYSTEM: Realistic, Internally Consistent Metrics ───────────────── */
+/* ─── DATA SYSTEM: Bangalore Café Distribution & Commercial Telemetry ────── */
 const CAMPAIGN_META = {
   brand: 'OatLife Artisanal',
   product: 'Barista Oat Milk',
@@ -46,8 +50,9 @@ const KPI_METRICS = [
   {
     id: 'kits',
     num: '01',
-    label: 'Kits Delivered',
-    value: '112 / 120',
+    label: 'KITS DELIVERED',
+    valBold: '112',
+    valDenom: '/ 120',
     meta: '93.3% completion',
     type: 'progress',
     progress: 93.3,
@@ -55,8 +60,9 @@ const KPI_METRICS = [
   {
     id: 'trials',
     num: '02',
-    label: 'Trials Completed',
-    value: '86 baristas',
+    label: 'TRIALS COMPLETED',
+    valBold: '86',
+    valUnit: 'baristas',
     meta: '76.8% of delivered tried',
     badge: '+14 this week',
     type: 'badge',
@@ -64,19 +70,20 @@ const KPI_METRICS = [
   {
     id: 'feedback',
     num: '03',
-    label: 'Positive Feedback',
-    value: '78%',
+    label: 'POSITIVE FEEDBACK',
+    valBold: '78%',
     meta: '67 verified reviews · ★ 4.8',
     type: 'sparkline',
-    trend: [48, 55, 62, 69, 74, 78],
+    trend: [48, 54, 61, 67, 73, 78],
   },
   {
     id: 'reorders',
     num: '04',
-    label: 'Weekly Reorders',
-    value: '24 cafés',
+    label: 'WEEKLY REORDERS',
+    valBold: '24',
+    valUnit: 'cafés',
     meta: '27.9% trial-to-recurring',
-    badge: '₹2.18L / mo ARR',
+    badge: '₹2.18L/mo ARR',
     type: 'revenue',
   },
 ];
@@ -131,27 +138,27 @@ const BANGALORE_MARKERS: MapMarker[] = [
 ];
 
 const FUNNEL_STAGES = [
-  { id: 'dispatched', name: 'Dispatched', count: 120, pct: '100%', highlight: false },
-  { id: 'delivered', name: 'Delivered', count: 112, pct: '93.3%', highlight: false },
-  { id: 'trials', name: 'Tried', count: 86, pct: '76.8%', highlight: false },
-  { id: 'feedback', name: 'Reviewed', count: 67, pct: '77.9%', highlight: false },
-  { id: 'reorders', name: 'Weekly POs', count: 24, pct: '27.9%', highlight: true },
+  { id: 'dispatched', idx: '01', name: 'Dispatched', count: 120, pct: '100%', fillPct: 100, highlight: false },
+  { id: 'delivered', idx: '02', name: 'Delivered', count: 112, pct: '93.3%', fillPct: 93.3, highlight: false },
+  { id: 'trials', idx: '03', name: 'Tried', count: 86, pct: '76.8%', fillPct: 76.8, highlight: false },
+  { id: 'feedback', idx: '04', name: 'Reviewed', count: 67, pct: '77.9%', fillPct: 55.8, highlight: false },
+  { id: 'reorders', idx: '05', name: 'Weekly POs', count: 24, pct: '27.9%', fillPct: 27.9, highlight: true },
 ];
 
 const FEEDBACK_ATTRS = [
-  { label: 'Foam quality', score: 4.8, pct: 96, note: 'Approved for microfoam latte art' },
-  { label: 'Steaming stability', score: 4.7, pct: 94, note: '0% splitting in light roasts' },
-  { label: 'Taste in flat white', score: 4.6, pct: 92, note: 'Clean oat sweetness' },
-  { label: 'Pricing perception', score: 4.1, pct: 82, note: 'Competitive with Net-15 tier' },
+  { label: 'Foam quality', note: 'Approved for microfoam latte art', score: '4.8', pct: 96, muted: false },
+  { label: 'Steaming stability', note: '0% splitting in light roasts', score: '4.7', pct: 94, muted: false },
+  { label: 'Taste in flat white', note: 'Clean oat sweetness', score: '4.6', pct: 92, muted: false },
+  { label: 'Pricing perception', note: 'Competitive with Net-15 tier', score: '4.1', pct: 82, muted: true },
 ];
 
 const WEEKLY_CHART = [
-  { week: 'W1', litres: 180, cafes: 6 },
-  { week: 'W2', litres: 340, cafes: 11 },
-  { week: 'W3', litres: 560, cafes: 16 },
-  { week: 'W4', litres: 720, cafes: 21 },
-  { week: 'W5', litres: 840, cafes: 24, current: true },
-  { week: 'W6', litres: 920, cafes: 26, projected: true },
+  { week: 'W1', litres: 180, cafes: 6, heightPct: 21 },
+  { week: 'W2', litres: 340, cafes: 11, heightPct: 38 },
+  { week: 'W3', litres: 560, cafes: 16, heightPct: 58 },
+  { week: 'W4', litres: 720, cafes: 21, heightPct: 74 },
+  { week: 'W5', litres: 840, cafes: 24, heightPct: 88, current: true },
+  { week: 'W6', litres: 920, cafes: 26, heightPct: 100, projected: true },
 ];
 
 const RECENT_ACTIVITIES = [
@@ -167,7 +174,7 @@ const RECENT_ACTIVITIES = [
     time: '48m ago',
     title: 'Barista trial completed',
     cafe: 'Third Wave · Koramangala',
-    meta: 'Steamed 8 flat whites · Rated ★ 5.0',
+    meta: 'Steamed 8 flat whites · Rated 4.9★',
   },
   {
     id: 'a3',
@@ -175,23 +182,23 @@ const RECENT_ACTIVITIES = [
     title: 'First recurring order placed',
     cafe: 'Paper & Pie · Indiranagar',
     meta: '36 L/wk standing Net-15 PO',
+    highlightMeta: true,
   },
 ];
 
-/* ─── INLINE SVGS: Clean Minimal Icons ───────────────────────────────────── */
-function SvgGradientLogo() {
+/* ─── INLINE SVGS: High-Craft Lucide-Style Icons ──────────────────────────── */
+function SvgBrandLogo() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-      <rect width="24" height="24" rx="5" fill="#502B9A" />
-      <path d="M12 6a6 6 0 1 0 6 6h-6V6z" fill="#FFFFFF" />
-      <circle cx="15.5" cy="8.5" r="1.5" fill="#F1ECF8" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="bdb-logo-svg">
+      <rect width="24" height="24" rx="6" fill="#5B3DF5" />
+      <path d="M7 16V8M7 8L12 13M12 13L17 8M17 8V16" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
 function SvgBell() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
       <path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
@@ -200,7 +207,7 @@ function SvgBell() {
 
 function SvgDownload() {
   return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="7 10 12 15 17 10" />
       <line x1="12" y1="15" x2="12" y2="3" />
@@ -210,31 +217,37 @@ function SvgDownload() {
 
 function SvgChevronDown({ className }: { className?: string }) {
   return (
-    <svg className={className} width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="6 9 12 15 18 9" />
     </svg>
   );
 }
 
-function SvgSparkline({ data }: { data: number[] }) {
+function SvgMicroSparkline({ data }: { data: number[] }) {
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
-  const w = 56;
-  const h = 14;
+  const w = 72;
+  const h = 22;
   const points = data
     .map((v, i) => {
       const x = (i / (data.length - 1)) * w;
-      const y = h - ((v - min) / range) * (h - 4) - 2;
-      return `${x},${y}`;
+      const y = h - ((v - min) / range) * (h - 6) - 3;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
     })
     .join(' ');
   const areaPoints = `0,${h} ${points} ${w},${h}`;
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
-      <polygon points={areaPoints} fill="rgba(80, 43, 154, 0.08)" />
-      <polyline points={points} fill="none" stroke="#502B9A" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="bdb-sparkline-svg">
+      <defs>
+        <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#5B3DF5" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#5B3DF5" stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <polygon points={areaPoints} fill="url(#sparklineGrad)" />
+      <polyline points={points} fill="none" stroke="#5B3DF5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -247,14 +260,14 @@ export function BrandDashboard() {
   const pinWrapRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
 
-  // User interactive selection
+  // User interactive state
   const [selectedCafe, setSelectedCafe] = useState<MapMarker>(BANGALORE_MARKERS[0]);
   const [hoveredMarker, setHoveredMarker] = useState<MapMarker | null>(null);
   const [hoveredWeek, setHoveredWeek] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [motionPhase, setMotionPhase] = useState<'entrance' | 'center' | 'exit'>('center');
 
-  // Resize listener
+  // Viewport resize detection
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -264,12 +277,7 @@ export function BrandDashboard() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  /* ─── Scroll-Driven Animation Implementation (GSAP + ScrollTrigger) ───────
-     THE WHOLE DASHBOARD MOVES ACROSS SCREEN:
-     • Phase 1 (0% - 33%): Glides from left side of screen into center
-     • Phase 2 (33% - 67%): Settles in center of screen directly under stationary heading
-     • Phase 3 (67% - 100%): Moves towards right side of screen and exits
-     ────────────────────────────────────────────────────────────────────────── */
+  /* ─── Scroll-Driven Horizontal Translation Timeline (GSAP + ScrollTrigger) ── */
   useIsomorphicLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (isMobile || prefersReducedMotion) {
@@ -293,7 +301,7 @@ export function BrandDashboard() {
       gsap.set(frame, {
         x: -getTravelDistance(),
         opacity: 0,
-        scale: 0.97,
+        scale: 0.98,
       });
 
       // Master Pinned Scroll-Driven Timeline
@@ -317,7 +325,7 @@ export function BrandDashboard() {
         },
       });
 
-      // 1. Entrance: Glides from left of screen into center
+      // 1. Entrance: Glides from left into screen center
       masterTL.to(frame, {
         x: 0,
         opacity: 1,
@@ -326,7 +334,7 @@ export function BrandDashboard() {
         duration: 0.33,
       });
 
-      // 2. Settling & Center Dwell: Rests in center directly below stationary heading
+      // 2. Center Dwell: Settles stably below stationary heading
       masterTL.to(frame, {
         x: 0,
         opacity: 1,
@@ -335,11 +343,11 @@ export function BrandDashboard() {
         duration: 0.34,
       });
 
-      // 3. Exit: Moves towards right side and exits off-screen
+      // 3. Exit: Glides towards right side and exits
       masterTL.to(frame, {
         x: () => getTravelDistance(),
         opacity: 0,
-        scale: 0.97,
+        scale: 0.98,
         ease: 'power2.in',
         duration: 0.33,
       });
@@ -348,7 +356,7 @@ export function BrandDashboard() {
     return () => ctx.revert();
   }, [isMobile]);
 
-  // Jump to phase helper for quick navigation pills
+  // Phase Jump Helper for Direct Navigation Pills
   const jumpToPhase = (phase: 'entrance' | 'center' | 'exit') => {
     setMotionPhase(phase);
     const st = ScrollTrigger.getById('dashboard-scroll-track');
@@ -365,18 +373,18 @@ export function BrandDashboard() {
     <section ref={sectionRef} className="bdb-section" id="dashboard" aria-label="Brand Analytics Dashboard Showcase">
       <div className="bdb-bg-ambient" aria-hidden="true" />
 
-      {/* Main Pinned Stage */}
+      {/* Main Pinned Stage Container */}
       <div ref={pinWrapRef} className="bdb-pin-wrap">
         <div className="bdb-container">
-          {/* ─── SECTION HEADING BLOCK (Stationary Anchor) ─── */}
+          {/* ─── 0. STATIONARY EDITORIAL HEADING BLOCK ─── */}
           <div className="bdb-editorial-header">
-            {/* 1. Small Editorial Eyebrow */}
+            {/* Editorial Eyebrow */}
             <div className="bdb-eyebrow">
               <span className="bdb-eyebrow-pip" aria-hidden="true" />
               <span>BRAND INTELLIGENCE PLATFORM · LIVE CAMPAIGN TELEMETRY</span>
             </div>
 
-            {/* 2. Strong Headline & Supporting Description Row */}
+            {/* Headline, Secondary Copy & Trajectory Control Pills */}
             <div className="bdb-header-row">
               <div className="bdb-title-wrap">
                 <h2 className="bdb-title">
@@ -387,7 +395,7 @@ export function BrandDashboard() {
                 </p>
               </div>
 
-              {/* Trajectory Phase Switcher (Interactive Pills) */}
+              {/* Trajectory Phase Switcher (Linear / Vercel style) */}
               <div className="bdb-bay-switcher" role="tablist" aria-label="Dashboard Motion Trajectory">
                 <button
                   type="button"
@@ -426,233 +434,332 @@ export function BrandDashboard() {
             </div>
           </div>
 
-          {/* ─── 3. THE DASHBOARD: VISUAL HERO OF THIS SECTION (Aspect Ratio ~2.26:1) ─── */}
+          {/* ─── THE DASHBOARD FRAME (Visual Hero · Stripe/Linear Hairline System) ─── */}
           <div ref={frameRef} className="bdb-viewport-frame">
-            {/* Top Application Bar */}
-            <header className="bdb-app-header">
-              <div className="bdb-nav-top">
-                <div className="bdb-nav-left">
-                  <div className="bdb-logo-group">
-                    <SvgGradientLogo />
-                    <span className="bdb-logo-text">Gradient</span>
-                  </div>
-
-                  <span className="bdb-nav-divider" aria-hidden="true" />
-
-                  <div className="bdb-brand-tag">
-                    <span className="bdb-brand-avatar">OL</span>
-                    <span className="bdb-brand-name">{CAMPAIGN_META.brand}</span>
-                  </div>
-
-                  <div className="bdb-campaign-dropdown">
-                    <span className="bdb-campaign-chip">{CAMPAIGN_META.product} (Q4 Launch)</span>
-                    <SvgChevronDown className="bdb-chip-icon" />
-                  </div>
+            {/* ═══════════════════════════════════════════════════════════
+                TIER 1: GLOBAL WORKSPACE HEADER (Height: 50px)
+                Notion / Linear Context Switcher + Ramp Controls
+                ═══════════════════════════════════════════════════════════ */}
+            <header className="bdb-tier-header">
+              {/* Left Context Switcher */}
+              <div className="bdb-hdr-left">
+                <div className="bdb-app-logo-badge">
+                  <SvgBrandLogo />
+                  <span className="bdb-logo-title">Gradient</span>
                 </div>
 
-                <div className="bdb-nav-right">
-                  <div className="bdb-live-status-pill">
-                    <span className="bdb-status-pulse-dot" />
-                    <span>{CAMPAIGN_META.status}</span>
-                  </div>
+                <span className="bdb-hdr-slash" aria-hidden="true">/</span>
 
-                  <div className="bdb-date-pill">
-                    <span>{CAMPAIGN_META.dateRange}</span>
-                    <SvgChevronDown className="bdb-chip-icon" />
-                  </div>
-
-                  <button type="button" className="bdb-export-btn" title="Export CSV / PDF Report">
-                    <SvgDownload />
-                    <span>Export</span>
-                  </button>
-
-                  <div className="bdb-bell-icon" title="3 Notifications">
-                    <SvgBell />
-                    <span className="bdb-bell-dot" />
-                  </div>
-
-                  <div className="bdb-user-profile" title="Signed in as Brand Administrator">
-                    <span className="bdb-user-avatar">VR</span>
-                  </div>
+                <div className="bdb-workspace-badge">
+                  <span className="bdb-ws-avatar">OL</span>
+                  <span className="bdb-ws-name">{CAMPAIGN_META.brand}</span>
                 </div>
+
+                <span className="bdb-hdr-slash" aria-hidden="true">/</span>
+
+                <button type="button" className="bdb-campaign-dropdown-btn">
+                  <span>{CAMPAIGN_META.product} (Q4 Launch)</span>
+                  <SvgChevronDown className="bdb-chevron-icon" />
+                </button>
               </div>
 
-              {/* KPI Summary Strip: All 4 key metrics in one sleek, hairline row */}
-              <div className="bdb-kpi-bar">
-                {KPI_METRICS.map((kpi) => (
-                  <div key={kpi.id} className="bdb-kpi-cell">
-                    <div className="bdb-kpi-meta-row">
-                      <div className="bdb-kpi-label-group">
-                        <span className="bdb-kpi-idx">{kpi.num}</span>
-                        <span className="bdb-kpi-label">{kpi.label}</span>
-                      </div>
-                      <span className="bdb-kpi-sub">{kpi.meta}</span>
-                    </div>
+              {/* Right Global Actions */}
+              <div className="bdb-hdr-right">
+                <div className="bdb-status-pill">
+                  <span className="bdb-status-pulse-dot" />
+                  <span>Campaign active</span>
+                </div>
 
-                    <div className="bdb-kpi-main-row">
-                      <span className="bdb-kpi-val">{kpi.value}</span>
-                      {kpi.type === 'progress' && (
-                        <div className="bdb-kpi-progress">
-                          <div className="bdb-kpi-progress-fill" style={{ width: `${kpi.progress}%` }} />
-                        </div>
-                      )}
-                      {kpi.type === 'badge' && kpi.badge && (
-                        <span className="bdb-kpi-badge">{kpi.badge}</span>
-                      )}
-                      {kpi.type === 'sparkline' && kpi.trend && (
-                        <div className="bdb-kpi-sparkline">
-                          <SvgSparkline data={kpi.trend} />
-                        </div>
-                      )}
-                      {kpi.type === 'revenue' && kpi.badge && (
-                        <span className="bdb-kpi-badge badge-purple">{kpi.badge}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                <button type="button" className="bdb-date-picker-btn">
+                  <span>{CAMPAIGN_META.dateRange}</span>
+                  <SvgChevronDown className="bdb-chevron-icon" />
+                </button>
+
+                <button type="button" className="bdb-export-action-btn" title="Export CSV / PDF Telemetry Report">
+                  <SvgDownload />
+                  <span>Export</span>
+                </button>
+
+                <button type="button" className="bdb-utility-bell-btn" title="Notifications">
+                  <SvgBell />
+                  <span className="bdb-bell-unread-dot" />
+                </button>
+
+                <div className="bdb-user-avatar-badge" title="Signed in as Brand Administrator">
+                  <span>VR</span>
+                </div>
               </div>
             </header>
 
-            {/* Main 3-Column Body Grid (Proportioned, Spacious, High Authenticity) */}
-            <div className="bdb-body-grid">
-              {/* ═══════════════════════════════════════════════════════════
-                  COLUMN 1: CONVERSION FUNNEL & REORDER CADENCE
-                  ═══════════════════════════════════════════════════════════ */}
-              <div className="bdb-col bdb-col-left">
-                {/* 1. Trial Conversion Funnel */}
-                <div className="bdb-card bdb-funnel-card">
-                  <div className="bdb-card-header">
-                    <div>
-                      <h3 className="bdb-card-title">Trial Conversion Funnel</h3>
-                      <span className="bdb-card-sub">Sampling seed to recurring weekly orders</span>
+            {/* ═══════════════════════════════════════════════════════════
+                TIER 2: EXECUTIVE KPI TELEMETRY STRIP (Height: 84px)
+                4 Equal-Width Cells Divided by 1px Hairline Borders
+                ═══════════════════════════════════════════════════════════ */}
+            <div className="bdb-tier-kpis">
+              {KPI_METRICS.map((kpi) => (
+                <div key={kpi.id} className="bdb-kpi-cell">
+                  {/* Row 1: Index + Label (left) & Metric Context (right) */}
+                  <div className="bdb-kpi-row-top">
+                    <div className="bdb-kpi-heading-group">
+                      <span className="bdb-kpi-num">{kpi.num}</span>
+                      <span className="bdb-kpi-label">{kpi.label}</span>
                     </div>
-                    <span className="bdb-pill-indicator">Full Cycle</span>
+                    <span className="bdb-kpi-meta-sub">{kpi.meta}</span>
                   </div>
 
-                  <div className="bdb-funnel-list">
-                    {FUNNEL_STAGES.map((stg, idx) => (
-                      <div key={stg.id} className={`bdb-funnel-row ${stg.highlight ? 'is-highlight' : ''}`}>
-                        <div className="bdb-f-left">
-                          <span className="bdb-f-idx">0{idx + 1}</span>
-                          <span className="bdb-f-name">{stg.name}</span>
+                  {/* Row 2: Hero Numerical Stat (left) & Visual Component (right) */}
+                  <div className="bdb-kpi-row-bot">
+                    <div className="bdb-kpi-value-group">
+                      <span className="bdb-kpi-val-bold">{kpi.valBold}</span>
+                      {kpi.valDenom && <span className="bdb-kpi-val-denom">{kpi.valDenom}</span>}
+                      {kpi.valUnit && <span className="bdb-kpi-val-unit">{kpi.valUnit}</span>}
+                    </div>
+
+                    <div className="bdb-kpi-visual-slot">
+                      {kpi.type === 'progress' && (
+                        <div className="bdb-kpi-progress-track">
+                          <div className="bdb-kpi-progress-fill" style={{ width: `${kpi.progress}%` }} />
                         </div>
-                        <div className="bdb-f-bar-wrap">
-                          <div
-                            className={`bdb-f-bar-fill ${stg.highlight ? 'bar-purple' : 'bar-neutral'}`}
-                            style={{ width: `${(stg.count / 120) * 100}%` }}
-                          />
+                      )}
+
+                      {kpi.type === 'badge' && kpi.badge && (
+                        <span className="bdb-kpi-delta-pill">{kpi.badge}</span>
+                      )}
+
+                      {kpi.type === 'sparkline' && kpi.trend && (
+                        <div className="bdb-kpi-sparkline-wrap">
+                          <SvgMicroSparkline data={kpi.trend} />
                         </div>
-                        <div className="bdb-f-right">
-                          <span className="bdb-f-count">{stg.count}</span>
-                          <span className="bdb-f-pct">{stg.pct}</span>
+                      )}
+
+                      {kpi.type === 'revenue' && kpi.badge && (
+                        <span className="bdb-kpi-revenue-hero-pill">{kpi.badge}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════
+                TIER 3: MAIN ANALYTICAL BENTO GRID (Height: 418px)
+                12-Column CSS Grid: Left (3 cols) | Center (6 cols) | Right (3 cols)
+                ═══════════════════════════════════════════════════════════ */}
+            <div className="bdb-tier-bento">
+              {/* ─────────────────────────────────────────────────────────
+                  LEFT COLUMN (col-span-3): Funnel & Weekly Reorder Volume
+                  ───────────────────────────────────────────────────────── */}
+              <div className="bdb-bento-col bdb-bento-col-left">
+                {/* 1. Trial Conversion Funnel */}
+                <div className="bdb-panel bdb-funnel-panel">
+                  <div className="bdb-panel-header">
+                    <div>
+                      <h3 className="bdb-panel-title">Trial Conversion Funnel</h3>
+                      <p className="bdb-panel-sub">Sampling seed to recurring weekly orders</p>
+                    </div>
+                    <span className="bdb-subtle-badge">Full Cycle</span>
+                  </div>
+
+                  <div className="bdb-funnel-rows">
+                    {FUNNEL_STAGES.map((stg) => (
+                      <div
+                        key={stg.id}
+                        className={`bdb-funnel-row ${stg.highlight ? 'is-bottom-line' : ''}`}
+                      >
+                        <div className="bdb-funnel-z1">
+                          <span className="bdb-funnel-idx">{stg.idx}</span>
+                          <span className="bdb-funnel-label">{stg.name}</span>
+                        </div>
+
+                        <div className="bdb-funnel-z2">
+                          <div className="bdb-funnel-track">
+                            <div
+                              className={`bdb-funnel-fill ${stg.highlight ? 'fill-primary' : 'fill-muted'}`}
+                              style={{ width: `${stg.fillPct}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="bdb-funnel-z3">
+                          <span className="bdb-funnel-count">{stg.count}</span>
+                          <span className="bdb-funnel-pct">{stg.pct}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* 2. Weekly Reorder Volume & ARR */}
-                <div className="bdb-card bdb-reorder-card">
-                  <div className="bdb-card-header">
+                {/* 2. Weekly Reorder Volume */}
+                <div className="bdb-panel bdb-volume-panel">
+                  <div className="bdb-panel-header">
                     <div>
-                      <h3 className="bdb-card-title">Weekly Reorder Volume</h3>
-                      <span className="bdb-card-sub">Litres dispatched & ARR run-rate</span>
+                      <h3 className="bdb-panel-title">Weekly Reorder Volume</h3>
+                      <p className="bdb-panel-sub">Litres dispatched & ARR run-rate</p>
                     </div>
-                    <span className="bdb-pill-indicator text-purple">840 L/wk</span>
+                    <span className="bdb-brand-subtle-pill">840 L/wk</span>
                   </div>
 
-                  <div className="bdb-bars-compact">
-                    {WEEKLY_CHART.map((wc, idx) => (
-                      <div
-                        key={wc.week}
-                        className={`bdb-bar-item ${hoveredWeek === idx ? 'is-hovered' : ''}`}
-                        onMouseEnter={() => setHoveredWeek(idx)}
-                        onMouseLeave={() => setHoveredWeek(null)}
-                      >
-                        <div className="bdb-bar-tooltip">
-                          <b>{wc.litres} L</b>
-                          <small>{wc.cafes} cafés</small>
+                  {/* 6-Column Bar Chart with Reference Grid Lines */}
+                  <div className="bdb-chart-wrap">
+                    {/* Horizontal Reference Grid Hairlines */}
+                    <div className="bdb-chart-gridline gridline-top" aria-hidden="true" />
+                    <div className="bdb-chart-gridline gridline-mid" aria-hidden="true" />
+
+                    <div className="bdb-chart-columns">
+                      {WEEKLY_CHART.map((wc, idx) => (
+                        <div
+                          key={wc.week}
+                          className={`bdb-chart-col-item ${hoveredWeek === idx ? 'is-hovered' : ''}`}
+                          onMouseEnter={() => setHoveredWeek(idx)}
+                          onMouseLeave={() => setHoveredWeek(null)}
+                        >
+                          {/* Tooltip on Hover */}
+                          <div className="bdb-col-tooltip">
+                            <span className="bdb-tt-litres">{wc.litres} L</span>
+                            <span className="bdb-tt-cafes">{wc.cafes} cafés</span>
+                          </div>
+
+                          <div className="bdb-col-bar-track">
+                            <div
+                              className={`bdb-col-bar-fill ${
+                                wc.projected ? 'bar-projected' : wc.current ? 'bar-current' : 'bar-historical'
+                              }`}
+                              style={{ height: `${wc.heightPct}%` }}
+                            />
+                          </div>
+
+                          <span className={`bdb-col-x-label ${wc.projected ? 'label-strong' : ''}`}>
+                            {wc.week}
+                          </span>
                         </div>
-                        <div className="bdb-bar-track">
-                          <div
-                            className={`bdb-bar-fill ${wc.projected ? 'is-projected' : wc.current ? 'is-current' : ''}`}
-                            style={{ height: `${(wc.litres / 1000) * 100}%` }}
-                          />
-                        </div>
-                        <span className="bdb-bar-label">{wc.week}</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="bdb-reorder-stat-row">
-                    <span><b>24</b> Repeat Cafés</span>
-                    <span className="bdb-sep">·</span>
-                    <span><b>36L</b> Avg/wk</span>
-                    <span className="bdb-sep">·</span>
-                    <span className="text-purple"><b>₹2.18L</b>/mo ARR</span>
+                  {/* Hairline Divided 3-Column Footer Metric Strip */}
+                  <div className="bdb-volume-footer-strip">
+                    <div className="bdb-vol-foot-cell">
+                      <span className="bdb-vol-foot-bold">24</span>
+                      <span className="bdb-vol-foot-lbl">Repeat Cafés</span>
+                    </div>
+                    <div className="bdb-vol-foot-divider" aria-hidden="true" />
+                    <div className="bdb-vol-foot-cell">
+                      <span className="bdb-vol-foot-bold">36L</span>
+                      <span className="bdb-vol-foot-lbl">Avg/wk</span>
+                    </div>
+                    <div className="bdb-vol-foot-divider" aria-hidden="true" />
+                    <div className="bdb-vol-foot-cell">
+                      <span className="bdb-vol-foot-bold text-brand">₹2.18L/mo</span>
+                      <span className="bdb-vol-foot-lbl">ARR</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* ═══════════════════════════════════════════════════════════
-                  COLUMN 2: BANGALORE CAFÉ DISTRIBUTION MAP (Centerpiece)
-                  ═══════════════════════════════════════════════════════════ */}
-              <div className="bdb-col bdb-col-center">
-                <div className="bdb-card bdb-map-card">
-                  <div className="bdb-card-header">
-                    <div className="bdb-map-header-left">
-                      <h3 className="bdb-card-title">Bangalore Café Distribution</h3>
-                      <span className="bdb-card-sub">120 trial kits seeded across 6 prime corridors</span>
+              {/* ─────────────────────────────────────────────────────────
+                  CENTER COLUMN (col-span-6): Bangalore Cartography & Docked HUD
+                  ───────────────────────────────────────────────────────── */}
+              <div className="bdb-bento-col bdb-bento-col-center">
+                <div className="bdb-panel bdb-map-panel">
+                  {/* Cartography Header & Interactive Legend */}
+                  <div className="bdb-panel-header bdb-map-header">
+                    <div>
+                      <h3 className="bdb-panel-title">Bangalore Café Distribution</h3>
+                      <p className="bdb-panel-sub">120 trial kits seeded across 6 prime corridors</p>
                     </div>
 
-                    <div className="bdb-map-legend">
-                      <span className="bdb-legend-item">
-                        <span className="bdb-legend-dot dot-delivered" /> Delivered (112)
+                    <div className="bdb-carto-legend">
+                      <span className="bdb-carto-legend-item">
+                        <span className="bdb-legend-marker marker-delivered-ring" />
+                        <span>Delivered (112)</span>
                       </span>
-                      <span className="bdb-legend-item">
-                        <span className="bdb-legend-dot dot-tried" /> Tried (86)
+                      <span className="bdb-carto-legend-item">
+                        <span className="bdb-legend-marker marker-tried-dot" />
+                        <span>Tried (86)</span>
                       </span>
-                      <span className="bdb-legend-item">
-                        <span className="bdb-legend-dot dot-reordered" /> Reordered (24)
+                      <span className="bdb-carto-legend-item">
+                        <span className="bdb-legend-marker marker-reorder-solid" />
+                        <span>Reordered (24)</span>
                       </span>
                     </div>
                   </div>
 
-                  {/* SVG Map Canvas with docked floating detail card */}
-                  <div className="bdb-map-stage">
-                    <svg viewBox="0 0 760 320" className="bdb-bangalore-svg" xmlns="http://www.w3.org/2000/svg">
+                  {/* Recessed Cartography Canvas Stage */}
+                  <div className="bdb-carto-stage">
+                    <svg viewBox="0 0 760 330" className="bdb-carto-svg" xmlns="http://www.w3.org/2000/svg">
                       <defs>
-                        <radialGradient id="mapGlowProportion" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="#502B9A" stopOpacity="0.04" />
-                          <stop offset="100%" stopColor="#502B9A" stopOpacity="0" />
-                        </radialGradient>
+                        {/* Architectural Dot Grid Pattern */}
+                        <pattern id="archDotGrid" width="16" height="16" patternUnits="userSpaceOnUse">
+                          <circle cx="2" cy="2" r="0.9" fill="#D4D4D8" />
+                        </pattern>
                       </defs>
 
-                      <rect width="760" height="320" fill="url(#mapGlowProportion)" />
+                      {/* Recessed Canvas Background Fill */}
+                      <rect width="760" height="330" fill="#FAFAFA" />
+                      <rect width="760" height="330" fill="url(#archDotGrid)" opacity="0.85" />
 
-                      {/* Low-contrast clean road grid */}
-                      <g className="bdb-map-roads" stroke="#ECE8F2" strokeWidth="1.15" fill="none">
-                        <path d="M 130,40 C 240,30 520,50 670,140 C 720,190 640,250 440,255 C 280,255 160,210 130,140 Z" strokeDasharray="4 3" strokeWidth="1.3" stroke="#E2DFE8" />
-                        <path d="M 150,130 L 630,130" />
-                        <path d="M 390,30 L 390,250" />
-                        <path d="M 240,60 L 540,235" />
-                        <path d="M 540,60 L 240,235" />
-                        <path d="M 200,95 Q 390,145 580,95" />
-                        <path d="M 200,185 Q 390,135 580,185" />
+                      {/* Concentric Catchment Geometry & Axis Crosshairs */}
+                      <g className="bdb-carto-geometry" stroke="#E4E4E7" strokeWidth="1" strokeDasharray="3 3" fill="none">
+                        {/* Horizontal & Vertical Crosshairs */}
+                        <line x1="90" y1="145" x2="670" y2="145" />
+                        <line x1="420" y1="35" x2="420" y2="255" />
+
+                        {/* Concentric Catchment Rings */}
+                        <circle cx="420" cy="145" r="70" opacity="0.6" />
+                        <circle cx="420" cy="145" r="145" opacity="0.45" />
+                        <circle cx="420" cy="145" r="220" opacity="0.3" />
                       </g>
 
-                      {/* Corridor Labels */}
-                      <g className="bdb-map-labels" fill="#77727F" fontSize="9.5" fontWeight="650" letterSpacing="0.06em">
-                        <text x="440" y="80">INDIRANAGAR</text>
-                        <text x="365" y="205">KORAMANGALA</text>
-                        <text x="500" y="224">HSR LAYOUT</text>
-                        <text x="590" y="80">WHITEFIELD</text>
-                        <text x="235" y="180">JAYANAGAR</text>
-                        <text x="150" y="105">RAJAJINAGAR</text>
+                      {/* Organic Catchment Hull Outlining Active Corridor Nodes */}
+                      <path
+                        d="M 160,118 C 230,70 420,55 640,88 C 670,118 650,150 540,215 C 470,240 330,225 240,205 C 160,180 145,142 160,118 Z"
+                        stroke="#C4B5FD"
+                        strokeWidth="1.2"
+                        strokeDasharray="4 4"
+                        fill="rgba(245, 243, 255, 0.45)"
+                      />
+
+                      {/* Corridor Typography Labels with Crisp Pill Backgrounds */}
+                      <g className="bdb-corridor-labels">
+                        {/* INDIRANAGAR */}
+                        <g transform="translate(440, 68)">
+                          <rect x="-4" y="-10" width="76" height="15" rx="3" fill="rgba(255,255,255,0.88)" stroke="#E4E4E7" strokeWidth="0.75" />
+                          <text x="34" y="1" fill="#71717A" fontSize="9" fontWeight="600" letterSpacing="0.08em" textAnchor="middle">INDIRANAGAR</text>
+                        </g>
+
+                        {/* KORAMANGALA */}
+                        <g transform="translate(360, 206)">
+                          <rect x="-4" y="-10" width="82" height="15" rx="3" fill="rgba(255,255,255,0.88)" stroke="#E4E4E7" strokeWidth="0.75" />
+                          <text x="37" y="1" fill="#71717A" fontSize="9" fontWeight="600" letterSpacing="0.08em" textAnchor="middle">KORAMANGALA</text>
+                        </g>
+
+                        {/* HSR LAYOUT */}
+                        <g transform="translate(500, 226)">
+                          <rect x="-4" y="-10" width="68" height="15" rx="3" fill="rgba(255,255,255,0.88)" stroke="#E4E4E7" strokeWidth="0.75" />
+                          <text x="30" y="1" fill="#71717A" fontSize="9" fontWeight="600" letterSpacing="0.08em" textAnchor="middle">HSR LAYOUT</text>
+                        </g>
+
+                        {/* WHITEFIELD */}
+                        <g transform="translate(595, 78)">
+                          <rect x="-4" y="-10" width="70" height="15" rx="3" fill="rgba(255,255,255,0.88)" stroke="#E4E4E7" strokeWidth="0.75" />
+                          <text x="31" y="1" fill="#71717A" fontSize="9" fontWeight="600" letterSpacing="0.08em" textAnchor="middle">WHITEFIELD</text>
+                        </g>
+
+                        {/* JAYANAGAR */}
+                        <g transform="translate(240, 182)">
+                          <rect x="-4" y="-10" width="66" height="15" rx="3" fill="rgba(255,255,255,0.88)" stroke="#E4E4E7" strokeWidth="0.75" />
+                          <text x="29" y="1" fill="#71717A" fontSize="9" fontWeight="600" letterSpacing="0.08em" textAnchor="middle">JAYANAGAR</text>
+                        </g>
+
+                        {/* RAJAJINAGAR */}
+                        <g transform="translate(145, 102)">
+                          <rect x="-4" y="-10" width="74" height="15" rx="3" fill="rgba(255,255,255,0.88)" stroke="#E4E4E7" strokeWidth="0.75" />
+                          <text x="33" y="1" fill="#71717A" fontSize="9" fontWeight="600" letterSpacing="0.08em" textAnchor="middle">RAJAJINAGAR</text>
+                        </g>
                       </g>
 
-                      {/* Interactive Markers */}
-                      <g className="bdb-map-markers">
+                      {/* 22 Interactive Spatial Café Nodes */}
+                      <g className="bdb-carto-nodes">
                         {BANGALORE_MARKERS.map((m) => {
                           const isReordered = m.status === 'reordered';
                           const isTried = m.status === 'trial_completed';
@@ -661,95 +768,114 @@ export function BrandDashboard() {
                           return (
                             <g
                               key={m.id}
-                              className={`bdb-marker-group ${isReordered ? 'marker-reorder' : isTried ? 'marker-tried' : 'marker-delivered'} ${isSelected ? 'is-selected' : ''}`}
+                              className={`bdb-spatial-node ${isSelected ? 'is-active-node' : ''}`}
                               transform={`translate(${m.x}, ${m.y})`}
                               onMouseEnter={() => setHoveredMarker(m)}
                               onMouseLeave={() => setHoveredMarker(null)}
                               onClick={() => setSelectedCafe(m)}
-                              style={{ cursor: 'pointer' }}
                             >
-                              {isReordered && (
-                                <circle r="10" fill="none" stroke="#502B9A" strokeWidth="1.2" className="bdb-marker-ping" />
+                              {/* Selected Active Outer Focus Pulse */}
+                              {isSelected && (
+                                <circle r="12" fill="none" stroke="#5B3DF5" strokeWidth="1.5" className="bdb-pulse-ring" />
                               )}
+
+                              {/* Reordered Halo */}
+                              {isReordered && !isSelected && (
+                                <circle r="9" fill="none" stroke="#5B3DF5" strokeWidth="1" strokeOpacity="0.25" />
+                              )}
+
+                              {/* Core Node Circle */}
                               <circle
-                                r={isReordered ? 6 : 5}
-                                fill={isReordered ? '#502B9A' : isTried ? '#FFFFFF' : '#F1ECF8'}
-                                stroke={isReordered ? '#FFFFFF' : '#502B9A'}
-                                strokeWidth={isReordered ? 1.8 : 1.5}
+                                r={isReordered ? 5.5 : 4.5}
+                                fill={isReordered ? '#5B3DF5' : isTried ? '#DDD6FE' : '#FFFFFF'}
+                                stroke={isReordered ? '#FFFFFF' : '#5B3DF5'}
+                                strokeWidth={isReordered ? 1.75 : 1.5}
                               />
-                              {isTried && <circle r="2.2" fill="#502B9A" />}
+
+                              {/* Inner Tried Dot */}
+                              {isTried && <circle r="2" fill="#5B3DF5" />}
                             </g>
                           );
                         })}
                       </g>
                     </svg>
 
-                    {/* Marker Hover Tooltip */}
+                    {/* Interactive Marker Hover Tooltip */}
                     {hoveredMarker && (
                       <div
-                        className="bdb-map-tooltip"
+                        className="bdb-carto-tooltip"
                         style={{
                           left: `${(hoveredMarker.x / 760) * 100}%`,
-                          top: `${(hoveredMarker.y / 320) * 100}%`,
+                          top: `${(hoveredMarker.y / 330) * 100}%`,
                         }}
                       >
-                        <div className="bdb-tooltip-name">{hoveredMarker.name}</div>
-                        <div className="bdb-tooltip-sub">
+                        <span className="bdb-tt-name">{hoveredMarker.name}</span>
+                        <span className="bdb-tt-sub">
                           {hoveredMarker.area} ·{' '}
-                          <span className={hoveredMarker.status === 'reordered' ? 'text-purple' : ''}>
+                          <span className={hoveredMarker.status === 'reordered' ? 'text-brand' : ''}>
                             {hoveredMarker.status === 'reordered'
                               ? 'Weekly Reordered'
                               : hoveredMarker.status === 'trial_completed'
                               ? 'Trial Completed'
                               : 'Kit Delivered'}
                           </span>
-                        </div>
+                        </span>
                       </div>
                     )}
 
-                    {/* Docked Floating Café Intelligence Card (Takes zero extra vertical height) */}
+                    {/* Docked Floating HUD Inspection Card (Linear/Ramp Elevated Inspector) */}
                     {selectedCafe && (
-                      <div className="bdb-cafe-dock-card">
-                        <div className="bdb-dock-header">
-                          <div className="bdb-dock-title-group">
-                            <span className="bdb-dock-name">{selectedCafe.name}</span>
-                            <span className="bdb-dock-area">{selectedCafe.area}</span>
+                      <div className="bdb-docked-hud-card">
+                        {/* HUD Top Bar */}
+                        <div className="bdb-hud-top-bar">
+                          <div className="bdb-hud-title-wrap">
+                            <span className="bdb-hud-name">{selectedCafe.name}</span>
+                            <span className="bdb-hud-corridor">{selectedCafe.area}</span>
                           </div>
-                          <span
-                            className={`bdb-dock-status ${
-                              selectedCafe.status === 'reordered'
-                                ? 'status-reordered'
-                                : selectedCafe.status === 'trial_completed'
-                                ? 'status-tried'
-                                : 'status-delivered'
-                            }`}
-                          >
-                            {selectedCafe.status === 'reordered'
-                              ? '● Weekly Reorder Active'
-                              : selectedCafe.status === 'trial_completed'
-                              ? '◎ Trial Completed'
-                              : '○ Trial Kit Delivered'}
-                          </span>
-                        </div>
 
-                        <div className="bdb-dock-details">
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">WEEKLY VOLUME</span>
-                            <span className="bdb-dock-val text-purple">{selectedCafe.volume || '24 L/wk'}</span>
-                          </div>
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">HEAD BARISTA</span>
-                            <span className="bdb-dock-val">{selectedCafe.barista || 'Staff cupping'}</span>
-                          </div>
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">CUPPING SCORE</span>
-                            <span className="bdb-dock-val">
-                              {selectedCafe.rating ? `★ ${selectedCafe.rating}` : 'Pending review'}
+                          <div className="bdb-hud-status-badge">
+                            <span className="bdb-hud-status-dot" />
+                            <span>
+                              {selectedCafe.status === 'reordered'
+                                ? 'Weekly Reorder Active'
+                                : selectedCafe.status === 'trial_completed'
+                                ? 'Trial Completed'
+                                : 'Kit Delivered'}
                             </span>
                           </div>
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">PO CHANNEL</span>
-                            <span className="bdb-dock-val">{selectedCafe.standingPO || 'Verified Net-15'}</span>
+                        </div>
+
+                        {/* HUD 4-Column Metric Grid Divided by Hairlines */}
+                        <div className="bdb-hud-metrics-grid">
+                          <div className="bdb-hud-metric-cell">
+                            <span className="bdb-hud-metric-lbl">WEEKLY VOLUME</span>
+                            <span className="bdb-hud-metric-val text-brand">{selectedCafe.volume || '36 L/wk'}</span>
+                          </div>
+
+                          <div className="bdb-hud-vdivider" aria-hidden="true" />
+
+                          <div className="bdb-hud-metric-cell">
+                            <span className="bdb-hud-metric-lbl">HEAD BARISTA</span>
+                            <span className="bdb-hud-metric-val">{selectedCafe.barista || 'Aditya K.'}</span>
+                          </div>
+
+                          <div className="bdb-hud-vdivider" aria-hidden="true" />
+
+                          <div className="bdb-hud-metric-cell">
+                            <span className="bdb-hud-metric-lbl">CUPPING SCORE</span>
+                            <span className="bdb-hud-metric-val">
+                              <span className="text-brand">★</span> {selectedCafe.rating ? selectedCafe.rating.toFixed(1) : '4.9'}
+                            </span>
+                          </div>
+
+                          <div className="bdb-hud-vdivider" aria-hidden="true" />
+
+                          <div className="bdb-hud-metric-cell">
+                            <span className="bdb-hud-metric-lbl">PO CHANNEL</span>
+                            <span className="bdb-hud-metric-val po-val-row">
+                              <span className="bdb-emerald-live-dot" />
+                              <span>{selectedCafe.standingPO || 'Net-15 Active'}</span>
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -758,72 +884,86 @@ export function BrandDashboard() {
                 </div>
               </div>
 
-              {/* ═══════════════════════════════════════════════════════════
-                  COLUMN 3: BARISTA FEEDBACK & LIVE COMMERCIAL TELEMETRY
-                  ═══════════════════════════════════════════════════════════ */}
-              <div className="bdb-col bdb-col-right">
-                {/* 1. Barista Feedback Intelligence */}
-                <div className="bdb-card bdb-feedback-card">
-                  <div className="bdb-card-header">
+              {/* ─────────────────────────────────────────────────────────
+                  RIGHT COLUMN (col-span-3): Barista Feedback & Telemetry
+                  ───────────────────────────────────────────────────────── */}
+              <div className="bdb-bento-col bdb-bento-col-right">
+                {/* 1. Barista Feedback Sensory Scorecard */}
+                <div className="bdb-panel bdb-feedback-panel">
+                  <div className="bdb-panel-header">
                     <div>
-                      <h3 className="bdb-card-title">Barista Feedback</h3>
-                      <span className="bdb-card-sub">Sensory ratings across 67 trials</span>
+                      <h3 className="bdb-panel-title">Barista Feedback</h3>
+                      <p className="bdb-panel-sub">Sensory ratings across 67 trials</p>
                     </div>
-                    <div className="bdb-rating-overall">
-                      <span className="bdb-overall-stars">★ 4.8</span>
-                      <span className="bdb-overall-max">/ 5.0</span>
-                    </div>
+                    <span className="bdb-scorecard-badge">★ 4.8 / 5.0</span>
                   </div>
 
-                  <div className="bdb-feedback-list">
+                  {/* 4 Sensory Metric Rows */}
+                  <div className="bdb-sensory-rows">
                     {FEEDBACK_ATTRS.map((attr) => (
-                      <div key={attr.label} className="bdb-attr-compact">
-                        <div className="bdb-attr-meta">
-                          <span className="bdb-attr-name">
-                            {attr.label} <span className="bdb-attr-note">· {attr.note}</span>
-                          </span>
-                          <span className="bdb-attr-num">{attr.score}</span>
+                      <div key={attr.label} className="bdb-sensory-row">
+                        <div className="bdb-sensory-meta-line">
+                          <span className="bdb-sensory-name">{attr.label}</span>
+                          <span className="bdb-sensory-consensus">· {attr.note}</span>
+                          <span className="bdb-sensory-score">{attr.score}</span>
                         </div>
-                        <div className="bdb-attr-track">
-                          <div className="bdb-attr-fill" style={{ width: `${attr.pct}%` }} />
+                        <div className="bdb-sensory-track">
+                          <div
+                            className={`bdb-sensory-fill ${attr.muted ? 'fill-muted-indigo' : 'fill-primary'}`}
+                            style={{ width: `${attr.pct}%` }}
+                          />
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Featured Barista Review Quote */}
-                  <div className="bdb-quote-pill">
-                    <p className="bdb-quote-text">
+                  {/* Editorial Verbatim Callout Box */}
+                  <div className="bdb-verbatim-box">
+                    <p className="bdb-verbatim-quote">
                       “Exceptional microfoam for latte art without scalding.”
                     </p>
-                    <span className="bdb-quote-author">
+                    <span className="bdb-verbatim-author">
                       — Rohan M., Head Barista · Maverick & Farmer
                     </span>
                   </div>
                 </div>
 
-                {/* 2. Live Commercial Telemetry Feed */}
-                <div className="bdb-card bdb-activity-card">
-                  <div className="bdb-card-header">
+                {/* 2. Live Commercial Telemetry Stream (Ramp Activity Pattern) */}
+                <div className="bdb-panel bdb-telemetry-panel">
+                  <div className="bdb-panel-header">
                     <div>
-                      <h3 className="bdb-card-title">Live Commercial Telemetry</h3>
-                      <span className="bdb-card-sub">Route dispatches & Net-15 POs</span>
+                      <h3 className="bdb-panel-title">Live Commercial Telemetry</h3>
+                      <p className="bdb-panel-sub">Route dispatches & Net-15 POs</p>
                     </div>
-                    <span className="bdb-live-tag">
-                      <span className="bdb-live-dot" /> Live
-                    </span>
+                    <div className="bdb-live-pulse-badge">
+                      <span className="bdb-live-emerald-dot" />
+                      <span>Live</span>
+                    </div>
                   </div>
 
-                  <div className="bdb-activity-list">
+                  {/* Vertical Timeline Stream */}
+                  <div className="bdb-timeline-stream">
+                    <div className="bdb-timeline-vertical-line" aria-hidden="true" />
+
                     {RECENT_ACTIVITIES.map((act) => (
-                      <div key={act.id} className="bdb-act-row">
-                        <div className="bdb-act-header-line">
-                          <span className="bdb-act-time">{act.time}</span>
-                          <span className="bdb-act-title">{act.title}</span>
+                      <div key={act.id} className="bdb-timeline-event">
+                        {/* Left: Monospace Timestamp */}
+                        <div className="bdb-event-time-col">
+                          <span className="bdb-event-time">{act.time}</span>
                         </div>
-                        <span className="bdb-act-cafe">
-                          {act.cafe} {act.meta && <span className="bdb-act-meta">· {act.meta}</span>}
-                        </span>
+
+                        {/* Right: Node Indicator + 2-Line Event Content */}
+                        <div className="bdb-event-content-col">
+                          <span className="bdb-event-node-dot" />
+                          <div className="bdb-event-line1">{act.title}</div>
+                          <div className="bdb-event-line2">
+                            <span className="bdb-event-cafe">{act.cafe}</span>
+                            <span className="bdb-event-divider"> — </span>
+                            <span className={`bdb-event-meta ${act.highlightMeta ? 'meta-brand' : ''}`}>
+                              {act.meta}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>

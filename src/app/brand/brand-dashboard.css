@@ -1,39 +1,68 @@
 /* ─────────────────────────────────────────────────────────────────────────────
    GRADIENT — BRAND ANALYTICS DASHBOARD SHOWCASE SECTION
-   Design System: White & Purple (#502B9A)
-   Inspiration: Linear · Stripe · Ramp · Vercel
-   Layout & Proportions:
-     • Max Content Container: ~1440px
-     • Dashboard Aspect Ratio: ~2.26:1 (Target 1400px × 620px on Large Desktop)
-     • Three Visual Layers:
-       1. Editorial Eyebrow
-       2. Confident Headline & Secondary Supporting Copy
-       3. Signature Product Showcase: Full-width Dashboard Preview
+   Role: Principal Staff Design Engineer (Linear · Stripe · Ramp · Notion)
+   Design System: Stripe/Linear Hairline System
+   Palette: Pure White & Electric Indigo (#5B3DF5)
+   
+   Architecture:
+     Tier 1: Global Workspace Header (h: 50px)
+     Tier 2: Executive KPI Telemetry Strip (h: 84px)
+     Tier 3: Main Analytical Bento Grid (h: 417px)
+       • Left Column (3 cols): Trial Funnel + Weekly Reorder Volume
+       • Center Column (6 cols): Bangalore Cartography + Docked HUD
+       • Right Column (3 cols): Barista Feedback + Live Telemetry Feed
    ───────────────────────────────────────────────────────────────────────────── */
 
-/* ─── 0. Section Wrapper & Ambient Lighting ───────────────────────────────── */
+:root {
+  --bdb-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bdb-font-mono: 'Geist Mono', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Color Tokens */
+  --bdb-ink-primary: #09090B;
+  --bdb-ink-secondary: #52525B;
+  --bdb-ink-muted: #A1A1AA;
+  --bdb-ink-eyebrow: #71717A;
+  
+  --bdb-brand-primary: #5B3DF5;
+  --bdb-brand-surface: #F5F3FF;
+  --bdb-brand-border: #DDD6FE;
+  --bdb-brand-muted: #C4B5FD;
+  --bdb-brand-lavender: #D8B4FE;
+  --bdb-brand-deep: #4322C4;
+  
+  --bdb-hairline: #E4E4E7;
+  --bdb-hairline-subtle: #F4F4F5;
+  --bdb-surface-white: #FFFFFF;
+  --bdb-surface-canvas: #FAFAFA;
+  --bdb-surface-well: #F4F4F5;
+  --bdb-semantic-emerald: #10B981;
+}
+
+/* ─── 0. Section Stage & Ambient Atmosphere ──────────────────────────────── */
 .bdb-section {
   position: relative;
   width: 100%;
   background-color: #FFFFFF;
-  color: #19171E;
+  color: var(--bdb-ink-primary);
+  font-family: var(--bdb-font-sans);
   padding: 0;
   box-sizing: border-box;
   overflow: visible;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle, pure purple ambient radial glow centered behind showcase */
+/* Restrained ambient glow centered behind showcase */
 .bdb-bg-ambient {
   position: absolute;
-  top: 10%;
+  top: 12%;
   left: 50%;
   transform: translate(-50%, 0);
   width: 1200px;
-  height: 600px;
+  height: 580px;
   background: radial-gradient(
-    ellipse 60% 50% at center,
-    rgba(80, 43, 154, 0.035) 0%,
-    rgba(80, 43, 154, 0.008) 50%,
+    ellipse 60% 48% at center,
+    rgba(91, 61, 245, 0.04) 0%,
+    rgba(91, 61, 245, 0.01) 50%,
     transparent 75%
   );
   pointer-events: none;
@@ -41,7 +70,7 @@
   border-radius: 50%;
 }
 
-/* Pinned Wrapper for GSAP ScrollTrigger: Centered vertically below navbar */
+/* Pinned Wrapper for GSAP ScrollTrigger: Vertically centered on screen */
 .bdb-pin-wrap {
   position: relative;
   width: 100%;
@@ -50,13 +79,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 64px;
+  padding-top: 50px;
   padding-bottom: 12px;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* Wide Centred Content Container (1440px) */
+/* Macro Container: 1400px Max-Width */
 .bdb-container {
   position: relative;
   width: 100%;
@@ -69,26 +98,27 @@
 
 /* ─── 1. Editorial Heading Block (Stationary Anchor) ──────────────────────── */
 .bdb-editorial-header {
-  margin-bottom: clamp(6px, 1vh, 10px);
+  margin-bottom: 8px;
 }
 
 .bdb-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 9.5px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #502B9A;
-  margin-bottom: 2px;
+  color: var(--bdb-ink-eyebrow);
+  margin-bottom: 3px;
+  font-family: var(--bdb-font-sans);
 }
 
 .bdb-eyebrow-pip {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: #502B9A;
+  background: var(--bdb-brand-primary);
 }
 
 .bdb-header-row {
@@ -104,22 +134,22 @@
 }
 
 .bdb-title {
-  font-size: clamp(20px, 1.85vw, 26px);
+  font-size: clamp(20px, 1.85vw, 25px);
   font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: #19171E;
+  letter-spacing: -0.015em;
+  color: var(--bdb-ink-primary);
   margin: 0 0 2px 0;
 }
 
 .bdb-title-purple {
-  color: #502B9A;
+  color: var(--bdb-brand-primary);
 }
 
 .bdb-sub {
   font-size: clamp(11.5px, 0.85vw, 12.5px);
   line-height: 1.35;
-  color: #77727F;
+  color: var(--bdb-ink-secondary);
   max-width: 680px;
   margin: 0;
 }
@@ -129,1088 +159,1348 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  background: #F8F7FA;
-  padding: 2px;
-  border-radius: 999px;
-  border: 1px solid #EBE8F0;
+  background: #F4F4F5;
+  padding: 2.5px;
+  border-radius: 9999px;
+  border: 1px solid var(--bdb-hairline);
 }
 
 .bdb-bay-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3.5px 9px;
+  padding: 3px 9px;
   font-size: 10px;
   font-weight: 600;
-  color: #77727F;
+  color: var(--bdb-ink-secondary);
   background: transparent;
   border: none;
-  border-radius: 999px;
+  border-radius: 9999px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   user-select: none;
 }
 
 .bdb-bay-btn:hover {
-  color: #19171E;
+  color: var(--bdb-ink-primary);
 }
 
 .bdb-bay-btn.is-active {
   background: #FFFFFF;
-  color: #502B9A;
+  color: var(--bdb-brand-primary);
   font-weight: 700;
-  box-shadow: 0 2px 5px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .bdb-bay-dot {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #EBE8F0;
-  transition: background 0.2s ease;
+  background: #D4D4D8;
+  transition: background 0.15s ease;
 }
 
 .bdb-bay-btn.is-active .bdb-bay-dot {
-  background: #502B9A;
+  background: var(--bdb-brand-primary);
 }
 
-/* ─── 2. The Dashboard Frame (Aspect Ratio ~2.6:1, Proportioned & Above Horizon) ─── */
+/* ─── 2. The Dashboard Frame (Stripe/Linear Hairline Shell) ───────────────── */
 .bdb-viewport-frame {
   position: relative;
   width: 100%;
   max-width: 1380px;
-  height: 520px;
-  border-radius: 14px;
-  border: 1px solid #EBE8F0;
+  height: 552px;
+  border-radius: 12px;
+  border: 1px solid var(--bdb-hairline);
   background: #FFFFFF;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8),
-    0 16px 36px -10px rgba(80, 43, 154, 0.06),
-    0 1px 3px rgba(0, 0, 0, 0.03);
+    0 1px 1px rgba(0, 0, 0, 0.02),
+    0 12px 28px -6px rgba(9, 9, 11, 0.04);
   overflow: hidden;
   will-change: transform;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
-/* ─── 3. Top Application Bar ─────────────────────────────────────────────── */
-.bdb-app-header {
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIER 1: GLOBAL WORKSPACE HEADER (Height: 50px)
+   Notion / Linear Context Switcher + Ramp Controls
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bdb-tier-header {
   width: 100%;
+  height: 50px;
   background: #FFFFFF;
-  border-bottom: 1px solid #EBE8F0;
-  flex-shrink: 0;
-}
-
-.bdb-nav-top {
+  border-bottom: 1px solid var(--bdb-hairline);
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 36px;
-  padding: 0 14px;
-  border-bottom: 1px solid #F4F1F8;
-  font-size: 11.5px;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
-.bdb-nav-left,
-.bdb-nav-right {
+.bdb-hdr-left,
+.bdb-hdr-right {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.bdb-logo-group {
+/* Brand Logo */
+.bdb-app-logo-badge {
   display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.bdb-logo-svg {
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.bdb-logo-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--bdb-ink-primary);
+}
+
+.bdb-hdr-slash {
+  color: #D4D4D8;
+  font-size: 13px;
+  font-weight: 400;
+  user-select: none;
+}
+
+/* Workspace Pill */
+.bdb-workspace-badge {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-.bdb-logo-text {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #19171E;
-}
-
-.bdb-nav-divider {
-  width: 1px;
-  height: 12px;
-  background: #EBE8F0;
-}
-
-.bdb-brand-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 1.5px 6px;
-  border-radius: 5px;
-  background: #FAF9FC;
-  border: 1px solid #EBE8F0;
-}
-
-.bdb-brand-avatar {
-  display: grid;
+.bdb-ws-avatar {
+  display: inline-grid;
   place-items: center;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  background: #F1ECF8;
-  color: #502B9A;
-  font-size: 8px;
-  font-weight: 800;
-}
-
-.bdb-brand-name {
-  font-size: 10.5px;
-  font-weight: 650;
-  color: #19171E;
-}
-
-.bdb-campaign-dropdown {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1.5px 7px;
-  border-radius: 5px;
-  border: 1px solid #EBE8F0;
-  background: #FFFFFF;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #502B9A;
-  cursor: pointer;
-}
-
-.bdb-live-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1.5px 7px;
-  border-radius: 999px;
-  background: #F1ECF8;
-  color: #502B9A;
-  font-size: 9.5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bdb-surface-well);
+  border: 1px solid var(--bdb-hairline);
+  font-family: var(--bdb-font-mono);
+  font-size: 10px;
   font-weight: 700;
+  color: var(--bdb-ink-secondary);
 }
 
-.bdb-status-pulse-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #502B9A;
-  box-shadow: 0 0 0 2px rgba(80, 43, 154, 0.15);
+.bdb-ws-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #3F3F46;
 }
 
-.bdb-date-pill {
+/* Active Campaign Selector Dropdown Button */
+.bdb-campaign-dropdown-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 1.5px 7px;
-  border-radius: 5px;
-  border: 1px solid #EBE8F0;
-  font-size: 10px;
-  font-weight: 600;
-  color: #77727F;
-}
-
-.bdb-export-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  border-radius: 5px;
-  border: 1px solid #EBE8F0;
-  background: #FFFFFF;
-  font-size: 10px;
-  font-weight: 600;
-  color: #19171E;
+  gap: 6px;
+  padding: 3px 9px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bdb-brand-primary);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.bdb-export-btn:hover {
-  background: #FAF9FC;
-  border-color: #502B9A;
-  color: #502B9A;
+.bdb-campaign-dropdown-btn:hover {
+  background: #ECE7FE;
 }
 
-.bdb-bell-icon {
+.bdb-chevron-icon {
+  stroke-width: 2.2;
+}
+
+/* Right Controls */
+.bdb-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--bdb-brand-primary);
+}
+
+.bdb-status-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bdb-brand-primary);
+  box-shadow: 0 0 0 2px rgba(91, 61, 245, 0.2);
+  animation: bdbPulse 2s infinite;
+}
+
+@keyframes bdbPulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(91, 61, 245, 0.4); }
+  70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(91, 61, 245, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(91, 61, 245, 0); }
+}
+
+/* Date Picker Button */
+.bdb-date-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3.5px 9px;
+  background: #FFFFFF;
+  border: 1px solid var(--bdb-hairline);
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-family: var(--bdb-font-sans);
+  font-variant-numeric: tabular-nums;
+  color: #3F3F46;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: background 0.15s ease;
+}
+
+.bdb-date-picker-btn:hover {
+  background: var(--bdb-surface-well);
+}
+
+/* Export Secondary Button */
+.bdb-export-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #FFFFFF;
+  border: 1px solid var(--bdb-hairline);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #18181B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bdb-export-action-btn:hover {
+  background: var(--bdb-surface-well);
+}
+
+/* Notification Bell */
+.bdb-utility-bell-btn {
   position: relative;
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 5px;
-  border: 1px solid #EBE8F0;
-  color: #77727F;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #52525B;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.bdb-bell-dot {
+.bdb-utility-bell-btn:hover {
+  background: var(--bdb-surface-well);
+  border-color: var(--bdb-hairline);
+  color: var(--bdb-ink-primary);
+}
+
+.bdb-bell-unread-dot {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 3.5px;
-  height: 3.5px;
+  top: 4px;
+  right: 5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: #502B9A;
+  background: var(--bdb-brand-primary);
 }
 
-.bdb-user-profile {
+/* User Avatar */
+.bdb-user-avatar-badge {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 5px;
-  background: #19171E;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #18181B;
   color: #FFFFFF;
-  font-size: 9px;
-  font-weight: 750;
+  font-family: var(--bdb-font-mono);
+  font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-/* ─── 4. KPI Summary Strip (Horizontal 2-Line Bar, 52px Height) ──────────── */
-.bdb-kpi-bar {
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIER 2: EXECUTIVE KPI TELEMETRY STRIP (Height: 84px)
+   Stripe / Ramp 4-Column Grid with Hairline Dividers
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bdb-tier-kpis {
+  width: 100%;
+  height: 84px;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--bdb-hairline);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: #FAF9FB;
-  border-top: 1px solid #FFFFFF;
-  border-bottom: 1px solid #EBE8F0;
-  height: 52px;
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 
 .bdb-kpi-cell {
-  padding: 6px 16px;
-  border-right: 1px solid #EBE8F0;
+  position: relative;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 2px;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border-right: 1px solid var(--bdb-hairline);
 }
 
 .bdb-kpi-cell:last-child {
   border-right: none;
 }
 
-.bdb-kpi-meta-row {
+/* KPI Internal Row 1: Header / Label / Meta */
+.bdb-kpi-row-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-}
-
-.bdb-kpi-label-group {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.bdb-kpi-idx {
-  font-size: 8.5px;
-  font-weight: 750;
-  color: #502B9A;
-  letter-spacing: 0.04em;
-}
-
-.bdb-kpi-label {
-  font-size: 9.5px;
-  font-weight: 650;
-  color: #77727F;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.bdb-kpi-sub {
-  font-size: 9px;
-  color: #77727F;
   white-space: nowrap;
 }
 
-.bdb-kpi-main-row {
+.bdb-kpi-heading-group {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
-.bdb-kpi-val {
-  font-size: 14px;
+.bdb-kpi-num {
+  font-family: var(--bdb-font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--bdb-ink-muted);
+}
+
+.bdb-kpi-label {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bdb-ink-eyebrow);
+}
+
+.bdb-kpi-meta-sub {
+  font-family: var(--bdb-font-sans);
+  font-size: 11px;
+  font-weight: 450;
+  font-variant-numeric: tabular-nums;
+  color: var(--bdb-ink-eyebrow);
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+
+/* KPI Internal Row 2: Hero Value & Visual Slot */
+.bdb-kpi-row-bot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bdb-kpi-value-group {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  line-height: 1;
+}
+
+.bdb-kpi-val-bold {
+  font-size: 26px;
   font-weight: 800;
-  color: #19171E;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  color: var(--bdb-ink-primary);
   font-variant-numeric: tabular-nums;
 }
 
-.bdb-kpi-progress {
-  flex: 1;
-  max-width: 52px;
-  height: 3.5px;
-  border-radius: 999px;
-  background: #EBE8F0;
+.bdb-kpi-val-denom {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--bdb-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bdb-kpi-val-unit {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--bdb-ink-secondary);
+}
+
+/* KPI Visual Slots */
+.bdb-kpi-visual-slot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.bdb-kpi-progress-track {
+  width: 64px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--bdb-surface-well);
+  border: 1px solid var(--bdb-hairline);
   overflow: hidden;
 }
 
 .bdb-kpi-progress-fill {
   height: 100%;
-  background: #502B9A;
-  border-radius: 999px;
+  border-radius: 9999px;
+  background: var(--bdb-brand-primary);
 }
 
-.bdb-kpi-badge {
-  display: inline-block;
-  padding: 1px 5px;
-  border-radius: 3.5px;
-  font-size: 8.5px;
-  font-weight: 700;
-  background: #F1ECF8;
-  color: #502B9A;
+.bdb-kpi-delta-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  font-family: var(--bdb-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bdb-brand-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-.bdb-kpi-badge.badge-purple {
-  background: #502B9A;
+.bdb-kpi-sparkline-wrap {
+  width: 72px;
+  height: 22px;
+}
+
+.bdb-sparkline-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.bdb-kpi-revenue-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--bdb-brand-primary);
   color: #FFFFFF;
+  font-family: var(--bdb-font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 1px 3px rgba(91, 61, 245, 0.25);
 }
 
-.bdb-kpi-sparkline {
-  width: 60px;
-  height: 16px;
-}
-
-/* ─── 5. Main 3-Column Body Grid (Stretched 430px Height) ────────────────── */
-.bdb-body-grid {
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIER 3: MAIN ANALYTICAL BENTO GRID (Height: 417px)
+   12-Column Layout: Left (3 cols) | Center (6 cols) | Right (3 cols)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bdb-tier-bento {
+  width: 100%;
+  height: 417px;
   display: grid;
   grid-template-columns: 295px minmax(0, 1fr) 295px;
-  gap: 10px;
-  padding: 10px 12px;
-  background: #F8F7FA;
-  flex: 1;
-  min-height: 0;
+  gap: 8px;
+  padding: 8px;
+  background: var(--bdb-surface-canvas);
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-.bdb-col {
+.bdb-bento-col {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  min-height: 0;
   height: 100%;
 }
 
-/* Base Card Styling */
-.bdb-card {
+/* Unified Bento Panels */
+.bdb-panel {
+  position: relative;
   background: #FFFFFF;
-  border: 1px solid #EBE8F0;
-  border-radius: 11px;
-  padding: 10px 12px;
-  box-shadow: 0 1px 2px rgba(21, 17, 29, 0.02);
+  border: 1px solid var(--bdb-hairline);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.bdb-card-header {
+/* Reusable Panel Header */
+.bdb-panel-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 6px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #F4F1F8;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
 }
 
-.bdb-card-title {
-  font-size: 11.5px;
-  font-weight: 750;
-  color: #19171E;
+.bdb-panel-title {
+  font-size: 13.5px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--bdb-ink-primary);
   margin: 0;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-
-.bdb-card-sub {
-  font-size: 9px;
-  color: #77727F;
   line-height: 1.2;
 }
 
-.bdb-pill-indicator {
-  display: inline-block;
+.bdb-panel-sub {
+  font-size: 11px;
+  color: var(--bdb-ink-eyebrow);
+  margin: 2px 0 0 0;
+  line-height: 1.2;
+}
+
+.bdb-subtle-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 1.5px 6px;
-  border-radius: 4px;
-  font-size: 9px;
+  border-radius: 6px;
+  background: var(--bdb-surface-well);
+  border: 1px solid var(--bdb-hairline);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--bdb-ink-secondary);
+}
+
+.bdb-brand-subtle-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.5px 6px;
+  border-radius: 6px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  font-family: var(--bdb-font-mono);
+  font-size: 11px;
   font-weight: 700;
-  background: #FAF9FC;
-  border: 1px solid #EBE8F0;
-  color: #77727F;
-  white-space: nowrap;
+  color: var(--bdb-brand-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-.bdb-pill-indicator.text-purple {
-  color: #502B9A;
-  background: #F1ECF8;
-  border-color: rgba(80, 43, 154, 0.2);
+/* ───────────────────────────────────────────────────────────────────────────
+   COLUMN 1: CONVERSION FUNNEL & REORDER VOLUME
+   ─────────────────────────────────────────────────────────────────────────── */
+.bdb-funnel-panel {
+  height: 220px;
 }
 
-/* ─── Column 1: Conversion Funnel ────────────────────────────────────────── */
-.bdb-funnel-card {
-  height: 214px;
-}
-
-.bdb-funnel-list {
+.bdb-funnel-rows {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  flex: 1;
   justify-content: space-between;
+  height: 100%;
 }
 
 .bdb-funnel-row {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr) 52px;
+  grid-template-columns: 100px 1fr 68px;
   align-items: center;
-  gap: 6px;
-  padding: 3px 6px;
-  border-radius: 6px;
-  background: #FAF9FC;
-  border: 1px solid transparent;
-  transition: all 0.15s ease;
-}
-
-.bdb-funnel-row:hover {
-  background: #FFFFFF;
-  border-color: #EBE8F0;
-}
-
-.bdb-funnel-row.is-highlight {
-  background: #F1ECF8;
-  border-color: rgba(80, 43, 154, 0.25);
-}
-
-.bdb-f-left {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.bdb-f-idx {
-  font-size: 8.5px;
-  font-weight: 750;
-  color: #502B9A;
-  font-variant-numeric: tabular-nums;
-}
-
-.bdb-f-name {
-  font-size: 10px;
-  font-weight: 650;
-  color: #19171E;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bdb-f-bar-wrap {
-  width: 100%;
-  height: 3.5px;
-  border-radius: 999px;
-  background: #EBE8F0;
-  overflow: hidden;
-}
-
-.bdb-f-bar-fill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.3s ease;
-}
-
-.bdb-f-bar-fill.bar-neutral {
-  background: #ABA5B6;
-}
-
-.bdb-f-bar-fill.bar-purple {
-  background: #502B9A;
-}
-
-.bdb-f-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 3px;
-  font-variant-numeric: tabular-nums;
-}
-
-.bdb-f-count {
-  font-size: 10px;
-  font-weight: 750;
-  color: #19171E;
-}
-
-.bdb-f-pct {
-  font-size: 8.5px;
-  color: #77727F;
-}
-
-.bdb-funnel-row.is-highlight .bdb-f-count,
-.bdb-funnel-row.is-highlight .bdb-f-pct {
-  color: #502B9A;
-  font-weight: 800;
-}
-
-/* ─── Column 1: Weekly Reorder Volume ────────────────────────────────────── */
-.bdb-reorder-card {
-  height: 188px;
-  justify-content: space-between;
-}
-
-.bdb-bars-compact {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
   gap: 8px;
-  height: 78px;
-  align-items: flex-end;
-  padding: 4px 6px 0;
-  margin-bottom: 3px;
-}
-
-.bdb-bar-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  justify-content: flex-end;
-  cursor: pointer;
-}
-
-.bdb-bar-track {
-  width: 100%;
-  height: 58px;
-  display: flex;
-  align-items: flex-end;
-}
-
-.bdb-bar-fill {
-  width: 100%;
-  background: #D9D1E8;
-  border-radius: 2.5px 2.5px 0 0;
-  transition: all 0.2s ease;
-}
-
-.bdb-bar-item:hover .bdb-bar-fill {
-  background: #502B9A;
-}
-
-.bdb-bar-fill.is-current {
-  background: #502B9A;
-}
-
-.bdb-bar-fill.is-projected {
-  background: transparent;
-  border: 1px dashed #502B9A;
+  padding: 2px 4px;
+  border-radius: 6px;
   box-sizing: border-box;
 }
 
-.bdb-bar-label {
-  font-size: 8.5px;
-  font-weight: 650;
-  color: #77727F;
-  margin-top: 3px;
+.bdb-funnel-row.is-bottom-line {
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  padding: 2px 6px;
 }
 
-.bdb-bar-tooltip {
+.bdb-funnel-z1 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bdb-funnel-idx {
+  font-family: var(--bdb-font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--bdb-ink-muted);
+}
+
+.bdb-funnel-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--bdb-ink-secondary);
+}
+
+.bdb-funnel-row.is-bottom-line .bdb-funnel-label {
+  font-weight: 650;
+  color: var(--bdb-ink-primary);
+}
+
+.bdb-funnel-z2 {
+  width: 100%;
+}
+
+.bdb-funnel-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--bdb-surface-well);
+  overflow: hidden;
+}
+
+.bdb-funnel-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.bdb-funnel-fill.fill-muted {
+  background: #71717A;
+}
+
+.bdb-funnel-fill.fill-primary {
+  background: var(--bdb-brand-primary);
+}
+
+.bdb-funnel-z3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+  font-family: var(--bdb-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.bdb-funnel-count {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--bdb-ink-primary);
+}
+
+.bdb-funnel-row.is-bottom-line .bdb-funnel-count {
+  color: var(--bdb-brand-primary);
+}
+
+.bdb-funnel-pct {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--bdb-ink-muted);
+}
+
+.bdb-funnel-row.is-bottom-line .bdb-funnel-pct {
+  color: var(--bdb-brand-primary);
+  font-weight: 600;
+}
+
+/* Weekly Reorder Volume Panel */
+.bdb-volume-panel {
+  height: 173px;
+  justify-content: space-between;
+  padding: 8px 12px 6px 12px;
+}
+
+.bdb-chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 58px;
+  margin-top: 1px;
+}
+
+.bdb-chart-gridline {
   position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: #19171E;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--bdb-hairline);
+  pointer-events: none;
+}
+
+.gridline-top { top: 8px; }
+.gridline-mid { top: 32px; }
+
+.bdb-chart-columns {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 4px;
+  z-index: 1;
+}
+
+.bdb-chart-col-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 28px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.bdb-col-tooltip {
+  position: absolute;
+  top: -24px;
+  background: var(--bdb-ink-primary);
   color: #FFFFFF;
   padding: 2px 5px;
   border-radius: 4px;
-  font-size: 8px;
+  font-size: 9px;
+  font-family: var(--bdb-font-mono);
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transform: translateY(2px);
+  transition: all 0.15s ease;
   z-index: 10;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  gap: 3px;
 }
 
-.bdb-bar-item:hover .bdb-bar-tooltip {
+.bdb-chart-col-item.is-hovered .bdb-col-tooltip {
   opacity: 1;
+  transform: translateY(0);
 }
 
-.bdb-reorder-stat-row {
+.bdb-col-bar-track {
+  width: 16px;
+  height: 42px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bdb-col-bar-fill {
+  width: 100%;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.bdb-col-bar-fill.bar-historical {
+  background: var(--bdb-brand-lavender);
+}
+
+.bdb-col-bar-fill.bar-current {
+  background: var(--bdb-brand-primary);
+}
+
+.bdb-col-bar-fill.bar-projected {
+  border: 1.5px dashed var(--bdb-ink-eyebrow);
+  border-bottom: none;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    #F4F4F5 3px,
+    #F4F4F5 6px
+  );
+}
+
+.bdb-col-x-label {
+  font-family: var(--bdb-font-mono);
+  font-size: 10px;
+  color: var(--bdb-ink-eyebrow);
+  margin-top: 3px;
+}
+
+.bdb-col-x-label.label-strong {
+  font-weight: 700;
+  color: var(--bdb-ink-primary);
+}
+
+/* 3-Column Footer Strip */
+.bdb-volume-footer-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #FAF9FC;
-  border: 1px solid #F4F1F8;
-  font-size: 9px;
-  color: #19171E;
+  border-top: 1px solid var(--bdb-hairline);
+  padding-top: 5px;
+  font-size: 11px;
 }
 
-.bdb-sep {
-  color: #ABA5B6;
-}
-
-/* ─── Column 2: Bangalore Café Distribution Map (Centerpiece) ─────────────── */
-.bdb-col-center {
-  height: 100%;
-}
-
-.bdb-map-card {
-  height: 100%;
-  padding: 8px 10px;
+.bdb-vol-foot-cell {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  gap: 3px;
+  font-family: var(--bdb-font-mono);
 }
 
-.bdb-map-header-left {
-  display: flex;
-  flex-direction: column;
+.bdb-vol-foot-bold {
+  font-weight: 700;
+  color: var(--bdb-ink-primary);
 }
 
-.bdb-map-legend {
+.bdb-vol-foot-bold.text-brand {
+  color: var(--bdb-brand-primary);
+}
+
+.bdb-vol-foot-lbl {
+  color: var(--bdb-ink-eyebrow);
+  font-size: 10px;
+}
+
+.bdb-vol-foot-divider {
+  width: 1px;
+  height: 10px;
+  background: var(--bdb-hairline);
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   COLUMN 2: BANGALORE CARTOGRAPHY & DOCKED HUD
+   ─────────────────────────────────────────────────────────────────────────── */
+.bdb-map-panel {
+  height: 100%;
+  padding: 10px 12px;
+}
+
+.bdb-map-header {
+  margin-bottom: 6px;
+}
+
+.bdb-carto-legend {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--bdb-ink-secondary);
 }
 
-.bdb-legend-item {
-  display: inline-flex;
+.bdb-carto-legend-item {
+  display: flex;
   align-items: center;
-  gap: 3.5px;
-  font-size: 8.5px;
-  color: #77727F;
-  font-weight: 550;
+  gap: 4px;
+  font-family: var(--bdb-font-sans);
 }
 
-.bdb-legend-dot {
-  width: 6px;
-  height: 6px;
+.bdb-legend-marker {
+  display: inline-block;
   border-radius: 50%;
 }
 
-.dot-delivered {
-  background: #F1ECF8;
-  border: 1px solid #502B9A;
-}
-
-.dot-tried {
+.marker-delivered-ring {
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--bdb-brand-primary);
   background: #FFFFFF;
-  border: 1.5px solid #502B9A;
 }
 
-.dot-reordered {
-  background: #502B9A;
-  box-shadow: 0 0 0 2px rgba(80, 43, 154, 0.2);
+.marker-tried-dot {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--bdb-brand-border);
+  border: 1.5px solid var(--bdb-brand-primary);
 }
 
-.bdb-map-stage {
+.marker-tried-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--bdb-brand-primary);
+}
+
+.marker-reorder-solid {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--bdb-brand-primary);
+  box-shadow: 0 0 0 2px rgba(91, 61, 245, 0.25);
+}
+
+/* Cartography Stage Well */
+.bdb-carto-stage {
   position: relative;
   width: 100%;
-  flex: 1;
-  min-height: 0;
-  border-radius: 8px;
-  background: #FAF9FC;
+  height: calc(100% - 38px);
+  background: var(--bdb-surface-canvas);
+  border: 1px solid var(--bdb-hairline);
+  border-radius: 6px;
   overflow: hidden;
-  border: 1px solid #EBE8F0;
-  display: flex;
-  flex-direction: column;
 }
 
-.bdb-bangalore-svg {
+.bdb-carto-svg {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-/* Interactive Map Markers */
-.bdb-marker-group {
+.bdb-spatial-node {
+  cursor: pointer;
   transition: transform 0.15s ease;
 }
 
-.bdb-marker-group:hover,
-.bdb-marker-group.is-selected {
-  transform: scale(1.35);
+.bdb-spatial-node:hover {
+  transform: scale(1.2);
 }
 
-@keyframes bdbPing {
-  0% { transform: scale(0.8); opacity: 0.8; }
-  100% { transform: scale(2.2); opacity: 0; }
+.bdb-pulse-ring {
+  animation: bdbMarkerPulse 1.8s infinite ease-out;
 }
 
-.bdb-marker-ping {
-  animation: bdbPing 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  transform-origin: center;
+@keyframes bdbMarkerPulse {
+  0% { r: 6px; stroke-opacity: 0.8; }
+  100% { r: 16px; stroke-opacity: 0; }
 }
 
-.bdb-map-tooltip {
+/* Cartography Hover Tooltip */
+.bdb-carto-tooltip {
   position: absolute;
-  transform: translate(-50%, -120%);
+  transform: translate(-50%, -125%);
   background: #FFFFFF;
-  border: 1px solid #502B9A;
-  border-radius: 5px;
-  padding: 3px 6px;
-  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.12);
+  border: 1px solid var(--bdb-hairline);
+  box-shadow: 0 4px 12px rgba(9, 9, 11, 0.08);
+  border-radius: 6px;
+  padding: 4px 8px;
   pointer-events: none;
-  z-index: 20;
   white-space: nowrap;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
 }
 
-.bdb-tooltip-name {
+.bdb-tt-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bdb-ink-primary);
+}
+
+.bdb-tt-sub {
   font-size: 10px;
-  font-weight: 750;
-  color: #19171E;
+  color: var(--bdb-ink-eyebrow);
 }
 
-.bdb-tooltip-sub {
-  font-size: 8.5px;
-  color: #77727F;
+.text-brand {
+  color: var(--bdb-brand-primary);
 }
 
-/* Docked Floating Café Intelligence Card */
-.bdb-cafe-dock-card {
+/* Docked Floating HUD Inspection Card (Linear/Ramp Elevated Inspector) */
+.bdb-docked-hud-card {
   position: absolute;
   bottom: 8px;
   left: 8px;
   right: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid #EBE8F0;
-  border-radius: 7px;
-  padding: 5px 9px;
-  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.08);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bdb-hairline);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px -2px rgba(9, 9, 11, 0.06);
+  padding: 8px 12px;
+  box-sizing: border-box;
   z-index: 10;
 }
 
-.bdb-dock-header {
+.bdb-hud-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 3px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid #F4F1F8;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--bdb-hairline-subtle);
 }
 
-.bdb-dock-title-group {
+.bdb-hud-title-wrap {
   display: flex;
   align-items: baseline;
-  gap: 5px;
+  gap: 6px;
 }
 
-.bdb-dock-name {
-  font-size: 11px;
-  font-weight: 750;
-  color: #19171E;
-}
-
-.bdb-dock-area {
-  font-size: 9.5px;
-  font-weight: 600;
-  color: #502B9A;
-}
-
-.bdb-dock-status {
-  padding: 1px 5px;
-  border-radius: 999px;
-  font-size: 8.5px;
+.bdb-hud-name {
+  font-size: 13px;
   font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--bdb-ink-primary);
 }
 
-.status-reordered {
-  background: #F1ECF8;
-  color: #502B9A;
-  border: 1px solid rgba(80, 43, 154, 0.3);
-}
-
-.status-tried {
-  background: #FAF9FC;
-  color: #77727F;
-  border: 1px solid #EBE8F0;
-}
-
-.status-delivered {
-  background: #FFFFFF;
-  color: #ABA5B6;
-  border: 1px solid #EBE8F0;
-}
-
-.bdb-dock-details {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-}
-
-.bdb-dock-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5px;
-}
-
-.bdb-dock-label {
-  font-size: 7.5px;
-  font-weight: 750;
-  letter-spacing: 0.05em;
-  color: #77727F;
-  text-transform: uppercase;
-}
-
-.bdb-dock-val {
-  font-size: 10px;
-  font-weight: 750;
-  color: #19171E;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ─── Column 3: Barista Sensory & Live Commercial Telemetry ───────────────── */
-.bdb-feedback-card {
-  height: 214px;
-  justify-content: space-between;
-}
-
-.bdb-rating-overall {
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-}
-
-.bdb-overall-stars {
-  font-size: 11.5px;
-  font-weight: 800;
-  color: #502B9A;
-}
-
-.bdb-overall-max {
-  font-size: 9.5px;
-  color: #77727F;
-}
-
-.bdb-feedback-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-bottom: 5px;
-}
-
-.bdb-attr-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5px;
-}
-
-.bdb-attr-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 10px;
-}
-
-.bdb-attr-name {
-  font-weight: 650;
-  color: #19171E;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 3px;
-}
-
-.bdb-attr-note {
-  font-size: 8px;
+.bdb-hud-corridor {
+  font-size: 12px;
   font-weight: 500;
-  color: #77727F;
+  color: var(--bdb-brand-primary);
 }
 
-.bdb-attr-num {
-  font-weight: 750;
-  color: #502B9A;
-  font-variant-numeric: tabular-nums;
-}
-
-.bdb-attr-track {
-  width: 100%;
-  height: 3.5px;
-  border-radius: 999px;
-  background: #EBE8F0;
-  overflow: hidden;
-}
-
-.bdb-attr-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: #502B9A;
-}
-
-.bdb-attr-sub {
-  font-size: 8px;
-  color: #77727F;
-  line-height: 1.1;
-}
-
-.bdb-quote-pill {
-  padding: 4px 7px;
-  border-radius: 5px;
-  background: #FAF9FC;
-  border-left: 2px solid #502B9A;
-  border-top: 1px solid #F4F1F8;
-  border-right: 1px solid #F4F1F8;
-  border-bottom: 1px solid #F4F1F8;
-}
-
-.bdb-quote-text {
-  font-size: 9px;
-  font-style: italic;
-  color: #19171E;
-  margin: 0 0 1px 0;
-  line-height: 1.3;
-}
-
-.bdb-quote-author {
-  font-size: 8px;
-  color: #77727F;
-  font-weight: 600;
-}
-
-/* Live Commercial Activity Feed */
-.bdb-activity-card {
-  height: 188px;
-  justify-content: space-between;
-}
-
-.bdb-live-tag {
+.bdb-hud-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px 5px;
-  border-radius: 999px;
-  background: #F1ECF8;
-  color: #502B9A;
-  font-size: 8.5px;
-  font-weight: 750;
-}
-
-.bdb-live-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #502B9A;
-  animation: bdbPulseDot 2s ease-in-out infinite;
-}
-
-@keyframes bdbPulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.bdb-activity-list {
-  display: flex;
-  flex-direction: column;
   gap: 4px;
-  flex: 1;
-  justify-content: space-between;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  font-family: var(--bdb-font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--bdb-brand-primary);
 }
 
-.bdb-act-row {
+.bdb-hud-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--bdb-brand-primary);
+}
+
+/* 4-Column Metric Grid Inside HUD */
+.bdb-hud-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.bdb-hud-metric-cell {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  padding: 2.5px 0;
-  border-bottom: 1px solid #F8F7FA;
 }
 
-.bdb-act-row:last-child {
-  border-bottom: none;
+.bdb-hud-metric-lbl {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bdb-ink-eyebrow);
 }
 
-.bdb-act-header-line {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.bdb-act-time {
-  font-size: 8.5px;
+.bdb-hud-metric-val {
+  font-family: var(--bdb-font-mono);
+  font-size: 12.5px;
   font-weight: 700;
-  color: #77727F;
-  min-width: 38px;
+  color: var(--bdb-ink-primary);
   font-variant-numeric: tabular-nums;
 }
 
-.bdb-act-title {
-  font-size: 10px;
-  font-weight: 650;
-  color: #19171E;
-  line-height: 1.15;
+.bdb-hud-vdivider {
+  width: 1px;
+  height: 22px;
+  background: var(--bdb-hairline-subtle);
+  margin: 0 8px;
 }
 
-.bdb-act-cafe {
-  font-size: 8.5px;
-  color: #502B9A;
-  padding-left: 41px;
+.po-val-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bdb-emerald-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bdb-semantic-emerald);
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   COLUMN 3: BARISTA FEEDBACK & LIVE COMMERCIAL TELEMETRY
+   ─────────────────────────────────────────────────────────────────────────── */
+.bdb-feedback-panel {
+  flex: 0 0 216px;
+  height: 216px;
+  padding: 8px 12px;
+}
+
+.bdb-scorecard-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.5px 6px;
+  border-radius: 6px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  font-family: var(--bdb-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bdb-brand-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.bdb-sensory-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5px;
+  margin-top: 1px;
+}
+
+.bdb-sensory-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bdb-sensory-meta-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 10.5px;
+  line-height: 1.2;
+}
+
+.bdb-sensory-name {
+  font-weight: 650;
+  color: var(--bdb-ink-primary);
+  flex-shrink: 0;
+}
+
+.bdb-sensory-consensus {
+  color: var(--bdb-ink-eyebrow);
+  font-size: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0 4px;
+  flex-grow: 1;
+}
+
+.bdb-sensory-score {
+  font-family: var(--bdb-font-mono);
+  font-weight: 700;
+  color: var(--bdb-ink-primary);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.bdb-sensory-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--bdb-surface-well);
+  overflow: hidden;
+}
+
+.bdb-sensory-fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.bdb-sensory-fill.fill-primary {
+  background: var(--bdb-brand-primary);
+}
+
+.bdb-sensory-fill.fill-muted-indigo {
+  background: #7C3AED;
+}
+
+/* Editorial Verbatim Callout Box */
+.bdb-verbatim-box {
+  background: var(--bdb-surface-canvas);
+  border: 1px solid var(--bdb-hairline);
+  border-left: 2.5px solid var(--bdb-brand-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 4px 8px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+.bdb-verbatim-quote {
+  font-size: 10.5px;
+  font-style: italic;
+  line-height: 1.3;
+  color: #18181B;
+  margin: 0;
+}
+
+.bdb-verbatim-author {
   display: block;
+  font-size: 9.5px;
+  color: var(--bdb-ink-eyebrow);
+  margin-top: 1.5px;
 }
 
-.bdb-act-meta {
-  font-size: 8px;
-  color: #77727F;
+/* Live Commercial Telemetry Stream Panel */
+.bdb-telemetry-panel {
+  flex: 1;
+  height: 177px;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 8px 12px;
 }
 
-/* ─── 6. Responsive Breakdown ────────────────────────────────────────────── */
+.bdb-live-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: var(--bdb-brand-surface);
+  border: 1px solid var(--bdb-brand-border);
+  font-family: var(--bdb-font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--bdb-brand-primary);
+}
+
+.bdb-live-emerald-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--bdb-brand-primary);
+  animation: bdbPulse 1.8s infinite;
+}
+
+/* Vertical Timeline Stream Architecture */
+.bdb-timeline-stream {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  margin-top: 2px;
+}
+
+.bdb-timeline-vertical-line {
+  position: absolute;
+  left: 54px;
+  top: 4px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--bdb-hairline);
+  pointer-events: none;
+}
+
+.bdb-timeline-event {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.bdb-timeline-event:not(:last-child) {
+  border-bottom: 1px solid var(--bdb-hairline-subtle);
+  padding-bottom: 3px;
+}
+
+.bdb-event-time-col {
+  text-align: right;
+  padding-top: 1px;
+}
+
+.bdb-event-time {
+  font-family: var(--bdb-font-mono);
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--bdb-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.bdb-event-content-col {
+  position: relative;
+  padding-left: 8px;
+}
+
+.bdb-event-node-dot {
+  position: absolute;
+  left: -8px;
+  top: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.5px solid var(--bdb-brand-primary);
+  box-sizing: border-box;
+}
+
+.bdb-event-line1 {
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--bdb-ink-primary);
+  line-height: 1.2;
+}
+
+.bdb-event-line2 {
+  font-size: 10px;
+  color: var(--bdb-ink-secondary);
+  line-height: 1.2;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bdb-event-cafe {
+  font-weight: 500;
+  color: #3F3F46;
+}
+
+.bdb-event-divider {
+  color: #D4D4D8;
+}
+
+.bdb-event-meta {
+  color: var(--bdb-ink-eyebrow);
+}
+
+.bdb-event-meta.meta-brand {
+  font-family: var(--bdb-font-mono);
+  font-weight: 600;
+  color: var(--bdb-brand-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE BEHAVIOR
+   ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 1200px) {
   .bdb-viewport-frame {
-    height: 520px;
+    height: auto;
+    min-height: 560px;
   }
-
-  .bdb-body-grid {
+  .bdb-tier-bento {
     grid-template-columns: 260px minmax(0, 1fr) 260px;
-    gap: 8px;
-    padding: 8px;
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1024px) {
   .bdb-pin-wrap {
     min-height: auto;
-    overflow: visible;
-    padding: 40px 0;
+    padding: 24px 0;
   }
-
   .bdb-viewport-frame {
-    transform: none !important;
     height: auto;
+    max-width: 100%;
   }
-
-  .bdb-body-grid {
-    grid-template-columns: 1fr;
+  .bdb-tier-header {
     height: auto;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-
-  .bdb-card {
-    height: auto !important;
-  }
-
-  .bdb-kpi-bar {
+  .bdb-tier-kpis {
     grid-template-columns: repeat(2, 1fr);
     height: auto;
   }
-
   .bdb-kpi-cell {
-    border-bottom: 1px solid #EBE8F0;
-    padding: 8px 12px;
+    border-bottom: 1px solid var(--bdb-hairline);
   }
-
-  .bdb-bay-switcher {
-    display: none;
+  .bdb-tier-bento {
+    grid-template-columns: 1fr;
+    height: auto;
   }
-}
-
-/* Utility Helpers */
-.text-purple {
-  color: #502B9A !important;
+  .bdb-funnel-panel,
+  .bdb-volume-panel,
+  .bdb-map-panel,
+  .bdb-feedback-panel,
+  .bdb-telemetry-panel {
+    height: auto;
+    min-height: 240px;
+  }
 }
