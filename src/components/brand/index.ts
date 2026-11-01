@@ -10,3 +10,4 @@ export { BrandMarketing } from './BrandMarketing';
 export { FoldText } from './FoldText';
 export { CrystalizedBall } from './CrystalizedBall';
 
+export { GhostFibers } from '@/components/ui/GhostFibers';

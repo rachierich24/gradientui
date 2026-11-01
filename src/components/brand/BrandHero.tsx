@@ -1,10 +1,11 @@
 'use client';
 // Brand Portal hero: Central editorial design.
 // "Gradient for Brands" with "Gradient" medium, "for" small, and "BRANDS" large typography
-// on a clean white background.
+// on a clean white background with interactive GhostFibers background from React Bits.
 import { useEffect, useRef } from 'react';
 import { reduced } from './shared';
 import FoldText from './FoldText';
+import GhostFibers from '@/components/ui/GhostFibers';
 
 export function BrandHero() {
   const film = useRef<HTMLDivElement>(null);
@@ -34,10 +35,22 @@ export function BrandHero() {
   return (
     <section className="brd-hero" id="brd-top" aria-labelledby="brd-hero-title">
       <div className="brd-band">
+        {/* Interactive GhostFibers Background from React Bits */}
+        <div className="brd-hero-fibers-bg" aria-hidden="true">
+          <GhostFibers
+            glowColor="#8b5cf6"
+            layers={3}
+            twist={1.2}
+            threads={72}
+            fiberStyle="dots"
+            depthOfField={0.85}
+            hoverEffect="focus"
+            intro={true}
+            mouseInteraction={true}
+          />
+        </div>
+
         <div className="brd-wrap brd-band-center">
-          {/* Centered Eyebrow: Social Proof Monospace in Brand Purple */}
-
-
           {/* Centered "Gradient for Brands" Lockup in Brand Purple */}
           <h1 id="brd-hero-title" className="brd-hero-title-lockup">
             <div className="brd-title-top">
