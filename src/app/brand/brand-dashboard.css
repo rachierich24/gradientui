@@ -2722,21 +2722,31 @@
   color: #77727F;
 }
 
-/* Column 3 Cards */
+/* Column 3 Cards: Minimalist Barista Feedback & Timeline Telemetry */
 .bdb-feedback-card {
   height: 213px;
   flex-shrink: 0;
   justify-content: space-between;
 }
 
+.bdb-feedback-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5px;
+  padding: 1.5px 6.5px;
+  border-radius: 999px;
+  background: #F1ECF8;
+  border: 1px solid rgba(80, 43, 154, 0.15);
+}
+
 .bdb-overall-stars {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 850;
   color: #502B9A;
 }
 
 .bdb-overall-max {
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 600;
   color: #77727F;
 }
@@ -2744,51 +2754,65 @@
 .bdb-feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 3.5px;
-  margin-bottom: 4px;
+  gap: 5.5px;
+  margin: 2px 0;
+}
+
+.bdb-attr-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bdb-attr-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .bdb-attr-name {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 650;
   color: #19171E;
-}
-
-.bdb-attr-note {
-  font-size: 8px;
-  font-weight: 500;
-  color: #77727F;
 }
 
 .bdb-attr-num {
   font-size: 10px;
   font-weight: 800;
   color: #502B9A;
+  font-variant-numeric: tabular-nums;
 }
 
 .bdb-attr-track {
   width: 100%;
-  height: 4.5px;
+  height: 3px;
   border-radius: 999px;
-  background: #EBE8F0;
+  background: #F1EEF6;
   overflow: hidden;
 }
 
-.bdb-quote-pill {
-  padding: 5px 8px;
-  border-radius: 6px;
+.bdb-attr-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #502B9A;
+  transition: width 0.3s ease;
+}
+
+.bdb-quote-card {
+  padding: 7px 10px;
+  border-radius: 8px;
   background: #FAF9FC;
-  border-left: 2.5px solid #502B9A;
-  border-top: 1px solid #F4F1F8;
-  border-right: 1px solid #F4F1F8;
-  border-bottom: 1px solid #F4F1F8;
+  border: 1px solid #ECE7F5;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
 }
 
 .bdb-quote-text {
   font-size: 9px;
   font-style: italic;
   color: #19171E;
-  margin: 0 0 1.5px 0;
+  margin: 0;
   line-height: 1.35;
 }
 
@@ -2804,44 +2828,68 @@
   justify-content: space-between;
 }
 
+/* Minimal Timeline Activity Feed */
 .bdb-telemetry-feed {
   display: flex;
   flex-direction: column;
-  gap: 5px;
   flex: 1;
   justify-content: space-between;
+  padding: 3px 0 2px 0;
 }
 
-.bdb-telemetry-item {
+.bdb-telemetry-row {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 8px;
-  border-radius: 7px;
-  background: #FAF9FC;
-  border: 1px solid #F0EDF5;
-  transition: all 0.15s ease;
+  align-items: flex-start;
+  gap: 9px;
+  position: relative;
 }
 
-.bdb-telemetry-item:hover {
-  background: #FFFFFF;
-  border-color: #E2DDEB;
-  box-shadow: 0 1px 4px rgba(80, 43, 154, 0.06);
-}
-
-.bdb-item-icon-box {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: #F1ECF8;
-  color: #502B9A;
+.bdb-timeline-marker {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  position: relative;
+  width: 22px;
   flex-shrink: 0;
 }
 
-.bdb-item-title {
+.bdb-timeline-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #F1ECF8;
+  color: #502B9A;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  box-shadow: 0 0 0 2px #FFFFFF;
+}
+
+.bdb-timeline-line {
+  position: absolute;
+  top: 22px;
+  bottom: -11px;
+  width: 1.5px;
+  background: #ECE7F5;
+  z-index: 1;
+}
+
+.bdb-timeline-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.bdb-timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bdb-timeline-title {
   font-size: 9.5px;
   font-weight: 750;
   color: #19171E;
@@ -2850,24 +2898,37 @@
   text-overflow: ellipsis;
 }
 
-.bdb-item-time {
+.bdb-timeline-time {
   font-size: 8px;
-  font-weight: 650;
+  font-weight: 600;
   color: #8C8697;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.bdb-item-sub {
-  font-size: 8px;
+.bdb-timeline-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bdb-timeline-cafe {
+  font-size: 8.5px;
   color: #77727F;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.25;
 }
 
-.bdb-item-cafe {
-  font-weight: 700;
+.bdb-timeline-badge {
+  font-size: 7.5px;
+  font-weight: 750;
   color: #502B9A;
+  background: #F1ECF8;
+  padding: 1px 4.5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

@@ -489,7 +489,7 @@ const RECENT_ACTIVITIES = [
     icon: 'box',
     title: 'Trial kit delivered',
     cafe: 'Little Brew Room · Hauz Khas',
-    meta: 'Sharma Dairy route dispatch',
+    badge: 'Route 4',
   },
   {
     id: 'a2',
@@ -497,7 +497,7 @@ const RECENT_ACTIVITIES = [
     icon: 'star',
     title: 'Barista trial completed',
     cafe: 'Second Crack · Kamla Nagar',
-    meta: 'Steamed 8 flat whites · Rated ★ 4.9',
+    badge: '★ 4.9',
   },
   {
     id: 'a3',
@@ -505,7 +505,7 @@ const RECENT_ACTIVITIES = [
     icon: 'repeat',
     title: 'First recurring order placed',
     cafe: 'Steam Theory · Connaught Place',
-    meta: '32 L/wk standing Net-15 PO',
+    badge: '32 L/wk PO',
   },
 ];
 
@@ -1322,17 +1322,17 @@ export function BrandDashboard() {
                 </div>
 
                 {/* ═══════════════════════════════════════════════════════════
-                    COLUMN 3: BARISTA FEEDBACK & COMMERCIAL TELEMETRY
+                    COLUMN 3: BARISTA FEEDBACK & MINIMAL TIMELINE TELEMETRY
                     ═══════════════════════════════════════════════════════════ */}
                 <div className="bdb-col bdb-col-right">
-                  {/* 1. Barista Feedback (Clean Sensory Rating Hierarchy) */}
+                  {/* 1. Barista Feedback (Minimalist Sensory Ratings) */}
                   <div className="bdb-card bdb-feedback-card">
                     <div className="bdb-card-header">
                       <div>
                         <h3 className="bdb-card-title">Barista Feedback</h3>
                         <span className="bdb-card-sub">67 verified trials</span>
                       </div>
-                      <div className="bdb-rating-overall">
+                      <div className="bdb-feedback-header-badge">
                         <span className="bdb-overall-stars">★ 4.8</span>
                         <span className="bdb-overall-max">/ 5.0</span>
                       </div>
@@ -1342,9 +1342,7 @@ export function BrandDashboard() {
                       {FEEDBACK_ATTRS.map((attr) => (
                         <div key={attr.label} className="bdb-attr-compact">
                           <div className="bdb-attr-meta">
-                            <span className="bdb-attr-name">
-                              {attr.label} <span className="bdb-attr-note">· {attr.note}</span>
-                            </span>
+                            <span className="bdb-attr-name">{attr.label}</span>
                             <span className="bdb-attr-num">{attr.score}</span>
                           </div>
                           <div className="bdb-attr-track">
@@ -1355,22 +1353,22 @@ export function BrandDashboard() {
                     </div>
 
                     {/* Featured Barista Review Quote */}
-                    <div className="bdb-quote-pill">
+                    <div className="bdb-quote-card">
                       <p className="bdb-quote-text">
                         “Holds a rosetta better than the oat milk we use now.”
                       </p>
                       <span className="bdb-quote-author">
-                        — Aditya K., Head Barista · Little Brew Room (Hauz Khas)
+                        Aditya K. · Head Barista, Little Brew Room
                       </span>
                     </div>
                   </div>
 
-                  {/* 2. Live Commercial Telemetry (Chronological Activity Feed) */}
+                  {/* 2. Live Commercial Telemetry (Sleek Borderless Timeline) */}
                   <div className="bdb-card bdb-activity-card">
                     <div className="bdb-card-header">
                       <div>
                         <h3 className="bdb-card-title">Live Commercial Telemetry</h3>
-                        <span className="bdb-card-sub">Route dispatches & Net-15 POs</span>
+                        <span className="bdb-card-sub">Route dispatches & POs</span>
                       </div>
                       <span className="bdb-live-tag">
                         <span className="bdb-live-dot" /> Live
@@ -1378,19 +1376,22 @@ export function BrandDashboard() {
                     </div>
 
                     <div className="bdb-telemetry-feed">
-                      {RECENT_ACTIVITIES.map((act) => (
-                        <div key={act.id} className="bdb-telemetry-item">
-                          <div className="bdb-item-icon-box">
-                            <SvgTimelineIcon name={act.icon} />
-                          </div>
-                          <div className="bdb-item-content">
-                            <div className="bdb-item-top">
-                              <span className="bdb-item-title">{act.title}</span>
-                              <span className="bdb-item-time">{act.time}</span>
+                      {RECENT_ACTIVITIES.map((act, idx) => (
+                        <div key={act.id} className="bdb-telemetry-row">
+                          <div className="bdb-timeline-marker">
+                            <div className="bdb-timeline-dot">
+                              <SvgTimelineIcon name={act.icon} />
                             </div>
-                            <div className="bdb-item-sub">
-                              <span className="bdb-item-cafe">{act.cafe}</span>
-                              {act.meta && <span className="bdb-item-meta"> · {act.meta}</span>}
+                            {idx < RECENT_ACTIVITIES.length - 1 && <div className="bdb-timeline-line" />}
+                          </div>
+                          <div className="bdb-timeline-body">
+                            <div className="bdb-timeline-header">
+                              <span className="bdb-timeline-title">{act.title}</span>
+                              <span className="bdb-timeline-time">{act.time}</span>
+                            </div>
+                            <div className="bdb-timeline-meta">
+                              <span className="bdb-timeline-cafe">{act.cafe}</span>
+                              <span className="bdb-timeline-badge">{act.badge}</span>
                             </div>
                           </div>
                         </div>
