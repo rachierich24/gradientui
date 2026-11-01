@@ -1,8 +1,14 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   GRADIENT — BRAND ANALYTICS DASHBOARD STYLES (COMPACT & MINIMAL)
+   GRADIENT — BRAND ANALYTICS DASHBOARD SHOWCASE SECTION
    Design System: White & Purple (#502B9A)
    Inspiration: Linear · Stripe · Ramp · Vercel
-   Layout: Ultra-compact, single-screen command center (100% visible on standard viewports)
+   Layout & Proportions:
+     • Max Content Container: ~1440px
+     • Dashboard Aspect Ratio: ~2.26:1 (Target 1400px × 620px on Large Desktop)
+     • Three Visual Layers:
+       1. Editorial Eyebrow
+       2. Confident Headline & Secondary Supporting Copy
+       3. Signature Product Showcase: Full-width Dashboard Preview
    ───────────────────────────────────────────────────────────────────────────── */
 
 /* ─── 0. Section Wrapper & Ambient Lighting ───────────────────────────────── */
@@ -16,17 +22,18 @@
   overflow: visible;
 }
 
+/* Subtle, pure purple ambient radial glow centered behind showcase */
 .bdb-bg-ambient {
   position: absolute;
-  top: 15%;
+  top: 10%;
   left: 50%;
   transform: translate(-50%, 0);
-  width: 1000px;
-  height: 440px;
+  width: 1200px;
+  height: 600px;
   background: radial-gradient(
     ellipse 60% 50% at center,
-    rgba(80, 43, 154, 0.03) 0%,
-    rgba(80, 43, 154, 0.006) 50%,
+    rgba(80, 43, 154, 0.035) 0%,
+    rgba(80, 43, 154, 0.008) 50%,
     transparent 75%
   );
   pointer-events: none;
@@ -34,49 +41,52 @@
   border-radius: 50%;
 }
 
-/* Pinned Wrapper for GSAP ScrollTrigger */
+/* Pinned Wrapper for GSAP ScrollTrigger: Controlled top padding below navbar */
 .bdb-pin-wrap {
   position: relative;
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(8px, 1.5vh, 16px) 0;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: clamp(24px, 3.8vh, 42px);
+  padding-bottom: clamp(24px, 3.8vh, 42px);
   box-sizing: border-box;
   overflow: hidden;
 }
 
+/* Wide Centred Content Container (1440px) */
 .bdb-container {
   position: relative;
   width: 100%;
-  max-width: 1360px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 clamp(16px, 2.5vw, 36px);
+  padding: 0 clamp(20px, 3vw, 44px);
   box-sizing: border-box;
   z-index: 1;
 }
 
-/* ─── 1. Editorial Header (Linear / Vercel style) ─────────────────────────── */
+/* ─── 1. Editorial Heading Block (Stationary Anchor) ──────────────────────── */
 .bdb-editorial-header {
-  margin-bottom: clamp(6px, 1vh, 10px);
+  margin-bottom: clamp(16px, 2.2vh, 24px);
 }
 
 .bdb-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 9px;
-  font-weight: 750;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #502B9A;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
 }
 
 .bdb-eyebrow-pip {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #502B9A;
 }
@@ -85,21 +95,21 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 14px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
 .bdb-title-wrap {
-  max-width: 700px;
+  max-width: 820px;
 }
 
 .bdb-title {
-  font-size: clamp(20px, 2vw, 27px);
+  font-size: clamp(28px, 3vw, 42px);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.035em;
   color: #19171E;
-  margin: 0 0 2px 0;
+  margin: 0 0 8px 0;
 }
 
 .bdb-title-purple {
@@ -107,19 +117,20 @@
 }
 
 .bdb-sub {
-  font-size: clamp(12px, 0.9vw, 13px);
-  line-height: 1.35;
+  font-size: clamp(13.5px, 1.05vw, 15.5px);
+  line-height: 1.5;
   color: #77727F;
+  max-width: 740px;
   margin: 0;
 }
 
-/* Bay Switcher Pills */
+/* Trajectory Phase Switcher Pills (Linear / Vercel style) */
 .bdb-bay-switcher {
   display: inline-flex;
   align-items: center;
-  gap: 2.5px;
+  gap: 3px;
   background: #F8F7FA;
-  padding: 2px;
+  padding: 3px;
   border-radius: 999px;
   border: 1px solid #EBE8F0;
 }
@@ -127,9 +138,9 @@
 .bdb-bay-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3.5px 9px;
-  font-size: 10.5px;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #77727F;
   background: transparent;
@@ -148,12 +159,12 @@
   background: #FFFFFF;
   color: #502B9A;
   font-weight: 700;
-  box-shadow: 0 2px 5px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .bdb-bay-dot {
-  width: 3.5px;
-  height: 3.5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #EBE8F0;
   transition: background 0.2s ease;
@@ -163,19 +174,22 @@
   background: #502B9A;
 }
 
-/* ─── 2. Viewport Frame (Single-Screen Command Center) ─────────────────────── */
+/* ─── 2. The Dashboard Frame (Aspect Ratio ~2.26:1) ───────────────────────── */
 .bdb-viewport-frame {
   position: relative;
   width: 100%;
-  border-radius: 12px;
+  height: 636px;
+  border-radius: 16px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.8),
-    0 12px 32px -10px rgba(80, 43, 154, 0.07),
-    0 1px 3px rgba(0, 0, 0, 0.04);
+    0 20px 48px -12px rgba(80, 43, 154, 0.07),
+    0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: hidden;
   will-change: transform;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ─── 3. Top Application Bar ─────────────────────────────────────────────── */
@@ -183,33 +197,34 @@
   width: 100%;
   background: #FFFFFF;
   border-bottom: 1px solid #EBE8F0;
+  flex-shrink: 0;
 }
 
 .bdb-nav-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 31px;
-  padding: 0 10px;
+  height: 38px;
+  padding: 0 14px;
   border-bottom: 1px solid #F4F1F8;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bdb-nav-left,
 .bdb-nav-right {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
 }
 
 .bdb-logo-group {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 7px;
 }
 
 .bdb-logo-text {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #19171E;
@@ -217,16 +232,16 @@
 
 .bdb-nav-divider {
   width: 1px;
-  height: 10px;
+  height: 14px;
   background: #EBE8F0;
 }
 
 .bdb-brand-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 1px 5px;
-  border-radius: 4px;
+  gap: 6px;
+  padding: 2px 7px;
+  border-radius: 6px;
   background: #FAF9FC;
   border: 1px solid #EBE8F0;
 }
@@ -234,17 +249,17 @@
 .bdb-brand-avatar {
   display: grid;
   place-items: center;
-  width: 13px;
-  height: 13px;
-  border-radius: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
   background: #F1ECF8;
   color: #502B9A;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 800;
 }
 
 .bdb-brand-name {
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 650;
   color: #19171E;
 }
@@ -252,12 +267,12 @@
 .bdb-campaign-dropdown {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
-  border-radius: 4px;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 6px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #502B9A;
   cursor: pointer;
@@ -266,18 +281,18 @@
 .bdb-live-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 3.5px;
-  padding: 1px 6px;
+  gap: 5px;
+  padding: 2px 8px;
   border-radius: 999px;
   background: #F1ECF8;
   color: #502B9A;
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 700;
 }
 
 .bdb-status-pulse-dot {
-  width: 3.5px;
-  height: 3.5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #502B9A;
   box-shadow: 0 0 0 2px rgba(80, 43, 154, 0.15);
@@ -286,11 +301,11 @@
 .bdb-date-pill {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
-  border-radius: 4px;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 6px;
   border: 1px solid #EBE8F0;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: #77727F;
 }
@@ -298,12 +313,12 @@
 .bdb-export-btn {
   display: inline-flex;
   align-items: center;
-  gap: 3.5px;
-  padding: 2px 7px;
-  border-radius: 4px;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 6px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: #19171E;
   cursor: pointer;
@@ -320,9 +335,9 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   border: 1px solid #EBE8F0;
   color: #77727F;
   cursor: pointer;
@@ -330,10 +345,10 @@
 
 .bdb-bell-dot {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 3px;
-  height: 3px;
+  top: 4px;
+  right: 4px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #502B9A;
 }
@@ -341,12 +356,12 @@
 .bdb-user-profile {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   background: #19171E;
   color: #FFFFFF;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 750;
   cursor: pointer;
 }
@@ -357,15 +372,17 @@
   grid-template-columns: repeat(4, 1fr);
   background: #FAF9FB;
   border-top: 1px solid #FFFFFF;
+  border-bottom: 1px solid #EBE8F0;
+  height: 68px;
 }
 
 .bdb-kpi-cell {
-  padding: 4px 10px;
+  padding: 6px 18px;
   border-right: 1px solid #EBE8F0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1px;
+  gap: 2px;
 }
 
 .bdb-kpi-cell:last-child {
@@ -375,18 +392,18 @@
 .bdb-kpi-meta-row {
   display: flex;
   align-items: center;
-  gap: 3.5px;
+  gap: 5px;
 }
 
 .bdb-kpi-idx {
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 750;
   color: #502B9A;
   letter-spacing: 0.05em;
 }
 
 .bdb-kpi-label {
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 650;
   color: #77727F;
   text-transform: uppercase;
@@ -397,11 +414,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 5px;
+  gap: 8px;
 }
 
 .bdb-kpi-val {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: #19171E;
   letter-spacing: -0.02em;
@@ -410,8 +427,8 @@
 
 .bdb-kpi-progress {
   flex: 1;
-  max-width: 44px;
-  height: 3px;
+  max-width: 56px;
+  height: 4px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -425,9 +442,9 @@
 
 .bdb-kpi-badge {
   display: inline-block;
-  padding: 0.5px 4.5px;
-  border-radius: 3px;
-  font-size: 8.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
   font-weight: 700;
   background: #F1ECF8;
   color: #502B9A;
@@ -439,56 +456,61 @@
 }
 
 .bdb-kpi-sparkline {
-  width: 50px;
-  height: 13px;
+  width: 68px;
+  height: 18px;
 }
 
 .bdb-kpi-sub {
-  font-size: 9px;
+  font-size: 10px;
   color: #77727F;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ─── 5. Main 3-Column Body Grid ─────────────────────────────────────────── */
+/* ─── 5. Main 3-Column Body Grid (Proportioned, Spacious, 530px Height) ───── */
 .bdb-body-grid {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 285px;
-  gap: 7px;
-  padding: 7px;
+  grid-template-columns: 310px minmax(0, 1fr) 310px;
+  gap: 12px;
+  padding: 12px 14px;
   background: #F8F7FA;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .bdb-col {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 12px;
+  height: 100%;
 }
 
 /* Base Card Styling */
 .bdb-card {
   background: #FFFFFF;
   border: 1px solid #EBE8F0;
-  border-radius: 9px;
-  padding: 7px 9px;
+  border-radius: 12px;
+  padding: 12px 14px;
   box-shadow: 0 1px 2px rgba(21, 17, 29, 0.02);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .bdb-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 5px;
-  margin-bottom: 5px;
-  padding-bottom: 4px;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-card-title {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 750;
   color: #19171E;
   margin: 0;
@@ -497,16 +519,16 @@
 }
 
 .bdb-card-sub {
-  font-size: 9px;
+  font-size: 10px;
   color: #77727F;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .bdb-pill-indicator {
   display: inline-block;
-  padding: 1px 4.5px;
-  border-radius: 3px;
-  font-size: 8.5px;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
   font-weight: 700;
   background: #FAF9FC;
   border: 1px solid #EBE8F0;
@@ -522,22 +544,24 @@
 
 /* ─── Column 1: Conversion Funnel ────────────────────────────────────────── */
 .bdb-funnel-card {
-  /* Natural compact fit */
+  height: 260px;
 }
 
 .bdb-funnel-list {
   display: flex;
   flex-direction: column;
-  gap: 3.5px;
+  gap: 6px;
+  flex: 1;
+  justify-content: space-between;
 }
 
 .bdb-funnel-row {
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr) 48px;
+  grid-template-columns: 110px minmax(0, 1fr) 56px;
   align-items: center;
-  gap: 4.5px;
-  padding: 2px 4px;
-  border-radius: 4px;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
   background: #FAF9FC;
   border: 1px solid transparent;
   transition: all 0.15s ease;
@@ -556,18 +580,18 @@
 .bdb-f-left {
   display: flex;
   align-items: center;
-  gap: 3.5px;
+  gap: 5px;
 }
 
 .bdb-f-idx {
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 750;
   color: #502B9A;
   font-variant-numeric: tabular-nums;
 }
 
 .bdb-f-name {
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 650;
   color: #19171E;
   white-space: nowrap;
@@ -577,7 +601,7 @@
 
 .bdb-f-bar-wrap {
   width: 100%;
-  height: 3px;
+  height: 4px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -601,18 +625,18 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 3.5px;
+  gap: 4px;
   font-variant-numeric: tabular-nums;
 }
 
 .bdb-f-count {
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-f-pct {
-  font-size: 8.5px;
+  font-size: 9.5px;
   color: #77727F;
 }
 
@@ -624,16 +648,17 @@
 
 /* ─── Column 1: Weekly Reorder Volume ────────────────────────────────────── */
 .bdb-reorder-card {
-  padding-bottom: 5px;
+  height: 234px;
+  justify-content: space-between;
 }
 
 .bdb-bars-compact {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 4px;
-  height: 34px;
+  gap: 8px;
+  height: 72px;
   align-items: flex-end;
-  padding: 2px 2px 0;
+  padding: 4px 6px 0;
   margin-bottom: 4px;
 }
 
@@ -649,7 +674,7 @@
 
 .bdb-bar-track {
   width: 100%;
-  height: 24px;
+  height: 52px;
   display: flex;
   align-items: flex-end;
 }
@@ -657,7 +682,7 @@
 .bdb-bar-fill {
   width: 100%;
   background: #D9D1E8;
-  border-radius: 2px 2px 0 0;
+  border-radius: 3px 3px 0 0;
   transition: all 0.2s ease;
 }
 
@@ -671,27 +696,27 @@
 
 .bdb-bar-fill.is-projected {
   background: transparent;
-  border: 1.1px dashed #502B9A;
+  border: 1.5px dashed #502B9A;
   box-sizing: border-box;
 }
 
 .bdb-bar-label {
-  font-size: 8px;
+  font-size: 9.5px;
   font-weight: 650;
   color: #77727F;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .bdb-bar-tooltip {
   position: absolute;
-  bottom: calc(100% + 2px);
+  bottom: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
   background: #19171E;
   color: #FFFFFF;
-  padding: 1.5px 4.5px;
-  border-radius: 3px;
-  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
@@ -710,11 +735,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2.5px 5px;
-  border-radius: 4px;
+  padding: 5px 8px;
+  border-radius: 6px;
   background: #FAF9FC;
   border: 1px solid #F4F1F8;
-  font-size: 9px;
+  font-size: 10.5px;
   color: #19171E;
 }
 
@@ -729,7 +754,7 @@
 
 .bdb-map-card {
   height: 100%;
-  padding: 7px 9px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
 }
@@ -742,21 +767,21 @@
 .bdb-map-legend {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
 }
 
 .bdb-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 9px;
+  gap: 4px;
+  font-size: 10px;
   color: #77727F;
   font-weight: 550;
 }
 
 .bdb-legend-dot {
-  width: 5.5px;
-  height: 5.5px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
@@ -767,24 +792,25 @@
 
 .dot-tried {
   background: #FFFFFF;
-  border: 1.2px solid #502B9A;
+  border: 1.5px solid #502B9A;
 }
 
 .dot-reordered {
   background: #502B9A;
-  box-shadow: 0 0 0 1.5px rgba(80, 43, 154, 0.2);
+  box-shadow: 0 0 0 2px rgba(80, 43, 154, 0.2);
 }
 
 .bdb-map-stage {
   position: relative;
   width: 100%;
   flex: 1;
-  min-height: 200px;
-  max-height: 235px;
-  border-radius: 7px;
+  min-height: 0;
+  border-radius: 10px;
   background: #FAF9FC;
   overflow: hidden;
   border: 1px solid #EBE8F0;
+  display: flex;
+  flex-direction: column;
 }
 
 .bdb-bangalore-svg {
@@ -818,38 +844,38 @@
   transform: translate(-50%, -120%);
   background: #FFFFFF;
   border: 1px solid #502B9A;
-  border-radius: 4px;
-  padding: 2.5px 6px;
-  box-shadow: 0 4px 10px rgba(80, 43, 154, 0.15);
+  border-radius: 6px;
+  padding: 4px 8px;
+  box-shadow: 0 4px 12px rgba(80, 43, 154, 0.15);
   pointer-events: none;
   z-index: 20;
   white-space: nowrap;
 }
 
 .bdb-tooltip-name {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-tooltip-sub {
-  font-size: 8.5px;
+  font-size: 9.5px;
   color: #77727F;
 }
 
 /* Docked Floating Café Intelligence Card */
 .bdb-cafe-dock-card {
   position: absolute;
-  bottom: 4px;
-  left: 4px;
-  right: 4px;
-  background: rgba(255, 255, 255, 0.96);
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid #EBE8F0;
-  border-radius: 6px;
-  padding: 4px 7px;
-  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.08);
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 14px rgba(80, 43, 154, 0.08);
   z-index: 10;
 }
 
@@ -857,33 +883,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 3px;
-  padding-bottom: 2.5px;
+  margin-bottom: 5px;
+  padding-bottom: 4px;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-dock-title-group {
   display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 6px;
 }
 
 .bdb-dock-name {
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-dock-area {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   color: #502B9A;
 }
 
 .bdb-dock-status {
-  padding: 1px 4px;
+  padding: 1.5px 6px;
   border-radius: 999px;
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 700;
 }
 
@@ -908,17 +934,17 @@
 .bdb-dock-details {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 3px;
+  gap: 6px;
 }
 
 .bdb-dock-stat {
   display: flex;
   flex-direction: column;
-  gap: 0.5px;
+  gap: 1px;
 }
 
 .bdb-dock-label {
-  font-size: 7.5px;
+  font-size: 8.5px;
   font-weight: 750;
   letter-spacing: 0.06em;
   color: #77727F;
@@ -926,7 +952,7 @@
 }
 
 .bdb-dock-val {
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 750;
   color: #19171E;
   white-space: nowrap;
@@ -936,7 +962,8 @@
 
 /* ─── Column 3: Barista Sensory & Live Commercial Telemetry ───────────────── */
 .bdb-feedback-card {
-  /* Natural compact fit */
+  height: 275px;
+  justify-content: space-between;
 }
 
 .bdb-rating-overall {
@@ -946,34 +973,34 @@
 }
 
 .bdb-overall-stars {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 800;
   color: #502B9A;
 }
 
 .bdb-overall-max {
-  font-size: 9px;
+  font-size: 10px;
   color: #77727F;
 }
 
 .bdb-feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-bottom: 5px;
+  gap: 5px;
+  margin-bottom: 6px;
 }
 
 .bdb-attr-compact {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .bdb-attr-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 9.5px;
+  font-size: 10.5px;
 }
 
 .bdb-attr-name {
@@ -989,7 +1016,7 @@
 
 .bdb-attr-track {
   width: 100%;
-  height: 3px;
+  height: 4px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -1002,55 +1029,56 @@
 }
 
 .bdb-attr-sub {
-  font-size: 8px;
+  font-size: 9px;
   color: #77727F;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
 .bdb-quote-pill {
-  padding: 3px 5px;
-  border-radius: 4px;
+  padding: 5px 8px;
+  border-radius: 6px;
   background: #FAF9FC;
-  border-left: 2px solid #502B9A;
+  border-left: 2.5px solid #502B9A;
   border-top: 1px solid #F4F1F8;
   border-right: 1px solid #F4F1F8;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-quote-text {
-  font-size: 9px;
+  font-size: 10px;
   font-style: italic;
   color: #19171E;
-  margin: 0 0 1px 0;
-  line-height: 1.25;
+  margin: 0 0 2px 0;
+  line-height: 1.35;
 }
 
 .bdb-quote-author {
-  font-size: 8px;
+  font-size: 9px;
   color: #77727F;
   font-weight: 600;
 }
 
 /* Live Commercial Activity Feed */
 .bdb-activity-card {
-  padding-bottom: 4px;
+  height: 219px;
+  justify-content: space-between;
 }
 
 .bdb-live-tag {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 0.5px 4.5px;
+  gap: 4px;
+  padding: 1.5px 6px;
   border-radius: 999px;
   background: #F1ECF8;
   color: #502B9A;
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 750;
 }
 
 .bdb-live-dot {
-  width: 3.5px;
-  height: 3.5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #502B9A;
   animation: bdbPulseDot 2s ease-in-out infinite;
@@ -1064,14 +1092,16 @@
 .bdb-activity-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 6px;
+  flex: 1;
+  justify-content: space-between;
 }
 
 .bdb-act-row {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 1.5px 0;
+  flex-direction: column;
+  gap: 1px;
+  padding: 3px 0;
   border-bottom: 1px solid #F8F7FA;
 }
 
@@ -1079,38 +1109,50 @@
   border-bottom: none;
 }
 
+.bdb-act-header-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .bdb-act-time {
-  font-size: 8.5px;
-  font-weight: 650;
+  font-size: 9px;
+  font-weight: 700;
   color: #77727F;
-  min-width: 36px;
+  min-width: 40px;
   font-variant-numeric: tabular-nums;
 }
 
-.bdb-act-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5px;
-}
-
 .bdb-act-title {
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 650;
   color: #19171E;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .bdb-act-cafe {
-  font-size: 8.5px;
+  font-size: 9.5px;
   color: #502B9A;
+  padding-left: 46px;
+}
+
+.bdb-act-meta {
+  font-size: 9px;
+  color: #77727F;
+  padding-left: 46px;
 }
 
 /* ─── 6. Responsive Breakdown ────────────────────────────────────────────── */
 @media (max-width: 1200px) {
+  .bdb-viewport-frame {
+    height: auto;
+    min-height: 580px;
+  }
+
   .bdb-body-grid {
-    grid-template-columns: 250px minmax(0, 1fr) 250px;
-    gap: 5px;
-    padding: 5px;
+    grid-template-columns: 280px minmax(0, 1fr) 280px;
+    gap: 10px;
+    padding: 10px;
   }
 }
 
@@ -1118,23 +1160,31 @@
   .bdb-pin-wrap {
     min-height: auto;
     overflow: visible;
-    padding: 30px 0;
+    padding: 40px 0;
   }
 
   .bdb-viewport-frame {
     transform: none !important;
+    height: auto;
   }
 
   .bdb-body-grid {
     grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .bdb-card {
+    height: auto !important;
   }
 
   .bdb-kpi-bar {
     grid-template-columns: repeat(2, 1fr);
+    height: auto;
   }
 
   .bdb-kpi-cell {
     border-bottom: 1px solid #EBE8F0;
+    padding: 8px 12px;
   }
 
   .bdb-bay-switcher {
