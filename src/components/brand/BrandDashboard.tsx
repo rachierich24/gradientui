@@ -181,7 +181,7 @@ const RECENT_ACTIVITIES = [
 /* ─── INLINE SVGS: Clean Minimal Icons ───────────────────────────────────── */
 function SvgGradientLogo() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
       <rect width="24" height="24" rx="5" fill="#502B9A" />
       <path d="M12 6a6 6 0 1 0 6 6h-6V6z" fill="#FFFFFF" />
       <circle cx="15.5" cy="8.5" r="1.5" fill="#F1ECF8" />
@@ -191,7 +191,7 @@ function SvgGradientLogo() {
 
 function SvgBell() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
       <path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
@@ -200,7 +200,7 @@ function SvgBell() {
 
 function SvgDownload() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="7 10 12 15 17 10" />
       <line x1="12" y1="15" x2="12" y2="3" />
@@ -210,7 +210,7 @@ function SvgDownload() {
 
 function SvgChevronDown({ className }: { className?: string }) {
   return (
-    <svg className={className} width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="6 9 12 15 18 9" />
     </svg>
   );
@@ -220,8 +220,8 @@ function SvgSparkline({ data }: { data: number[] }) {
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
-  const w = 68;
-  const h = 18;
+  const w = 56;
+  const h = 14;
   const points = data
     .map((v, i) => {
       const x = (i / (data.length - 1)) * w;
@@ -234,7 +234,7 @@ function SvgSparkline({ data }: { data: number[] }) {
   return (
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
       <polygon points={areaPoints} fill="rgba(80, 43, 154, 0.08)" />
-      <polyline points={points} fill="none" stroke="#502B9A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke="#502B9A" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -301,7 +301,7 @@ export function BrandDashboard() {
         scrollTrigger: {
           trigger: section,
           id: 'dashboard-scroll-track',
-          start: 'top 70px',
+          start: 'top top',
           end: () => `+=${window.innerHeight * 2.2}`,
           pin: pinWrap,
           pinSpacing: true,
@@ -482,8 +482,11 @@ export function BrandDashboard() {
                 {KPI_METRICS.map((kpi) => (
                   <div key={kpi.id} className="bdb-kpi-cell">
                     <div className="bdb-kpi-meta-row">
-                      <span className="bdb-kpi-idx">{kpi.num}</span>
-                      <span className="bdb-kpi-label">{kpi.label}</span>
+                      <div className="bdb-kpi-label-group">
+                        <span className="bdb-kpi-idx">{kpi.num}</span>
+                        <span className="bdb-kpi-label">{kpi.label}</span>
+                      </div>
+                      <span className="bdb-kpi-sub">{kpi.meta}</span>
                     </div>
 
                     <div className="bdb-kpi-main-row">
@@ -505,8 +508,6 @@ export function BrandDashboard() {
                         <span className="bdb-kpi-badge badge-purple">{kpi.badge}</span>
                       )}
                     </div>
-
-                    <span className="bdb-kpi-sub">{kpi.meta}</span>
                   </div>
                 ))}
               </div>
@@ -784,7 +785,6 @@ export function BrandDashboard() {
                         <div className="bdb-attr-track">
                           <div className="bdb-attr-fill" style={{ width: `${attr.pct}%` }} />
                         </div>
-                        <span className="bdb-attr-sub">{attr.note}</span>
                       </div>
                     ))}
                   </div>
@@ -820,7 +820,6 @@ export function BrandDashboard() {
                           <span className="bdb-act-title">{act.title}</span>
                         </div>
                         <span className="bdb-act-cafe">{act.cafe}</span>
-                        {act.meta && <span className="bdb-act-meta">{act.meta}</span>}
                       </div>
                     ))}
                   </div>

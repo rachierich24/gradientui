@@ -41,17 +41,17 @@
   border-radius: 50%;
 }
 
-/* Pinned Wrapper for GSAP ScrollTrigger: Controlled top padding below navbar */
+/* Pinned Wrapper for GSAP ScrollTrigger: Centered vertically below navbar */
 .bdb-pin-wrap {
   position: relative;
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding-top: clamp(24px, 3.8vh, 42px);
-  padding-bottom: clamp(24px, 3.8vh, 42px);
+  padding-top: 64px;
+  padding-bottom: 12px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -60,33 +60,33 @@
 .bdb-container {
   position: relative;
   width: 100%;
-  max-width: 1440px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 clamp(20px, 3vw, 44px);
+  padding: 0 clamp(16px, 2.5vw, 36px);
   box-sizing: border-box;
   z-index: 1;
 }
 
 /* ─── 1. Editorial Heading Block (Stationary Anchor) ──────────────────────── */
 .bdb-editorial-header {
-  margin-bottom: clamp(16px, 2.2vh, 24px);
+  margin-bottom: clamp(6px, 1vh, 10px);
 }
 
 .bdb-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  gap: 5px;
+  font-size: 9.5px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #502B9A;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .bdb-eyebrow-pip {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #502B9A;
 }
@@ -95,21 +95,21 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .bdb-title-wrap {
-  max-width: 820px;
+  max-width: 780px;
 }
 
 .bdb-title {
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(20px, 1.85vw, 26px);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
   color: #19171E;
-  margin: 0 0 8px 0;
+  margin: 0 0 2px 0;
 }
 
 .bdb-title-purple {
@@ -117,10 +117,10 @@
 }
 
 .bdb-sub {
-  font-size: clamp(13.5px, 1.05vw, 15.5px);
-  line-height: 1.5;
+  font-size: clamp(11.5px, 0.85vw, 12.5px);
+  line-height: 1.35;
   color: #77727F;
-  max-width: 740px;
+  max-width: 680px;
   margin: 0;
 }
 
@@ -128,9 +128,9 @@
 .bdb-bay-switcher {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   background: #F8F7FA;
-  padding: 3px;
+  padding: 2px;
   border-radius: 999px;
   border: 1px solid #EBE8F0;
 }
@@ -138,9 +138,9 @@
 .bdb-bay-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  font-size: 11.5px;
+  gap: 4px;
+  padding: 3.5px 9px;
+  font-size: 10px;
   font-weight: 600;
   color: #77727F;
   background: transparent;
@@ -159,7 +159,7 @@
   background: #FFFFFF;
   color: #502B9A;
   font-weight: 700;
-  box-shadow: 0 2px 6px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 5px rgba(80, 43, 154, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .bdb-bay-dot {
@@ -174,17 +174,18 @@
   background: #502B9A;
 }
 
-/* ─── 2. The Dashboard Frame (Aspect Ratio ~2.26:1) ───────────────────────── */
+/* ─── 2. The Dashboard Frame (Aspect Ratio ~2.6:1, Ultra-Compact & Above Horizon) ── */
 .bdb-viewport-frame {
   position: relative;
   width: 100%;
-  height: 636px;
-  border-radius: 16px;
+  max-width: 1380px;
+  height: 472px;
+  border-radius: 14px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.8),
-    0 20px 48px -12px rgba(80, 43, 154, 0.07),
+    0 16px 36px -10px rgba(80, 43, 154, 0.06),
     0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: hidden;
   will-change: transform;
@@ -204,27 +205,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 38px;
-  padding: 0 14px;
+  height: 34px;
+  padding: 0 12px;
   border-bottom: 1px solid #F4F1F8;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .bdb-nav-left,
 .bdb-nav-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .bdb-logo-group {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
 }
 
 .bdb-logo-text {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #19171E;
@@ -232,16 +233,16 @@
 
 .bdb-nav-divider {
   width: 1px;
-  height: 14px;
+  height: 12px;
   background: #EBE8F0;
 }
 
 .bdb-brand-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 7px;
-  border-radius: 6px;
+  gap: 5px;
+  padding: 1.5px 6px;
+  border-radius: 5px;
   background: #FAF9FC;
   border: 1px solid #EBE8F0;
 }
@@ -249,17 +250,17 @@
 .bdb-brand-avatar {
   display: grid;
   place-items: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
   background: #F1ECF8;
   color: #502B9A;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 800;
 }
 
 .bdb-brand-name {
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 650;
   color: #19171E;
 }
@@ -267,12 +268,12 @@
 .bdb-campaign-dropdown {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  gap: 4px;
+  padding: 1.5px 7px;
+  border-radius: 5px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 600;
   color: #502B9A;
   cursor: pointer;
@@ -281,18 +282,18 @@
 .bdb-live-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
+  gap: 4px;
+  padding: 1.5px 7px;
   border-radius: 999px;
   background: #F1ECF8;
   color: #502B9A;
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 700;
 }
 
 .bdb-status-pulse-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #502B9A;
   box-shadow: 0 0 0 2px rgba(80, 43, 154, 0.15);
@@ -301,11 +302,11 @@
 .bdb-date-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  gap: 4px;
+  padding: 1.5px 7px;
+  border-radius: 5px;
   border: 1px solid #EBE8F0;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: #77727F;
 }
@@ -313,12 +314,12 @@
 .bdb-export-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: 6px;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 5px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: #19171E;
   cursor: pointer;
@@ -335,9 +336,9 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
   border: 1px solid #EBE8F0;
   color: #77727F;
   cursor: pointer;
@@ -345,10 +346,10 @@
 
 .bdb-bell-dot {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 4px;
-  height: 4px;
+  top: 3px;
+  right: 3px;
+  width: 3.5px;
+  height: 3.5px;
   border-radius: 50%;
   background: #502B9A;
 }
@@ -356,28 +357,29 @@
 .bdb-user-profile {
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
   background: #19171E;
   color: #FFFFFF;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 750;
   cursor: pointer;
 }
 
-/* ─── 4. KPI Summary Strip (Horizontal 4-Stat Bar) ───────────────────────── */
+/* ─── 4. KPI Summary Strip (Horizontal 2-Line Bar, 48px Height) ──────────── */
 .bdb-kpi-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   background: #FAF9FB;
   border-top: 1px solid #FFFFFF;
   border-bottom: 1px solid #EBE8F0;
-  height: 68px;
+  height: 48px;
+  flex-shrink: 0;
 }
 
 .bdb-kpi-cell {
-  padding: 6px 18px;
+  padding: 5px 14px;
   border-right: 1px solid #EBE8F0;
   display: flex;
   flex-direction: column;
@@ -392,33 +394,46 @@
 .bdb-kpi-meta-row {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bdb-kpi-label-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .bdb-kpi-idx {
-  font-size: 9.5px;
+  font-size: 8.5px;
   font-weight: 750;
   color: #502B9A;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .bdb-kpi-label {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 650;
   color: #77727F;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
+}
+
+.bdb-kpi-sub {
+  font-size: 9px;
+  color: #77727F;
+  white-space: nowrap;
 }
 
 .bdb-kpi-main-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
 }
 
 .bdb-kpi-val {
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 800;
   color: #19171E;
   letter-spacing: -0.02em;
@@ -427,8 +442,8 @@
 
 .bdb-kpi-progress {
   flex: 1;
-  max-width: 56px;
-  height: 4px;
+  max-width: 50px;
+  height: 3.5px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -442,9 +457,9 @@
 
 .bdb-kpi-badge {
   display: inline-block;
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 9.5px;
+  padding: 1px 5px;
+  border-radius: 3.5px;
+  font-size: 8.5px;
   font-weight: 700;
   background: #F1ECF8;
   color: #502B9A;
@@ -456,24 +471,16 @@
 }
 
 .bdb-kpi-sparkline {
-  width: 68px;
-  height: 18px;
+  width: 56px;
+  height: 14px;
 }
 
-.bdb-kpi-sub {
-  font-size: 10px;
-  color: #77727F;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ─── 5. Main 3-Column Body Grid (Proportioned, Spacious, 530px Height) ───── */
+/* ─── 5. Main 3-Column Body Grid (Compact 388px Height) ─────────────────── */
 .bdb-body-grid {
   display: grid;
-  grid-template-columns: 310px minmax(0, 1fr) 310px;
-  gap: 12px;
-  padding: 12px 14px;
+  grid-template-columns: 290px minmax(0, 1fr) 290px;
+  gap: 8px;
+  padding: 8px 10px;
   background: #F8F7FA;
   flex: 1;
   min-height: 0;
@@ -483,7 +490,7 @@
 .bdb-col {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   height: 100%;
 }
 
@@ -491,8 +498,8 @@
 .bdb-card {
   background: #FFFFFF;
   border: 1px solid #EBE8F0;
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 10px;
+  padding: 8px 10px;
   box-shadow: 0 1px 2px rgba(21, 17, 29, 0.02);
   display: flex;
   flex-direction: column;
@@ -503,32 +510,32 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
+  gap: 6px;
+  margin-bottom: 5px;
+  padding-bottom: 4px;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-card-title {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 750;
   color: #19171E;
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.15;
   letter-spacing: -0.01em;
 }
 
 .bdb-card-sub {
-  font-size: 10px;
+  font-size: 8.5px;
   color: #77727F;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .bdb-pill-indicator {
   display: inline-block;
-  padding: 1.5px 6px;
-  border-radius: 4px;
-  font-size: 9.5px;
+  padding: 1px 5px;
+  border-radius: 3.5px;
+  font-size: 8.5px;
   font-weight: 700;
   background: #FAF9FC;
   border: 1px solid #EBE8F0;
@@ -544,24 +551,24 @@
 
 /* ─── Column 1: Conversion Funnel ────────────────────────────────────────── */
 .bdb-funnel-card {
-  height: 260px;
+  height: 194px;
 }
 
 .bdb-funnel-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
   flex: 1;
   justify-content: space-between;
 }
 
 .bdb-funnel-row {
   display: grid;
-  grid-template-columns: 110px minmax(0, 1fr) 56px;
+  grid-template-columns: 94px minmax(0, 1fr) 52px;
   align-items: center;
-  gap: 6px;
-  padding: 4px 6px;
-  border-radius: 6px;
+  gap: 5px;
+  padding: 2.5px 5px;
+  border-radius: 5px;
   background: #FAF9FC;
   border: 1px solid transparent;
   transition: all 0.15s ease;
@@ -580,18 +587,18 @@
 .bdb-f-left {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .bdb-f-idx {
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 750;
   color: #502B9A;
   font-variant-numeric: tabular-nums;
 }
 
 .bdb-f-name {
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 650;
   color: #19171E;
   white-space: nowrap;
@@ -601,7 +608,7 @@
 
 .bdb-f-bar-wrap {
   width: 100%;
-  height: 4px;
+  height: 3.5px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -625,18 +632,18 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 4px;
+  gap: 3px;
   font-variant-numeric: tabular-nums;
 }
 
 .bdb-f-count {
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-f-pct {
-  font-size: 9.5px;
+  font-size: 8.5px;
   color: #77727F;
 }
 
@@ -648,18 +655,18 @@
 
 /* ─── Column 1: Weekly Reorder Volume ────────────────────────────────────── */
 .bdb-reorder-card {
-  height: 234px;
+  height: 170px;
   justify-content: space-between;
 }
 
 .bdb-bars-compact {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-  height: 72px;
+  gap: 6px;
+  height: 66px;
   align-items: flex-end;
-  padding: 4px 6px 0;
-  margin-bottom: 4px;
+  padding: 2px 4px 0;
+  margin-bottom: 2px;
 }
 
 .bdb-bar-item {
@@ -674,7 +681,7 @@
 
 .bdb-bar-track {
   width: 100%;
-  height: 52px;
+  height: 48px;
   display: flex;
   align-items: flex-end;
 }
@@ -682,7 +689,7 @@
 .bdb-bar-fill {
   width: 100%;
   background: #D9D1E8;
-  border-radius: 3px 3px 0 0;
+  border-radius: 2.5px 2.5px 0 0;
   transition: all 0.2s ease;
 }
 
@@ -696,15 +703,15 @@
 
 .bdb-bar-fill.is-projected {
   background: transparent;
-  border: 1.5px dashed #502B9A;
+  border: 1px dashed #502B9A;
   box-sizing: border-box;
 }
 
 .bdb-bar-label {
-  font-size: 9.5px;
+  font-size: 8px;
   font-weight: 650;
   color: #77727F;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .bdb-bar-tooltip {
@@ -714,9 +721,9 @@
   transform: translateX(-50%);
   background: #19171E;
   color: #FFFFFF;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 8px;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
@@ -735,11 +742,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 8px;
-  border-radius: 6px;
+  padding: 3.5px 6px;
+  border-radius: 5px;
   background: #FAF9FC;
   border: 1px solid #F4F1F8;
-  font-size: 10.5px;
+  font-size: 8.5px;
   color: #19171E;
 }
 
@@ -754,7 +761,7 @@
 
 .bdb-map-card {
   height: 100%;
-  padding: 12px 14px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
 }
@@ -767,21 +774,21 @@
 .bdb-map-legend {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .bdb-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 10px;
+  gap: 3.5px;
+  font-size: 8.5px;
   color: #77727F;
   font-weight: 550;
 }
 
 .bdb-legend-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
 }
 
@@ -805,7 +812,7 @@
   width: 100%;
   flex: 1;
   min-height: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #FAF9FC;
   overflow: hidden;
   border: 1px solid #EBE8F0;
@@ -844,38 +851,38 @@
   transform: translate(-50%, -120%);
   background: #FFFFFF;
   border: 1px solid #502B9A;
-  border-radius: 6px;
-  padding: 4px 8px;
-  box-shadow: 0 4px 12px rgba(80, 43, 154, 0.15);
+  border-radius: 5px;
+  padding: 3px 6px;
+  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.12);
   pointer-events: none;
   z-index: 20;
   white-space: nowrap;
 }
 
 .bdb-tooltip-name {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-tooltip-sub {
-  font-size: 9.5px;
+  font-size: 8.5px;
   color: #77727F;
 }
 
 /* Docked Floating Café Intelligence Card */
 .bdb-cafe-dock-card {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.95);
+  bottom: 6px;
+  left: 6px;
+  right: 6px;
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid #EBE8F0;
-  border-radius: 8px;
-  padding: 6px 10px;
-  box-shadow: 0 4px 14px rgba(80, 43, 154, 0.08);
+  border-radius: 7px;
+  padding: 4px 8px;
+  box-shadow: 0 3px 10px rgba(80, 43, 154, 0.08);
   z-index: 10;
 }
 
@@ -883,33 +890,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 5px;
-  padding-bottom: 4px;
+  margin-bottom: 3px;
+  padding-bottom: 3px;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-dock-title-group {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 5px;
 }
 
 .bdb-dock-name {
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-dock-area {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: #502B9A;
 }
 
 .bdb-dock-status {
-  padding: 1.5px 6px;
+  padding: 1px 5px;
   border-radius: 999px;
-  font-size: 9.5px;
+  font-size: 8.5px;
   font-weight: 700;
 }
 
@@ -934,25 +941,25 @@
 .bdb-dock-details {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  gap: 4px;
 }
 
 .bdb-dock-stat {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0.5px;
 }
 
 .bdb-dock-label {
-  font-size: 8.5px;
+  font-size: 7.5px;
   font-weight: 750;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: #77727F;
   text-transform: uppercase;
 }
 
 .bdb-dock-val {
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 750;
   color: #19171E;
   white-space: nowrap;
@@ -962,7 +969,7 @@
 
 /* ─── Column 3: Barista Sensory & Live Commercial Telemetry ───────────────── */
 .bdb-feedback-card {
-  height: 275px;
+  height: 194px;
   justify-content: space-between;
 }
 
@@ -973,34 +980,34 @@
 }
 
 .bdb-overall-stars {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 800;
   color: #502B9A;
 }
 
 .bdb-overall-max {
-  font-size: 10px;
+  font-size: 9px;
   color: #77727F;
 }
 
 .bdb-feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 6px;
+  gap: 2px;
+  margin-bottom: 3px;
 }
 
 .bdb-attr-compact {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .bdb-attr-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10.5px;
+  font-size: 9.5px;
 }
 
 .bdb-attr-name {
@@ -1016,7 +1023,7 @@
 
 .bdb-attr-track {
   width: 100%;
-  height: 4px;
+  height: 3px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -1029,56 +1036,56 @@
 }
 
 .bdb-attr-sub {
-  font-size: 9px;
+  font-size: 8px;
   color: #77727F;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .bdb-quote-pill {
-  padding: 5px 8px;
-  border-radius: 6px;
+  padding: 3.5px 6px;
+  border-radius: 5px;
   background: #FAF9FC;
-  border-left: 2.5px solid #502B9A;
+  border-left: 2px solid #502B9A;
   border-top: 1px solid #F4F1F8;
   border-right: 1px solid #F4F1F8;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-quote-text {
-  font-size: 10px;
+  font-size: 8.5px;
   font-style: italic;
   color: #19171E;
-  margin: 0 0 2px 0;
-  line-height: 1.35;
+  margin: 0 0 1px 0;
+  line-height: 1.25;
 }
 
 .bdb-quote-author {
-  font-size: 9px;
+  font-size: 7.5px;
   color: #77727F;
   font-weight: 600;
 }
 
 /* Live Commercial Activity Feed */
 .bdb-activity-card {
-  height: 219px;
+  height: 170px;
   justify-content: space-between;
 }
 
 .bdb-live-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 1.5px 6px;
+  gap: 3px;
+  padding: 1px 5px;
   border-radius: 999px;
   background: #F1ECF8;
   color: #502B9A;
-  font-size: 9.5px;
+  font-size: 8.5px;
   font-weight: 750;
 }
 
 .bdb-live-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #502B9A;
   animation: bdbPulseDot 2s ease-in-out infinite;
@@ -1092,7 +1099,7 @@
 .bdb-activity-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
   flex: 1;
   justify-content: space-between;
 }
@@ -1100,8 +1107,8 @@
 .bdb-act-row {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  padding: 3px 0;
+  gap: 0.5px;
+  padding: 1.5px 0;
   border-bottom: 1px solid #F8F7FA;
 }
 
@@ -1112,47 +1119,46 @@
 .bdb-act-header-line {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .bdb-act-time {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   color: #77727F;
-  min-width: 40px;
+  min-width: 34px;
   font-variant-numeric: tabular-nums;
 }
 
 .bdb-act-title {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 650;
   color: #19171E;
-  line-height: 1.25;
+  line-height: 1.15;
 }
 
 .bdb-act-cafe {
-  font-size: 9.5px;
+  font-size: 8.5px;
   color: #502B9A;
-  padding-left: 46px;
+  padding-left: 39px;
 }
 
 .bdb-act-meta {
-  font-size: 9px;
+  font-size: 8px;
   color: #77727F;
-  padding-left: 46px;
+  padding-left: 39px;
 }
 
 /* ─── 6. Responsive Breakdown ────────────────────────────────────────────── */
 @media (max-width: 1200px) {
   .bdb-viewport-frame {
-    height: auto;
-    min-height: 580px;
+    height: 472px;
   }
 
   .bdb-body-grid {
-    grid-template-columns: 280px minmax(0, 1fr) 280px;
-    gap: 10px;
-    padding: 10px;
+    grid-template-columns: 260px minmax(0, 1fr) 260px;
+    gap: 8px;
+    padding: 8px;
   }
 }
 
