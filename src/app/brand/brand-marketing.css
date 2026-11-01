@@ -104,7 +104,7 @@
 }
 .bmk-tile:focus-visible { outline: 2px solid #B79DF7; outline-offset: 3px; }
 /* once landed, one tile is lit */
-.bmk.is-landed .bmk-tile.is-on { background: #7C4DDB; }
+.bmk.is-landed .bmk-tile.is-on { background: #6B33D3; }
 .bmk.is-landed .bmk-tile.is-on::after { --rv: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)); }
 .bmk.is-landed .bmk-tile.is-on .bmk-tile-n { color: rgba(255, 255, 255, 0.8); }
 .bmk.is-landed .bmk-tile.is-on .bmk-tile-word { color: rgba(255, 255, 255, 0.16); }

@@ -102,7 +102,8 @@ export function DemandBento({ active, listen }: Props) {
       <Tile area="read" tone="bdg-pur" from={[-120, 120, 7]} d={0.12} label={`${area}: index ${Math.round(v)}`}>
         <div className="bdg-read" aria-live={held ? 'polite' : 'off'}>
           <small>{prod.short} · {area}</small>
-          <b>{Math.round(tv)}</b>
+          <b>{Math.round(tv)}<em>/300</em></b>
+          <i className="bdg-meter" style={{ '--v': Math.min(1, tv / 300) } as Vars} aria-hidden="true" />
           <span className="bdg-band">{bandOf(v).label} demand</span>
           <span className="bdg-trend">{chg > 2 ? `↗ Rising ${chg}% in 4 weeks` : chg < -2 ? `↘ Easing ${-chg}% in 4 weeks` : '→ Holding steady'}</span>
         </div>
@@ -111,10 +112,10 @@ export function DemandBento({ active, listen }: Props) {
       <Tile area="rank" tone="bdg-lav" from={[170, 60, -8]} d={0.22} label={`Hottest neighbourhoods for ${prod.short}`}>
         <div className="bdg-rank" onPointerLeave={() => setPointed(-1)}>
           <small>Hottest for {prod.short.toLowerCase()}</small>
-          {order.slice(0, 3).map((i) => (
+          {order.slice(0, 3).map((i, n) => (
             <button key={AREAS[i].name} type="button" className={i === ci ? 'is-on' : ''} style={{ '--k2': vals[i] / 220 } as Vars}
               onPointerEnter={() => setPointed(i)} onFocus={() => setPointed(i)} onBlur={() => setPointed(-1)} onClick={() => setPointed(i)}>
-              <span>{AREAS[i].name}</span><i /><b>{Math.round(vals[i])}</b>
+              <em>{`0${n + 1}`}</em><span>{AREAS[i].name}</span><i /><b>{Math.round(vals[i])}</b>
             </button>
           ))}
         </div>

@@ -125,7 +125,7 @@ export function BrandFeatures() {
             </div>
             <div ref={(n) => { scenes.current[i] = n; }} className={`bfx-scene bfx-s-${c.id}${i === act ? ' is-on' : ''}`}>
               <div className="bfx-art">
-                {i === 0 ? <DemandBento active={i === act} listen={listen[i]} /> : i === 1 ? <ReachScene /> : i === 2 ? <KitScene /> : <NetworkScene />}
+                {i === 0 ? <DemandBento active={i === act} listen={listen[i]} /> : i === 1 ? <ReachScene /> : i === 2 ? <KitScene /> : <NetworkScene active={i === act} />}
               </div>
             </div>
           </div>

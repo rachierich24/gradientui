@@ -338,7 +338,7 @@
   bottom: 4px;
   width: 80px;
   height: 14px;
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.9) 0%, rgba(124, 77, 219, 0.25) 45%, transparent 75%);
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.9) 0%, rgba(107, 51, 211, 0.25) 45%, transparent 75%);
   border-radius: 50%;
   filter: blur(3px);
   z-index: -1;

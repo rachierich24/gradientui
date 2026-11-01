@@ -4,17 +4,19 @@
 // lock into the grid. Once a tile has landed it's live, and a soft light follows the pointer across the board:
 //   brand       the mark, and a button that opens the trial form
 //   reach       ads keep landing on a café owner's phone; "Send" drops the next one
-//   feed        the trial as it happens, a new event every couple of seconds (hover holds it)
+//   feed        the trial as a ledger: the day it's up to over a 21-day ruler, and what happened, newest on top
+//               (a new entry every couple of seconds; hover holds it)
 //   numbers     cafés, weekly orders, litres: tabs that count up (they rotate until you pick one)
 //   rating      what baristas said, one quote at a time (the arrow skips ahead)
-//   kit         the carton turns towards the pointer; its steps tick on (tap one to jump there)
+//   kit         one café's kit as a paper dispatch tag: its steps tick off, then it's stamped as reordering
+//               (the tag leans towards the pointer; tap a step to jump there)
 //   reorders    twelve weeks of reorders; point along the chart to read any week
 //   waste       drag what you'd usually make and see what the forecast saves
 // On a phone nothing pins: two columns, each tile flies in as it scrolls up. With reduced motion everything is
 // simply there and nothing rotates by itself. Names and figures are samples. Styles: app/brand/brand-bento.css
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react';
 import { fmt, reduced, useTween } from './shared';
-import { ATTRS, EVENTS, ICONS, VERDICT } from './trial-data';
+import { ATTRS, CAFES, DAYS, EVENTS, HUBS, VERDICT } from './trial-data';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
 
 type Vars = CSSProperties & Record<`--${string}`, string | number>;
@@ -177,25 +179,36 @@ function Reach({ on }: { on: boolean }) {
   );
 }
 
+const FIRST = 3; // the ledger opens with a few entries already written
+const pad = (d: number) => String(Math.max(1, Math.round(d))).padStart(2, '0');
 function Feed({ on }: { on: boolean }) {
-  const [n, setN] = useState(4);
+  const [n, setN] = useState(0);
   const [held, setHeld] = useState(false);
   useEvery(on && !held, 2300, () => setN((x) => x + 1));
-  const rows = Array.from({ length: 5 }, (_, k) => n - k).filter((k) => k >= 0);
+  // the newest entry, in the trial's own order; once it reaches day 21 the ledger starts over
+  const top = FIRST + (n % (EVENTS.length - FIRST)), round = Math.floor(n / (EVENTS.length - FIRST));
+  const rows = Array.from({ length: 5 }, (_, k) => top - k).filter((k) => k >= 0);
+  const day = Math.max(1, Math.round(useTween(on ? EVENTS[top].day : 1, 700)));
   return (
     <div className="bbo-feed" onPointerEnter={() => setHeld(true)} onPointerLeave={() => setHeld(false)}>
       <div className="bbo-feed-head">
-        <small><i className={held ? 'is-held' : ''} />{held ? 'Paused' : 'Live'} · Delhi NCR trial</small>
+        <small><i className={held ? 'is-held' : ''} />{held ? 'Paused' : 'Live'} · Delhi NCR</small>
         <span>Barista Oat Milk</span>
+      </div>
+      <div className="bbo-day">
+        <b>Day {pad(day)}</b><small>of {DAYS}</small>
+      </div>
+      <div className="bbo-ruler" aria-hidden="true">
+        {Array.from({ length: DAYS }, (_, k) => <i key={k} className={k + 1 < day ? 'is-past' : k + 1 === day ? 'is-now' : ''} />)}
       </div>
       <ol aria-live="off">
         {rows.map((k) => {
-          const ev = EVENTS[k % EVENTS.length];
+          const ev = EVENTS[k];
           return (
-            <li key={k}>
-              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d={ICONS[ev.icon]} /></svg></i>
+            <li key={`${round}-${k}`}>
+              <em>D{pad(ev.day)}</em>
+              <i aria-hidden="true" />
               <div><b>{ev.title}</b><span>{ev.meta}</span></div>
-              <em>Day {Math.max(1, Math.round(ev.day))}</em>
             </li>
           );
         })}
@@ -253,12 +266,21 @@ function Rating({ on }: { on: boolean }) {
   );
 }
 
-const STEPS = ['Packed', 'Delivered', 'Tried', 'Reordered'];
+// one café's kit, from the trial's own record
+const KIT_CAFE = CAFES.find((c) => c.name === 'Little Brew Room')!;
+const STEPS = [
+  { name: 'Packed', day: 1, note: `Packed at ${HUBS[KIT_CAFE.hub].name}` },
+  { name: 'Delivered', day: KIT_CAFE.d, note: 'Came on the morning milk run' },
+  { name: 'Tried', day: KIT_CAFE.t!, note: `Head barista rated it ${KIT_CAFE.stars!.toFixed(1)}` },
+  { name: 'Reordered', day: KIT_CAFE.o!, note: `Now ${KIT_CAFE.litres} L a week, standing` },
+];
 function Kit({ on }: { on: boolean }) {
   const [s, setS] = useState(0);
   const [held, setHeld] = useState(false);
   const box = useRef<HTMLDivElement>(null);
-  useEvery(on && !held, 1800, () => setS((x) => (x + 1) % (STEPS.length + 1)));
+  // four ticks, then a beat with the stamp on before it starts over
+  useEvery(on && !held, 1700, () => setS((x) => (x + 1) % (STEPS.length + 3)));
+  const done = Math.min(s, STEPS.length), last = STEPS[Math.max(0, done - 1)];
   const tilt = (e: PointerEvent<HTMLDivElement>) => {
     const el = box.current;
     if (!el || reduced()) return;
@@ -270,13 +292,29 @@ function Kit({ on }: { on: boolean }) {
   return (
     <div className="bbo-kit" ref={box} onPointerMove={tilt} onPointerLeave={reset}>
       <h3>Trial kits, tracked to the cup.</h3>
-      <ol>
-        {STEPS.map((x, k) => (
-          <li key={x}><button type="button" className={k < s ? 'is-done' : ''} onClick={() => { setHeld(true); setS(k + 1); }}>{k < s ? '✓ ' : ''}{x}</button></li>
-        ))}
-      </ol>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/brand/carton_3d_cutout.png" alt="" width={560} height={924} loading="lazy" />
+      <div className="bbo-tag">
+        <header>
+          <small>Trial kit</small>
+          <b>LBR-024</b>
+        </header>
+        <p className="bbo-tag-to"><small>To</small><span>{KIT_CAFE.name} · {KIT_CAFE.area}</span></p>
+        <ol>
+          {STEPS.map((x, k) => (
+            <li key={x.name} className={k < done ? 'is-done' : ''}>
+              <button type="button" onClick={() => { setHeld(true); setS(k + 1); }}>
+                <i aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.6 6.4 5 8.8l4.4-5.6" pathLength={1} /></svg></i>
+                <b>{x.name}</b>
+                <em>Day {Math.round(x.day)}</em>
+              </button>
+            </li>
+          ))}
+        </ol>
+        <footer>
+          <span key={done} className="bbo-tag-note">{done ? last.note : 'Waiting at the supplier'}</span>
+          <i className="bbo-bars" aria-hidden="true" />
+        </footer>
+        <span className={`bbo-stamp${done === STEPS.length ? ' is-on' : ''}`} aria-hidden="true">Reordering</span>
+      </div>
     </div>
   );
 }

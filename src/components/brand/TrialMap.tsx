@@ -91,11 +91,11 @@ export const TrialMap = memo(function TrialMap({ sx, ms, hot, onPoint }: Props) 
           <radialGradient id="bdm-glow">
             <stop offset="0" stopColor="#D9C8FF" stopOpacity="0.95" />
             <stop offset="0.3" stopColor="#A47CFF" stopOpacity="0.5" />
-            <stop offset="1" stopColor="#7C4DDB" stopOpacity="0" />
+            <stop offset="1" stopColor="#6B33D3" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="bdm-hub-glow">
             <stop offset="0" stopColor="#C4A8FF" stopOpacity="0.55" />
-            <stop offset="1" stopColor="#7C4DDB" stopOpacity="0" />
+            <stop offset="1" stopColor="#6B33D3" stopOpacity="0" />
           </radialGradient>
         </defs>
 
