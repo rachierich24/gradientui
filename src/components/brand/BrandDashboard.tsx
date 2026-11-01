@@ -14,6 +14,18 @@
    ───────────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+import type { DelhiCafeMarker } from './DelhiRealMap';
+
+const DelhiRealMap = dynamic(() => import('./DelhiRealMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="bdb-real-map-loading">
+      <div className="bdb-map-spinner" />
+      <span>Loading Delhi NCR Live GIS...</span>
+    </div>
+  ),
+});
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -80,29 +92,16 @@ const KPI_METRICS = [
   },
 ];
 
-interface MapMarker {
-  id: string;
-  name: string;
-  area: string;
-  x: number;
-  y: number;
-  status: 'reordered' | 'trial_completed' | 'delivered';
-  volume?: string;
-  barista?: string;
-  rating?: number;
-  standingPO?: string;
-  quote?: string;
-  supplier?: string;
-}
+export type MapMarker = DelhiCafeMarker;
 
 const DELHI_MARKERS: MapMarker[] = [
   // Hauz Khas Cluster (South Delhi Anchor)
   {
     id: 'm1',
+    lat: 28.549,
+    lng: 77.1985,
     name: 'Little Brew Room',
     area: 'Hauz Khas',
-    x: 378,
-    y: 164,
     status: 'reordered',
     volume: '36 L/wk',
     barista: 'Aditya K.',
@@ -113,10 +112,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm2',
+    lat: 28.5525,
+    lng: 77.2015,
     name: 'Tiny Tamper',
     area: 'Hauz Khas',
-    x: 398,
-    y: 154,
     status: 'reordered',
     volume: '28 L/wk',
     barista: 'Sneha G.',
@@ -127,10 +126,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm3',
+    lat: 28.5475,
+    lng: 77.203,
     name: 'Blue Tokai HKV',
     area: 'Hauz Khas',
-    x: 362,
-    y: 174,
     status: 'reordered',
     volume: '44 L/wk',
     barista: 'Farhan M.',
@@ -141,10 +140,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm4',
+    lat: 28.5485,
+    lng: 77.2055,
     name: "Elma's Bakery & Coffee",
     area: 'Hauz Khas',
-    x: 412,
-    y: 166,
     status: 'trial_completed',
     volume: 'Testing batch 2',
     barista: 'Zoya K.',
@@ -153,10 +152,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm5',
+    lat: 28.5535,
+    lng: 77.195,
     name: 'Coast Cafe',
     area: 'Hauz Khas',
-    x: 382,
-    y: 182,
     status: 'delivered',
     volume: 'Kit delivered',
     supplier: 'Sharma Dairy',
@@ -165,10 +164,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Connaught Place Cluster (Central Delhi Commercial Heart)
   {
     id: 'm6',
+    lat: 28.6315,
+    lng: 77.2185,
     name: 'Steam Theory',
     area: 'Connaught Place',
-    x: 385,
-    y: 104,
     status: 'reordered',
     volume: '32 L/wk',
     barista: 'Kabir V.',
@@ -179,10 +178,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm7',
+    lat: 28.6335,
+    lng: 77.2215,
     name: 'United Coffee House',
     area: 'Connaught Place',
-    x: 408,
-    y: 92,
     status: 'reordered',
     volume: '40 L/wk',
     barista: 'Rajesh S.',
@@ -193,10 +192,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm8',
+    lat: 28.629,
+    lng: 77.2155,
     name: 'Barista Heritage CP',
     area: 'Connaught Place',
-    x: 368,
-    y: 112,
     status: 'trial_completed',
     volume: 'Latte art approved',
     barista: 'Pooja T.',
@@ -205,10 +204,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm9',
+    lat: 28.6345,
+    lng: 77.214,
     name: 'The Chai Story CP',
     area: 'Connaught Place',
-    x: 416,
-    y: 116,
     status: 'delivered',
     volume: 'Trial kit active',
     supplier: 'Yamuna Provisions',
@@ -217,10 +216,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Saket & Saidulajab / Champa Gali Cluster (South Delhi)
   {
     id: 'm10',
+    lat: 28.523,
+    lng: 77.2065,
     name: 'Morning Ritual',
     area: 'Saket',
-    x: 386,
-    y: 222,
     status: 'reordered',
     volume: '30 L/wk',
     barista: 'Gautam P.',
@@ -231,10 +230,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm11',
+    lat: 28.5195,
+    lng: 77.2015,
     name: 'Jugmug Thela',
     area: 'Saket',
-    x: 408,
-    y: 214,
     status: 'reordered',
     volume: '26 L/wk',
     barista: 'Manish R.',
@@ -245,10 +244,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm12',
+    lat: 28.518,
+    lng: 77.2045,
     name: 'Rose Cafe',
     area: 'Saket',
-    x: 366,
-    y: 232,
     status: 'trial_completed',
     volume: 'Cortado verified',
     barista: 'Simran L.',
@@ -257,10 +256,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm13',
+    lat: 28.5215,
+    lng: 77.209,
     name: 'Soho Bistro',
     area: 'Saket',
-    x: 422,
-    y: 232,
     status: 'delivered',
     volume: 'Kit in testing',
     supplier: 'Southfield Dairy',
@@ -269,10 +268,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Lajpat Nagar & Defence Colony Cluster (South-East Delhi)
   {
     id: 'm14',
+    lat: 28.569,
+    lng: 77.2435,
     name: 'Copper Kettle',
     area: 'Lajpat Nagar',
-    x: 468,
-    y: 148,
     status: 'reordered',
     volume: '24 L/wk',
     barista: 'Manoj T.',
@@ -283,10 +282,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm15',
+    lat: 28.5725,
+    lng: 77.234,
     name: 'Colocal Def Col',
     area: 'Lajpat Nagar',
-    x: 486,
-    y: 138,
     status: 'reordered',
     volume: '38 L/wk',
     barista: 'Tanvi M.',
@@ -297,10 +296,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm16',
+    lat: 28.5705,
+    lng: 77.2315,
     name: 'Defence Bakery Cafe',
     area: 'Lajpat Nagar',
-    x: 452,
-    y: 160,
     status: 'trial_completed',
     volume: 'Cappuccino tested',
     barista: 'Rishi K.',
@@ -311,10 +310,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Kamla Nagar / North Campus Cluster
   {
     id: 'm17',
+    lat: 28.6835,
+    lng: 77.2085,
     name: 'Second Crack Coffee',
     area: 'Kamla Nagar',
-    x: 360,
-    y: 48,
     status: 'reordered',
     volume: '26 L/wk',
     barista: 'Divya R.',
@@ -325,10 +324,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm18',
+    lat: 28.6805,
+    lng: 77.205,
     name: 'Slow Sip Studio',
     area: 'Kamla Nagar',
-    x: 338,
-    y: 56,
     status: 'trial_completed',
     volume: 'Flat white trial',
     barista: 'Arun K.',
@@ -337,10 +336,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm19',
+    lat: 28.6855,
+    lng: 77.203,
     name: "Rico's North Campus",
     area: 'Kamla Nagar',
-    x: 382,
-    y: 44,
     status: 'delivered',
     volume: 'Delivered via Northgate',
     supplier: 'Northgate Dairy',
@@ -349,10 +348,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Rajouri Garden & West Delhi Cluster
   {
     id: 'm20',
+    lat: 28.644,
+    lng: 77.1225,
     name: 'West End Roastery',
     area: 'Rajouri Garden',
-    x: 245,
-    y: 110,
     status: 'reordered',
     volume: '28 L/wk',
     barista: 'Vikas N.',
@@ -363,10 +362,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm21',
+    lat: 28.6385,
+    lng: 77.1185,
     name: 'Café After Hours',
     area: 'Rajouri Garden',
-    x: 226,
-    y: 124,
     status: 'trial_completed',
     volume: 'Sensory rating 4.6',
     barista: 'Neha S.',
@@ -377,10 +376,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Vasant Kunj & Aerocity Cluster
   {
     id: 'm22',
+    lat: 28.5185,
+    lng: 77.1625,
     name: 'The Grammar Room',
     area: 'Vasant Kunj',
-    x: 295,
-    y: 200,
     status: 'reordered',
     volume: '34 L/wk',
     barista: 'Aman D.',
@@ -391,10 +390,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm23',
+    lat: 28.5515,
+    lng: 77.1215,
     name: 'Plum Aerocity',
     area: 'Vasant Kunj',
-    x: 274,
-    y: 186,
     status: 'trial_completed',
     volume: 'Barista trial done',
     barista: 'Karan J.',
@@ -405,10 +404,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Gurugram Corridor
   {
     id: 'm24',
+    lat: 28.4965,
+    lng: 77.0915,
     name: 'Brew & Bloom',
     area: 'Gurugram',
-    x: 172,
-    y: 236,
     status: 'reordered',
     volume: '32 L/wk',
     barista: 'Sahil P.',
@@ -419,10 +418,10 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm25',
+    lat: 28.4725,
+    lng: 77.0875,
     name: 'Di Ghent Cafe',
     area: 'Gurugram',
-    x: 148,
-    y: 246,
     status: 'trial_completed',
     volume: 'Cupping score 4.8',
     barista: 'Isha B.',
@@ -433,10 +432,10 @@ const DELHI_MARKERS: MapMarker[] = [
   // Noida Corridor
   {
     id: 'm26',
+    lat: 28.5715,
+    lng: 77.3245,
     name: 'Roastery Coffee House',
     area: 'Noida',
-    x: 550,
-    y: 170,
     status: 'reordered',
     volume: '30 L/wk',
     barista: 'Nitin C.',
@@ -447,51 +446,16 @@ const DELHI_MARKERS: MapMarker[] = [
   },
   {
     id: 'm27',
+    lat: 28.5685,
+    lng: 77.3295,
     name: 'The Haven Cafe',
     area: 'Noida',
-    x: 574,
-    y: 184,
     status: 'trial_completed',
     volume: 'Trial kit active',
     barista: 'Meera P.',
     rating: 4.6,
     supplier: 'Lakeside Foods',
   },
-];
-
-const DELHI_PARKS = [
-  { name: 'Sanjay Van / Mehrauli Forest', d: 'M 285,182 C 305,178 328,188 324,208 C 320,224 296,224 280,214 C 274,198 280,188 285,182 Z' },
-  { name: 'Hauz Khas Deer Park & Lake', d: 'M 364,158 C 378,156 386,163 383,172 C 376,178 362,176 360,168 C 358,162 362,158 364,158 Z' },
-  { name: 'Central Ridge Reserve', d: 'M 318,108 C 334,103 344,113 341,128 C 337,142 324,142 314,133 C 309,118 313,110 318,108 Z' },
-  { name: 'Yamuna Bio Park (North)', d: 'M 418,28 C 434,26 441,33 439,46 C 434,53 421,53 417,43 C 414,33 417,28 418,28 Z' },
-];
-
-const CORRIDOR_CLUSTERS = [
-  { name: 'Hauz Khas', count: 22, x: 434, y: 160 },
-  { name: 'Connaught Place', count: 12, x: 442, y: 92 },
-  { name: 'Saket', count: 14, x: 442, y: 228 },
-  { name: 'Lajpat Nagar', count: 14, x: 508, y: 142 },
-  { name: 'Kamla Nagar', count: 22, x: 405, y: 46 },
-  { name: 'Rajouri Garden', count: 8, x: 202, y: 116 },
-  { name: 'Vasant Kunj', count: 10, x: 265, y: 200 },
-  { name: 'Gurugram', count: 12, x: 135, y: 242 },
-  { name: 'Noida', count: 6, x: 598, y: 170 },
-];
-
-const HIGHWAY_SHIELDS = [
-  { label: 'NH 48', x: 218, y: 220 },
-  { label: 'DND', x: 482, y: 164 },
-  { label: 'NH 44', x: 370, y: 22 },
-  { label: 'NH 19', x: 478, y: 218 },
-];
-
-const SUPPLIER_HUBS = [
-  { name: 'Sharma Dairy', area: 'Central Hub', x: 410, y: 130 },
-  { name: 'Fresh Lane Foods', area: 'South Hub', x: 350, y: 180 },
-  { name: 'Hill Roasters', area: 'Gurugram Route', x: 210, y: 220 },
-  { name: 'Northgate Dairy', area: 'North Hub', x: 330, y: 65 },
-  { name: 'Eastline Supply', area: 'East Hub', x: 510, y: 160 },
-  { name: 'Southfield Dairy', area: 'Southwest Hub', x: 280, y: 230 },
 ];
 
 const FUNNEL_STAGES = [
@@ -1077,270 +1041,17 @@ export function BrandDashboard() {
                     </div>
                   </div>
 
-                  {/* SVG Map Canvas with Integrated Lower Telemetry Deck */}
+                  {/* Real Leaflet Map Container */}
                   <div className="bdb-map-stage">
-                    {/* Lamar-style Top Floating Controls Overlay */}
-                    <div className="bdb-map-ctrl-top-left">
-                      <div className="bdb-mode-toggle" role="tablist" aria-label="Map View Mode">
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={mapViewMode === 'corridors'}
-                          className={`bdb-mode-btn ${mapViewMode === 'corridors' ? 'is-active' : ''}`}
-                          onClick={() => setMapViewMode('corridors')}
-                        >
-                          ● Corridors
-                        </button>
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={mapViewMode === 'routes'}
-                          className={`bdb-mode-btn ${mapViewMode === 'routes' ? 'is-active' : ''}`}
-                          onClick={() => setMapViewMode('routes')}
-                        >
-                          Network Hubs
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="bdb-map-ctrl-top-right">
-                      <span className="bdb-location-pill">📍 Delhi NCR · Central Hub</span>
-                      <div className="bdb-zoom-ctrl" role="group" aria-label="Map Zoom">
-                        <button type="button" className="bdb-zoom-btn" title="Zoom in">+</button>
-                        <button type="button" className="bdb-zoom-btn" title="Zoom out">−</button>
-                      </div>
-                    </div>
-
-                    <svg viewBox="0 0 760 320" className="bdb-delhi-svg" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <radialGradient id="mapGlowDelhi" cx="50%" cy="50%" r="55%">
-                          <stop offset="0%" stopColor="#502B9A" stopOpacity="0.04" />
-                          <stop offset="60%" stopColor="#502B9A" stopOpacity="0.01" />
-                          <stop offset="100%" stopColor="#502B9A" stopOpacity="0" />
-                        </radialGradient>
-                      </defs>
-
-                      <rect width="760" height="320" fill="url(#mapGlowDelhi)" />
-
-                      {/* Lamar-style Soft Forest / Ridge Reserves */}
-                      <g className="bdb-map-parks" opacity="0.9">
-                        {DELHI_PARKS.map((park) => (
-                          <path key={park.name} d={park.d} className="bdb-map-park" />
-                        ))}
-                      </g>
-
-                      {/* Delhi NCT State Boundary Polygon (Simplified) */}
-                      <path
-                        d="M 370,15 C 410,12 445,30 475,55 C 505,80 520,120 525,165 C 530,210 500,255 450,278 C 400,295 330,285 280,260 C 230,235 195,190 185,145 C 175,95 240,40 370,15 Z"
-                        fill="rgba(80, 43, 154, 0.015)"
-                        stroke="rgba(80, 43, 154, 0.18)"
-                        strokeWidth="1.2"
-                        strokeDasharray="4 4"
-                      />
-
-                      {/* Yamuna River Ribbon (North to South-East) */}
-                      <path
-                        d="M 450,0 C 445,40 435,70 422,95 C 418,115 425,135 445,155 C 475,185 495,210 525,245 C 545,270 560,290 575,320"
-                        fill="none"
-                        stroke="#D8CFEA"
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M 450,0 C 445,40 435,70 422,95 C 418,115 425,135 445,155 C 475,185 495,210 525,245 C 545,270 560,290 575,320"
-                        fill="none"
-                        stroke="#502B9A"
-                        strokeWidth="1.2"
-                        strokeOpacity="0.32"
-                        strokeLinecap="round"
-                      />
-
-                      {/* Yamuna River Water Label */}
-                      <text x="488" y="194" fontSize="7" fontWeight="750" letterSpacing="0.14em" fill="#988FB0" transform="rotate(35 488 194)" opacity="0.9" style={{ pointerEvents: 'none' }}>
-                        YAMUNA RIVER
-                      </text>
-
-                      {/* Major Arterial Road Corridors (Dual Casing) */}
-                      <g className="bdb-map-roads" fill="none">
-                        {/* Inner Ring Road Loop (Dual casing effect) */}
-                        <path d="M 270,122 C 270,82 320,66 375,66 C 430,66 448,92 448,135 C 448,170 425,188 375,188 C 320,188 270,165 270,122 Z" stroke="#DCD5E6" strokeWidth="2.2" />
-                        <path d="M 270,122 C 270,82 320,66 375,66 C 430,66 448,92 448,135 C 448,170 425,188 375,188 C 320,188 270,165 270,122 Z" stroke="#FFFFFF" strokeWidth="1.1" />
-
-                        {/* Outer Ring Road Arc */}
-                        <path d="M 215,135 C 215,198 280,222 375,222 C 445,222 515,200 528,168" stroke="#E2DDEB" strokeWidth="1.8" strokeDasharray="4 3" />
-
-                        {/* NH48 (Mehrauli-Gurgaon Rd & Aerocity Expressway) */}
-                        <path d="M 315,165 L 265,195 L 160,245" stroke="#DCD5E6" strokeWidth="2.2" />
-                        <path d="M 315,165 L 265,195 L 160,245" stroke="#FFFFFF" strokeWidth="1" />
-
-                        {/* DND Flyway & Barapullah Corridor across Yamuna to Noida */}
-                        <path d="M 405,158 L 448,158 L 515,175 L 585,175" stroke="#DCD5E6" strokeWidth="2.2" />
-                        <path d="M 405,158 L 448,158 L 515,175 L 585,175" stroke="#FFFFFF" strokeWidth="1" />
-
-                        {/* Radial Connectors */}
-                        <path d="M 375,66 L 365,10" stroke="#E4DFEC" strokeWidth="1.2" />
-                        <path d="M 270,122 L 195,122" stroke="#E4DFEC" strokeWidth="1.2" />
-                        <path d="M 448,170 L 495,255" stroke="#E4DFEC" strokeWidth="1.2" />
-                        <path d="M 385,104 L 380,164 L 385,222" stroke="#ECE8F2" strokeWidth="1" strokeDasharray="2 2" />
-                      </g>
-
-                      {/* Highway Route Shields (Lamar GIS style) */}
-                      <g className="bdb-road-shields" style={{ pointerEvents: 'none' }}>
-                        {HIGHWAY_SHIELDS.map((s) => (
-                          <g key={s.label} transform={`translate(${s.x}, ${s.y})`} className="bdb-road-shield">
-                            <rect x="-10" y="-5.5" width="20" height="11" rx="2.5" fill="#FFFFFF" stroke="#D1CBDC" strokeWidth="0.8" />
-                            <text textAnchor="middle" dy="2.8" fontSize="6" fontWeight="800" fill="#502B9A" letterSpacing="0.04em">
-                              {s.label}
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-
-                      {/* Lamar-style Corridor Cluster Count Badges */}
-                      <g className="bdb-cluster-badges" style={{ pointerEvents: 'none' }}>
-                        {CORRIDOR_CLUSTERS.map((cl) => (
-                          <g key={cl.name} transform={`translate(${cl.x}, ${cl.y})`} className="bdb-cluster-badge">
-                            <circle r="7.5" fill="#502B9A" />
-                            <circle r="10.5" fill="none" stroke="rgba(80, 43, 154, 0.22)" strokeWidth="1" />
-                            <text textAnchor="middle" dy="2.6" fill="#FFFFFF" fontSize="6.5" fontWeight="800">
-                              {cl.count}
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-
-                      {/* Key Corridor Labels: Positioned cleanly offset from marker clusters */}
-                      <g className="bdb-map-labels" fill="#77727F" fontSize="8" fontWeight="700" letterSpacing="0.08em" style={{ pointerEvents: 'none' }}>
-                        <text x="392" y="82" textAnchor="middle">CONNAUGHT PLACE</text>
-                        <text x="387" y="142" textAnchor="middle">HAUZ KHAS</text>
-                        <text x="394" y="248" textAnchor="middle">SAKET</text>
-                        <text x="240" y="212" textAnchor="end">VASANT KUNJ</text>
-                        <text x="470" y="126" textAnchor="middle">LAJPAT NAGAR</text>
-                        <text x="360" y="32" textAnchor="middle">KAMLA NAGAR</text>
-                        <text x="235" y="96" textAnchor="middle">RAJOURI GARDEN</text>
-                        <text x="160" y="222" textAnchor="middle">GURUGRAM</text>
-                        <text x="562" y="156" textAnchor="middle">NOIDA</text>
-                      </g>
-
-                      {/* Optional Logistics Routes Layer (when in routes mode) */}
-                      {mapViewMode === 'routes' && (
-                        <g className="bdb-logistics-routes" stroke="#502B9A" strokeWidth="1" fill="none" opacity="0.45" strokeDasharray="3 3">
-                          {SUPPLIER_HUBS.map((hub) => (
-                            <path key={hub.name} d={`M ${hub.x},${hub.y} Q ${(hub.x + 380) / 2},${(hub.y + 160) / 2 - 15} 380,160`} />
-                          ))}
-                        </g>
-                      )}
-
-                      {/* Restrained Location Markers */}
-                      <g className="bdb-map-markers">
-                        {DELHI_MARKERS.map((m) => {
-                          const isReordered = m.status === 'reordered';
-                          const isTried = m.status === 'trial_completed';
-                          const isSelected = selectedCafe?.id === m.id;
-
-                          return (
-                            <g
-                              key={m.id}
-                              className={`bdb-marker-group ${isReordered ? 'marker-reorder' : isTried ? 'marker-tried' : 'marker-delivered'} ${isSelected ? 'is-selected' : ''}`}
-                              transform={`translate(${m.x}, ${m.y})`}
-                              onMouseEnter={() => setHoveredMarker(m)}
-                              onMouseLeave={() => setHoveredMarker(null)}
-                              onClick={() => setSelectedCafe(m)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              {/* Pulsing Aura Ping for Reordered Cafés */}
-                              {isReordered && (
-                                <circle r="10" fill="none" stroke="#502B9A" strokeWidth="1.1" className="bdb-marker-ping" />
-                              )}
-                              {/* Base marker circle */}
-                              <circle
-                                r={isReordered ? 5.5 : 4.5}
-                                fill={isReordered ? '#502B9A' : isTried ? '#FFFFFF' : '#F1ECF8'}
-                                stroke={isReordered ? '#FFFFFF' : '#502B9A'}
-                                strokeWidth={isReordered ? 1.6 : 1.4}
-                              />
-                              {/* Inner pupil for tried cafes */}
-                              {isTried && <circle r="2" fill="#502B9A" />}
-                            </g>
-                          );
-                        })}
-                      </g>
-                    </svg>
-
-                    {/* Lamar-style Interactive Tooltip */}
-                    {hoveredMarker && (
-                      <div
-                        className="bdb-lamar-tooltip"
-                        style={{
-                          left: `${(hoveredMarker.x / 760) * 100}%`,
-                          top: `${(hoveredMarker.y / 320) * 100}%`,
-                        }}
-                      >
-                        <div className="bdb-lt-header">
-                          <span className="bdb-lt-title">{hoveredMarker.name}</span>
-                          <span className="bdb-lt-status">{hoveredMarker.status === 'reordered' ? 'Weekly PO Active' : 'Trial Kit'}</span>
-                        </div>
-                        <div className="bdb-lt-body">
-                          <span>{hoveredMarker.area} · {hoveredMarker.volume || '24 L/wk'}</span>
-                          <span className="bdb-lt-hint">Click to inspect</span>
-                        </div>
-                        <div className="bdb-lt-arrow" />
-                      </div>
-                    )}
-
-                    {/* Integrated Selected Café Telemetry Deck */}
-                    {selectedCafe && (
-                      <div className="bdb-cafe-dock-card">
-                        <div className="bdb-dock-header">
-                          <div className="bdb-dock-title-group">
-                            <span className="bdb-dock-name">{selectedCafe.name}</span>
-                            <span className="bdb-dock-area">· {selectedCafe.area}</span>
-                          </div>
-                          <span
-                            className={`bdb-dock-status ${selectedCafe.status === 'reordered'
-                                ? 'status-reordered'
-                                : selectedCafe.status === 'trial_completed'
-                                  ? 'status-tried'
-                                  : 'status-delivered'
-                              }`}
-                          >
-                            {selectedCafe.status === 'reordered'
-                              ? '● Weekly Reorder Active'
-                              : selectedCafe.status === 'trial_completed'
-                                ? '◎ Trial Completed'
-                                : '○ Trial Kit Delivered'}
-                          </span>
-                        </div>
-
-                        {/* Verbatim Barista Cupping Feedback */}
-                        {selectedCafe.quote && (
-                          <div className="bdb-dock-quote">
-                            <span>{selectedCafe.quote}</span>
-                          </div>
-                        )}
-
-                        <div className="bdb-dock-details">
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">WEEKLY VOLUME</span>
-                            <span className="bdb-dock-val text-purple">{selectedCafe.volume || '24 L/wk'}</span>
-                          </div>
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">HEAD BARISTA</span>
-                            <span className="bdb-dock-val">{selectedCafe.barista || 'Staff cupping'}</span>
-                          </div>
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">CUPPING SCORE</span>
-                            <span className="bdb-dock-val">
-                              {selectedCafe.rating ? `★ ${selectedCafe.rating}` : 'Pending review'}
-                            </span>
-                          </div>
-                          <div className="bdb-dock-stat">
-                            <span className="bdb-dock-label">LOGISTICS & PO</span>
-                            <span className="bdb-dock-val">{selectedCafe.supplier || 'Sharma Dairy'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    <DelhiRealMap
+                      cafes={DELHI_MARKERS}
+                      selectedCafe={selectedCafe}
+                      onSelectCafe={setSelectedCafe}
+                      hoveredCafe={hoveredMarker}
+                      onHoverCafe={setHoveredMarker}
+                      mapViewMode={mapViewMode}
+                      onChangeViewMode={setMapViewMode}
+                    />
                   </div>
                 </div>
               </div>

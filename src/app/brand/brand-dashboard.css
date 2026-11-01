@@ -951,7 +951,7 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 12;
+  z-index: 800;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1060,7 +1060,7 @@
   padding: 4px 8px;
   box-shadow: 0 4px 14px rgba(25, 23, 30, 0.25);
   pointer-events: none;
-  z-index: 25;
+  z-index: 900;
   white-space: nowrap;
   display: flex;
   flex-direction: column;
@@ -1207,7 +1207,7 @@
   border-radius: 7px;
   padding: 5px 9px;
   box-shadow: 0 3px 10px rgba(80, 43, 154, 0.08);
-  z-index: 10;
+  z-index: 850;
 }
 
 .bdb-dock-header {
@@ -1592,4 +1592,268 @@
 /* Utility Helpers */
 .text-purple {
   color: #502B9A !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DELHI REAL MAP GIS LEAFLET STYLES (Lamar Ad Marketplace Style)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bdb-real-map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #F6F5F8;
+}
+
+.bdb-real-map-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.bdb-real-map-stage.is-canvas .leaflet-tile-pane {
+  filter: saturate(0.85) contrast(1.05) brightness(0.99);
+}
+
+.bdb-real-map-stage.is-street .leaflet-tile-pane {
+  filter: saturate(0.9) brightness(0.98);
+}
+
+/* Ensure Leaflet controls & attribution do not clutter executive UI */
+.bdb-real-map-stage .leaflet-control-attribution {
+  display: none !important;
+}
+
+/* Recenter Button */
+.bdb-recenter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5px 7px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #E2DDEB;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #502B9A;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.08);
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.bdb-recenter-btn:hover {
+  background: #F1ECF8;
+}
+
+/* Lamar-style Cluster Badges */
+.bdb-lcluster-wrap {
+  background: transparent !important;
+  border: none !important;
+}
+
+.bdb-lcluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #502B9A;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(80, 43, 154, 0.35), 0 0 0 2.5px rgba(80, 43, 154, 0.16);
+  cursor: pointer;
+  border: 1.5px solid #FFFFFF;
+  position: relative;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+}
+
+.bdb-lcluster:hover {
+  transform: scale(1.15);
+  background: #412080;
+  box-shadow: 0 4px 12px rgba(80, 43, 154, 0.45), 0 0 0 3.5px rgba(80, 43, 154, 0.22);
+}
+
+.bdb-lcluster-ring {
+  display: none;
+}
+
+.bdb-lcluster-count {
+  font-size: 9.5px;
+  font-weight: 800;
+  line-height: 1;
+  color: #FFFFFF;
+  font-family: var(--font-plus-jakarta), sans-serif;
+  text-align: center;
+}
+
+/* Highway Route Shields (Lamar GIS style) */
+.bdb-lshield-wrap {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+
+.bdb-lshield {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5px 5px;
+  background: #FFFFFF;
+  border: 1px solid #D5CFE2;
+  border-radius: 3.5px;
+  font-size: 7px;
+  font-weight: 800;
+  color: #502B9A;
+  letter-spacing: 0.04em;
+  font-family: var(--font-plus-jakarta), sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+}
+
+/* 27 Delhi Café Markers */
+.bdb-lmarker-wrap {
+  background: transparent !important;
+  border: none !important;
+}
+
+.bdb-lmarker {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bdb-lmarker-core {
+  border-radius: 50%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Reordered Café Marker */
+.bdb-lmarker.is-reordered .bdb-lmarker-core {
+  width: 8.5px;
+  height: 8.5px;
+  background: #502B9A;
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.4);
+}
+
+/* Selective Ping Aura on selected café */
+.bdb-lmarker.is-selected .bdb-lmarker-ping,
+.bdb-lmarker:hover .bdb-lmarker-ping {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1.2px solid #502B9A;
+  animation: bdbPing 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+.bdb-lmarker:not(.is-selected):not(:hover) .bdb-lmarker-ping {
+  display: none;
+}
+
+/* Tried Café Marker */
+.bdb-lmarker.is-tried .bdb-lmarker-core {
+  width: 7.5px;
+  height: 7.5px;
+  background: #FFFFFF;
+  border: 1.4px solid #502B9A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(80, 43, 154, 0.15);
+}
+
+.bdb-lmarker.is-tried .bdb-lmarker-core::after {
+  content: '';
+  width: 2.2px;
+  height: 2.2px;
+  border-radius: 50%;
+  background: #502B9A;
+}
+
+/* Delivered Café Marker */
+.bdb-lmarker.is-delivered .bdb-lmarker-core {
+  width: 6.5px;
+  height: 6.5px;
+  background: #F1ECF8;
+  border: 1px solid #502B9A;
+  opacity: 0.85;
+}
+
+/* Marker Hover and Selected States */
+.bdb-lmarker:hover .bdb-lmarker-core,
+.bdb-lmarker.is-selected .bdb-lmarker-core {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 3px rgba(80, 43, 154, 0.35);
+}
+
+/* Network Hub Pin */
+.bdb-lhub-wrap {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+
+.bdb-lhub-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 5px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px dashed #502B9A;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.1);
+  white-space: nowrap;
+}
+
+.bdb-lhub-box {
+  width: 5px;
+  height: 5px;
+  background: #502B9A;
+  border-radius: 1px;
+}
+
+.bdb-lhub-text {
+  font-size: 7px;
+  font-weight: 750;
+  color: #502B9A;
+}
+
+/* Loading Placeholder */
+.bdb-real-map-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #F8F7FA;
+  color: #77727F;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.bdb-map-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #E2DDEB;
+  border-top-color: #502B9A;
+  border-radius: 50%;
+  animation: bdbSpin 0.8s linear infinite;
+}
+
+@keyframes bdbSpin {
+  to { transform: rotate(360deg); }
 }
