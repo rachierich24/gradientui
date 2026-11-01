@@ -622,14 +622,27 @@
 
 .bdb-funnel-row {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) 50px;
+  grid-template-columns: 96px minmax(0, 1fr) 48px;
   align-items: center;
   gap: 6px;
-  padding: 2.5px 5px;
+  padding: 3px 6px;
   border-radius: 5px;
   background: #FAF9FC;
-  border: 1px solid transparent;
+  border: 1px solid #F4F1F8;
   transition: all 0.15s ease;
+}
+
+.bdb-f-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bdb-f-idx {
+  font-size: 7.5px;
+  font-weight: 750;
+  color: #9A94A4;
+  font-variant-numeric: tabular-nums;
 }
 
 .bdb-funnel-row:hover {
@@ -765,52 +778,76 @@
   color: #502B9A;
 }
 
-.bdb-wave-chart-stage {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+.bdb-bars-stage {
   margin: 2px 0;
+  padding: 2px 0;
 }
 
-.bdb-wave-svg {
-  width: 100%;
-  height: 44px;
-  display: block;
-  overflow: visible;
-}
-
-.bdb-wave-week-ticks {
+.bdb-bars-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  align-items: flex-end;
+  height: 52px;
+}
+
+.bdb-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
   gap: 3px;
 }
 
-.bdb-week-tick-btn {
-  padding: 1.5px 0;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 3.5px;
+.bdb-bar-track {
+  flex: 1;
+  width: 100%;
+  background: #F4F1F8;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+.bdb-bar-col:hover .bdb-bar-track {
+  background: #EBE6F4;
+}
+
+.bdb-bar-fill {
+  width: 100%;
+  background: #C4B5DC;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.25s ease, background 0.15s ease;
+}
+
+.bdb-bar-fill.is-current {
+  background: #502B9A;
+  box-shadow: 0 1px 4px rgba(80, 43, 154, 0.35);
+}
+
+.bdb-bar-fill.is-projected {
+  background: #EFEBF6;
+  border: 1px dashed #502B9A;
+  border-bottom: none;
+  box-sizing: border-box;
+}
+
+.bdb-bar-label {
   font-size: 8px;
   font-weight: 700;
   color: #77727F;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  line-height: 1;
+  transition: color 0.15s ease;
 }
 
-.bdb-week-tick-btn:hover {
-  background: #FAF9FC;
-  color: #19171E;
-}
-
-.bdb-week-tick-btn.is-active {
-  background: #FFFFFF;
-  border-color: #EAE6F2;
+.bdb-bar-col.is-active .bdb-bar-label {
   color: #502B9A;
-  box-shadow: 0 1px 3px rgba(80, 43, 154, 0.08);
+  font-weight: 850;
 }
 
-.bdb-week-tick-btn.is-projected {
-  border-style: dashed;
+.bdb-bar-col.is-projected .bdb-bar-label {
   color: #9A94A4;
 }
 
@@ -1856,4 +1893,138 @@
 
 @keyframes bdbSpin {
   to { transform: rotate(360deg); }
+}
+
+
+/* Live Commercial Telemetry Feed */
+.bdb-telemetry-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.bdb-telemetry-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 7px;
+  border-radius: 6px;
+  background: #FAF9FC;
+  border: 1px solid #F0EDF5;
+  transition: all 0.15s ease;
+}
+
+.bdb-telemetry-item:hover {
+  background: #FFFFFF;
+  border-color: #E2DDEB;
+  box-shadow: 0 1px 4px rgba(80, 43, 154, 0.06);
+}
+
+.bdb-item-icon-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #F1ECF8;
+  color: #502B9A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bdb-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.bdb-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bdb-item-title {
+  font-size: 8.5px;
+  font-weight: 750;
+  color: #19171E;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bdb-item-time {
+  font-size: 7.5px;
+  font-weight: 600;
+  color: #8C8697;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bdb-item-sub {
+  font-size: 7.5px;
+  color: #77727F;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.bdb-item-cafe {
+  font-weight: 650;
+  color: #502B9A;
+}
+
+.bdb-item-meta {
+  color: #77727F;
+}
+
+/* Frosted Network Hub Badges */
+.bdb-lhub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #DCD5E8;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(80, 43, 154, 0.12);
+  white-space: nowrap;
+  font-family: var(--font-plus-jakarta), sans-serif;
+}
+
+.bdb-lhub-dot {
+  width: 5px;
+  height: 5px;
+  background: #502B9A;
+  border-radius: 50%;
+}
+
+.bdb-lhub-name {
+  font-size: 8px;
+  font-weight: 750;
+  color: #19171E;
+}
+
+.bdb-lhub-tag {
+  font-size: 7px;
+  font-weight: 600;
+  color: #502B9A;
+  background: #F1ECF8;
+  padding: 0.5px 3.5px;
+  border-radius: 3px;
+}
+
+.bdb-ctrl-pipe {
+  width: 1px;
+  height: 10px;
+  background: #E2DDEB;
+  margin: 0 2px;
 }

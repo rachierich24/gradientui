@@ -114,13 +114,13 @@ export default function DelhiRealMap({
         mapRef.current = null;
       }
 
-      // Center: Delhi NCR central coordinate
-      const centerLat = 28.592;
-      const centerLng = 28.592 > 50 ? 77.208 : 77.208;
+      // Center: Delhi NCR calibrated central coordinate
+      const centerLat = 28.598;
+      const centerLng = 77.215;
 
       const map = L.map(containerRef.current, {
         center: [centerLat, centerLng],
-        zoom: 11.2,
+        zoom: 11.1,
         minZoom: 10,
         maxZoom: 16,
         zoomSnap: 0.1,
@@ -344,43 +344,50 @@ export default function DelhiRealMap({
 
       // 4. Render Network Hub Logistics Routes (when in 'routes' mode)
       if (routesLayerRef.current && mapViewMode === 'routes') {
-        const centralLat = 28.5900;
-        const centralLng = 77.2100;
+        const centralLat = 28.5980;
+        const centralLng = 77.2150;
 
         SUPPLIER_HUBS_GPS.forEach((hub) => {
-          // Curved route approximation
-          const midLat = (hub.lat + centralLat) / 2 + 0.008;
-          const midLng = (hub.lng + centralLng) / 2 - 0.006;
+          // Smooth 12-point quadratic Bezier curve
+          const pts: [number, number][] = [];
+          const tSteps = 12;
+          const p0 = [hub.lat, hub.lng];
+          const p2 = [centralLat, centralLng];
+          const p1 = [
+            (hub.lat + centralLat) / 2 + (hub.lng > centralLng ? 0.012 : -0.012),
+            (hub.lng + centralLng) / 2 + (hub.lat > centralLat ? -0.012 : 0.012),
+          ];
 
-          const polyline = L.polyline(
-            [
-              [hub.lat, hub.lng],
-              [midLat, midLng],
-              [centralLat, centralLng],
-            ],
-            {
-              color: '#502B9A',
-              weight: 1.6,
-              opacity: 0.55,
-              dashArray: '4, 4',
-            }
-          );
+          for (let step = 0; step <= tSteps; step++) {
+            const t = step / tSteps;
+            const lat = (1 - t) * (1 - t) * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0];
+            const lng = (1 - t) * (1 - t) * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1];
+            pts.push([lat, lng]);
+          }
+
+          const polyline = L.polyline(pts, {
+            color: '#502B9A',
+            weight: 1.5,
+            opacity: 0.5,
+            dashArray: '3, 4',
+          });
           polyline.addTo(routesLayerRef.current!);
 
-          // Hub icon
+          // Sleek Frosted Hub Badge
           const hubHtml = `
-            <div class="bdb-lhub-pin" title="${hub.name} · ${hub.area}">
-              <span class="bdb-lhub-box"></span>
-              <span class="bdb-lhub-text">${hub.name}</span>
+            <div class="bdb-lhub-badge" title="${hub.name} · ${hub.area}">
+              <span class="bdb-lhub-dot"></span>
+              <span class="bdb-lhub-name">${hub.name}</span>
+              <span class="bdb-lhub-tag">${hub.area}</span>
             </div>
           `;
           const hubIcon = L.divIcon({
             html: hubHtml,
             className: 'bdb-lhub-wrap',
-            iconSize: [80, 20],
-            iconAnchor: [40, 10],
+            iconSize: [110, 22],
+            iconAnchor: [55, 11],
           });
-          L.marker([hub.lat, hub.lng], { icon: hubIcon, zIndexOffset: 80 }).addTo(routesLayerRef.current!);
+          L.marker([hub.lat, hub.lng], { icon: hubIcon, zIndexOffset: 85 }).addTo(routesLayerRef.current!);
         });
       }
     }
@@ -391,7 +398,7 @@ export default function DelhiRealMap({
   // Recenter Handler
   const handleRecenter = useCallback(() => {
     if (mapRef.current) {
-      mapRef.current.flyTo([28.592, 77.208], 11.2, { duration: 0.8 });
+      mapRef.current.flyTo([28.598, 77.215], 11.1, { duration: 0.8 });
     }
   }, []);
 
@@ -412,7 +419,7 @@ export default function DelhiRealMap({
         className={`bdb-real-map-stage ${basemap === 'canvas' ? 'is-canvas' : 'is-street'}`}
       />
 
-      {/* Lamar-style Top Left Floating Controls */}
+      {/* Streamlined Top Left Floating Controls */}
       <div className="bdb-map-ctrl-top-left">
         <div className="bdb-mode-toggle" role="tablist" aria-label="Map View Mode">
           <button
@@ -431,45 +438,30 @@ export default function DelhiRealMap({
             className={`bdb-mode-btn ${mapViewMode === 'routes' ? 'is-active' : ''}`}
             onClick={() => onChangeViewMode('routes')}
           >
-            Network Hubs
+            Hub Routes
           </button>
-        </div>
-
-        {/* Basemap Switcher Pill */}
-        <div className="bdb-mode-toggle" role="tablist" aria-label="Map Tile Style">
+          <span className="bdb-ctrl-pipe" aria-hidden="true" />
           <button
             type="button"
-            className={`bdb-mode-btn ${basemap === 'canvas' ? 'is-active' : ''}`}
-            onClick={() => setBasemap('canvas')}
-            title="Clean monochrome cartography"
+            className={`bdb-mode-btn bdb-basemap-btn ${basemap === 'street' ? 'is-active' : ''}`}
+            onClick={() => setBasemap(basemap === 'canvas' ? 'street' : 'canvas')}
+            title={basemap === 'canvas' ? 'Switch to Street Cartography' : 'Switch to Canvas'}
           >
-            Canvas
-          </button>
-          <button
-            type="button"
-            className={`bdb-mode-btn ${basemap === 'street' ? 'is-active' : ''}`}
-            onClick={() => setBasemap('street')}
-            title="Full OpenStreetMap street detail"
-          >
-            Street
+            {basemap === 'canvas' ? '🗺️ Street' : '📐 Canvas'}
           </button>
         </div>
       </div>
 
-      {/* Lamar-style Top Right Floating Controls */}
+      {/* Streamlined Top Right Floating Controls */}
       <div className="bdb-map-ctrl-top-right">
-        <span className="bdb-location-pill">📍 Delhi NCR · Real GIS</span>
+        <span className="bdb-location-pill">📍 Delhi NCR</span>
         <button
           type="button"
           className="bdb-recenter-btn"
           onClick={handleRecenter}
           title="Reset map view to Delhi NCR center"
         >
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px' }}>
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-          </svg>
-          Center
+          Reset
         </button>
         <div className="bdb-zoom-ctrl" role="group" aria-label="Map Zoom">
           <button

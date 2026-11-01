@@ -459,11 +459,11 @@ const DELHI_MARKERS: MapMarker[] = [
 ];
 
 const FUNNEL_STAGES = [
-  { id: 'dispatched', name: 'Dispatched', count: 120, pct: '100%', highlight: false },
-  { id: 'delivered', name: 'Delivered', count: 112, pct: '93.3%', highlight: false },
-  { id: 'trials', name: 'Tried', count: 86, pct: '76.8%', highlight: false },
-  { id: 'feedback', name: 'Reviewed', count: 67, pct: '77.9%', highlight: false },
-  { id: 'reorders', name: 'Weekly reorders', count: 24, pct: '27.9%', highlight: true },
+  { id: 'dispatched', num: '01', name: 'Dispatched', count: 120, pct: '100%', highlight: false },
+  { id: 'delivered', num: '02', name: 'Delivered', count: 112, pct: '93.3%', highlight: false },
+  { id: 'trials', num: '03', name: 'Tried', count: 86, pct: '76.8%', highlight: false },
+  { id: 'feedback', num: '04', name: 'Reviewed', count: 67, pct: '77.9%', highlight: false },
+  { id: 'reorders', num: '05', name: 'Weekly POs', count: 24, pct: '27.9%', highlight: true },
 ];
 
 const FEEDBACK_ATTRS = [
@@ -900,7 +900,10 @@ export function BrandDashboard() {
                   <div className="bdb-funnel-list">
                     {FUNNEL_STAGES.map((stg) => (
                       <div key={stg.id} className={`bdb-funnel-row ${stg.highlight ? 'is-highlight' : ''}`}>
-                        <span className="bdb-f-name">{stg.name}</span>
+                        <div className="bdb-f-left">
+                          <span className="bdb-f-idx">{stg.num}</span>
+                          <span className="bdb-f-name">{stg.name}</span>
+                        </div>
                         <div className="bdb-f-bar-wrap">
                           <div
                             className={`bdb-f-bar-fill ${stg.highlight ? 'bar-purple' : 'bar-neutral'}`}
@@ -940,71 +943,34 @@ export function BrandDashboard() {
                   </div>
 
                   {/* Clean SVG Trend Chart with Subtle Gridlines */}
-                  <div className="bdb-chart-container">
-                    <svg viewBox="0 0 260 54" preserveAspectRatio="none" className="bdb-trend-svg">
-                      {/* Subtle Horizontal Reference Gridlines */}
-                      <line x1="0" y1="12" x2="260" y2="12" stroke="#F1EDF6" strokeWidth="0.8" strokeDasharray="3 3" />
-                      <line x1="0" y1="30" x2="260" y2="30" stroke="#F1EDF6" strokeWidth="0.8" strokeDasharray="3 3" />
-                      <line x1="0" y1="48" x2="260" y2="48" stroke="#F1EDF6" strokeWidth="0.8" />
+                  <div className="bdb-bars-stage">
+                    <div className="bdb-bars-grid">
+                      {WEEKLY_CHART.map((wc, idx) => {
+                        const isCurrent = idx === activeWeekIndex;
+                        const isProjected = wc.projected;
+                        const heightPct = Math.max(16, Math.round((wc.litres / 1000) * 100));
 
-                      {/* Restrained Area Gradient Fill */}
-                      <polygon
-                        points="18,48 18,44 64,36 110,26 156,17 202,11 248,6 248,48"
-                        fill="rgba(80, 43, 154, 0.05)"
-                      />
-
-                      {/* Actual Data Series Line */}
-                      <path
-                        d="M 18,44 L 64,36 L 110,26 L 156,17 L 202,11"
-                        fill="none"
-                        stroke="#502B9A"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-
-                      {/* Projected Segment (Dashed) */}
-                      <path
-                        d="M 202,11 L 248,6"
-                        fill="none"
-                        stroke="#502B9A"
-                        strokeWidth="1.5"
-                        strokeDasharray="3 3"
-                        strokeLinecap="round"
-                        opacity="0.5"
-                      />
-
-                      {/* Data Point Nodes */}
-                      {WEEKLY_CHART.map((wc, idx) => (
-                        <circle
-                          key={wc.week}
-                          cx={wc.x}
-                          cy={wc.y}
-                          r={activeWeekIndex === idx ? 3.8 : 2.4}
-                          fill={activeWeekIndex === idx ? '#502B9A' : '#FFFFFF'}
-                          stroke="#502B9A"
-                          strokeWidth={activeWeekIndex === idx ? 2 : 1.2}
-                          style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
-                          onClick={() => setActiveWeekIndex(idx)}
-                        />
-                      ))}
-                    </svg>
-
-                    {/* Minimal Axis Labels */}
-                    <div className="bdb-chart-axis">
-                      {WEEKLY_CHART.map((wc, idx) => (
-                        <button
-                          key={wc.week}
-                          type="button"
-                          className={`bdb-axis-btn ${activeWeekIndex === idx ? 'is-active' : ''} ${wc.projected ? 'is-projected' : ''}`}
-                          onClick={() => setActiveWeekIndex(idx)}
-                        >
-                          {wc.week}
-                        </button>
-                      ))}
+                        return (
+                          <div
+                            key={wc.week}
+                            className={`bdb-bar-col ${isCurrent ? 'is-active' : ''} ${isProjected ? 'is-projected' : ''}`}
+                            onClick={() => setActiveWeekIndex(idx)}
+                            role="button"
+                            tabIndex={0}
+                            title={`${wc.week}: ${wc.litres} L (${wc.cafes} repeat cafés)`}
+                          >
+                            <div className="bdb-bar-track">
+                              <div
+                                className={`bdb-bar-fill ${isProjected ? 'is-projected' : isCurrent ? 'is-current' : ''}`}
+                                style={{ height: `${heightPct}%` }}
+                              />
+                            </div>
+                            <span className="bdb-bar-label">{wc.week}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-
                   {/* Summary Stat Footer */}
                   <div className="bdb-reorder-stat-row">
                     <span><b>24</b> Repeat Cafés</span>
@@ -1112,23 +1078,21 @@ export function BrandDashboard() {
                     </span>
                   </div>
 
-                  <div className="bdb-timeline-list">
+                  <div className="bdb-telemetry-feed">
                     {RECENT_ACTIVITIES.map((act) => (
-                      <div key={act.id} className="bdb-tl-item">
-                        <div className="bdb-tl-node">
-                          <span className="bdb-tl-icon-box">
-                            <SvgTimelineIcon name={act.icon} />
-                          </span>
-                          <span className="bdb-tl-line" />
+                      <div key={act.id} className="bdb-telemetry-item">
+                        <div className="bdb-item-icon-box">
+                          <SvgTimelineIcon name={act.icon} />
                         </div>
-                        <div className="bdb-tl-content">
-                          <div className="bdb-tl-header-line">
-                            <span className="bdb-tl-title">{act.title}</span>
-                            <span className="bdb-tl-time">{act.time}</span>
+                        <div className="bdb-item-content">
+                          <div className="bdb-item-top">
+                            <span className="bdb-item-title">{act.title}</span>
+                            <span className="bdb-item-time">{act.time}</span>
                           </div>
-                          <span className="bdb-tl-cafe">
-                            {act.cafe} {act.meta && <span className="bdb-tl-meta">· {act.meta}</span>}
-                          </span>
+                          <div className="bdb-item-sub">
+                            <span className="bdb-item-cafe">{act.cafe}</span>
+                            {act.meta && <span className="bdb-item-meta"> · {act.meta}</span>}
+                          </div>
                         </div>
                       </div>
                     ))}
