@@ -9,7 +9,7 @@
      1. Editorial Eyebrow & Stationary Headline
      2. Top App Bar & 4-Cell KPI Row
      3. Left Column: Trial Conversion Funnel & Weekly Reorder Volume
-     4. Centre Column: Bangalore Café Distribution Map & Selected Café Intelligence
+     4. Centre Column: Delhi NCR Café Distribution Map & Selected Café Intelligence
      5. Right Column: Barista Feedback & Live Commercial Telemetry
    ───────────────────────────────────────────────────────────────────────────── */
 
@@ -27,7 +27,7 @@ const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : us
 const CAMPAIGN_META = {
   brand: 'OatLife Artisanal',
   product: 'Barista Oat Milk',
-  edition: 'Bangalore · 120 kits · 9 suppliers',
+  edition: 'Delhi NCR · 120 kits · 9 suppliers',
   status: 'Campaign active',
   dateRange: 'Oct 1 – Oct 31, 2026',
   totalKits: 120,
@@ -95,14 +95,14 @@ interface MapMarker {
   supplier?: string;
 }
 
-const BANGALORE_MARKERS: MapMarker[] = [
-  // Indiranagar Cluster (Reordered)
+const DELHI_MARKERS: MapMarker[] = [
+  // Hauz Khas Cluster (South Delhi Anchor)
   {
     id: 'm1',
     name: 'Little Brew Room',
-    area: 'Indiranagar',
-    x: 440,
-    y: 105,
+    area: 'Hauz Khas',
+    x: 378,
+    y: 164,
     status: 'reordered',
     volume: '36 L/wk',
     barista: 'Aditya K.',
@@ -113,275 +113,385 @@ const BANGALORE_MARKERS: MapMarker[] = [
   },
   {
     id: 'm2',
-    name: 'Subko Specialty Coffee',
-    area: 'Indiranagar',
-    x: 475,
-    y: 92,
+    name: 'Tiny Tamper',
+    area: 'Hauz Khas',
+    x: 398,
+    y: 154,
     status: 'reordered',
-    volume: '48 L/wk',
-    barista: 'Rohan M.',
-    rating: 5.0,
-    standingPO: 'Standing Weekly PO',
-    quote: '“Exceptional microfoam for latte art without scalding.”',
-    supplier: 'Fresh Lane Foods',
+    volume: '28 L/wk',
+    barista: 'Sneha G.',
+    rating: 4.8,
+    standingPO: 'Net-15 Active',
+    quote: '“Steams silky microfoam without scorch notes.”',
+    supplier: 'Sharma Dairy · Route 4',
   },
   {
     id: 'm3',
-    name: 'Paper & Pie',
-    area: 'Indiranagar',
-    x: 458,
-    y: 125,
+    name: 'Blue Tokai HKV',
+    area: 'Hauz Khas',
+    x: 362,
+    y: 174,
     status: 'reordered',
-    volume: '24 L/wk',
-    barista: 'Sameer V.',
-    rating: 4.8,
-    standingPO: 'Net-15 Active',
-    quote: '“Regulars asked for it by name in week two.”',
-    supplier: 'Sharma Dairy · Route 4',
+    volume: '44 L/wk',
+    barista: 'Farhan M.',
+    rating: 5.0,
+    standingPO: 'Standing Weekly PO',
+    quote: '“Highest oat flat white repeat rate in Delhi.”',
+    supplier: 'Fresh Lane Foods',
   },
   {
     id: 'm4',
-    name: 'Araku Coffee Flagship',
-    area: 'Indiranagar',
-    x: 490,
-    y: 114,
+    name: "Elma's Bakery & Coffee",
+    area: 'Hauz Khas',
+    x: 412,
+    y: 166,
     status: 'trial_completed',
-    volume: '30 L/wk intent',
-    barista: 'Pooja T.',
+    volume: 'Testing batch 2',
+    barista: 'Zoya K.',
     rating: 4.7,
-    standingPO: 'PO Pending Review',
-    quote: '“Great texture in cortados and flat whites.”',
-    supplier: 'Sharma Dairy · Route 4',
+    supplier: 'Sharma Dairy',
   },
   {
     id: 'm5',
-    name: 'Coffee Mechanics',
-    area: 'Indiranagar',
-    x: 420,
-    y: 98,
+    name: 'Coast Cafe',
+    area: 'Hauz Khas',
+    x: 382,
+    y: 182,
     status: 'delivered',
-    volume: 'Trial kit active',
-    barista: 'Barista team',
+    volume: 'Kit delivered',
     supplier: 'Sharma Dairy',
   },
 
-  // Koramangala Cluster
+  // Connaught Place Cluster (Central Delhi Commercial Heart)
   {
     id: 'm6',
-    name: 'Third Wave Roasters',
-    area: 'Koramangala',
-    x: 390,
-    y: 160,
+    name: 'Steam Theory',
+    area: 'Connaught Place',
+    x: 385,
+    y: 104,
     status: 'reordered',
-    volume: '42 L/wk',
-    barista: 'Priya S.',
-    rating: 4.9,
+    volume: '32 L/wk',
+    barista: 'Kabir V.',
+    rating: 4.8,
     standingPO: 'Standing Weekly PO',
-    quote: '“Steams silky and never splits, even hot.”',
-    supplier: 'Hill Roasters Logistics',
+    quote: '“Pairs impeccably with washed Ethiopian roasts.”',
+    supplier: 'Old Market Traders',
   },
   {
     id: 'm7',
-    name: 'Maverick & Farmer',
-    area: 'Koramangala',
-    x: 418,
-    y: 175,
+    name: 'United Coffee House',
+    area: 'Connaught Place',
+    x: 408,
+    y: 92,
     status: 'reordered',
-    volume: '30 L/wk',
-    barista: 'Naveen C.',
-    rating: 4.9,
+    volume: '40 L/wk',
+    barista: 'Rajesh S.',
+    rating: 4.7,
     standingPO: 'Net-15 Active',
-    quote: '“Clean oat sweetness without masking single-origin notes.”',
-    supplier: 'Hill Roasters Logistics',
+    quote: '“Old-school crowd loved the lighter oat finish.”',
+    supplier: 'Old Market Traders',
   },
   {
     id: 'm8',
-    name: 'Second Crack Coffee',
-    area: 'Koramangala',
-    x: 370,
-    y: 150,
-    status: 'reordered',
-    volume: '24 L/wk',
-    barista: 'Divya R.',
-    rating: 4.7,
-    standingPO: 'Net-15 Active',
-    quote: '“Silky microfoam and zero curdling with acidic roasts.”',
-    supplier: 'Southfield Dairy',
+    name: 'Barista Heritage CP',
+    area: 'Connaught Place',
+    x: 368,
+    y: 112,
+    status: 'trial_completed',
+    volume: 'Latte art approved',
+    barista: 'Pooja T.',
+    rating: 4.6,
+    supplier: 'Old Market Traders',
   },
   {
     id: 'm9',
-    name: 'Blue Tokai 4th Block',
-    area: 'Koramangala',
-    x: 428,
-    y: 156,
-    status: 'trial_completed',
-    volume: 'Cupping done',
-    barista: 'Anil B.',
-    rating: 4.8,
-    supplier: 'Hill Roasters Logistics',
+    name: 'The Chai Story CP',
+    area: 'Connaught Place',
+    x: 416,
+    y: 116,
+    status: 'delivered',
+    volume: 'Trial kit active',
+    supplier: 'Yamuna Provisions',
   },
+
+  // Saket & Saidulajab / Champa Gali Cluster (South Delhi)
   {
     id: 'm10',
-    name: 'Slow Sip Studio',
-    area: 'Koramangala',
-    x: 400,
-    y: 188,
-    status: 'delivered',
-    volume: 'Trial kit active',
-    supplier: 'Southfield Dairy',
-  },
-
-  // HSR Layout Cluster
-  {
-    id: 'm11',
-    name: 'Blue Tokai HSR Sector 2',
-    area: 'HSR Layout',
-    x: 480,
-    y: 194,
-    status: 'reordered',
-    volume: '36 L/wk',
-    barista: 'Karthik N.',
-    rating: 4.7,
-    standingPO: 'Net-15 Active',
-    quote: '“High repeat demand among daily tech park commuters.”',
-    supplier: 'Eastline Supply',
-  },
-  {
-    id: 'm12',
-    name: 'Copper Kettle Café',
-    area: 'HSR Layout',
-    x: 505,
-    y: 180,
-    status: 'reordered',
-    volume: '24 L/wk',
-    barista: 'Manoj T.',
-    rating: 4.6,
-    standingPO: 'Standing PO',
-    quote: '“Great in milk drinks, solid Net-15 case pricing.”',
-    supplier: 'Eastline Supply',
-  },
-  {
-    id: 'm13',
-    name: 'Bean & Batch Co.',
-    area: 'HSR Layout',
-    x: 462,
-    y: 206,
-    status: 'trial_completed',
-    volume: 'Flat white tested',
-    barista: 'Arjun S.',
-    rating: 4.5,
-    supplier: 'Eastline Supply',
-  },
-  {
-    id: 'm14',
-    name: 'Sector Seven Espresso',
-    area: 'HSR Layout',
-    x: 520,
-    y: 200,
-    status: 'delivered',
-    volume: 'Kit in testing',
-    supplier: 'Eastline Supply',
-  },
-
-  // Whitefield Cluster
-  {
-    id: 'm15',
-    name: 'Brew & Bloom',
-    area: 'Whitefield',
-    x: 610,
-    y: 105,
-    status: 'reordered',
-    volume: '24 L/wk',
-    barista: 'Sahil P.',
-    rating: 4.8,
-    standingPO: 'Net-15 Active',
-    quote: '“Holds rosetta designs beautifully.”',
-    supplier: 'Lakeside Foods',
-  },
-  {
-    id: 'm16',
-    name: 'Windmills Craft Bar',
-    area: 'Whitefield',
-    x: 640,
-    y: 94,
-    status: 'trial_completed',
-    volume: 'Microfoam verified',
-    barista: 'Anita M.',
-    rating: 4.6,
-    supplier: 'Lakeside Foods',
-  },
-  {
-    id: 'm17',
-    name: 'The Caffeine Bar',
-    area: 'Whitefield',
-    x: 595,
-    y: 124,
-    status: 'delivered',
-    volume: 'Trial kit active',
-    supplier: 'Lakeside Foods',
-  },
-
-  // Jayanagar Cluster
-  {
-    id: 'm18',
-    name: 'Morning Ritual Roasters',
-    area: 'Jayanagar',
-    x: 295,
-    y: 168,
+    name: 'Morning Ritual',
+    area: 'Saket',
+    x: 386,
+    y: 222,
     status: 'reordered',
     volume: '30 L/wk',
     barista: 'Gautam P.',
     rating: 4.9,
     standingPO: 'Standing Weekly PO',
-    quote: '“Customers switched permanently from dairy.”',
+    quote: '“Steams silky and never splits, even hot.”',
     supplier: 'Southfield Dairy',
   },
   {
-    id: 'm19',
-    name: 'Subbarama Coffee Hub',
-    area: 'Jayanagar',
-    x: 318,
-    y: 184,
+    id: 'm11',
+    name: 'Jugmug Thela',
+    area: 'Saket',
+    x: 408,
+    y: 214,
+    status: 'reordered',
+    volume: '26 L/wk',
+    barista: 'Manish R.',
+    rating: 4.8,
+    standingPO: 'Net-15 Active',
+    quote: '“Champa Gali regulars order oat iced lattes daily.”',
+    supplier: 'Southfield Dairy',
+  },
+  {
+    id: 'm12',
+    name: 'Rose Cafe',
+    area: 'Saket',
+    x: 366,
+    y: 232,
     status: 'trial_completed',
-    volume: 'Testing oat latte',
-    barista: 'Rekha K.',
-    rating: 4.5,
+    volume: 'Cortado verified',
+    barista: 'Simran L.',
+    rating: 4.6,
     supplier: 'Southfield Dairy',
   },
   {
-    id: 'm20',
-    name: 'Southern Grounds',
-    area: 'Jayanagar',
-    x: 272,
-    y: 156,
+    id: 'm13',
+    name: 'Soho Bistro',
+    area: 'Saket',
+    x: 422,
+    y: 232,
     status: 'delivered',
-    volume: 'Delivery confirmed',
+    volume: 'Kit in testing',
     supplier: 'Southfield Dairy',
   },
 
-  // Rajajinagar Cluster
+  // Lajpat Nagar & Defence Colony Cluster (South-East Delhi)
   {
-    id: 'm21',
-    name: 'West End Roastery',
-    area: 'Rajajinagar',
-    x: 180,
-    y: 115,
+    id: 'm14',
+    name: 'Copper Kettle',
+    area: 'Lajpat Nagar',
+    x: 468,
+    y: 148,
+    status: 'reordered',
+    volume: '24 L/wk',
+    barista: 'Manoj T.',
+    rating: 4.6,
+    standingPO: 'Net-15 Active',
+    quote: '“Great in milk drinks, solid Net-15 case pricing.”',
+    supplier: 'Eastline Supply',
+  },
+  {
+    id: 'm15',
+    name: 'Colocal Def Col',
+    area: 'Lajpat Nagar',
+    x: 486,
+    y: 138,
+    status: 'reordered',
+    volume: '38 L/wk',
+    barista: 'Tanvi M.',
+    rating: 4.9,
+    standingPO: 'Standing PO',
+    quote: '“Microfoam matches our craft chocolate drinks.”',
+    supplier: 'Eastline Supply',
+  },
+  {
+    id: 'm16',
+    name: 'Defence Bakery Cafe',
+    area: 'Lajpat Nagar',
+    x: 452,
+    y: 160,
     status: 'trial_completed',
-    volume: 'Cupping score 4.7',
-    barista: 'Vikas N.',
+    volume: 'Cappuccino tested',
+    barista: 'Rishi K.',
+    rating: 4.5,
+    supplier: 'Eastline Supply',
+  },
+
+  // Kamla Nagar / North Campus Cluster
+  {
+    id: 'm17',
+    name: 'Second Crack Coffee',
+    area: 'Kamla Nagar',
+    x: 360,
+    y: 48,
+    status: 'reordered',
+    volume: '26 L/wk',
+    barista: 'Divya R.',
     rating: 4.7,
+    standingPO: 'Net-15 Active',
+    quote: '“Silky microfoam and zero curdling with acidic roasts.”',
     supplier: 'Northgate Dairy',
   },
   {
-    id: 'm22',
-    name: 'Rajajinagar Artisanal',
-    area: 'Rajajinagar',
-    x: 205,
-    y: 134,
+    id: 'm18',
+    name: 'Slow Sip Studio',
+    area: 'Kamla Nagar',
+    x: 338,
+    y: 56,
+    status: 'trial_completed',
+    volume: 'Flat white trial',
+    barista: 'Arun K.',
+    rating: 4.6,
+    supplier: 'Northgate Dairy',
+  },
+  {
+    id: 'm19',
+    name: "Rico's North Campus",
+    area: 'Kamla Nagar',
+    x: 382,
+    y: 44,
     status: 'delivered',
     volume: 'Delivered via Northgate',
     supplier: 'Northgate Dairy',
   },
+
+  // Rajouri Garden & West Delhi Cluster
+  {
+    id: 'm20',
+    name: 'West End Roastery',
+    area: 'Rajouri Garden',
+    x: 245,
+    y: 110,
+    status: 'reordered',
+    volume: '28 L/wk',
+    barista: 'Vikas N.',
+    rating: 4.7,
+    standingPO: 'Net-15 Active',
+    quote: '“Big hit with young espresso purists in West Delhi.”',
+    supplier: 'Northgate Dairy',
+  },
+  {
+    id: 'm21',
+    name: 'Café After Hours',
+    area: 'Rajouri Garden',
+    x: 226,
+    y: 124,
+    status: 'trial_completed',
+    volume: 'Sensory rating 4.6',
+    barista: 'Neha S.',
+    rating: 4.6,
+    supplier: 'Northgate Dairy',
+  },
+
+  // Vasant Kunj & Aerocity Cluster
+  {
+    id: 'm22',
+    name: 'The Grammar Room',
+    area: 'Vasant Kunj',
+    x: 295,
+    y: 200,
+    status: 'reordered',
+    volume: '34 L/wk',
+    barista: 'Aman D.',
+    rating: 4.9,
+    standingPO: 'Standing Weekly PO',
+    quote: '“Flawless latte art hold, zero aftertaste.”',
+    supplier: 'Southfield Dairy',
+  },
+  {
+    id: 'm23',
+    name: 'Plum Aerocity',
+    area: 'Vasant Kunj',
+    x: 274,
+    y: 186,
+    status: 'trial_completed',
+    volume: 'Barista trial done',
+    barista: 'Karan J.',
+    rating: 4.7,
+    supplier: 'Southfield Dairy',
+  },
+
+  // Gurugram Corridor
+  {
+    id: 'm24',
+    name: 'Brew & Bloom',
+    area: 'Gurugram',
+    x: 172,
+    y: 236,
+    status: 'reordered',
+    volume: '32 L/wk',
+    barista: 'Sahil P.',
+    rating: 4.8,
+    standingPO: 'Net-15 Active',
+    quote: '“Cyber Hub tech commuters order repeat flat whites.”',
+    supplier: 'Hill Roasters Logistics',
+  },
+  {
+    id: 'm25',
+    name: 'Di Ghent Cafe',
+    area: 'Gurugram',
+    x: 148,
+    y: 246,
+    status: 'trial_completed',
+    volume: 'Cupping score 4.8',
+    barista: 'Isha B.',
+    rating: 4.8,
+    supplier: 'Hill Roasters Logistics',
+  },
+
+  // Noida Corridor
+  {
+    id: 'm26',
+    name: 'Roastery Coffee House',
+    area: 'Noida',
+    x: 550,
+    y: 170,
+    status: 'reordered',
+    volume: '30 L/wk',
+    barista: 'Nitin C.',
+    rating: 4.8,
+    standingPO: 'Net-15 Active',
+    quote: '“Clean foam stretch, perfect for cortados.”',
+    supplier: 'Lakeside Foods',
+  },
+  {
+    id: 'm27',
+    name: 'The Haven Cafe',
+    area: 'Noida',
+    x: 574,
+    y: 184,
+    status: 'trial_completed',
+    volume: 'Trial kit active',
+    barista: 'Meera P.',
+    rating: 4.6,
+    supplier: 'Lakeside Foods',
+  },
+];
+
+const DELHI_PARKS = [
+  { name: 'Sanjay Van / Mehrauli Forest', d: 'M 285,182 C 305,178 328,188 324,208 C 320,224 296,224 280,214 C 274,198 280,188 285,182 Z' },
+  { name: 'Hauz Khas Deer Park & Lake', d: 'M 364,158 C 378,156 386,163 383,172 C 376,178 362,176 360,168 C 358,162 362,158 364,158 Z' },
+  { name: 'Central Ridge Reserve', d: 'M 318,108 C 334,103 344,113 341,128 C 337,142 324,142 314,133 C 309,118 313,110 318,108 Z' },
+  { name: 'Yamuna Bio Park (North)', d: 'M 418,28 C 434,26 441,33 439,46 C 434,53 421,53 417,43 C 414,33 417,28 418,28 Z' },
+];
+
+const CORRIDOR_CLUSTERS = [
+  { name: 'Hauz Khas', count: 22, x: 434, y: 160 },
+  { name: 'Connaught Place', count: 12, x: 442, y: 92 },
+  { name: 'Saket', count: 14, x: 442, y: 228 },
+  { name: 'Lajpat Nagar', count: 14, x: 508, y: 142 },
+  { name: 'Kamla Nagar', count: 22, x: 405, y: 46 },
+  { name: 'Rajouri Garden', count: 8, x: 202, y: 116 },
+  { name: 'Vasant Kunj', count: 10, x: 265, y: 200 },
+  { name: 'Gurugram', count: 12, x: 135, y: 242 },
+  { name: 'Noida', count: 6, x: 598, y: 170 },
+];
+
+const HIGHWAY_SHIELDS = [
+  { label: 'NH 48', x: 218, y: 220 },
+  { label: 'DND', x: 482, y: 164 },
+  { label: 'NH 44', x: 370, y: 22 },
+  { label: 'NH 19', x: 478, y: 218 },
+];
+
+const SUPPLIER_HUBS = [
+  { name: 'Sharma Dairy', area: 'Central Hub', x: 410, y: 130 },
+  { name: 'Fresh Lane Foods', area: 'South Hub', x: 350, y: 180 },
+  { name: 'Hill Roasters', area: 'Gurugram Route', x: 210, y: 220 },
+  { name: 'Northgate Dairy', area: 'North Hub', x: 330, y: 65 },
+  { name: 'Eastline Supply', area: 'East Hub', x: 510, y: 160 },
+  { name: 'Southfield Dairy', area: 'Southwest Hub', x: 280, y: 230 },
 ];
 
 const FUNNEL_STAGES = [
@@ -414,24 +524,24 @@ const RECENT_ACTIVITIES = [
     time: '12m ago',
     icon: 'box',
     title: 'Trial kit delivered',
-    cafe: 'Little Brew Room · Indiranagar',
-    meta: 'Sharma Logistics route dispatch',
+    cafe: 'Little Brew Room · Hauz Khas',
+    meta: 'Sharma Dairy route dispatch',
   },
   {
     id: 'a2',
     time: '48m ago',
     icon: 'star',
     title: 'Barista trial completed',
-    cafe: 'Third Wave · Koramangala',
-    meta: 'Steamed 8 flat whites · Rated ★ 5.0',
+    cafe: 'Second Crack · Kamla Nagar',
+    meta: 'Steamed 8 flat whites · Rated ★ 4.9',
   },
   {
     id: 'a3',
     time: '4h ago',
     icon: 'repeat',
     title: 'First recurring order placed',
-    cafe: 'Paper & Pie · Indiranagar',
-    meta: '36 L/wk standing Net-15 PO',
+    cafe: 'Steam Theory · Connaught Place',
+    meta: '32 L/wk standing Net-15 PO',
   },
 ];
 
@@ -535,11 +645,12 @@ export function BrandDashboard() {
   const frameRef = useRef<HTMLDivElement>(null);
 
   // User interactive selection
-  const [selectedCafe, setSelectedCafe] = useState<MapMarker>(BANGALORE_MARKERS[0]);
+  const [selectedCafe, setSelectedCafe] = useState<MapMarker>(DELHI_MARKERS[0]);
   const [hoveredMarker, setHoveredMarker] = useState<MapMarker | null>(null);
   const [activeWeekIndex, setActiveWeekIndex] = useState<number>(4); // W5 (current)
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [motionPhase, setMotionPhase] = useState<'entrance' | 'center' | 'exit'>('center');
+  const [mapViewMode, setMapViewMode] = useState<'corridors' | 'routes'>('corridors');
 
   // Resize listener
   useEffect(() => {
@@ -942,14 +1053,14 @@ export function BrandDashboard() {
               </div>
 
               {/* ═══════════════════════════════════════════════════════════
-                  COLUMN 2: BANGALORE CAFÉ DISTRIBUTION MAP (Centerpiece)
+                  COLUMN 2: DELHI NCR CAFÉ DISTRIBUTION MAP (Centerpiece)
                   ═══════════════════════════════════════════════════════════ */}
               <div className="bdb-col bdb-col-center">
                 <div className="bdb-card bdb-map-card">
                   <div className="bdb-card-header">
                     <div className="bdb-map-header-left">
-                      <h3 className="bdb-card-title">Bangalore Café Distribution</h3>
-                      <span className="bdb-card-sub">120 trial kits seeded across 6 prime corridors</span>
+                      <h3 className="bdb-card-title">Delhi NCR Café Distribution</h3>
+                      <span className="bdb-card-sub">120 trial kits seeded across 9 capital corridors</span>
                     </div>
 
                     {/* Clean Minimal Legend */}
@@ -968,45 +1079,161 @@ export function BrandDashboard() {
 
                   {/* SVG Map Canvas with Integrated Lower Telemetry Deck */}
                   <div className="bdb-map-stage">
-                    <svg viewBox="0 0 760 320" className="bdb-bangalore-svg" xmlns="http://www.w3.org/2000/svg">
+                    {/* Lamar-style Top Floating Controls Overlay */}
+                    <div className="bdb-map-ctrl-top-left">
+                      <div className="bdb-mode-toggle" role="tablist" aria-label="Map View Mode">
+                        <button
+                          type="button"
+                          role="tab"
+                          aria-selected={mapViewMode === 'corridors'}
+                          className={`bdb-mode-btn ${mapViewMode === 'corridors' ? 'is-active' : ''}`}
+                          onClick={() => setMapViewMode('corridors')}
+                        >
+                          ● Corridors
+                        </button>
+                        <button
+                          type="button"
+                          role="tab"
+                          aria-selected={mapViewMode === 'routes'}
+                          className={`bdb-mode-btn ${mapViewMode === 'routes' ? 'is-active' : ''}`}
+                          onClick={() => setMapViewMode('routes')}
+                        >
+                          Network Hubs
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bdb-map-ctrl-top-right">
+                      <span className="bdb-location-pill">📍 Delhi NCR · Central Hub</span>
+                      <div className="bdb-zoom-ctrl" role="group" aria-label="Map Zoom">
+                        <button type="button" className="bdb-zoom-btn" title="Zoom in">+</button>
+                        <button type="button" className="bdb-zoom-btn" title="Zoom out">−</button>
+                      </div>
+                    </div>
+
+                    <svg viewBox="0 0 760 320" className="bdb-delhi-svg" xmlns="http://www.w3.org/2000/svg">
                       <defs>
-                        <radialGradient id="mapGlowProportion" cx="50%" cy="50%" r="55%">
+                        <radialGradient id="mapGlowDelhi" cx="50%" cy="50%" r="55%">
                           <stop offset="0%" stopColor="#502B9A" stopOpacity="0.04" />
                           <stop offset="60%" stopColor="#502B9A" stopOpacity="0.01" />
                           <stop offset="100%" stopColor="#502B9A" stopOpacity="0" />
                         </radialGradient>
                       </defs>
 
-                      <rect width="760" height="320" fill="url(#mapGlowProportion)" />
+                      <rect width="760" height="320" fill="url(#mapGlowDelhi)" />
 
-                      {/* Clean Arterial Highway Corridors */}
-                      <g className="bdb-map-roads" stroke="#ECE8F2" strokeWidth="1.15" fill="none">
-                        {/* Outer Ring Road arc */}
-                        <path d="M 130,40 C 240,25 530,45 670,135 C 720,185 640,250 440,255 C 280,255 160,210 130,140 Z" strokeDasharray="4 3" strokeWidth="1.2" stroke="#E2DFE8" />
-                        {/* Old Airport Rd & 100ft arterial */}
-                        <path d="M 150,125 L 630,125" />
-                        {/* North-South Hosur Corridor */}
-                        <path d="M 390,25 L 390,255" />
-                        {/* Diagonal logistics connectors */}
-                        <path d="M 230,55 L 550,235" strokeDasharray="2 3" opacity="0.6" />
-                        <path d="M 550,55 L 230,235" strokeDasharray="2 3" opacity="0.6" />
-                        <path d="M 190,90 Q 410,140 600,90" />
-                        <path d="M 190,185 Q 410,130 600,185" />
+                      {/* Lamar-style Soft Forest / Ridge Reserves */}
+                      <g className="bdb-map-parks" opacity="0.9">
+                        {DELHI_PARKS.map((park) => (
+                          <path key={park.name} d={park.d} className="bdb-map-park" />
+                        ))}
                       </g>
 
-                      {/* Prime Corridor Labels */}
-                      <g className="bdb-map-labels" fill="#77727F" fontSize="9" fontWeight="700" letterSpacing="0.07em">
-                        <text x="440" y="78">INDIRANAGAR</text>
-                        <text x="360" y="210">KORAMANGALA</text>
-                        <text x="500" y="226">HSR LAYOUT</text>
-                        <text x="590" y="78">WHITEFIELD</text>
-                        <text x="235" y="180">JAYANAGAR</text>
-                        <text x="145" y="102">RAJAJINAGAR</text>
+                      {/* Delhi NCT State Boundary Polygon (Simplified) */}
+                      <path
+                        d="M 370,15 C 410,12 445,30 475,55 C 505,80 520,120 525,165 C 530,210 500,255 450,278 C 400,295 330,285 280,260 C 230,235 195,190 185,145 C 175,95 240,40 370,15 Z"
+                        fill="rgba(80, 43, 154, 0.015)"
+                        stroke="rgba(80, 43, 154, 0.18)"
+                        strokeWidth="1.2"
+                        strokeDasharray="4 4"
+                      />
+
+                      {/* Yamuna River Ribbon (North to South-East) */}
+                      <path
+                        d="M 450,0 C 445,40 435,70 422,95 C 418,115 425,135 445,155 C 475,185 495,210 525,245 C 545,270 560,290 575,320"
+                        fill="none"
+                        stroke="#D8CFEA"
+                        strokeWidth="6"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M 450,0 C 445,40 435,70 422,95 C 418,115 425,135 445,155 C 475,185 495,210 525,245 C 545,270 560,290 575,320"
+                        fill="none"
+                        stroke="#502B9A"
+                        strokeWidth="1.2"
+                        strokeOpacity="0.32"
+                        strokeLinecap="round"
+                      />
+
+                      {/* Yamuna River Water Label */}
+                      <text x="488" y="194" fontSize="7" fontWeight="750" letterSpacing="0.14em" fill="#988FB0" transform="rotate(35 488 194)" opacity="0.9" style={{ pointerEvents: 'none' }}>
+                        YAMUNA RIVER
+                      </text>
+
+                      {/* Major Arterial Road Corridors (Dual Casing) */}
+                      <g className="bdb-map-roads" fill="none">
+                        {/* Inner Ring Road Loop (Dual casing effect) */}
+                        <path d="M 270,122 C 270,82 320,66 375,66 C 430,66 448,92 448,135 C 448,170 425,188 375,188 C 320,188 270,165 270,122 Z" stroke="#DCD5E6" strokeWidth="2.2" />
+                        <path d="M 270,122 C 270,82 320,66 375,66 C 430,66 448,92 448,135 C 448,170 425,188 375,188 C 320,188 270,165 270,122 Z" stroke="#FFFFFF" strokeWidth="1.1" />
+
+                        {/* Outer Ring Road Arc */}
+                        <path d="M 215,135 C 215,198 280,222 375,222 C 445,222 515,200 528,168" stroke="#E2DDEB" strokeWidth="1.8" strokeDasharray="4 3" />
+
+                        {/* NH48 (Mehrauli-Gurgaon Rd & Aerocity Expressway) */}
+                        <path d="M 315,165 L 265,195 L 160,245" stroke="#DCD5E6" strokeWidth="2.2" />
+                        <path d="M 315,165 L 265,195 L 160,245" stroke="#FFFFFF" strokeWidth="1" />
+
+                        {/* DND Flyway & Barapullah Corridor across Yamuna to Noida */}
+                        <path d="M 405,158 L 448,158 L 515,175 L 585,175" stroke="#DCD5E6" strokeWidth="2.2" />
+                        <path d="M 405,158 L 448,158 L 515,175 L 585,175" stroke="#FFFFFF" strokeWidth="1" />
+
+                        {/* Radial Connectors */}
+                        <path d="M 375,66 L 365,10" stroke="#E4DFEC" strokeWidth="1.2" />
+                        <path d="M 270,122 L 195,122" stroke="#E4DFEC" strokeWidth="1.2" />
+                        <path d="M 448,170 L 495,255" stroke="#E4DFEC" strokeWidth="1.2" />
+                        <path d="M 385,104 L 380,164 L 385,222" stroke="#ECE8F2" strokeWidth="1" strokeDasharray="2 2" />
                       </g>
+
+                      {/* Highway Route Shields (Lamar GIS style) */}
+                      <g className="bdb-road-shields" style={{ pointerEvents: 'none' }}>
+                        {HIGHWAY_SHIELDS.map((s) => (
+                          <g key={s.label} transform={`translate(${s.x}, ${s.y})`} className="bdb-road-shield">
+                            <rect x="-10" y="-5.5" width="20" height="11" rx="2.5" fill="#FFFFFF" stroke="#D1CBDC" strokeWidth="0.8" />
+                            <text textAnchor="middle" dy="2.8" fontSize="6" fontWeight="800" fill="#502B9A" letterSpacing="0.04em">
+                              {s.label}
+                            </text>
+                          </g>
+                        ))}
+                      </g>
+
+                      {/* Lamar-style Corridor Cluster Count Badges */}
+                      <g className="bdb-cluster-badges" style={{ pointerEvents: 'none' }}>
+                        {CORRIDOR_CLUSTERS.map((cl) => (
+                          <g key={cl.name} transform={`translate(${cl.x}, ${cl.y})`} className="bdb-cluster-badge">
+                            <circle r="7.5" fill="#502B9A" />
+                            <circle r="10.5" fill="none" stroke="rgba(80, 43, 154, 0.22)" strokeWidth="1" />
+                            <text textAnchor="middle" dy="2.6" fill="#FFFFFF" fontSize="6.5" fontWeight="800">
+                              {cl.count}
+                            </text>
+                          </g>
+                        ))}
+                      </g>
+
+                      {/* Key Corridor Labels: Positioned cleanly offset from marker clusters */}
+                      <g className="bdb-map-labels" fill="#77727F" fontSize="8" fontWeight="700" letterSpacing="0.08em" style={{ pointerEvents: 'none' }}>
+                        <text x="392" y="82" textAnchor="middle">CONNAUGHT PLACE</text>
+                        <text x="387" y="142" textAnchor="middle">HAUZ KHAS</text>
+                        <text x="394" y="248" textAnchor="middle">SAKET</text>
+                        <text x="240" y="212" textAnchor="end">VASANT KUNJ</text>
+                        <text x="470" y="126" textAnchor="middle">LAJPAT NAGAR</text>
+                        <text x="360" y="32" textAnchor="middle">KAMLA NAGAR</text>
+                        <text x="235" y="96" textAnchor="middle">RAJOURI GARDEN</text>
+                        <text x="160" y="222" textAnchor="middle">GURUGRAM</text>
+                        <text x="562" y="156" textAnchor="middle">NOIDA</text>
+                      </g>
+
+                      {/* Optional Logistics Routes Layer (when in routes mode) */}
+                      {mapViewMode === 'routes' && (
+                        <g className="bdb-logistics-routes" stroke="#502B9A" strokeWidth="1" fill="none" opacity="0.45" strokeDasharray="3 3">
+                          {SUPPLIER_HUBS.map((hub) => (
+                            <path key={hub.name} d={`M ${hub.x},${hub.y} Q ${(hub.x + 380) / 2},${(hub.y + 160) / 2 - 15} 380,160`} />
+                          ))}
+                        </g>
+                      )}
 
                       {/* Restrained Location Markers */}
                       <g className="bdb-map-markers">
-                        {BANGALORE_MARKERS.map((m) => {
+                        {DELHI_MARKERS.map((m) => {
                           const isReordered = m.status === 'reordered';
                           const isTried = m.status === 'trial_completed';
                           const isSelected = selectedCafe?.id === m.id;
@@ -1040,26 +1267,24 @@ export function BrandDashboard() {
                       </g>
                     </svg>
 
-                    {/* Marker Hover Tooltip */}
+                    {/* Lamar-style Interactive Tooltip */}
                     {hoveredMarker && (
                       <div
-                        className="bdb-map-tooltip"
+                        className="bdb-lamar-tooltip"
                         style={{
                           left: `${(hoveredMarker.x / 760) * 100}%`,
                           top: `${(hoveredMarker.y / 320) * 100}%`,
                         }}
                       >
-                        <div className="bdb-tooltip-name">{hoveredMarker.name}</div>
-                        <div className="bdb-tooltip-sub">
-                          {hoveredMarker.area} ·{' '}
-                          <span className={hoveredMarker.status === 'reordered' ? 'text-purple' : ''}>
-                            {hoveredMarker.status === 'reordered'
-                              ? 'Weekly Reordered'
-                              : hoveredMarker.status === 'trial_completed'
-                              ? 'Trial Completed'
-                              : 'Kit Delivered'}
-                          </span>
+                        <div className="bdb-lt-header">
+                          <span className="bdb-lt-title">{hoveredMarker.name}</span>
+                          <span className="bdb-lt-status">{hoveredMarker.status === 'reordered' ? 'Weekly PO Active' : 'Trial Kit'}</span>
                         </div>
+                        <div className="bdb-lt-body">
+                          <span>{hoveredMarker.area} · {hoveredMarker.volume || '24 L/wk'}</span>
+                          <span className="bdb-lt-hint">Click to inspect</span>
+                        </div>
+                        <div className="bdb-lt-arrow" />
                       </div>
                     )}
 
@@ -1072,19 +1297,18 @@ export function BrandDashboard() {
                             <span className="bdb-dock-area">· {selectedCafe.area}</span>
                           </div>
                           <span
-                            className={`bdb-dock-status ${
-                              selectedCafe.status === 'reordered'
+                            className={`bdb-dock-status ${selectedCafe.status === 'reordered'
                                 ? 'status-reordered'
                                 : selectedCafe.status === 'trial_completed'
-                                ? 'status-tried'
-                                : 'status-delivered'
-                            }`}
+                                  ? 'status-tried'
+                                  : 'status-delivered'
+                              }`}
                           >
                             {selectedCafe.status === 'reordered'
                               ? '● Weekly Reorder Active'
                               : selectedCafe.status === 'trial_completed'
-                              ? '◎ Trial Completed'
-                              : '○ Trial Kit Delivered'}
+                                ? '◎ Trial Completed'
+                                : '○ Trial Kit Delivered'}
                           </span>
                         </div>
 
@@ -1157,10 +1381,10 @@ export function BrandDashboard() {
                   {/* Featured Barista Review Quote */}
                   <div className="bdb-quote-pill">
                     <p className="bdb-quote-text">
-                      “Exceptional microfoam for latte art without scalding.”
+                      “Holds a rosetta better than the oat milk we use now.”
                     </p>
                     <span className="bdb-quote-author">
-                      — Rohan M., Head Barista · Maverick & Farmer
+                      — Aditya K., Head Barista · Little Brew Room (Hauz Khas)
                     </span>
                   </div>
                 </div>
