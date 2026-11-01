@@ -779,7 +779,9 @@ export function BrandDashboard() {
                     {FEEDBACK_ATTRS.map((attr) => (
                       <div key={attr.label} className="bdb-attr-compact">
                         <div className="bdb-attr-meta">
-                          <span className="bdb-attr-name">{attr.label}</span>
+                          <span className="bdb-attr-name">
+                            {attr.label} <span className="bdb-attr-note">· {attr.note}</span>
+                          </span>
                           <span className="bdb-attr-num">{attr.score}</span>
                         </div>
                         <div className="bdb-attr-track">
@@ -819,7 +821,9 @@ export function BrandDashboard() {
                           <span className="bdb-act-time">{act.time}</span>
                           <span className="bdb-act-title">{act.title}</span>
                         </div>
-                        <span className="bdb-act-cafe">{act.cafe}</span>
+                        <span className="bdb-act-cafe">
+                          {act.cafe} {act.meta && <span className="bdb-act-meta">· {act.meta}</span>}
+                        </span>
                       </div>
                     ))}
                   </div>

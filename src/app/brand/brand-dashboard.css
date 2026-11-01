@@ -174,12 +174,12 @@
   background: #502B9A;
 }
 
-/* ─── 2. The Dashboard Frame (Aspect Ratio ~2.6:1, Ultra-Compact & Above Horizon) ── */
+/* ─── 2. The Dashboard Frame (Aspect Ratio ~2.6:1, Proportioned & Above Horizon) ─── */
 .bdb-viewport-frame {
   position: relative;
   width: 100%;
   max-width: 1380px;
-  height: 472px;
+  height: 520px;
   border-radius: 14px;
   border: 1px solid #EBE8F0;
   background: #FFFFFF;
@@ -205,10 +205,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 34px;
-  padding: 0 12px;
+  height: 36px;
+  padding: 0 14px;
   border-bottom: 1px solid #F4F1F8;
-  font-size: 11px;
+  font-size: 11.5px;
 }
 
 .bdb-nav-left,
@@ -367,19 +367,19 @@
   cursor: pointer;
 }
 
-/* ─── 4. KPI Summary Strip (Horizontal 2-Line Bar, 48px Height) ──────────── */
+/* ─── 4. KPI Summary Strip (Horizontal 2-Line Bar, 52px Height) ──────────── */
 .bdb-kpi-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   background: #FAF9FB;
   border-top: 1px solid #FFFFFF;
   border-bottom: 1px solid #EBE8F0;
-  height: 48px;
+  height: 52px;
   flex-shrink: 0;
 }
 
 .bdb-kpi-cell {
-  padding: 5px 14px;
+  padding: 6px 16px;
   border-right: 1px solid #EBE8F0;
   display: flex;
   flex-direction: column;
@@ -433,7 +433,7 @@
 }
 
 .bdb-kpi-val {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 800;
   color: #19171E;
   letter-spacing: -0.02em;
@@ -442,7 +442,7 @@
 
 .bdb-kpi-progress {
   flex: 1;
-  max-width: 50px;
+  max-width: 52px;
   height: 3.5px;
   border-radius: 999px;
   background: #EBE8F0;
@@ -471,16 +471,16 @@
 }
 
 .bdb-kpi-sparkline {
-  width: 56px;
-  height: 14px;
+  width: 60px;
+  height: 16px;
 }
 
-/* ─── 5. Main 3-Column Body Grid (Compact 388px Height) ─────────────────── */
+/* ─── 5. Main 3-Column Body Grid (Stretched 430px Height) ────────────────── */
 .bdb-body-grid {
   display: grid;
-  grid-template-columns: 290px minmax(0, 1fr) 290px;
-  gap: 8px;
-  padding: 8px 10px;
+  grid-template-columns: 295px minmax(0, 1fr) 295px;
+  gap: 10px;
+  padding: 10px 12px;
   background: #F8F7FA;
   flex: 1;
   min-height: 0;
@@ -490,7 +490,7 @@
 .bdb-col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   height: 100%;
 }
 
@@ -498,8 +498,8 @@
 .bdb-card {
   background: #FFFFFF;
   border: 1px solid #EBE8F0;
-  border-radius: 10px;
-  padding: 8px 10px;
+  border-radius: 11px;
+  padding: 10px 12px;
   box-shadow: 0 1px 2px rgba(21, 17, 29, 0.02);
   display: flex;
   flex-direction: column;
@@ -511,13 +511,13 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
-  margin-bottom: 5px;
-  padding-bottom: 4px;
+  margin-bottom: 6px;
+  padding-bottom: 5px;
   border-bottom: 1px solid #F4F1F8;
 }
 
 .bdb-card-title {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 750;
   color: #19171E;
   margin: 0;
@@ -526,16 +526,16 @@
 }
 
 .bdb-card-sub {
-  font-size: 8.5px;
+  font-size: 9px;
   color: #77727F;
   line-height: 1.2;
 }
 
 .bdb-pill-indicator {
   display: inline-block;
-  padding: 1px 5px;
-  border-radius: 3.5px;
-  font-size: 8.5px;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  font-size: 9px;
   font-weight: 700;
   background: #FAF9FC;
   border: 1px solid #EBE8F0;
@@ -551,24 +551,24 @@
 
 /* ─── Column 1: Conversion Funnel ────────────────────────────────────────── */
 .bdb-funnel-card {
-  height: 194px;
+  height: 214px;
 }
 
 .bdb-funnel-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   flex: 1;
   justify-content: space-between;
 }
 
 .bdb-funnel-row {
   display: grid;
-  grid-template-columns: 94px minmax(0, 1fr) 52px;
+  grid-template-columns: 96px minmax(0, 1fr) 52px;
   align-items: center;
-  gap: 5px;
-  padding: 2.5px 5px;
-  border-radius: 5px;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 6px;
   background: #FAF9FC;
   border: 1px solid transparent;
   transition: all 0.15s ease;
@@ -598,7 +598,7 @@
 }
 
 .bdb-f-name {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 650;
   color: #19171E;
   white-space: nowrap;
@@ -637,7 +637,7 @@
 }
 
 .bdb-f-count {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 750;
   color: #19171E;
 }
@@ -655,18 +655,18 @@
 
 /* ─── Column 1: Weekly Reorder Volume ────────────────────────────────────── */
 .bdb-reorder-card {
-  height: 170px;
+  height: 188px;
   justify-content: space-between;
 }
 
 .bdb-bars-compact {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  height: 66px;
+  gap: 8px;
+  height: 78px;
   align-items: flex-end;
-  padding: 2px 4px 0;
-  margin-bottom: 2px;
+  padding: 4px 6px 0;
+  margin-bottom: 3px;
 }
 
 .bdb-bar-item {
@@ -681,7 +681,7 @@
 
 .bdb-bar-track {
   width: 100%;
-  height: 48px;
+  height: 58px;
   display: flex;
   align-items: flex-end;
 }
@@ -708,10 +708,10 @@
 }
 
 .bdb-bar-label {
-  font-size: 8px;
+  font-size: 8.5px;
   font-weight: 650;
   color: #77727F;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .bdb-bar-tooltip {
@@ -742,11 +742,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3.5px 6px;
-  border-radius: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
   background: #FAF9FC;
   border: 1px solid #F4F1F8;
-  font-size: 8.5px;
+  font-size: 9px;
   color: #19171E;
 }
 
@@ -873,15 +873,15 @@
 /* Docked Floating Café Intelligence Card */
 .bdb-cafe-dock-card {
   position: absolute;
-  bottom: 6px;
-  left: 6px;
-  right: 6px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid #EBE8F0;
   border-radius: 7px;
-  padding: 4px 8px;
+  padding: 5px 9px;
   box-shadow: 0 3px 10px rgba(80, 43, 154, 0.08);
   z-index: 10;
 }
@@ -902,13 +902,13 @@
 }
 
 .bdb-dock-name {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 750;
   color: #19171E;
 }
 
 .bdb-dock-area {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 600;
   color: #502B9A;
 }
@@ -941,7 +941,7 @@
 .bdb-dock-details {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  gap: 5px;
 }
 
 .bdb-dock-stat {
@@ -959,7 +959,7 @@
 }
 
 .bdb-dock-val {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 750;
   color: #19171E;
   white-space: nowrap;
@@ -969,7 +969,7 @@
 
 /* ─── Column 3: Barista Sensory & Live Commercial Telemetry ───────────────── */
 .bdb-feedback-card {
-  height: 194px;
+  height: 214px;
   justify-content: space-between;
 }
 
@@ -980,39 +980,48 @@
 }
 
 .bdb-overall-stars {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 800;
   color: #502B9A;
 }
 
 .bdb-overall-max {
-  font-size: 9px;
+  font-size: 9.5px;
   color: #77727F;
 }
 
 .bdb-feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-bottom: 3px;
+  gap: 3px;
+  margin-bottom: 5px;
 }
 
 .bdb-attr-compact {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 1.5px;
 }
 
 .bdb-attr-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 9.5px;
+  font-size: 10px;
 }
 
 .bdb-attr-name {
   font-weight: 650;
   color: #19171E;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.bdb-attr-note {
+  font-size: 8px;
+  font-weight: 500;
+  color: #77727F;
 }
 
 .bdb-attr-num {
@@ -1023,7 +1032,7 @@
 
 .bdb-attr-track {
   width: 100%;
-  height: 3px;
+  height: 3.5px;
   border-radius: 999px;
   background: #EBE8F0;
   overflow: hidden;
@@ -1042,7 +1051,7 @@
 }
 
 .bdb-quote-pill {
-  padding: 3.5px 6px;
+  padding: 4px 7px;
   border-radius: 5px;
   background: #FAF9FC;
   border-left: 2px solid #502B9A;
@@ -1052,22 +1061,22 @@
 }
 
 .bdb-quote-text {
-  font-size: 8.5px;
+  font-size: 9px;
   font-style: italic;
   color: #19171E;
   margin: 0 0 1px 0;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .bdb-quote-author {
-  font-size: 7.5px;
+  font-size: 8px;
   color: #77727F;
   font-weight: 600;
 }
 
 /* Live Commercial Activity Feed */
 .bdb-activity-card {
-  height: 170px;
+  height: 188px;
   justify-content: space-between;
 }
 
@@ -1099,7 +1108,7 @@
 .bdb-activity-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   justify-content: space-between;
 }
@@ -1107,8 +1116,8 @@
 .bdb-act-row {
   display: flex;
   flex-direction: column;
-  gap: 0.5px;
-  padding: 1.5px 0;
+  gap: 1px;
+  padding: 2.5px 0;
   border-bottom: 1px solid #F8F7FA;
 }
 
@@ -1123,15 +1132,15 @@
 }
 
 .bdb-act-time {
-  font-size: 8px;
+  font-size: 8.5px;
   font-weight: 700;
   color: #77727F;
-  min-width: 34px;
+  min-width: 38px;
   font-variant-numeric: tabular-nums;
 }
 
 .bdb-act-title {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 650;
   color: #19171E;
   line-height: 1.15;
@@ -1140,19 +1149,22 @@
 .bdb-act-cafe {
   font-size: 8.5px;
   color: #502B9A;
-  padding-left: 39px;
+  padding-left: 41px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .bdb-act-meta {
   font-size: 8px;
   color: #77727F;
-  padding-left: 39px;
 }
 
 /* ─── 6. Responsive Breakdown ────────────────────────────────────────────── */
 @media (max-width: 1200px) {
   .bdb-viewport-frame {
-    height: 472px;
+    height: 520px;
   }
 
   .bdb-body-grid {
