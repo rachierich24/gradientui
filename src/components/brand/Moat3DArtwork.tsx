@@ -6,8 +6,8 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 
 /* ─────────────────────────────────────────────────────────────────────────────
    SHARED THREE.JS CONSTANTS & HELPERS
-   - Color palette directly matching Brand Portal Purple (#502B9A):
-     #08080C (obsidian canvas), #251448 (glass violet), #502B9A / #7F48E8 (pure purple core)
+   - Color palette directly matching Brand Portal Purple (#6B33D3):
+     #08080C (obsidian canvas), #2B1454 (glass violet), #6B33D3 / #6B33D3 (pure purple core)
 ───────────────────────────────────────────────────────────────────────────── */
 const COLOR_GLASS_FILL = 0x251448;
 const COLOR_GLASS_EDGE = 0x7f48e8;

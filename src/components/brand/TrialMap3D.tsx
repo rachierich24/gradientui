@@ -78,7 +78,7 @@ export function TrialMap3D({ dayRef, filter, hot, spot, still, onPoint, onFail }
     const U = {
       uDay: { value: 1 }, uFilter: { value: 0 }, uHotHub: { value: -1 }, uHotCafe: { value: -1 }, uTime: { value: 0 },
       uPx: { value: dpr }, uShow: { value: 0 }, uBoost: { value: dpr >= 1.5 ? 1.5 : 1 },
-      uLilac: { value: new THREE.Color('#D9C6FA') }, uViolet: { value: new THREE.Color('#502B9A') }, uRoad: { value: new THREE.Color('#7F48E8') },
+      uLilac: { value: new THREE.Color('#D9C6FA') }, uViolet: { value: new THREE.Color('#6B33D3') }, uRoad: { value: new THREE.Color('#6B33D3') },
     };
     const owned: { dispose: () => void }[] = [];
     const add = (obj: THREE.Object3D, order: number) => { obj.renderOrder = order; obj.frustumCulled = false; scene.add(obj); return obj; };

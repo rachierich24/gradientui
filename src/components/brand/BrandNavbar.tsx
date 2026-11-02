@@ -45,7 +45,7 @@ export function BrandNavbar({ onStart }: { onStart: () => void }) {
         <div className="brd-nav-right">
           <a href="https://brand.gradient365.com" className="brd-login">Log in</a>
           <button type="button" className="brd-btn brd-btn-dark" onClick={onStart}>
-            <BorderBeam size={42} duration={4} borderWidth={1.5} colorFrom="#D9C6FA" colorTo="#502B9A" />
+            <BorderBeam size={42} duration={4} borderWidth={1.5} colorFrom="#D9C6FA" colorTo="#6B33D3" />
             <span>Launch a trial</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </button>

@@ -2,7 +2,7 @@
 
 /* ─────────────────────────────────────────────────────────────────────────────
    GRADIENT — BRAND ANALYTICS DASHBOARD SHOWCASE SECTION
-   Design System: White & Purple (#502B9A)
+   Design System: White & Purple (#6B33D3)
    Aesthetic Refinement: Linear precision · Stripe analytics clarity · Ramp elegance
    Orientation: Three-column layout, 520px frame height (strict horizon budget)
    Structure:
@@ -624,7 +624,7 @@ function SvgTruck() {
 
 function SvgStarFilled() {
   return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="#502B9A" stroke="#502B9A" strokeWidth="1">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="#6B33D3" stroke="#6B33D3" strokeWidth="1">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
@@ -656,7 +656,7 @@ function SvgCohortBars() {
       <rect x="20" y="10" width="6" height="14" rx="1.5" fill="#D3CDE2" />
       <rect x="29" y="7" width="6" height="17" rx="1.5" fill="#B9AFD2" />
       <rect x="38" y="4" width="6" height="20" rx="1.5" fill="#8E78BE" />
-      <rect x="47" y="1" width="6" height="23" rx="1.5" fill="#502B9A" />
+      <rect x="47" y="1" width="6" height="23" rx="1.5" fill="#6B33D3" />
     </svg>
   );
 }
@@ -673,7 +673,7 @@ function SvgRadialProgress({ pct = 93.3 }: { pct?: number }) {
           cx="15"
           cy="15"
           r={radius}
-          stroke="#502B9A"
+          stroke="#6B33D3"
           strokeWidth="2.8"
           fill="none"
           strokeDasharray={circ}
@@ -682,7 +682,7 @@ function SvgRadialProgress({ pct = 93.3 }: { pct?: number }) {
           transform="rotate(-90 15 15)"
         />
       </svg>
-      <span style={{ position: 'absolute', fontSize: '7.5px', fontWeight: 800, color: '#502B9A' }}>
+      <span style={{ position: 'absolute', fontSize: '7.5px', fontWeight: 800, color: '#6B33D3' }}>
         93%
       </span>
     </div>
@@ -694,13 +694,13 @@ function SvgSensorySpark() {
     <svg width="60" height="24" viewBox="0 0 60 24" fill="none" style={{ display: 'block' }}>
       <defs>
         <linearGradient id="sensoryGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#502B9A" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="#502B9A" stopOpacity="0.0" />
+          <stop offset="0%" stopColor="#6B33D3" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#6B33D3" stopOpacity="0.0" />
         </linearGradient>
       </defs>
       <polygon points="0,24 0,16 12,14 24,10 36,7 48,4 60,2 60,24" fill="url(#sensoryGrad)" />
-      <polyline points="0,16 12,14 24,10 36,7 48,4 60,2" fill="none" stroke="#502B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="60" cy="2" r="2.5" fill="#502B9A" />
+      <polyline points="0,16 12,14 24,10 36,7 48,4 60,2" fill="none" stroke="#6B33D3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="60" cy="2" r="2.5" fill="#6B33D3" />
     </svg>
   );
 }
@@ -708,7 +708,7 @@ function SvgSensorySpark() {
 function SvgGradientLogo() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-      <rect width="24" height="24" rx="5" fill="#502B9A" />
+      <rect width="24" height="24" rx="5" fill="#6B33D3" />
       <path d="M12 6a6 6 0 1 0 6 6h-6V6z" fill="#FFFFFF" />
       <circle cx="15.5" cy="8.5" r="1.5" fill="#F1ECF8" />
     </svg>
@@ -754,7 +754,7 @@ function SvgTimelineIcon({ name }: { name: string }) {
       );
     case 'star':
       return (
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="#502B9A" stroke="#502B9A" strokeWidth="1">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="#6B33D3" stroke="#6B33D3" strokeWidth="1">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       );
@@ -789,8 +789,8 @@ function SvgKpiSparkline({ data }: { data: number[] }) {
 
   return (
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: '52px', height: '14px', display: 'block' }}>
-      <polygon points={areaPoints} fill="rgba(80, 43, 154, 0.08)" />
-      <polyline points={points} fill="none" stroke="#502B9A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <polygon points={areaPoints} fill="rgba(107, 51, 211, 0.08)" />
+      <polyline points={points} fill="none" stroke="#6B33D3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

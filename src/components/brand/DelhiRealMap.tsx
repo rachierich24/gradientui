@@ -366,7 +366,7 @@ export default function DelhiRealMap({
           }
 
           const polyline = L.polyline(pts, {
-            color: '#502B9A',
+            color: '#6B33D3',
             weight: 1.5,
             opacity: 0.5,
             dashArray: '3, 4',

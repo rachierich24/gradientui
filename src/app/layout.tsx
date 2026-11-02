@@ -1,6 +1,17 @@
 import type { Metadata } from 'next'
 import { preload } from 'react-dom'
-import { Plus_Jakarta_Sans, Caveat } from 'next/font/google'
+import {
+  Plus_Jakarta_Sans,
+  Caveat,
+  Alex_Brush,
+  Parisienne,
+  Sacramento,
+  Homemade_Apple,
+  Playfair_Display,
+  Italianno,
+  Great_Vibes,
+  WindSong,
+} from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import 'leaflet/dist/leaflet.css'
 import './landing-fonts.css'
@@ -35,6 +46,62 @@ const caveat = Caveat({
   variable: '--font-caveat',
   display: 'swap',
 })
+const alexBrush = Alex_Brush({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-alex-brush',
+  display: 'swap',
+})
+
+const parisienne = Parisienne({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-parisienne',
+  display: 'swap',
+})
+
+const sacramento = Sacramento({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-sacramento',
+  display: 'swap',
+})
+
+const homemadeApple = Homemade_Apple({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-homemade-apple',
+  display: 'swap',
+})
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-playfair',
+  display: 'swap',
+})
+const italianno = Italianno({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-italianno',
+  display: 'swap',
+})
+
+const greatVibes = Great_Vibes({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-great-vibes',
+  display: 'swap',
+})
+
+const windSong = WindSong({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-windsong',
+  display: 'swap',
+})
+
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.gradient365.com'),
@@ -130,7 +197,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     ],
   }
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${caveat.variable}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${caveat.variable} ${alexBrush.variable} ${parisienne.variable} ${sacramento.variable} ${homemadeApple.variable} ${playfairDisplay.variable} ${italianno.variable} ${greatVibes.variable} ${windSong.variable}`}>
       <body>
         <script
           id="media-abort-guard"
