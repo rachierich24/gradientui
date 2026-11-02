@@ -1,11 +1,10 @@
 'use client';
 // Brand Portal hero: Central editorial design.
 // "Gradient for Brands" with "Gradient" medium, "for" small, and "BRANDS" large typography
-// on a clean white background with interactive GhostFibers background from React Bits.
+// on a clean white background.
 import { useEffect, useRef } from 'react';
 import { reduced } from './shared';
 import FoldText from './FoldText';
-import GhostFibers from '@/components/ui/GhostFibers';
 
 export function BrandHero() {
   const film = useRef<HTMLDivElement>(null);
@@ -25,6 +24,7 @@ export function BrandHero() {
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(set); };
     set();
     if (!still) { window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); }
+
     // The intro: once BRANDS has folded in, the film rises over the title by itself, with scrolling held. When it
     // lands, the page is scrolled to where the film now sits (the band is sticky, so nothing moves) and scrolling
     // is handed back. Trying to scroll first just starts the rise sooner. Skipped for reduced motion, or when the
@@ -78,21 +78,6 @@ export function BrandHero() {
   return (
     <section className="brd-hero" id="brd-top" aria-labelledby="brd-hero-title">
       <div className="brd-band">
-        {/* Interactive GhostFibers Background from React Bits in Brand Purple */}
-        <div className="brd-hero-fibers-bg" aria-hidden="true">
-          <GhostFibers
-            glowColor="#502B9A"
-            layers={3}
-            twist={1.2}
-            threads={72}
-            fiberStyle="dots"
-            depthOfField={0.85}
-            hoverEffect="focus"
-            intro={true}
-            mouseInteraction={true}
-          />
-        </div>
-
         <div className="brd-wrap brd-band-center">
           {/* Centered "Gradient for Brands" Lockup in Brand Purple */}
           <h1 id="brd-hero-title" className="brd-hero-title-lockup">
