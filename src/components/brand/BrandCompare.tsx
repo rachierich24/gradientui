@@ -3,8 +3,9 @@
 // opens on the launch as it goes today: a distributor, a field rep, kits left in a back room, six weeks of not
 // knowing. When the section comes into view, Gradient's cursor edits it the way a copy editor would. The lines
 // spread to make room, and each detour is struck through and its replacement written in above it. Then the edits are taken: struck words drop out, the kept words close up, the insertions settle into
-// the line, and the paragraph ends a good deal shorter. Pointing at an edit marks it. With reduced motion it shows
-// the marked-up draft and nothing moves. Figures come from the sample Delhi NCR trial.
+// the line, and the paragraph ends a good deal shorter, with the cursor resting after the last word. Struck words
+// squeeze out on the face's width axis as they go. Pointing at an edit marks it, and the edit can be replayed. With
+// reduced motion it shows the marked-up draft and nothing moves. Figures come from the sample Delhi NCR trial.
 // Styles: app/brand/brand-compare.css
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { reduced } from './shared';
@@ -41,6 +42,7 @@ const IN_B = TOKS.map((_, i) => i).filter((i) => TOKS[i].kind !== 'cut'); // the
 
 // the edit, 0 → 1: the lines spread, four edits (strike, then write in), a beat, then the edits are taken
 const LH = 1.2; // the sentence's line height, as in the stylesheet
+const WIDE = 110; // and its width (font-stretch, %)
 const SPREAD = 0.04;
 const strikeAt = (k: number) => 0.05 + k * 0.135;
 const STRIKE = 0.065, TYPE = 0.05;
@@ -64,7 +66,7 @@ type Geo = {
 const words = (list: number[]) => list.map((i, n) => (
   <Fragment key={i}>
     {n ? ' ' : null}
-    <span data-i={i}>{TOKS[i].text}</span>
+    <span data-i={i} className={TOKS[i].kind === 'add' ? 'is-add' : undefined}>{TOKS[i].text}</span>
   </Fragment>
 ));
 
@@ -79,8 +81,11 @@ export function BrandCompare() {
   const t = useRef(0);
   const raf = useRef(0);
   const calm = useRef(false);
+  const hold = useRef(0);
+  const ended = useRef(false);
   const [hot, setHot] = useState(-1);
   const [ready, setReady] = useState(false);
+  const [done, setDone] = useState(false);
 
   const measure = useCallback(() => {
     const b0 = box.current, a = ma.current, b = mb.current;
@@ -157,6 +162,7 @@ export function BrandCompare() {
         el.style.setProperty('--s', s.toFixed(3));
         el.style.setProperty('--g', `${g.gapA[i]}px`);
         el.style.opacity = (1 - gone).toFixed(3);
+        el.style.fontStretch = gone > 0 ? `${mix(WIDE, 75, gone).toFixed(1)}%` : '';
         el.style.pointerEvents = s > 0 && gone < 1 ? 'auto' : 'none';
         return;
       }
@@ -182,7 +188,7 @@ export function BrandCompare() {
         return start(k);
       };
       let c = start(0);
-      for (let k = 0; k < EDITS.length; k++) {
+      for (let k = 0; k < EDITS.length && tt < TAKE; k++) {
         if (tt < strikeAt(k)) {
           if (k) {
             const u = ease(clamp((tt - typedBy(k - 1)) / (strikeAt(k) - typedBy(k - 1)))), p = pen(k - 1, ann[k - 1].len), q = start(k);
@@ -194,21 +200,31 @@ export function BrandCompare() {
         c = pen(k, clamp((tt - typeAt(k)) / TYPE) * ann[k].len);
         if (tt < typedBy(k)) break;
       }
+      // once the edits are taken, it rests after the last word with its flag below (the line above is full), turned
+      // inward if the line runs long
+      const L = TOKS.length - 1;
+      if (tt >= TAKE) c = [g.bx[L] + g.bw[L] + sp * 0.4, g.by[L] + (lineB - cap) / 2, cap];
+      const flag = (c0.firstElementChild as HTMLElement | null)?.offsetWidth ?? 0;
+      c0.classList.toggle('is-flip', c[0] + flag > g.w + 8);
+      c0.classList.toggle('is-rest', tt >= TAKE);
       c0.style.transform = `translate3d(${c[0].toFixed(1)}px, ${c[1].toFixed(1)}px, 0)`;
       c0.style.height = `${c[2].toFixed(1)}px`;
-      c0.style.opacity = (clamp(tt / 0.015) * (1 - clamp((tt - TAKE) / 0.03))).toFixed(3);
+      c0.style.opacity = (clamp(tt / 0.015) * (1 - clamp((tt - TAKE) / 0.03)) + clamp((tt - TAKEN) / 0.05)).toFixed(3);
     }
+    if (tt >= 1 !== ended.current) { ended.current = tt >= 1; setDone(ended.current); }
   }, []);
 
   // eases the edit to `to` over `ms` (the timeline has its own pacing inside)
-  const run = useCallback((to: number, ms: number) => {
+  const run = useCallback((to: number, ms: number, then?: () => void) => {
     cancelAnimationFrame(raf.current);
+    clearTimeout(hold.current);
     const from = t.current, t0 = performance.now();
     const step = (now: number) => {
       const k = ms > 0 ? Math.min(1, (now - t0) / ms) : 1;
       t.current = from + (to - from) * k;
       paint();
       if (k < 1) raf.current = requestAnimationFrame(step);
+      else then?.();
     };
     raf.current = requestAnimationFrame(step);
   }, [paint]);
@@ -238,8 +254,11 @@ export function BrandCompare() {
       } else cancelAnimationFrame(raf.current);
     }, { threshold: 0.45 });
     io.observe(el);
-    return () => { clearTimeout(wait); io.disconnect(); cancelAnimationFrame(raf.current); };
+    return () => { clearTimeout(wait); clearTimeout(hold.current); io.disconnect(); cancelAnimationFrame(raf.current); };
   }, [run]);
+
+  // replay: the edits are undone quickly, then made again at the usual pace
+  const replay = () => run(0, 900, () => { hold.current = window.setTimeout(() => run(1, AUTOPLAY), 450); });
 
   return (
     <section ref={sec} className="bcx" id="compare" aria-label="Before and after">
@@ -262,6 +281,10 @@ export function BrandCompare() {
         ))}
         <span ref={caret} className="bcx-caret"><i>Gradient</i></span>
       </div>
+      <button type="button" className={`bcx-replay${done ? ' is-on' : ''}`} disabled={!done} onClick={replay}>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8a4.8 4.8 0 1 0 1.5-3.5M3 2.5v2.6h2.6" /></svg>
+        Replay the edit
+      </button>
     </section>
   );
 }
