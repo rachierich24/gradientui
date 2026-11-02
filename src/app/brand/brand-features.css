@@ -245,9 +245,29 @@
   -webkit-mask: repeating-linear-gradient(90deg, #000 0 calc(var(--seg) - 2px), transparent 0 var(--seg));
   mask: repeating-linear-gradient(90deg, #000 0 calc(var(--seg) - 2px), transparent 0 var(--seg));
 }
-/* the dashboard's 3D map sits between the strips; its own styles are in brand-dashboard.css (.bdm3) */
-.bdg-map .bdm3 { inset: var(--top) 0 34px; }
-.bdg-map .bdm3-credit { right: 12px; bottom: -24px; }
+/* the trial's 3D map (TrialMap3D.tsx) sits between the strips: a WebGL canvas feathered into the screen, with the
+   area names, the café pin and a list for screen readers in HTML. Only this chapter uses it now (the dashboard has
+   its own map), so its styles live here */
+.bdg-map .bdm3 { position: absolute; inset: var(--top) 0 34px; }
+.bdg-map .bdm3.is-pointing { cursor: pointer; }
+.bdg-map .bdm3-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent), linear-gradient(180deg, transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
+}
+.bdg-map .bdm3-labels span { position: absolute; left: 0; top: 0; opacity: 0; font-size: 9px; font-weight: 700; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.34); white-space: nowrap; pointer-events: none; transition: opacity 0.6s ease; }
+.bdg-map .bdm3-credit { position: absolute; right: 12px; bottom: -24px; font-size: 9px; line-height: 1; color: rgba(255, 255, 255, 0.26); pointer-events: none; }
+.bdg-map .bdb-pin { position: absolute; z-index: 3; padding: 5px 9px; background: #fff; color: #120E1B; font-size: 11.5px; font-weight: 700; white-space: nowrap; pointer-events: none; transform: translate(-50%, calc(-100% - 14px)); box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.8); animation: bdgPin 0.22s var(--b-ease) both; }
+.bdg-map .bdb-pin::after { content: ""; position: absolute; left: 50%; top: 100%; width: 8px; height: 8px; margin: -5px 0 0 -4px; background: #fff; transform: rotate(45deg); }
+.bdg-map .bdb-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@keyframes bdgPin { from { opacity: 0; transform: translate(-50%, calc(-100% - 8px)); } }
 
 /* the area in focus: its index large, out of 300, over a ten-block meter */
 .bdg-t > .bdg-read { display: flex; flex-direction: column; height: 100%; padding: 16px 18px 18px; }
@@ -486,6 +506,7 @@
   .bfx-s-demand .bfx-art { height: 560px; }
   .bdg { inset: 12px 18px 18px 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 330px 184px; grid-template-areas: "map map" "read rank"; }
   .bdg-map { --top: 80px; }
+  .bdg-map .bdm3-labels { display: none; }
   .bdg-map-head { flex-direction: column; align-items: stretch; justify-content: center; gap: 10px; padding: 0 12px; }
   .bdg-clock { --seg: 6px; padding: 0 12px; }
   .bdg-t > .bdg-read { padding: 12px; }
@@ -508,7 +529,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .bfx-text, .bdg-t { transition: none; }
-  .bdg-map-head small i { animation: none; }
+  .bdg-map-head small i, .bdg-map .bdb-pin { animation: none; }
   .bnw-body, .bnw-eyes circle, .bnw-steam path, .bnw-say > span { animation: none; }
   .bnw-bot.is-talking .bnw-talk { animation: none; }
   .bnw-packet { display: none; }

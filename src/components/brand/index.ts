@@ -4,6 +4,7 @@ export { BrandPlanner } from './BrandPlanner';
 export { BrandDashboard } from './BrandDashboard';
 export { BrandMoat } from './BrandMoat';
 export { BrandTransformation } from './BrandTransformation';
+export { BrandCompare } from './BrandCompare';
 export { BrandFeatures } from './BrandFeatures';
 export { BrandBento } from './BrandBento';
 export { BrandMarketing } from './BrandMarketing';

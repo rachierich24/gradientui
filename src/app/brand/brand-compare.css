@@ -1,0 +1,81 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Before and after (components/brand/BrandCompare.tsx): one sentence, edited. The component lays the words out
+   itself (it measures the original and the clean copy in two hidden paragraphs, then moves each word between
+   them); this sheet sets the type, the strike, the cursor, the toggle and the footnotes. White and ink, with the
+   brand purple for everything Gradient changed.
+───────────────────────────────────────────────────────────────────────── */
+.bcx {
+  --pad: max(28px, calc((100vw - 1360px) / 2 + 28px));
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  position: relative;
+  padding: clamp(96px, 14vh, 150px) var(--pad) clamp(80px, 12vh, 130px);
+  background: #fff;
+}
+.bcx-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- header: the title, and which version you're looking at ---------- */
+.bcx-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; }
+.bcx-eye { display: block; margin-bottom: 14px; font: 600 12px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #6B33D3; }
+.bcx-head h2 { margin: 0; font-size: clamp(24px, 2vw, 32px); font-weight: 700; line-height: 1.1; letter-spacing: -0.035em; color: var(--b-ink); }
+.bcx-toggle { position: relative; flex: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; border-radius: 999px; background: #F4F1F8; }
+.bcx-thumb { --i: 0; position: absolute; left: 4px; top: 4px; bottom: 4px; width: calc((100% - 8px) / 3); border-radius: 999px; background: #fff; box-shadow: 0 1px 2px rgba(21, 17, 29, 0.06), 0 6px 16px -8px rgba(43, 23, 96, 0.3); transform: translateX(calc(var(--i) * 100%)); transition: transform 0.45s var(--b-ease); }
+.bcx-toggle button { position: relative; z-index: 1; height: 36px; padding: 0 20px; border: 0; border-radius: 999px; background: none; font-size: 13.5px; font-weight: 600; color: var(--b-ink-3); cursor: pointer; transition: color 0.3s; }
+.bcx-toggle button:hover { color: var(--b-ink-2); }
+.bcx-toggle button[aria-pressed="true"] { color: var(--b-ink); }
+.bcx-toggle button:last-of-type[aria-pressed="true"] { color: #6B33D3; }
+.bcx-toggle button:focus-visible { outline: 2px solid #6B33D3; outline-offset: 2px; }
+
+/* ---------- the sentence ---------- */
+.bcx-text { position: relative; max-width: 21.5em; margin-top: clamp(44px, 7vh, 72px); font-size: clamp(30px, 3.5vw, 56px); font-weight: 600; line-height: 1.2; letter-spacing: -0.035em; color: var(--b-ink); }
+.bcx-m { margin: 0; text-wrap: pretty; }
+.bcx-m > span { display: inline-block; }
+.bcx-m.is-b { position: absolute; left: 0; top: 0; width: 100%; }
+.bcx-m.is-b, .is-ready > .bcx-m.is-a { visibility: hidden; pointer-events: none; }
+.bcx-text sup { position: relative; top: -1.05em; margin-left: 0.12em; font-size: 0.4em; font-weight: 700; letter-spacing: 0; vertical-align: baseline; }
+/* the words that move: placed by the component, hidden until it has measured them */
+.bcx-v { position: absolute; left: 0; top: 0; isolation: isolate; white-space: nowrap; transform-origin: 0 0; will-change: transform; visibility: hidden; pointer-events: none; }
+.is-ready > .bcx-v { visibility: visible; }
+/* a struck word: the stroke runs on into the space after it, and the word greys as the stroke passes */
+.bcx-v.is-cut { color: color-mix(in srgb, #CBC4D6 calc(var(--s, 0) * 100%), #15111D); cursor: default; }
+.bcx-v.is-cut::after { content: ""; position: absolute; left: -0.04em; top: 0.6em; width: calc(100% + var(--g, 0px) + 0.08em); height: 0.07em; border-radius: 1em; background: #6B33D3; transform: scaleX(var(--s, 0)); transform-origin: left; }
+.bcx-v.is-add { color: #6B33D3; cursor: default; }
+.bcx-v sup { opacity: var(--n, 0); }
+/* pointing at an edit, or at its footnote, marks it */
+.bcx-v.is-add::before { content: ""; position: absolute; z-index: -1; inset: 0.1em calc(-1 * var(--gb, 0px) - 0.04em) 0.04em -0.06em; border-radius: 0.14em; background: #EFE8FC; opacity: 0; transition: opacity 0.25s; }
+.bcx-v.is-add.is-hot::before { opacity: 1; }
+.bcx-v.is-cut.is-hot { color: #A79DBA; }
+
+/* the cursor, flagged like a collaborator's in a shared doc */
+.bcx-caret { position: absolute; left: 0; top: 0; width: 2px; height: 1em; opacity: 0; pointer-events: none; }
+.bcx-caret::before { content: ""; position: absolute; inset: 0; border-radius: 1px; background: #6B33D3; animation: bcxBlink 1.05s linear infinite; }
+.bcx-caret i { position: absolute; left: 0; bottom: 100%; margin-bottom: 3px; padding: 4px 7px; border-radius: 6px 6px 6px 0; background: #6B33D3; font-size: 11px; font-style: normal; font-weight: 650; line-height: 1; letter-spacing: 0; color: #fff; white-space: nowrap; }
+
+/* ---------- the footnotes ---------- */
+.bcx-notes { --v: 0; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px; max-width: 1180px; margin: clamp(32px, 5vh, 56px) 0 0; padding: 24px 0 0; list-style: none; }
+/* the rule over the footnotes draws in with the first one */
+.bcx-notes::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--b-line); transform: scaleX(var(--v)); transform-origin: left; }
+.bcx-notes li { opacity: 0; cursor: default; }
+.bcx-num { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1px #DCD0F5; font-size: 11px; font-weight: 700; color: #6B33D3; transition: background 0.25s, color 0.25s, box-shadow 0.25s; }
+.bcx-notes b { font: 600 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--b-ink-3); }
+.bcx-notes p { margin: 12px 0 0; font-size: 15px; line-height: 1.5; color: var(--b-ink-2); transition: color 0.25s; }
+.bcx-notes li.is-hot .bcx-num { background: #6B33D3; box-shadow: none; color: #fff; }
+.bcx-notes li.is-hot p { color: var(--b-ink); }
+.bcx-foot { margin: 28px 0 0; font-size: 12px; font-weight: 550; color: var(--b-ink-3); }
+
+@keyframes bcxBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+
+/* a phone: the toggle under the title, footnotes two by two */
+@media (max-width: 760px) {
+  .bcx { padding: 84px 16px 72px; }
+  .bcx-head { flex-direction: column; align-items: stretch; gap: 20px; }
+  .bcx-toggle button { height: 34px; padding: 0 8px; font-size: 13px; }
+  .bcx-text { margin-top: 40px; font-size: 29px; }
+  .bcx-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; }
+  .bcx-notes p { font-size: 13.5px; }
+  .bcx-caret i { padding: 3px 6px; font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bcx-caret { display: none; }
+  .bcx-thumb { transition: none; }
+}

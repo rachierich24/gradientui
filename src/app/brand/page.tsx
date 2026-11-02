@@ -1,6 +1,6 @@
 'use client';
 
-import { BrandNavbar, BrandHero, BrandDashboard, BrandMoat, BrandTransformation, BrandFeatures, BrandBento } from '@/components/brand';
+import { BrandNavbar, BrandHero, BrandDashboard, BrandMoat, BrandTransformation, BrandCompare, BrandFeatures, BrandBento } from '@/components/brand';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
 import { G365Footer } from '@/components/landing/G365';
 
@@ -21,6 +21,9 @@ export default function BrandPortalPage() {
 
       {/* ─── 02d. Transformation: From fragmented supplier operations to one connected ecosystem ─── */}
       <BrandTransformation />
+
+      {/* ─── 02d2. Before and after: a café launch as one sentence, edited by Gradient as it comes into view ─── */}
+      <BrandCompare />
 
       {/* ─── 02e. Built for brands: four chapters that assemble as you scroll, from the demand heat map to the network ─── */}
       <BrandFeatures />
