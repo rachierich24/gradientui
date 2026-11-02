@@ -40,7 +40,6 @@ export function BrandClose({ onStart }: { onStart: () => void }) {
           <svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength={1} d="M4 15c40-7 92-10 150-8 50 2 96 5 142 1M22 20c60-4 140-6 250-2" /></svg>
         </span>
       </h2>
-      <p>Put it on the counter of 120 verified cafés instead, and know what sells in three weeks.</p>
       <div className="bcl-act" onPointerMove={lean} onPointerLeave={rest}>
         <span className="bcl-note" aria-hidden="true">
           <svg viewBox="0 0 96 56"><path pathLength={1} d="M90 8C70 4 46 10 34 24 26 33 22 41 14 48M14 48l1-12M14 48l11-3" /></svg>
