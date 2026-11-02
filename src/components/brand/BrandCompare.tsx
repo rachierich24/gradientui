@@ -1,5 +1,5 @@
 'use client';
-// Before and after, the section after Transformation: a brand's café launch told as one sentence, then edited. It
+// Before and after, the section after the hero: a brand's café launch told as one sentence, then edited. It
 // opens on the launch as it goes today: a distributor, a field rep, kits left in a back room, six weeks of not
 // knowing. When the section comes into view, Gradient's cursor edits it the way a copy editor would. The lines
 // spread to make room, and each detour is struck through and its replacement written in above it. Then the edits are taken: struck words drop out, the kept words close up, the insertions settle into

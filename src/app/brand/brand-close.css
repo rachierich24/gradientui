@@ -1,0 +1,37 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   The close (components/brand/BrandClose.tsx): a white screen, the line set large in ink with the brand purple on
+   its last word, and one stamped button, square and inked like the cards above it.
+───────────────────────────────────────────────────────────────────────── */
+.bcl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 78svh;
+  padding: clamp(96px, 16vh, 170px) 24px;
+  background: #fff;
+  text-align: center;
+}
+.bcl h2 { max-width: 15ch; margin: 0; font-size: clamp(44px, 7vw, 104px); font-weight: 760; line-height: 0.98; letter-spacing: -0.045em; color: #15111D; }
+.bcl h2 em { font-style: normal; color: #6B33D3; }
+.bcl p { max-width: 460px; margin: 28px 0 0; font-size: clamp(16px, 1.3vw, 19px); line-height: 1.55; color: #5C5668; }
+.bcl-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  margin-top: 44px;
+  padding: 0 26px;
+  border: 2px solid #15111D;
+  background: #6B33D3;
+  box-shadow: 6px 6px 0 #15111D;
+  font-size: 16px;
+  font-weight: 650;
+  color: #fff;
+  cursor: pointer;
+  transition: translate 0.15s, box-shadow 0.15s;
+}
+.bcl-go:hover { translate: -2px -2px; box-shadow: 8px 8px 0 #15111D; }
+.bcl-go:active { translate: 4px 4px; box-shadow: 2px 2px 0 #15111D; }
+.bcl-go:focus-visible { outline: 2px solid #6B33D3; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .bcl-go { transition: none; } }

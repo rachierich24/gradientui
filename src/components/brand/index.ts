@@ -7,6 +7,7 @@ export { BrandTransformation } from './BrandTransformation';
 export { BrandCompare } from './BrandCompare';
 export { BrandFeatures } from './BrandFeatures';
 export { BrandBento } from './BrandBento';
+export { BrandClose } from './BrandClose';
 export { BrandMarketing } from './BrandMarketing';
 export { FoldText } from './FoldText';
 export { CrystalizedBall } from './CrystalizedBall';
