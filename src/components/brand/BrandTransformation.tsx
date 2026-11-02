@@ -767,30 +767,30 @@ export function BrandTransformation() {
 
                 {/* Pure Dark Purple Gradient for the Beam (Gradient's Brand Purple) */}
                 <linearGradient id="beamGradDarkPurple" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#7C4DDB" stopOpacity="0.5" />
-                  <stop offset="40%" stopColor="#6A3BC8" stopOpacity="1" />
-                  <stop offset="80%" stopColor="#5B2BB5" stopOpacity="1" />
+                  <stop offset="0%" stopColor="#6B33D3" stopOpacity="0.5" />
+                  <stop offset="40%" stopColor="#6B33D3" stopOpacity="1" />
+                  <stop offset="80%" stopColor="#5522B8" stopOpacity="1" />
                   <stop offset="100%" stopColor="#2B1760" stopOpacity="1" />
                 </linearGradient>
 
                 {/* Dark Purple Ambient Halo Gradient */}
                 <linearGradient id="beamGradDarkHalo" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#7C4DDB" stopOpacity="0.3" />
-                  <stop offset="50%" stopColor="#6A3BC8" stopOpacity="0.5" />
+                  <stop offset="0%" stopColor="#6B33D3" stopOpacity="0.3" />
+                  <stop offset="50%" stopColor="#6B33D3" stopOpacity="0.5" />
                   <stop offset="100%" stopColor="#2B1760" stopOpacity="0.3" />
                 </linearGradient>
 
                 {/* Horizontal beam gradient for branches */}
                 <linearGradient id="beamGradHoriz" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#7C4DDB" stopOpacity="0.4" />
-                  <stop offset="30%" stopColor="#6A3BC8" stopOpacity="1" />
-                  <stop offset="70%" stopColor="#5B2BB5" stopOpacity="1" />
+                  <stop offset="0%" stopColor="#6B33D3" stopOpacity="0.4" />
+                  <stop offset="30%" stopColor="#6B33D3" stopOpacity="1" />
+                  <stop offset="70%" stopColor="#5522B8" stopOpacity="1" />
                   <stop offset="100%" stopColor="#2B1760" stopOpacity="0.6" />
                 </linearGradient>
 
                 <linearGradient id="beamGradHorizHalo" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#7C4DDB" stopOpacity="0.25" />
-                  <stop offset="50%" stopColor="#6A3BC8" stopOpacity="0.45" />
+                  <stop offset="0%" stopColor="#6B33D3" stopOpacity="0.25" />
+                  <stop offset="50%" stopColor="#6B33D3" stopOpacity="0.45" />
                   <stop offset="100%" stopColor="#2B1760" stopOpacity="0.2" />
                 </linearGradient>
               </defs>
@@ -800,14 +800,14 @@ export function BrandTransformation() {
                 <g className="btrans-rails-connected">
                   {/* Layer 1: Base static conduit rails in dark purple hairline */}
                   <g className="btrans-static-conduits">
-                    <line x1="90" y1="80" x2="1110" y2="80" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" strokeDasharray="4 4" />
+                    <line x1="90" y1="80" x2="1110" y2="80" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" strokeDasharray="4 4" />
 
                     {/* 8 Branching conduit tracks */}
                     {BRANCH_BEAMS.map((bb) => (
                       <path
                         key={`static-${bb.id}`}
                         d={bb.d}
-                        stroke="rgba(106, 59, 200, 0.12)"
+                        stroke="rgba(107, 51, 211, 0.12)"
                         strokeWidth="1.5"
                         fill="none"
                         strokeLinecap="round"
@@ -815,16 +815,16 @@ export function BrandTransformation() {
                     ))}
 
                     {/* Direct vertical feeders */}
-                    <line x1="162" y1="0" x2="162" y2="80" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="454" y1="0" x2="454" y2="80" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="746" y1="0" x2="746" y2="80" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="1038" y1="0" x2="1038" y2="80" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
+                    <line x1="162" y1="0" x2="162" y2="80" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="454" y1="0" x2="454" y2="80" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="746" y1="0" x2="746" y2="80" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="1038" y1="0" x2="1038" y2="80" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
 
-                    <line x1="134" y1="80" x2="134" y2="160" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="367" y1="80" x2="367" y2="160" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="600" y1="80" x2="600" y2="160" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="833" y1="80" x2="833" y2="160" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
-                    <line x1="1066" y1="80" x2="1066" y2="160" stroke="rgba(106, 59, 200, 0.15)" strokeWidth="1.5" />
+                    <line x1="134" y1="80" x2="134" y2="160" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="367" y1="80" x2="367" y2="160" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="600" y1="80" x2="600" y2="160" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="833" y1="80" x2="833" y2="160" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
+                    <line x1="1066" y1="80" x2="1066" y2="160" stroke="rgba(107, 51, 211, 0.15)" strokeWidth="1.5" />
                   </g>
 
                   {/* Layer 2A: 4 Dynamic FEEDER Beams (Top Card → Junction y=80) */}
@@ -894,14 +894,14 @@ export function BrandTransformation() {
                   <g className="btrans-dividing-junctions">
                     {JUNCTION_NODES.map((jn) => (
                       <g key={`junction-${jn.id}`}>
-                        <circle cx={jn.x} cy="80" r="6" fill="#6A3BC8" />
+                        <circle cx={jn.x} cy="80" r="6" fill="#6B33D3" />
                         <circle cx={jn.x} cy="80" r="2.5" fill="#EDE9FE" />
                         <circle
                           cx={jn.x}
                           cy="80"
                           r="13"
                           fill="none"
-                          stroke="#7C4DDB"
+                          stroke="#6B33D3"
                           strokeWidth="2"
                           className="btrans-junction-ring"
                           style={{ animationDelay: jn.delay }}
@@ -914,14 +914,14 @@ export function BrandTransformation() {
                   <g className="btrans-destination-pips">
                     {DESTINATION_PIPS.map((dp) => (
                       <g key={`pip-${dp.id}`}>
-                        <circle cx={dp.x} cy="158" r="5" fill="#6A3BC8" />
+                        <circle cx={dp.x} cy="158" r="5" fill="#6B33D3" />
                         <circle cx={dp.x} cy="158" r="2" fill="#EDE9FE" />
                         <circle
                           cx={dp.x}
                           cy="158"
                           r="10"
                           fill="none"
-                          stroke="#7C4DDB"
+                          stroke="#6B33D3"
                           strokeWidth="1.8"
                           className="btrans-dest-ring"
                           style={{ animationDelay: dp.delay }}

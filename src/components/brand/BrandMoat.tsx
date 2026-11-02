@@ -337,7 +337,7 @@ function DemandIntelligenceWorkspace() {
                   {isSelected ? (
                     <circle cx={pt.x} cy={mappedY} r="3.5" fill="#FFFFFF" stroke="#6B33D3" strokeWidth="1.8" />
                   ) : (
-                    <circle cx={pt.x} cy={mappedY} r="2" fill="#150B28" stroke="#7F48E8" strokeWidth="0.8" />
+                    <circle cx={pt.x} cy={mappedY} r="2" fill="#150B28" stroke="#6B33D3" strokeWidth="0.8" />
                   )}
                 </g>
               );
@@ -442,9 +442,9 @@ function SamplingFlightsWorkspace() {
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
         <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(107, 51, 211, 0.2)" strokeWidth="0.7" fill="rgba(107, 51, 211, 0.03)" />
         {/* Dynamic laser spline connector path from bottle's neck to card */}
-        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(127, 72, 232, 0.65)" strokeWidth="1.2" strokeDasharray="3 3" />
+        <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(107, 51, 211, 0.65)" strokeWidth="1.2" strokeDasharray="3 3" />
         {/* Constant Streaming Photon Pulse along the Path */}
-        <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 6px #7F48E8)">
+        <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 6px #6B33D3)">
           <animateMotion dur="2.8s" repeatCount="indefinite" path="M 72 135 C 92 135, 102 102, 114 98" />
         </circle>
       </svg>
@@ -525,7 +525,7 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Hillfold Roastery',
     status: 'Net-15 Recurring PO',
     cases: '12 cs',
-    avatarBg: '#251448',
+    avatarBg: '#2B1454',
     statusColor: '#B491F5',
     pathD: 'M 74 110 C 95 110, 102 68, 114 68',
   },
@@ -535,7 +535,7 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Tamarind Lane Café',
     status: 'Dispatched · Van 04',
     cases: '8 cs',
-    avatarBg: '#3A1F70',
+    avatarBg: '#5522B8',
     statusColor: '#D9C6FA',
     pathD: 'M 74 110 L 114 112',
   },
@@ -577,12 +577,12 @@ function OrderVelocityWorkspace() {
         {/* Dynamic Highway Path to Active Row */}
         <path
           d={activeRow.pathD}
-          stroke="rgba(127, 72, 232, 0.75)"
+          stroke="rgba(107, 51, 211, 0.75)"
           strokeWidth="1.3"
           strokeLinecap="round"
         />
         {/* Continuous Streaming Packet along Active Row Path */}
-        <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 6px #7F48E8)">
+        <circle r="2.8" fill="#FFFFFF" filter="drop-shadow(0 0 6px #6B33D3)">
           <animateMotion
             dur="2.4s"
             repeatCount="indefinite"
@@ -590,7 +590,7 @@ function OrderVelocityWorkspace() {
           />
         </circle>
         {/* Connection node on carton */}
-        <circle cx="74" cy="110" r="3" fill="#7F48E8" />
+        <circle cx="74" cy="110" r="3" fill="#6B33D3" />
       </svg>
 
       {/* Super 3D Interactive Artwork: Automated Reorders 3x3 Matrix (Marco Madonna style) */}
@@ -610,7 +610,7 @@ function OrderVelocityWorkspace() {
         {/* Header */}
         <div className="bmoat-hud-row-head">
           <div className="bmoat-hud-badge-clean">
-            <span className="bmoat-live-dot" style={{ background: '#7F48E8', boxShadow: '0 0 8px #7F48E8' }} />
+            <span className="bmoat-live-dot" style={{ background: '#6B33D3', boxShadow: '0 0 8px #6B33D3' }} />
             <span>Standing POs</span>
           </div>
           <div className="bmoat-hud-capsule-purple">
