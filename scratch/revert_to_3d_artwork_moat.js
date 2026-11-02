@@ -36,3 +36,4 @@ fs.writeFileSync('src/components/brand/BrandMoat.tsx', moatTsx, 'utf8');
 fs.writeFileSync('src/app/brand/brand-moat.css', moatCss, 'utf8');
 
 console.log('Successfully restored BrandMoat.tsx and brand-moat.css to the 3D wireframe artwork version with #6B33D3.');
+
