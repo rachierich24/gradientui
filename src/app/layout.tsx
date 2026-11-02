@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { preload } from 'react-dom'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Plus_Jakarta_Sans, Caveat } from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import 'leaflet/dist/leaflet.css'
 import './landing-fonts.css'
@@ -27,6 +27,12 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-plus-jakarta',
+  display: 'swap',
+})
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
   display: 'swap',
 })
 
@@ -124,7 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     ],
   }
   return (
-    <html lang="en" className={plusJakarta.variable}>
+    <html lang="en" className={`${plusJakarta.variable} ${caveat.variable}`}>
       <body>
         <script
           id="media-abort-guard"

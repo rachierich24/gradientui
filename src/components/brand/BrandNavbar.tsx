@@ -35,8 +35,7 @@ export function BrandNavbar({ onStart }: { onStart: () => void }) {
     <header className={`brd-nav${scrolled ? ' is-scrolled' : ' is-hero-transparent'}${dark ? ' is-dark' : ''}`}>
       <div className="brd-wrap brd-nav-in">
         <Link href="/brand" className="brd-logo" aria-label="Gradient Brand Portal">
-          <span className="brd-logo-mark" aria-hidden="true">G</span>
-          <span className="brd-logo-text">Gradient<span className="brd-logo-tag">Brand Portal</span></span>
+          <span className="brd-logo-text">graident</span>
         </Link>
         <nav aria-label="Brand Portal">
           <ul className="brd-nav-links">
@@ -46,7 +45,7 @@ export function BrandNavbar({ onStart }: { onStart: () => void }) {
         <div className="brd-nav-right">
           <a href="https://brand.gradient365.com" className="brd-login">Log in</a>
           <button type="button" className="brd-btn brd-btn-dark" onClick={onStart}>
-            <BorderBeam size={42} duration={4} borderWidth={1.5} colorFrom="#C4B0F5" colorTo="#ffffff" />
+            <BorderBeam size={42} duration={4} borderWidth={1.5} colorFrom="#D9C6FA" colorTo="#502B9A" />
             <span>Launch a trial</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </button>

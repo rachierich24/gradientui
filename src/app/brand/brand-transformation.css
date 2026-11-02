@@ -89,7 +89,7 @@
 }
 
 .btrans-title-highlight {
-  background: linear-gradient(135deg, #5B2BB5 0%, #7C4DDB 60%, #9333EA 100%);
+  background: linear-gradient(135deg, #3A1F70 0%, #502B9A 60%, #7F48E8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
