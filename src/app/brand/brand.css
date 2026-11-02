@@ -11,7 +11,7 @@
   --b-line: #ECE8F2;
   --b-line-2: #F4F1F8;
   --b-sub: #FAF9FC;
-  --b-accent: #502B9A;
+  --b-accent: #6B33D3;
   --b-accent-2: #3A1F70;
   --b-soft: #F3EDFD;
   --b-deep: #251448;
@@ -86,7 +86,7 @@
 .brd-btn-accent {
   background: var(--b-accent);
   color: #fff;
-  box-shadow: 0 10px 24px -12px rgba(80, 43, 154, 0.75);
+  box-shadow: 0 10px 24px -12px rgba(107, 51, 211, 0.75);
 }
 
 .brd-btn-accent:hover {
@@ -142,7 +142,7 @@
   display: flex;
   align-items: center;
   gap: 0;
-  color: #502B9A;
+  color: #6B33D3;
   text-decoration: none;
 }
 
@@ -154,7 +154,7 @@
   font-size: 22px;
   font-weight: 850;
   letter-spacing: -0.04em;
-  color: #502B9A !important;
+  color: #6B33D3 !important;
   font-family: var(--font-sans, "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif);
 }
 
@@ -230,7 +230,7 @@
 }
 
 .brd-nav.is-dark .brd-logo-tag {
-  border-color: rgba(80, 43, 154, 0.35);
+  border-color: rgba(107, 51, 211, 0.35);
   background: var(--b-soft);
   color: var(--b-accent-2);
 }
@@ -249,15 +249,15 @@
 
 .brd-nav.is-dark .brd-btn-dark,
 .brd-nav .brd-btn-dark {
-  background: #502B9A !important;
+  background: #6B33D3 !important;
   color: #fff !important;
-  box-shadow: 0 4px 16px rgba(80, 43, 154, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(107, 51, 211, 0.35) !important;
 }
 
 .brd-nav.is-dark .brd-btn-dark:hover,
 .brd-nav .brd-btn-dark:hover {
   background: #3A1F70 !important;
-  box-shadow: 0 6px 20px rgba(80, 43, 154, 0.45) !important;
+  box-shadow: 0 6px 20px rgba(107, 51, 211, 0.45) !important;
 }
 
 .brd-nav,
@@ -290,7 +290,7 @@
   padding-top: clamp(104px, 14vh, 138px);
   padding-bottom: 0;
   color: #1A0C38;
-  background: radial-gradient(75% 100% at 50% 35%, rgba(80, 43, 154, 0.04) 0%, rgba(255, 255, 255, 0) 70%), #FFFFFF;
+  background: radial-gradient(75% 100% at 50% 35%, rgba(107, 51, 211, 0.04) 0%, rgba(255, 255, 255, 0) 70%), #FFFFFF;
   z-index: 1;
   box-sizing: border-box;
 }
@@ -367,7 +367,7 @@
   font-weight: 600;
   font-style: normal;
   font-family: var(--font-caveat, 'Caveat', cursive);
-  color: #502B9A;
+  color: #6B33D3;
   letter-spacing: 0.01em;
   line-height: 1;
   transform: rotate(-4deg);
@@ -400,7 +400,7 @@
 
 .brd-txt-brands .fold-text-piece {
   line-height: 0.85;
-  background: linear-gradient(180deg, #1A0C38 15%, #2B1760 50%, #5B2BB5 80%, #502B9A 100%);
+  background: linear-gradient(180deg, #1A0C38 15%, #2B1760 50%, #5B2BB5 80%, #6B33D3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -463,7 +463,7 @@
   position: relative;
   padding: 120px 0 110px;
   border-bottom: 1px solid var(--b-line-2);
-  background-image: linear-gradient(rgba(80, 43, 154, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(80, 43, 154, 0.06) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(107, 51, 211, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(107, 51, 211, 0.06) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 
@@ -489,7 +489,7 @@
   gap: 7px;
   padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(80, 43, 154, 0.25);
+  border: 1px solid rgba(107, 51, 211, 0.25);
   background: var(--b-soft);
   color: var(--b-accent-2);
   font-size: 11.5px;
@@ -576,7 +576,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--b-accent);
-  box-shadow: 0 0 0 4px rgba(80, 43, 154, 0.15);
+  box-shadow: 0 0 0 4px rgba(107, 51, 211, 0.15);
   animation: brd-pulse 2s ease-in-out infinite;
 }
 
@@ -672,7 +672,7 @@
 }
 
 .brd-chips button[aria-pressed="true"] {
-  border-color: rgba(80, 43, 154, 0.45);
+  border-color: rgba(107, 51, 211, 0.45);
   background: var(--b-soft);
   color: var(--b-ink);
 }
@@ -802,7 +802,7 @@
 
 @keyframes brd-pulse {
   50% {
-    box-shadow: 0 0 0 7px rgba(80, 43, 154, 0.05);
+    box-shadow: 0 0 0 7px rgba(107, 51, 211, 0.05);
   }
 }
 
@@ -900,12 +900,12 @@
 
 /* ─── Footer (shared G365Footer) in brand purple: wordmark, its sheen and link hovers ─── */
 .brand-portal-root .g365-footer {
-  --sup-ft-ink: #502B9A;
-  --light: linear-gradient(100deg, #502B9A 0%, #502B9A 41%, #A17EEA 47%, #D4C2F7 50%, #A17EEA 53%, #502B9A 59%, #502B9A 100%);
+  --sup-ft-ink: #6B33D3;
+  --light: linear-gradient(100deg, #6B33D3 0%, #6B33D3 41%, #A17EEA 47%, #D4C2F7 50%, #A17EEA 53%, #6B33D3 59%, #6B33D3 100%);
 }
 
 .brand-portal-root .g365-footer #ftEnergy stop {
-  stop-color: #502B9A;
+  stop-color: #6B33D3;
 }
 
 .brand-portal-root .g365-footer #ftEnergy stop:nth-child(3),
@@ -926,9 +926,9 @@
 }
 
 .brand-portal-root .g365-footer .ft-guides * {
-  stroke: rgba(80, 43, 154, 0.2);
+  stroke: rgba(107, 51, 211, 0.2);
 }
 
 .brand-portal-root .g365-footer .ft-wrap::before {
-  background: linear-gradient(180deg, rgba(80, 43, 154, 0), rgba(80, 43, 154, 0.55));
+  background: linear-gradient(180deg, rgba(107, 51, 211, 0), rgba(107, 51, 211, 0.55));
 }

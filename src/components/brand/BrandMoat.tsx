@@ -255,9 +255,9 @@ function DemandIntelligenceWorkspace() {
     >
       {/* Subtle Ground CAD Grid */}
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
-        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(80, 43, 154, 0.2)" strokeWidth="0.7" fill="rgba(80, 43, 154, 0.03)" />
-        <line x1="50" y1="178" x2="210" y2="228" stroke="rgba(80, 43, 154, 0.14)" strokeWidth="0.6" />
-        <line x1="90" y1="165" x2="250" y2="215" stroke="rgba(80, 43, 154, 0.14)" strokeWidth="0.6" />
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(107, 51, 211, 0.2)" strokeWidth="0.7" fill="rgba(107, 51, 211, 0.03)" />
+        <line x1="50" y1="178" x2="210" y2="228" stroke="rgba(107, 51, 211, 0.14)" strokeWidth="0.6" />
+        <line x1="90" y1="165" x2="250" y2="215" stroke="rgba(107, 51, 211, 0.14)" strokeWidth="0.6" />
       </svg>
 
       {/* Super 3D Interactive Artwork: Demand Strata Stack (Marco Madonna style) */}
@@ -292,11 +292,11 @@ function DemandIntelligenceWorkspace() {
             <defs>
               <linearGradient id="curveGrad1" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#3A1F70" />
-                <stop offset="50%" stopColor="#502B9A" />
+                <stop offset="50%" stopColor="#6B33D3" />
                 <stop offset="100%" stopColor="#D9C6FA" />
               </linearGradient>
               <linearGradient id="areaGrad1" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#502B9A" stopOpacity="0.28" />
+                <stop offset="0%" stopColor="#6B33D3" stopOpacity="0.28" />
                 <stop offset="100%" stopColor="#08070D" stopOpacity="0" />
               </linearGradient>
             </defs>
@@ -335,7 +335,7 @@ function DemandIntelligenceWorkspace() {
                 >
                   <circle cx={pt.x} cy={mappedY} r="7" fill="transparent" />
                   {isSelected ? (
-                    <circle cx={pt.x} cy={mappedY} r="3.5" fill="#FFFFFF" stroke="#502B9A" strokeWidth="1.8" />
+                    <circle cx={pt.x} cy={mappedY} r="3.5" fill="#FFFFFF" stroke="#6B33D3" strokeWidth="1.8" />
                   ) : (
                     <circle cx={pt.x} cy={mappedY} r="2" fill="#150B28" stroke="#7F48E8" strokeWidth="0.8" />
                   )}
@@ -440,7 +440,7 @@ function SamplingFlightsWorkspace() {
     >
       {/* Background CAD Grid & Delicate Hairline Spline Connector */}
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
-        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(80, 43, 154, 0.2)" strokeWidth="0.7" fill="rgba(80, 43, 154, 0.03)" />
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(107, 51, 211, 0.2)" strokeWidth="0.7" fill="rgba(107, 51, 211, 0.03)" />
         {/* Dynamic laser spline connector path from bottle's neck to card */}
         <path d="M 72 135 C 92 135, 102 102, 114 98" stroke="rgba(127, 72, 232, 0.65)" strokeWidth="1.2" strokeDasharray="3 3" />
         {/* Constant Streaming Photon Pulse along the Path */}
@@ -545,7 +545,7 @@ const VELOCITY_ROWS: OrderVelocityRow[] = [
     venue: 'Bramblegate Roastery',
     status: 'Standing PO · Ready',
     cases: '16 cs',
-    avatarBg: '#502B9A',
+    avatarBg: '#6B33D3',
     statusColor: '#B491F5',
     pathD: 'M 74 110 C 95 110, 102 156, 114 156',
   },
@@ -573,7 +573,7 @@ function OrderVelocityWorkspace() {
     >
       {/* Background CAD Grid & Active Highway Line */}
       <svg className="bmoat-frame-bg-svg" viewBox="0 0 340 236" fill="none" aria-hidden="true">
-        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(80, 43, 154, 0.2)" strokeWidth="0.7" fill="rgba(80, 43, 154, 0.03)" />
+        <path d="M10 190 L170 140 L330 190 L170 240 Z" stroke="rgba(107, 51, 211, 0.2)" strokeWidth="0.7" fill="rgba(107, 51, 211, 0.03)" />
         {/* Dynamic Highway Path to Active Row */}
         <path
           d={activeRow.pathD}

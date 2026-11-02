@@ -3,10 +3,11 @@
 // grid that comes together as you scroll into the chapter. Three tiles fly in from around the canvas on the
 // chapter's --k and lock into the grid: across the top, wide, the dashboard's live 3D map of the Delhi NCR trial
 // (TrialMap3D.tsx), which plays day 1 to day 21 as you scroll through the chapter, just as it does in the
-// dashboard; under it, the neighbourhood in focus (its index set large) and the hottest neighbourhoods. Once the
+// dashboard, its columns as tall as each neighbourhood runs hot for the product picked and the one in focus
+// ringed; under it, that neighbourhood (its index set large) and the hottest neighbourhoods. Once the
 // grid stands the tiles tour on their own, product by product; pick a product, or point at a café or a
 // neighbourhood, to take over, and the tour resumes once you've left the map.
-// Styles: app/brand/brand-features.css (bdg-), the map's own in brand-dashboard.css
+// Styles: app/brand/brand-features.css (bdg-, and the map's bdm3-)
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { reduced, useTween } from './shared';
@@ -43,6 +44,8 @@ export function DemandBento({ active, listen }: Props) {
   const held = pointed >= 0;
   const ci = held ? pointed : order[step % 3], area = AREAS[ci].name, v = vals[ci];
   const [now, next] = scores[ci], chg = Math.round(((next - now) / now) * 100);
+  // on the map, each neighbourhood's columns stand as tall as it runs hot for this product, against the city's average
+  const heights = useMemo(() => { const avg = vals.reduce((a, b) => a + b, 0) / vals.length; return vals.map((x) => Math.min(1.5, Math.max(0.45, (x / avg) ** 1.6))); }, [vals]);
 
   // the scroll is the trial's clock, as in the dashboard: day 1 as the chapter comes in, day 21 before it leaves
   const day = useRef(1);
@@ -84,9 +87,9 @@ export function DemandBento({ active, listen }: Props) {
 
   return (
     <div className="bdg">
-      <Tile area="map" tone="bdg-dark" from={[-150, 90, -6]} d={0} label="Café demand index across Delhi NCR">
+      <Tile area="map" tone="bdg-screen" from={[-150, 90, -6]} d={0} label="Café demand index across Delhi NCR">
         <div className="bdg-map" onPointerLeave={() => { setPointed(-1); setMap(null); }}>
-          <TrialMap3D dayRef={day} filter={null} hot={map} spot={map?.kind === 'cafe' && CAFES[map.id].name ? map.id : null} still={calm} onPoint={onPoint} onFail={() => {}} />
+          <TrialMap3D dayRef={day} filter={null} hot={map} spot={map?.kind === 'cafe' && CAFES[map.id].name ? map.id : null} still={calm} onPoint={onPoint} onFail={() => {}} focus={ci} scale={heights} />
           <div className="bdg-map-head">
             <small><i />Café Demand Index · Delhi NCR</small>
             <div className="bdg-pills" role="group" aria-label="Product">

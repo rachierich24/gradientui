@@ -6,12 +6,12 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 
 /* ─────────────────────────────────────────────────────────────────────────────
    SHARED THREE.JS CONSTANTS & HELPERS
-   - Color palette directly matching Brand Portal Purple (#502B9A):
-     #08080C (obsidian canvas), #251448 (glass violet), #502B9A / #7F48E8 (pure purple core)
+   - Color palette directly matching Brand Portal Purple (#6B33D3):
+     #08080C (obsidian canvas), #251448 (glass violet), #6B33D3 / #7F48E8 (pure purple core)
 ───────────────────────────────────────────────────────────────────────────── */
 const COLOR_GLASS_FILL = 0x251448;
 const COLOR_GLASS_EDGE = 0x7f48e8;
-const COLOR_ACTIVE_FILL = 0x502b9a;
+const COLOR_ACTIVE_FILL = 0x6B33D3;
 const COLOR_ACTIVE_EMISSIVE = 0x6d3bcf;
 const COLOR_ACTIVE_EDGE = 0xd9c6fa;
 
@@ -47,7 +47,7 @@ function setupLighting(scene: THREE.Scene) {
   dirLight.position.set(4, 7, 3);
   scene.add(dirLight);
 
-  const rimLight = new THREE.PointLight(0x502b9a, 4.5, 14);
+  const rimLight = new THREE.PointLight(0x6B33D3, 4.5, 14);
   rimLight.position.set(-3, 3, -3);
   scene.add(rimLight);
 }
@@ -332,7 +332,7 @@ export function CafeDiscovery3D({ isHovered = false, activeVenueIdx = 0 }: CafeD
     // Base Circular Turntable & Concentric Radar Ring
     const ringGeo = new THREE.RingGeometry(1.65, 1.76, 40);
     const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x502b9a,
+      color: 0x6B33D3,
       side: THREE.DoubleSide,
       transparent: true,
       opacity: 0.65,
