@@ -35,7 +35,7 @@ export function BrandNavbar({ onStart }: { onStart: () => void }) {
     <header className={`brd-nav${scrolled ? ' is-scrolled' : ' is-hero-transparent'}${dark ? ' is-dark' : ''}`}>
       <div className="brd-wrap brd-nav-in">
         <Link href="/brand" className="brd-logo" aria-label="Gradient Brand Portal">
-          <span className="brd-logo-text">graident</span>
+          <span className="brd-logo-text">gradient</span>
         </Link>
         <nav aria-label="Brand Portal">
           <ul className="brd-nav-links">

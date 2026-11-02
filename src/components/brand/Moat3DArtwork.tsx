@@ -15,6 +15,15 @@ const COLOR_ACTIVE_FILL = 0x502b9a;
 const COLOR_ACTIVE_EMISSIVE = 0x6d3bcf;
 const COLOR_ACTIVE_EDGE = 0xd9c6fa;
 
+// a renderer, or null where WebGL isn't available (the tile then stays empty instead of taking the page down)
+function createRenderer(canvas: HTMLCanvasElement) {
+  try {
+    return new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  } catch {
+    return null;
+  }
+}
+
 function createIsometricCamera(width: number, height: number, distance: number = 3.6) {
   const aspect = width / height;
   const camera = new THREE.OrthographicCamera(
@@ -76,12 +85,8 @@ export function DemandStrata3D({ isHovered = false, activeIdx = 4 }: DemandStrat
     let width = container.clientWidth || 118;
     let height = container.clientHeight || 180;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance',
-    });
+    const renderer = createRenderer(canvas);
+    if (!renderer) return;
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -287,12 +292,8 @@ export function CafeDiscovery3D({ isHovered = false, activeVenueIdx = 0 }: CafeD
     let width = container.clientWidth || 118;
     let height = container.clientHeight || 180;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance',
-    });
+    const renderer = createRenderer(canvas);
+    if (!renderer) return;
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -544,12 +545,8 @@ export function OrderVelocity3D({
     let width = container.clientWidth || 118;
     let height = container.clientHeight || 180;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance',
-    });
+    const renderer = createRenderer(canvas);
+    if (!renderer) return;
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
