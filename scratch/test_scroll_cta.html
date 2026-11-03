@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .spacer-above {
+    height: 700px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #888;
+  }
+
+  /* ─── FULL BLEED WHITE CTA SECTION ─── */
+  .bcl {
+    position: relative;
+    width: 100vw;
+    min-height: 85vh;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 120px 24px;
+    box-sizing: border-box;
+  }
+
+  /* ─── Scroll-Driven Lines at Rightmost and Leftmost Positions ─── */
+  .bcl-arc-svg {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    top: 50%;
+  }
+
+  /* Leftmost position: hugging the absolute left edge of the screen */
+  .bcl-arc-left {
+    left: -40px;
+    width: clamp(300px, 30vw, 440px);
+    height: clamp(300px, 30vw, 440px);
+    /* Scroll-driven transform: comes out from the left edge */
+    transform: translateY(-50%) translateX(calc((1 - var(--p, 0)) * -140px));
+    opacity: calc(clamp(0, var(--p, 0) * 2, 1));
+    will-change: transform, opacity;
+  }
+
+  /* Rightmost position: hugging the absolute right edge of the screen */
+  .bcl-arc-right {
+    right: -40px;
+    width: clamp(300px, 30vw, 440px);
+    height: clamp(300px, 30vw, 440px);
+    /* Scroll-driven transform: comes out from the right edge */
+    transform: translateY(-50%) translateX(calc((1 - var(--p, 0)) * 140px));
+    opacity: calc(clamp(0, var(--p, 0) * 2, 1));
+    will-change: transform, opacity;
+  }
+
+  /* Stroke drawing in directly with scroll progress */
+  .bcl-arc-path {
+    stroke-dasharray: 400;
+    /* As var(--p) goes from 0 to 1, dashoffset goes from 400 to 0 */
+    stroke-dashoffset: calc(400 - (clamp(0, (var(--p, 0) - 0.15) * 1.5, 1) * 400));
+    will-change: stroke-dashoffset;
+  }
+
+  /* ─── Centered Content ─── */
+  .bcl-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bcl-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: #F8F5FF;
+    border: 1px solid rgba(107, 51, 211, 0.22);
+    font-size: 13.5px;
+    font-weight: 550;
+    color: #6B33D3;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(107, 51, 211, 0.06);
+  }
+  .bcl-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6B33D3;
+    box-shadow: 0 0 8px rgba(107, 51, 211, 0.85);
+  }
+
+  .bcl-title {
+    font-size: 64px;
+    font-weight: 750;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: #120A21;
+    margin: 0 0 18px 0;
+    max-width: 14ch;
+  }
+  .bcl-sub {
+    font-size: 17px;
+    line-height: 1.55;
+    color: #554D68;
+    max-width: 560px;
+    margin: 0 0 48px 0;
+  }
+
+  /* ─── CENTRAL CTA BUTTON with Light Moving Out of the Button ─── */
+  .bcl-center-cta {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* The Button Container - Symmetrically Balanced in Center */
+  .bcl-central-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    outline: none;
+    user-select: none;
+    filter: drop-shadow(0 16px 36px rgba(107, 51, 211, 0.28));
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  }
+
+  /* Left Capsule: "+ Build" */
+  .bcl-cbtn-left {
+    position: relative;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 54px;
+    padding: 0 22px 0 24px;
+    background: #090314;
+    border: 1.5px solid rgba(168, 85, 247, 0.55);
+    border-right: none;
+    border-radius: 9999px 0 0 9999px;
+    box-shadow: 0 10px 28px -6px rgba(15, 5, 30, 0.45), 0 0 18px rgba(107, 51, 211, 0.25) inset;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .bcl-cbtn-plus {
+    font-size: 20px;
+    font-weight: 350;
+    color: #C084FC;
+    line-height: 1;
+    transition: transform 0.35s ease;
+  }
+  .bcl-cbtn-action {
+    font-size: 16.5px;
+    font-weight: 650;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  /* Razor-sharp glowing vertical aperture / light slit */
+  .bcl-cbtn-slit {
+    position: relative;
+    z-index: 7;
+    width: 3.5px;
+    height: 50px;
+    background: #ffffff;
+    border-radius: 2px;
+    box-shadow: 
+      0 0 8px #ffffff,
+      0 0 18px #E9D5FF,
+      0 0 34px #A855F7,
+      0 0 58px #7C3AED;
+    transition: all 0.3s ease;
+  }
+
+  /* The Light Moving OUT of the Button! */
+  .bcl-cbtn-projector {
+    position: relative;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    height: 54px;
+    padding: 0 32px 0 22px;
+    cursor: pointer;
+  }
+
+  /* Volumetric Light Cone projecting OUT of the slit */
+  .bcl-cone-beam {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform-origin: left center;
+    /* Scroll-driven + animated light beam shooting out! */
+    transform: translateY(-50%) scaleX(calc(0.4 + clamp(0, var(--p, 0) * 0.6, 0.6)));
+    width: 360px;
+    height: 140px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(216, 180, 254, 0.92) 8%,
+      rgba(147, 51, 234, 0.85) 30%,
+      rgba(107, 51, 211, 0.72) 60%,
+      rgba(88, 28, 135, 0.35) 85%,
+      transparent 100%
+    );
+    clip-path: polygon(0% 34%, 100% 0%, 100% 100%, 0% 66%);
+    filter: drop-shadow(0 0 24px rgba(147, 51, 234, 0.6));
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  }
+
+  /* Animated photon flow pulses traveling OUT of the button */
+  .bcl-cone-pulse {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 360px;
+    height: 140px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.6) 20%,
+      transparent 40%
+    );
+    clip-path: polygon(0% 34%, 100% 0%, 100% 100%, 0% 66%);
+    pointer-events: none;
+    z-index: 2;
+    animation: photon-flow 2.4s infinite ease-out;
+  }
+
+  @keyframes photon-flow {
+    0% { transform: translateY(-50%) translateX(-60px) scaleX(0.4); opacity: 0; }
+    30% { opacity: 0.8; }
+    100% { transform: translateY(-50%) translateX(240px) scaleX(1.1); opacity: 0; }
+  }
+
+  /* Atmospheric glow halo spreading out into the room */
+  .bcl-cone-haze {
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    height: 200px;
+    background: radial-gradient(
+      ellipse 75% 50% at 20% 50%,
+      rgba(147, 51, 234, 0.45) 0%,
+      rgba(107, 51, 211, 0.2) 50%,
+      transparent 80%
+    );
+    filter: blur(16px);
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.35s ease, width 0.35s ease;
+  }
+
+  /* Text illuminated inside the light beam */
+  .bcl-cbtn-text {
+    position: relative;
+    z-index: 4;
+    font-size: 16.5px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.015em;
+    text-shadow: 0 1px 3px rgba(15, 5, 30, 0.5), 0 0 14px rgba(255, 255, 255, 0.8), 0 0 26px rgba(168, 85, 247, 0.8);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bcl-cbtn-arrow {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Hover states */
+  .bcl-central-btn:hover {
+    filter: drop-shadow(0 20px 44px rgba(107, 51, 211, 0.45));
+  }
+  .bcl-central-btn:hover .bcl-cbtn-plus {
+    transform: rotate(90deg) scale(1.2);
+    color: #ffffff;
+  }
+  .bcl-central-btn:hover .bcl-cbtn-slit {
+    height: 56px;
+    box-shadow: 
+      0 0 12px #ffffff,
+      0 0 26px #F3E8FF,
+      0 0 48px #C084FC,
+      0 0 74px #9333EA;
+  }
+  .bcl-central-btn:hover .bcl-cone-beam {
+    transform: translateY(-50%) scaleX(1.15);
+    filter: drop-shadow(0 0 32px rgba(147, 51, 234, 0.85));
+  }
+  .bcl-central-btn:hover .bcl-cbtn-arrow {
+    transform: translateX(5px);
+  }
+
+  /* 3D Centered Grid Floor */
+  .bcl-grid-floor {
+    position: relative;
+    width: 520px;
+    height: 90px;
+    margin-top: 14px;
+    overflow: hidden;
+    perspective: 320px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 65% 55% at 50% 25%, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 25%, black 20%, transparent 80%);
+  }
+  .bcl-grid-plane {
+    position: absolute;
+    inset: -60% -20% 0 -20%;
+    transform: rotateX(68deg);
+    background-size: 28px 28px;
+    background-image: 
+      linear-gradient(to right, rgba(107, 51, 211, 0.26) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(107, 51, 211, 0.26) 1px, transparent 1px);
+  }
+  .bcl-grid-light-spot {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 75px;
+    background: radial-gradient(ellipse 60% 50% at 50% 20%, rgba(147, 51, 234, 0.45) 0%, transparent 70%);
+    filter: blur(10px);
+  }
+
+  .bcl-footer-note-btn {
+    margin-top: 8px;
+    padding: 6px 14px;
+    border: 0;
+    background: transparent;
+    font-size: 14.5px;
+    font-weight: 550;
+    color: #6B33D3;
+    opacity: 0.9;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(107, 51, 211, 0.3);
+    text-underline-offset: 4px;
+  }
+
+  .spacer-below {
+    height: 600px;
+    background: #f8f9fa;
+  }
+</style>
+</head>
+<body>
+
+<div class="spacer-above">Scroll down to see lines emerge from screen edges and light shoot out of button</div>
+
+<section class="bcl" id="cta-section">
+  <!-- Leftmost 3D Arc: At the absolute left screen edge -->
+  <svg class="bcl-arc-svg bcl-arc-left" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="arc-grad-l" x1="15%" y1="85%" x2="85%" y2="15%">
+        <stop offset="0%" stop-color="#4C1D95" />
+        <stop offset="25%" stop-color="#6B33D3" />
+        <stop offset="65%" stop-color="#8B5CF6" />
+        <stop offset="100%" stop-color="#C084FC" />
+      </linearGradient>
+      <filter id="arc-shad-l" x="-20%" y="-20%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4C1D95" flood-opacity="0.25" />
+      </filter>
+    </defs>
+    <path class="bcl-arc-path" pathLength="400" d="M 15 190 A 135 135 0 0 0 270 125" 
+          stroke="url(#arc-grad-l)" stroke-width="50" stroke-linecap="round" filter="url(#arc-shad-l)" />
+  </svg>
+
+  <!-- Rightmost 3D Arc: At the absolute right screen edge -->
+  <svg class="bcl-arc-svg bcl-arc-right" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="arc-grad-r" x1="15%" y1="15%" x2="85%" y2="85%">
+        <stop offset="0%" stop-color="#C084FC" />
+        <stop offset="35%" stop-color="#8B5CF6" />
+        <stop offset="75%" stop-color="#6B33D3" />
+        <stop offset="100%" stop-color="#4C1D95" />
+      </linearGradient>
+      <filter id="arc-shad-r" x="-20%" y="-20%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4C1D95" flood-opacity="0.25" />
+      </filter>
+    </defs>
+    <path class="bcl-arc-path" pathLength="400" d="M 365 190 A 135 135 0 0 0 110 255" 
+          stroke="url(#arc-grad-r)" stroke-width="50" stroke-linecap="round" filter="url(#arc-shad-r)" />
+  </svg>
+
+  <div class="bcl-inner">
+    <div class="bcl-pill">
+      <span class="bcl-pill-dot"></span>
+      <span>Gradient · Café Demand Platform</span>
+    </div>
+
+    <h2 class="bcl-title">Start your<br>free trial today</h2>
+
+    <p class="bcl-sub">Unlock the full potential of your brand with verified café demand telemetry and automated reorders.</p>
+
+    <!-- Central CTA Button with light moving OUT of button -->
+    <div class="bcl-center-cta">
+      <button type="button" class="bcl-central-btn">
+        <span class="bcl-cbtn-left">
+          <span class="bcl-cbtn-plus">+</span>
+          <span class="bcl-cbtn-action">Build</span>
+        </span>
+
+        <span class="bcl-cbtn-slit"></span>
+
+        <!-- Light shoots OUT of button to the right -->
+        <span class="bcl-cbtn-projector">
+          <span class="bcl-cone-haze"></span>
+          <span class="bcl-cone-beam"></span>
+          <span class="bcl-cone-pulse"></span>
+          <span class="bcl-cbtn-text">
+            <span>Your Brand Identity</span>
+            <span class="bcl-cbtn-arrow">→</span>
+          </span>
+        </span>
+      </button>
+
+      <div class="bcl-grid-floor">
+        <div class="bcl-grid-plane"></div>
+        <div class="bcl-grid-light-spot"></div>
+      </div>
+
+      <button type="button" class="bcl-footer-note-btn">
+        Stuck in your brand growth? Talk with our team.
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="spacer-below"></div>
+
+<script>
+  // Scroll-based progress calculation
+  const cta = document.getElementById('cta-section');
+  function updateScroll() {
+    const rect = cta.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // Normalized 0..1 as section enters viewport and moves to center
+    const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.75)));
+    cta.style.setProperty('--p', progress.toFixed(3));
+  }
+  window.addEventListener('scroll', updateScroll, { passive: true });
+  updateScroll();
+</script>
+
+</body>
+</html>
+

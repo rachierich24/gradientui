@@ -1,58 +1,254 @@
 'use client';
-// The close, just before the footer: the ask, on a quiet white screen. The line pokes at the launch the page opened
-// on (kits left in a back room), a purple scribble draws itself under "back room" as the section comes into view,
-// and a hand-written aside to its left points an arrow at the button. The button leans a little toward the pointer and
-// opens the same contact form as the navbar's; the quieter link goes back up to how it works.
-// Styles: app/brand/brand-close.css
-import { useEffect, useRef } from 'react';
-import { reduced } from './shared';
+
+import React, { useEffect, useRef, useState } from 'react';
 
 export function BrandClose({ onStart }: { onStart: () => void }) {
-  const sec = useRef<HTMLElement>(null);
-  const go = useRef<HTMLButtonElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const secRef = useRef<HTMLElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
-  // draw the scribble, the arrow and the aside once the section is well in view
+  // Scroll-based progress tracker: drives line emergence from screen edges and projector light beam
   useEffect(() => {
-    const el = sec.current;
+    const el = secRef.current;
     if (!el) return;
-    if (reduced()) { el.classList.add('is-in'); return; }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.45 });
-    io.observe(el);
-    return () => io.disconnect();
+
+    let rafId = 0;
+    const updateScroll = () => {
+      rafId = 0;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Generous, smooth scroll range so the lines emerge slowly and gracefully strictly based on scroll
+      const scrollRange = vh * 1.25;
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / scrollRange));
+      el.style.setProperty('--scroll-p', progress.toFixed(4));
+    };
+
+    const onScroll = () => {
+      if (!rafId) rafId = requestAnimationFrame(updateScroll);
+    };
+
+    updateScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
-  // the button leans toward the pointer, a few pixels at most
-  const lean = (e: React.PointerEvent<HTMLDivElement>) => {
-    const b = go.current;
-    if (!b || e.pointerType !== 'mouse' || reduced()) return;
-    const r = b.getBoundingClientRect();
-    const x = (e.clientX - (r.left + r.width / 2)) / r.width, y = (e.clientY - (r.top + r.height / 2)) / r.height;
-    b.style.translate = `${(Math.max(-1, Math.min(1, x)) * 6).toFixed(1)}px ${(Math.max(-1, Math.min(1, y)) * 4).toFixed(1)}px`;
+  // Subtle interactive 3D tilt towards cursor on pointer move
+  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const btn = btnRef.current;
+    if (!btn || e.pointerType !== 'mouse') return;
+    const rect = btn.getBoundingClientRect();
+    const x = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+    const y = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+    btn.style.transform = `perspective(600px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-2px)`;
   };
-  const rest = () => { if (go.current) go.current.style.translate = ''; };
+
+  const handlePointerLeave = () => {
+    setIsHovered(false);
+    if (btnRef.current) {
+      btnRef.current.style.transform = '';
+    }
+  };
 
   return (
-    <section ref={sec} className="bcl" aria-labelledby="bcl-title">
-      <h2 id="bcl-title">
-        Your product deserves better than a{' '}
-        <span className="bcl-mark">
-          back room.
-          <svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path pathLength={1} d="M4 15c40-7 92-10 150-8 50 2 96 5 142 1M22 20c60-4 140-6 250-2" /></svg>
-        </span>
-      </h2>
-      <div className="bcl-act" onPointerMove={lean} onPointerLeave={rest}>
-        <span className="bcl-note" aria-hidden="true">
-          <svg viewBox="0 0 96 56"><path pathLength={1} d="M90 8C70 4 46 10 34 24 26 33 22 41 14 48M14 48l1-12M14 48l11-3" /></svg>
-          <span>your distributor will be fine.<br />probably.</span>
-        </span>
-        <button ref={go} type="button" className="bcl-go" onClick={onStart}>
-          Launch a trial
-          <i aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-          </i>
-        </button>
-        <a className="bcl-how" href="#features">See how it works</a>
+    <section
+      ref={secRef}
+      className="bcl"
+      aria-labelledby="bcl-title"
+    >
+      {/* ─── Leftmost 3D Glowing Torus Arc (Slides Out From Extreme Left Screen Edge On Scroll) ─── */}
+      <svg
+        className="bcl-arc-svg bcl-arc-left"
+        viewBox="0 0 380 380"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="bcl-arc-grad-l" x1="15%" y1="85%" x2="85%" y2="15%">
+            <stop offset="0%" stopColor="#4C1D95" />
+            <stop offset="25%" stopColor="#6B33D3" />
+            <stop offset="65%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#C084FC" />
+          </linearGradient>
+        </defs>
+        <path
+          className="bcl-arc-path"
+          pathLength={400}
+          d="M 15 190 A 135 135 0 0 0 270 125"
+          stroke="url(#bcl-arc-grad-l)"
+          strokeWidth="50"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      {/* ─── Rightmost 3D Glowing Torus Arc (Slides Out From Extreme Right Screen Edge On Scroll) ─── */}
+      <svg
+        className="bcl-arc-svg bcl-arc-right"
+        viewBox="0 0 380 380"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="bcl-arc-grad-r" x1="15%" y1="15%" x2="85%" y2="85%">
+            <stop offset="0%" stopColor="#C084FC" />
+            <stop offset="35%" stopColor="#8B5CF6" />
+            <stop offset="75%" stopColor="#6B33D3" />
+            <stop offset="100%" stopColor="#4C1D95" />
+          </linearGradient>
+        </defs>
+        <path
+          className="bcl-arc-path"
+          pathLength={400}
+          d="M 365 190 A 135 135 0 0 0 110 255"
+          stroke="url(#bcl-arc-grad-r)"
+          strokeWidth="50"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      <div className="bcl-inner">
+        {/* ─── Pill Badge ─── */}
+
+
+        {/* ─── Main Headline ─── */}
+        <h2 id="bcl-title" className="bcl-title">
+          Start your
+          <br />
+          free trial today
+        </h2>
+
+        {/* ─── Subtitle ─── */}
+        <p className="bcl-sub">
+          Unlock the full potential of your brand with verified café demand telemetry and automated reorders.
+        </p>
+
+        {/* ─── Centered CTA Design with Realistic Minimal Volumetric Light Projector ─── */}
+        <div className="bcl-center-cta">
+          <button
+            ref={btnRef}
+            type="button"
+            className={`bcl-central-btn ${isHovered ? 'is-hovered' : ''}`}
+            onClick={onStart}
+            onPointerMove={handlePointerMove}
+            onPointerEnter={() => setIsHovered(true)}
+            onPointerLeave={handlePointerLeave}
+            aria-label="Build Your Brand Identity - Launch Trial"
+          >
+            {/* Left side chassis: Minimal Matte Obsidian Capsule */}
+            <span className="bcl-cbtn-left">
+              <span className="bcl-cbtn-plus">+</span>
+              <span className="bcl-cbtn-action">Build</span>
+            </span>
+
+            {/* Glowing razor-sharp vertical optical slit / aperture */}
+            <span className="bcl-cbtn-slit-wrap" aria-hidden="true">
+              <span className="bcl-cbtn-slit" />
+              <span className="bcl-cbtn-slit-halo" />
+            </span>
+
+            {/* Projector Section: Volumetric Light Beams OUT of the button */}
+            <span className="bcl-cbtn-projector">
+              <span className="bcl-light-rig" aria-hidden="true">
+                <span className="bcl-beam-ambient" />
+                <svg
+                  className="bcl-beam-svg"
+                  viewBox="0 0 480 220"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <linearGradient id="bcl-beam-core" x1="0%" y1="50%" x2="100%" y2="50%">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
+                      <stop offset="8%" stopColor="#f3e8ff" stopOpacity="0.9" />
+                      <stop offset="28%" stopColor="#c084fc" stopOpacity="0.8" />
+                      <stop offset="55%" stopColor="#9333ea" stopOpacity="0.55" />
+                      <stop offset="75%" stopColor="#7c3aed" stopOpacity="0.25" />
+                      <stop offset="90%" stopColor="#6b33d3" stopOpacity="0.05" />
+                      <stop offset="100%" stopColor="#6b33d3" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="bcl-beam-soft" x1="0%" y1="50%" x2="100%" y2="50%">
+                      <stop offset="0%" stopColor="#f3e8ff" stopOpacity="0.8" />
+                      <stop offset="15%" stopColor="#c084fc" stopOpacity="0.65" />
+                      <stop offset="45%" stopColor="#9333ea" stopOpacity="0.4" />
+                      <stop offset="70%" stopColor="#7c3aed" stopOpacity="0.16" />
+                      <stop offset="88%" stopColor="#6b33d3" stopOpacity="0.02" />
+                      <stop offset="100%" stopColor="#4c1d95" stopOpacity="0" />
+                    </linearGradient>
+                    <filter id="bcl-soft-penumbra" x="-20%" y="-40%" width="140%" height="180%">
+                      <feGaussianBlur stdDeviation="14" />
+                    </filter>
+                    <filter id="bcl-core-glow" x="-10%" y="-20%" width="120%" height="140%">
+                      <feGaussianBlur stdDeviation="5" />
+                    </filter>
+                  </defs>
+
+                  {/* Volumetric feathered outer penumbra envelope with natural hyperbolic flare */}
+                  <path
+                    d="M 0 88 Q 240 45 480 15 L 480 205 Q 240 175 0 132 Z"
+                    fill="url(#bcl-beam-soft)"
+                    filter="url(#bcl-soft-penumbra)"
+                  />
+                  {/* Atmospheric mid-density projector beam */}
+                  <path
+                    d="M 0 92 Q 230 55 450 28 L 450 192 Q 230 165 0 128 Z"
+                    fill="url(#bcl-beam-core)"
+                    filter="url(#bcl-core-glow)"
+                    opacity="0.85"
+                  />
+                  {/* Concentrated luminous inner laser core */}
+                  <path
+                    d="M 0 96 Q 200 70 380 48 L 380 172 Q 200 150 0 124 Z"
+                    fill="url(#bcl-beam-core)"
+                    opacity="0.65"
+                  />
+                </svg>
+
+                {/* Dynamic photon wave stream */}
+                <span className="bcl-photon-stream-box">
+                  <span className="bcl-photon-wave-1" />
+                  <span className="bcl-photon-wave-2" />
+                </span>
+              </span>
+
+              {/* Refined illuminated typography with sleek animated chevron */}
+              <span className="bcl-cbtn-text">
+                <span>Your Brand Identity</span>
+                <svg
+                  className="bcl-cbtn-chevron"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M 5 12 h 14 M 13 6 l 6 6 l -6 6" />
+                </svg>
+              </span>
+            </span>
+          </button>
+
+          {/* 3D Perspective Grid Floor centered underneath */}
+          <div className="bcl-grid-floor" aria-hidden="true">
+            <div className="bcl-grid-plane" />
+            <div className="bcl-grid-light-spot" />
+          </div>
+
+          {/* Secondary Question Prompt centered below */}
+          <button
+            type="button"
+            className="bcl-footer-note-btn"
+            onClick={onStart}
+          >
+            Stuck in your brand growth? Talk with our team.
+          </button>
+        </div>
       </div>
     </section>
   );
 }
+
+export default BrandClose;

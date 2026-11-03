@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap');
+
 /* ─────────────────────────────────────────────────────────────────────────
    Gradient Brand Portal (/brand)
    Same language as the Supplier Portal: a white canvas, hairlines, tabular figures and
@@ -363,16 +365,16 @@
 }
 
 .brd-txt-for {
-  font-size: clamp(38px, 5.0vw, 70px);
+  font-size: clamp(44px, 5.8vw, 84px);
   font-weight: 400;
   font-style: normal;
-  font-family: var(--font-caveat, 'Caveat', cursive);
+  font-family: var(--font-alex-brush), 'Alex Brush', cursive;
   color: #6B33D3;
-  letter-spacing: 0.01em;
-  line-height: 1;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
   transform: rotate(-3deg);
   display: inline-block;
-  margin-left: 6px;
+  margin-left: 8px;
 }
 
 .brd-txt-brands {
@@ -930,5 +932,5 @@
 }
 
 .brand-portal-root .g365-footer .ft-wrap::before {
-  background: linear-gradient(180deg, rgba(107, 51, 211, 0), rgba(107, 51, 211, 0.55));
+  display: none !important;
 }

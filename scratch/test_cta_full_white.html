@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* ─── Whole Section Pure White ─── */
+  .bcl {
+    position: relative;
+    width: 100%;
+    background: #ffffff;
+    padding: 120px 24px 100px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .bcl-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* ─── 3D Glowing Torus Arcs on pure white canvas ─── */
+  .bcl-arc-svg {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Left arc: curves down and sweeps up */
+  .bcl-arc-left {
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 380px;
+    height: 380px;
+  }
+
+  /* Right arc: inverted dome arching UPWARDS */
+  .bcl-arc-right {
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 380px;
+    height: 380px;
+  }
+
+  /* ─── Pill Badge ─── */
+  .bcl-pill {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: #F8F5FF;
+    border: 1px solid rgba(107, 51, 211, 0.2);
+    font-size: 13.5px;
+    font-weight: 550;
+    color: #6B33D3;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(107, 51, 211, 0.05);
+  }
+  .bcl-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6B33D3;
+    box-shadow: 0 0 8px rgba(107, 51, 211, 0.85);
+  }
+
+  /* ─── Headline & Sub ─── */
+  .bcl-title {
+    position: relative;
+    z-index: 2;
+    font-size: 64px;
+    font-weight: 750;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: #120A21;
+    margin: 0 0 18px 0;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .bcl-sub {
+    position: relative;
+    z-index: 2;
+    font-size: 17px;
+    line-height: 1.55;
+    color: #554D68;
+    max-width: 540px;
+    margin: 0 0 48px 0;
+    text-wrap: balance;
+  }
+
+  /* ─── Light Projector Button ─── */
+  .bcl-beam-btn-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bcl-beam-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    outline: none;
+    filter: drop-shadow(0 16px 36px rgba(107, 51, 211, 0.28));
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  }
+
+  .bcl-emitter {
+    position: relative;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 54px;
+    padding: 0 24px 0 22px;
+    background: #090314;
+    border: 1.5px solid rgba(168, 85, 247, 0.45);
+    border-right: none;
+    border-radius: 9999px 0 0 9999px;
+    box-shadow: 0 10px 28px -6px rgba(15, 5, 30, 0.45), 0 0 18px rgba(107, 51, 211, 0.25) inset;
+    transition: all 0.3s ease;
+  }
+  .bcl-plus {
+    font-size: 21px;
+    font-weight: 350;
+    color: #C084FC;
+    line-height: 1;
+    transition: transform 0.35s ease;
+  }
+  .bcl-action {
+    font-size: 17px;
+    font-weight: 650;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  .bcl-slit {
+    position: relative;
+    z-index: 6;
+    width: 3.5px;
+    height: 50px;
+    background: #ffffff;
+    border-radius: 2px;
+    box-shadow: 
+      0 0 8px #ffffff,
+      0 0 20px #E9D5FF,
+      0 0 36px #A855F7,
+      0 0 60px #7C3AED;
+    transition: all 0.3s ease;
+  }
+
+  .bcl-projector-beam {
+    position: relative;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    height: 54px;
+    padding: 0 36px 0 24px;
+  }
+
+  .bcl-cone-mesh {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 380px;
+    height: 160px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(216, 180, 254, 0.92) 6%,
+      rgba(147, 51, 234, 0.88) 25%,
+      rgba(107, 51, 211, 0.78) 55%,
+      rgba(88, 28, 135, 0.45) 80%,
+      transparent 100%
+    );
+    clip-path: polygon(0% 34%, 100% 0%, 100% 100%, 0% 66%);
+    filter: drop-shadow(0 0 24px rgba(147, 51, 234, 0.6));
+    pointer-events: none;
+    z-index: 1;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bcl-cone-haze {
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 440px;
+    height: 220px;
+    background: radial-gradient(
+      ellipse 75% 50% at 20% 50%,
+      rgba(147, 51, 234, 0.45) 0%,
+      rgba(107, 51, 211, 0.22) 50%,
+      transparent 80%
+    );
+    filter: blur(16px);
+    pointer-events: none;
+    z-index: 0;
+    transition: all 0.35s ease;
+  }
+
+  .bcl-beam-text {
+    position: relative;
+    z-index: 4;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.015em;
+    text-shadow: 0 1px 3px rgba(15, 5, 30, 0.4), 0 0 14px rgba(255, 255, 255, 0.8), 0 0 28px rgba(168, 85, 247, 0.8);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bcl-beam-arrow {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Hover States */
+  .bcl-beam-btn:hover {
+    filter: drop-shadow(0 20px 44px rgba(107, 51, 211, 0.45));
+  }
+  .bcl-beam-btn:hover .bcl-emitter {
+    background: #0f0522;
+    border-color: rgba(192, 132, 252, 0.8);
+    box-shadow: 0 14px 36px -4px rgba(107, 51, 211, 0.6), 0 0 24px rgba(168, 85, 247, 0.35) inset;
+  }
+  .bcl-beam-btn:hover .bcl-plus {
+    transform: rotate(90deg) scale(1.2);
+    color: #ffffff;
+  }
+  .bcl-beam-btn:hover .bcl-slit {
+    height: 56px;
+    width: 4px;
+    box-shadow: 
+      0 0 12px #ffffff,
+      0 0 28px #F3E8FF,
+      0 0 50px #C084FC,
+      0 0 80px #9333EA;
+  }
+  .bcl-beam-btn:hover .bcl-cone-mesh {
+    width: 430px;
+    height: 185px;
+    filter: drop-shadow(0 0 32px rgba(147, 51, 234, 0.85));
+  }
+  .bcl-beam-btn:hover .bcl-cone-haze {
+    opacity: 1;
+    width: 480px;
+  }
+  .bcl-beam-btn:hover .bcl-beam-arrow {
+    transform: translateX(6px);
+  }
+
+  /* ─── 3D Perspective Grid Floor ─── */
+  .bcl-grid-floor {
+    position: relative;
+    width: 560px;
+    height: 95px;
+    margin-top: 14px;
+    overflow: hidden;
+    perspective: 320px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 65% 55% at 50% 25%, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 25%, black 20%, transparent 80%);
+  }
+  .bcl-grid-plane {
+    position: absolute;
+    inset: -60% -20% 0 -20%;
+    transform: rotateX(68deg);
+    background-size: 28px 28px;
+    background-image: 
+      linear-gradient(to right, rgba(107, 51, 211, 0.26) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(107, 51, 211, 0.26) 1px, transparent 1px);
+  }
+  .bcl-grid-light-spot {
+    position: absolute;
+    left: 45%;
+    top: 0;
+    width: 260px;
+    height: 80px;
+    background: radial-gradient(ellipse 65% 50% at 30% 20%, rgba(147, 51, 234, 0.4) 0%, transparent 70%);
+    filter: blur(10px);
+  }
+
+  .bcl-footer-note-btn {
+    margin-top: 8px;
+    padding: 6px 14px;
+    border: 0;
+    background: transparent;
+    font-size: 14.5px;
+    font-weight: 550;
+    color: #6B33D3;
+    opacity: 0.9;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(107, 51, 211, 0.3);
+    text-underline-offset: 4px;
+  }
+</style>
+</head>
+<body>
+
+<section class="bcl">
+  <!-- Left 3D Arc -->
+  <svg class="bcl-arc-svg bcl-arc-left" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="arc-grad-l" x1="15%" y1="85%" x2="85%" y2="15%">
+        <stop offset="0%" stop-color="#4C1D95" />
+        <stop offset="25%" stop-color="#6B33D3" />
+        <stop offset="65%" stop-color="#8B5CF6" />
+        <stop offset="100%" stop-color="#C084FC" />
+      </linearGradient>
+      <filter id="arc-shad-l" x="-20%" y="-20%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4C1D95" flood-opacity="0.25" />
+      </filter>
+    </defs>
+    <path d="M 15 190 A 135 135 0 0 0 270 125" 
+          stroke="url(#arc-grad-l)" 
+          stroke-width="50" 
+          stroke-linecap="round" 
+          filter="url(#arc-shad-l)" />
+  </svg>
+
+  <!-- Right 3D Arc -->
+  <svg class="bcl-arc-svg bcl-arc-right" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="arc-grad-r" x1="15%" y1="15%" x2="85%" y2="85%">
+        <stop offset="0%" stop-color="#C084FC" />
+        <stop offset="35%" stop-color="#8B5CF6" />
+        <stop offset="75%" stop-color="#6B33D3" />
+        <stop offset="100%" stop-color="#4C1D95" />
+      </linearGradient>
+      <filter id="arc-shad-r" x="-20%" y="-20%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4C1D95" flood-opacity="0.25" />
+      </filter>
+    </defs>
+    <path d="M 110 255 A 135 135 0 0 1 365 190" 
+          stroke="url(#arc-grad-r)" 
+          stroke-width="50" 
+          stroke-linecap="round" 
+          filter="url(#arc-shad-r)" />
+  </svg>
+
+  <div class="bcl-inner">
+    <div class="bcl-pill">
+      <span class="bcl-pill-dot"></span>
+      <span>Gradient · Café Demand Platform</span>
+    </div>
+
+    <h2 class="bcl-title">Start your<br>free trial today</h2>
+
+    <p class="bcl-sub">Unlock the full potential of your brand with verified café demand telemetry and automated reorders.</p>
+
+    <div class="bcl-beam-btn-wrap">
+      <button type="button" class="bcl-beam-btn">
+        <span class="bcl-emitter">
+          <span class="bcl-plus">+</span>
+          <span class="bcl-action">Build</span>
+        </span>
+        <span class="bcl-slit"></span>
+        <span class="bcl-projector-beam">
+          <span class="bcl-cone-haze"></span>
+          <span class="bcl-cone-mesh"></span>
+          <span class="bcl-beam-text">
+            <span>Your Brand Identity</span>
+            <span class="bcl-beam-arrow">→</span>
+          </span>
+        </span>
+      </button>
+
+      <div class="bcl-grid-floor">
+        <div class="bcl-grid-plane"></div>
+        <div class="bcl-grid-light-spot"></div>
+      </div>
+
+      <button type="button" class="bcl-footer-note-btn">
+        Stuck in your brand growth? Talk with our team.
+      </button>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
+

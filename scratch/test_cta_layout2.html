@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    margin: 0;
+    padding: 60px 30px;
+    background: #E5E0F0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  .cta-card {
+    position: relative;
+    width: 100%;
+    max-width: 1140px;
+    background: #ffffff;
+    border-radius: 32px;
+    padding: 80px 40px 70px;
+    box-shadow: 0 24px 60px -12px rgba(43, 23, 96, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* ─── 3D Glowing Torus Arcs (Matching Reference Image 1) ─── */
+  .bcl-arc-svg {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .bcl-arc-left {
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 360px;
+    height: 360px;
+  }
+  .bcl-arc-right {
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 360px;
+    height: 360px;
+  }
+
+  /* ─── Pill Badge ─── */
+  .cta-pill {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: #F8F5FF;
+    border: 1px solid rgba(107, 51, 211, 0.2);
+    font-size: 13.5px;
+    font-weight: 550;
+    color: #6B33D3;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(107, 51, 211, 0.06);
+  }
+  .cta-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6B33D3;
+    box-shadow: 0 0 8px rgba(107, 51, 211, 0.8);
+    animation: pill-pulse 2s infinite ease-in-out;
+  }
+  @keyframes pill-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+  }
+
+  /* ─── Headline & Sub ─── */
+  .cta-title {
+    position: relative;
+    z-index: 2;
+    font-size: 56px;
+    font-weight: 750;
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+    color: #120A21;
+    margin: 0 0 16px 0;
+    max-width: 14ch;
+  }
+  .cta-sub {
+    position: relative;
+    z-index: 2;
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: #554D68;
+    max-width: 540px;
+    margin: 0 0 44px 0;
+  }
+
+  /* ─── Light Beam Button (Matching Reference Image 2) ─── */
+  .cta-beam-btn-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-beam-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    outline: none;
+  }
+
+  /* Left Capsule: "+ Build" or "+ Launch" */
+  .cbb-left {
+    position: relative;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 22px 0 20px;
+    background: #0B0418;
+    border: 1.5px solid rgba(139, 92, 246, 0.45);
+    border-right: none;
+    border-radius: 9999px 0 0 9999px;
+    box-shadow: 0 12px 32px -8px rgba(15, 5, 30, 0.35), 0 0 16px rgba(107, 51, 211, 0.15) inset;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cbb-plus {
+    font-size: 20px;
+    font-weight: 400;
+    color: #C084FC;
+    line-height: 1;
+    transition: transform 0.3s ease;
+  }
+  .cbb-action {
+    font-size: 16.5px;
+    font-weight: 650;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  /* Glowing Light Aperture / Slit */
+  .cbb-slit {
+    position: relative;
+    z-index: 5;
+    width: 3px;
+    height: 48px;
+    background: #ffffff;
+    box-shadow: 
+      0 0 6px #ffffff,
+      0 0 16px #C084FC,
+      0 0 32px #8B5CF6,
+      0 0 54px #6B33D3;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* Right Section: The Volumetric Cone of Light */
+  .cbb-beam-dock {
+    position: relative;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 32px 0 20px;
+    background: #0B0418;
+    border: 1.5px solid rgba(139, 92, 246, 0.45);
+    border-left: none;
+    border-radius: 0 9999px 9999px 0;
+    box-shadow: 0 12px 32px -8px rgba(15, 5, 30, 0.35);
+    overflow: visible;
+    transition: all 0.3s ease;
+  }
+
+  /* Actual Projector Light Cone emanating out to the right */
+  .cbb-beam-cone {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 320px;
+    height: 130px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(192, 132, 252, 0.85) 8%,
+      rgba(147, 51, 234, 0.72) 30%,
+      rgba(107, 51, 211, 0.45) 60%,
+      rgba(107, 51, 211, 0.12) 85%,
+      transparent 100%
+    );
+    clip-path: polygon(0% 36%, 100% 0%, 100% 100%, 0% 64%);
+    filter: blur(2.5px);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.85;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Second soft ambient atmospheric haze behind the beam */
+  .cbb-beam-haze {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 360px;
+    height: 180px;
+    background: radial-gradient(
+      ellipse 80% 50% at 20% 50%,
+      rgba(147, 51, 234, 0.38) 0%,
+      rgba(107, 51, 211, 0.18) 50%,
+      transparent 80%
+    );
+    filter: blur(12px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Text illuminated inside the light beam */
+  .cbb-beam-text {
+    position: relative;
+    z-index: 3;
+    font-size: 16.5px;
+    font-weight: 650;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 12px rgba(237, 233, 254, 0.9), 0 0 24px rgba(147, 51, 234, 0.7);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cbb-arrow {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+  }
+
+  /* Hover States */
+  .cta-beam-btn:hover .cbb-left {
+    background: #110626;
+    border-color: rgba(168, 85, 247, 0.7);
+    box-shadow: 0 14px 40px -6px rgba(107, 51, 211, 0.5), 0 0 24px rgba(147, 51, 234, 0.3) inset;
+  }
+  .cta-beam-btn:hover .cbb-plus {
+    transform: rotate(90deg) scale(1.15);
+  }
+  .cta-beam-btn:hover .cbb-slit {
+    height: 52px;
+    box-shadow: 
+      0 0 10px #ffffff,
+      0 0 24px #C084FC,
+      0 0 44px #9333EA,
+      0 0 70px #7C3AED;
+  }
+  .cta-beam-btn:hover .cbb-beam-dock {
+    background: #110626;
+    border-color: rgba(168, 85, 247, 0.7);
+    box-shadow: 0 14px 40px -6px rgba(107, 51, 211, 0.5);
+  }
+  .cta-beam-btn:hover .cbb-beam-cone {
+    opacity: 1;
+    width: 360px;
+    filter: blur(1.5px);
+  }
+  .cta-beam-btn:hover .cbb-beam-haze {
+    opacity: 1;
+    width: 420px;
+  }
+  .cta-beam-btn:hover .cbb-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ─── 3D Perspective Grid Floor (Matching Reference Image 2) ─── */
+  .cta-grid-floor {
+    position: relative;
+    width: 520px;
+    height: 90px;
+    margin-top: 10px;
+    overflow: hidden;
+    perspective: 300px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 65% 55% at 50% 30%, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 30%, black 20%, transparent 80%);
+  }
+  .cta-grid-plane {
+    position: absolute;
+    inset: -60% -20% 0 -20%;
+    transform: rotateX(68deg);
+    background-size: 28px 28px;
+    background-image: 
+      linear-gradient(to right, rgba(107, 51, 211, 0.22) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(107, 51, 211, 0.22) 1px, transparent 1px);
+  }
+  .cta-grid-light-spot {
+    position: absolute;
+    left: 45%;
+    top: 0;
+    width: 220px;
+    height: 70px;
+    background: radial-gradient(ellipse 60% 50% at 30% 20%, rgba(147, 51, 234, 0.35) 0%, transparent 70%);
+    filter: blur(8px);
+  }
+
+  /* Secondary Question / Note at bottom */
+  .cta-footer-note {
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: 550;
+    color: #6B33D3;
+    opacity: 0.85;
+    letter-spacing: -0.01em;
+  }
+</style>
+</head>
+<body>
+
+<div class="cta-card">
+  <!-- Left 3D Arc (Matching Image 1) -->
+  <svg class="bcl-arc-svg bcl-arc-left" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="arc-grad-l" x1="20%" y1="90%" x2="90%" y2="20%">
+        <stop offset="0%" stop-color="#581C87" />
+        <stop offset="30%" stop-color="#7C3AED" />
+        <stop offset="70%" stop-color="#9333EA" />
+        <stop offset="100%" stop-color="#C084FC" />
+      </linearGradient>
+      <filter id="arc-shad-l" x="-20%" y="-20%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4C1D95" flood-opacity="0.32" />
+      </filter>
+    </defs>
+    <!-- Circular 3D ring dipping down and curving up -->
+    <path d="M 10 180 A 130 130 0 0 0 255 120" 
+          stroke="url(#arc-grad-l)" 
+          stroke-width="48" 
+          stroke-linecap="round" 
+          filter="url(#arc-shad-l)" />
+  </svg>
+
+  <!-- Right 3D Arc (Matching Image 1) -->
+  <svg class="bcl-arc-svg bcl-arc-right" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="arc-grad-r" x1="10%" y1="10%" x2="90%" y2="90%">
+        <stop offset="0%" stop-color="#C084FC" />
+        <stop offset="35%" stop-color="#9333EA" />
+        <stop offset="75%" stop-color="#7C3AED" />
+        <stop offset="100%" stop-color="#4C1D95" />
+      </linearGradient>
+      <filter id="arc-shad-r" x="-20%" y="-20%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4C1D95" flood-opacity="0.3" />
+      </filter>
+    </defs>
+    <!-- Inverted circular ring arching over on right -->
+    <path d="M 105 240 A 130 130 0 0 0 350 180" 
+          stroke="url(#arc-grad-r)" 
+          stroke-width="48" 
+          stroke-linecap="round" 
+          filter="url(#arc-shad-r)" />
+  </svg>
+
+  <!-- Pill Chip Badge -->
+  <div class="cta-pill">
+    <span class="cta-pill-dot"></span>
+    <span>Gradient · Café Demand Analytics</span>
+  </div>
+
+  <!-- Main Headline -->
+  <h2 class="cta-title">Start your<br>free trial today</h2>
+
+  <!-- Subtitle -->
+  <p class="cta-sub">Unlock the full potential of your brand with verified café demand telemetry and automated reorders.</p>
+
+  <!-- Button with "this light kind of thing" (Image 2) -->
+  <div class="cta-beam-btn-wrap">
+    <button type="button" class="cta-beam-btn" aria-label="Launch a trial flight">
+      <!-- Left side: "+ Build" or "+ Launch" -->
+      <span class="cbb-left">
+        <span class="cbb-plus">+</span>
+        <span class="cbb-action">Build</span>
+      </span>
+
+      <!-- Glowing Light Aperture / Vertical Slit -->
+      <span class="cbb-slit" aria-hidden="true"></span>
+
+      <!-- Right side dock with Light Beam projecting outward -->
+      <span class="cbb-beam-dock">
+        <span class="cbb-beam-haze" aria-hidden="true"></span>
+        <span class="cbb-beam-cone" aria-hidden="true"></span>
+        <span class="cbb-beam-text">
+          <span>Your Brand Identity</span>
+          <span class="cbb-arrow">→</span>
+        </span>
+      </span>
+    </button>
+
+    <!-- 3D Perspective Grid Floor below button -->
+    <div class="cta-grid-floor" aria-hidden="true">
+      <div class="cta-grid-plane"></div>
+      <div class="cta-grid-light-spot"></div>
+    </div>
+
+    <!-- Subtitle Question -->
+    <div class="cta-footer-note">Stuck in your brand growth? Talk with our team.</div>
+  </div>
+</div>
+
+</body>
+</html>
+
