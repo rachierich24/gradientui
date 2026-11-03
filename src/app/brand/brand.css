@@ -203,9 +203,8 @@
   background: rgba(0, 0, 0, 0.04);
 }
 
-/* nav over hero: completely transparent, then as it is after scrolling down */
-.brd-nav.is-hero-transparent,
-.brd-nav.is-dark:not(.is-scrolled) {
+/* Transparent navbar until ending of video section */
+.brd-nav.is-transparent {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -213,64 +212,84 @@
   border-bottom: 1px solid transparent !important;
 }
 
-.brd-nav.is-dark.is-scrolled {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 4px 20px rgba(21, 17, 29, 0.05);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+/* Over dark video film */
+.brd-nav.is-transparent.is-over-video .brd-logo-text {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
-.brd-nav.is-dark .brd-logo,
-.brd-nav.is-dark .brd-login {
-  color: #1A0C38;
+.brd-nav.is-transparent.is-over-video .brd-nav-links a {
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
 }
 
-.brd-nav.is-dark .brd-logo-mark {
-  background: #1A0C38;
-  color: #fff;
+.brd-nav.is-transparent.is-over-video .brd-nav-links a:hover {
+  color: #ffffff !important;
 }
 
-.brd-nav.is-dark .brd-logo-tag {
-  border-color: rgba(107, 51, 211, 0.35);
-  background: var(--b-soft);
-  color: var(--b-accent-2);
+.brd-nav.is-transparent.is-over-video .brd-login {
+  color: #ffffff !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
 }
 
-.brd-nav.is-dark .brd-nav-links a {
-  color: #4B3E65;
+.brd-nav.is-transparent.is-over-video .brd-login:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
-.brd-nav.is-dark .brd-nav-links a:hover {
-  color: #1A0C38;
+/* Over light hero title band */
+.brd-nav.is-transparent.is-over-light .brd-logo-text {
+  color: #6B33D3 !important;
 }
 
-.brd-nav.is-dark .brd-login:hover {
-  background: rgba(0, 0, 0, 0.04);
+.brd-nav.is-transparent.is-over-light .brd-nav-links a {
+  color: #4C3B68 !important;
 }
 
-.brd-nav.is-dark .brd-btn-dark,
+.brd-nav.is-transparent.is-over-light .brd-nav-links a:hover {
+  color: #120A21 !important;
+}
+
+.brd-nav.is-transparent.is-over-light .brd-login {
+  color: #120A21 !important;
+}
+
+/* After ending of video section: frosted glass header */
+.brd-nav.is-scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 4px 20px rgba(21, 17, 29, 0.05) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.brd-nav.is-scrolled .brd-logo-text {
+  color: #6B33D3 !important;
+}
+
+.brd-nav.is-scrolled .brd-nav-links a {
+  color: #4C3B68 !important;
+}
+
+.brd-nav.is-scrolled .brd-nav-links a:hover {
+  color: #120A21 !important;
+}
+
+.brd-nav.is-scrolled .brd-login {
+  color: #120A21 !important;
+}
+
+/* "Launch a trial" CTA button in signature brand purple */
 .brd-nav .brd-btn-dark {
   background: #6B33D3 !important;
-  color: #fff !important;
+  color: #ffffff !important;
   box-shadow: 0 4px 16px rgba(107, 51, 211, 0.35) !important;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease !important;
 }
 
-.brd-nav.is-dark .brd-btn-dark:hover,
 .brd-nav .brd-btn-dark:hover {
-  background: #3A1F70 !important;
-  box-shadow: 0 6px 20px rgba(107, 51, 211, 0.45) !important;
-}
-
-.brd-nav,
-.brd-nav .brd-logo,
-.brd-nav .brd-nav-links a,
-.brd-nav .brd-login,
-.brd-nav .brd-btn-dark {
-  transition: background .3s cubic-bezier(0.16, 1, 0.3, 1),
-    color .3s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow .3s cubic-bezier(0.16, 1, 0.3, 1),
-    backdrop-filter .3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #5924BE !important;
+  box-shadow: 0 6px 22px rgba(107, 51, 211, 0.5) !important;
+  transform: translateY(-1px);
 }
 
 /* hero: clean white band */
@@ -279,6 +298,16 @@
   background: #FFFFFF;
   position: relative;
   overflow: visible;
+}
+
+.brd-hero-dotgrid-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
 }
 
 .brd-band {
@@ -313,7 +342,7 @@
   align-items: center;
   text-align: center;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 

@@ -5,6 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { reduced } from './shared';
 import FoldText from './FoldText';
+import DotGrid from '@/components/ui/DotGrid';
 
 export function BrandHero() {
   const film = useRef<HTMLDivElement>(null);
@@ -78,6 +79,28 @@ export function BrandHero() {
   return (
     <section className="brd-hero" id="brd-top" aria-labelledby="brd-hero-title">
       <div className="brd-band">
+        {/* ─── REACT BITS DOTGRID BACKGROUND (WebGL2 Physics with Purplish Tone) ─── */}
+        <div className="brd-hero-dotgrid-wrap" aria-hidden="true">
+          <DotGrid
+            dotSize={1.3}
+            gap={11}
+            baseColor="#B8A7D9"
+            activeColor="#6B33D3"
+            radius={160}
+            force={12}
+            spring={0.018}
+            damping={0.82}
+            rippleSpeed={420}
+            rippleWidth={500}
+            rippleF={11}
+            rippleDecay={2.2}
+            ambientRipples={true}
+            opacity={0.85}
+            intro={true}
+            mouseInteraction={true}
+            clickShock={true}
+          />
+        </div>
         <div className="brd-wrap brd-band-center">
           {/* Centered "Gradient for Brands" Lockup in Brand Purple */}
           <h1 id="brd-hero-title" className="brd-hero-title-lockup">
