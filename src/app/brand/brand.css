@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Birthstone&display=swap');
 
 /* ─────────────────────────────────────────────────────────────────────────
    Gradient Brand Portal (/brand)
@@ -153,9 +153,9 @@
 }
 
 .brd-logo-text {
-  font-size: 22px;
-  font-weight: 850;
-  letter-spacing: -0.04em;
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: 0.005em;
   color: #6B33D3 !important;
   font-family: var(--font-sans, "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif);
 }
@@ -394,16 +394,17 @@
 }
 
 .brd-txt-for {
-  font-size: clamp(44px, 5.8vw, 84px);
+  font-size: clamp(40px, 7.5vw, 74px);
   font-weight: 400;
   font-style: normal;
-  font-family: var(--font-alex-brush), 'Alex Brush', cursive;
+  font-family: var(--font-birthstone), 'Birthstone', cursive;
   color: #6B33D3;
   letter-spacing: 0.02em;
-  line-height: 0.95;
-  transform: rotate(-3deg);
+  line-height: 0.85;
   display: inline-block;
-  margin-left: 8px;
+  margin-left: 4px;
+  padding: 0 8px 0 2px;
+  overflow: visible;
 }
 
 .brd-txt-brands {

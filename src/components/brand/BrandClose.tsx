@@ -71,10 +71,10 @@ export function BrandClose({ onStart }: { onStart: () => void }) {
       >
         <defs>
           <linearGradient id="bcl-arc-grad-l" x1="15%" y1="85%" x2="85%" y2="15%">
-            <stop offset="0%" stopColor="#4C1D95" />
+            <stop offset="0%" stopColor="#371488" />
             <stop offset="25%" stopColor="#6B33D3" />
-            <stop offset="65%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#C084FC" />
+            <stop offset="65%" stopColor="#7D42E3" />
+            <stop offset="100%" stopColor="#B89DF2" />
           </linearGradient>
         </defs>
         <path
@@ -97,10 +97,10 @@ export function BrandClose({ onStart }: { onStart: () => void }) {
       >
         <defs>
           <linearGradient id="bcl-arc-grad-r" x1="15%" y1="15%" x2="85%" y2="85%">
-            <stop offset="0%" stopColor="#C084FC" />
-            <stop offset="35%" stopColor="#8B5CF6" />
+            <stop offset="0%" stopColor="#B89DF2" />
+            <stop offset="35%" stopColor="#7D42E3" />
             <stop offset="75%" stopColor="#6B33D3" />
-            <stop offset="100%" stopColor="#4C1D95" />
+            <stop offset="100%" stopColor="#371488" />
           </linearGradient>
         </defs>
         <path
@@ -166,20 +166,20 @@ export function BrandClose({ onStart }: { onStart: () => void }) {
                   <defs>
                     <linearGradient id="bcl-beam-core" x1="0%" y1="50%" x2="100%" y2="50%">
                       <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
-                      <stop offset="8%" stopColor="#f3e8ff" stopOpacity="0.9" />
-                      <stop offset="28%" stopColor="#c084fc" stopOpacity="0.8" />
-                      <stop offset="55%" stopColor="#9333ea" stopOpacity="0.55" />
-                      <stop offset="75%" stopColor="#7c3aed" stopOpacity="0.25" />
-                      <stop offset="90%" stopColor="#6b33d3" stopOpacity="0.05" />
-                      <stop offset="100%" stopColor="#6b33d3" stopOpacity="0" />
+                      <stop offset="8%" stopColor="#F4F0FD" stopOpacity="0.92" />
+                      <stop offset="24%" stopColor="#B89DF2" stopOpacity="0.85" />
+                      <stop offset="50%" stopColor="#6B33D3" stopOpacity="0.7" />
+                      <stop offset="75%" stopColor="#5924BE" stopOpacity="0.32" />
+                      <stop offset="90%" stopColor="#4A1FB0" stopOpacity="0.08" />
+                      <stop offset="100%" stopColor="#371488" stopOpacity="0" />
                     </linearGradient>
                     <linearGradient id="bcl-beam-soft" x1="0%" y1="50%" x2="100%" y2="50%">
-                      <stop offset="0%" stopColor="#f3e8ff" stopOpacity="0.8" />
-                      <stop offset="15%" stopColor="#c084fc" stopOpacity="0.65" />
-                      <stop offset="45%" stopColor="#9333ea" stopOpacity="0.4" />
-                      <stop offset="70%" stopColor="#7c3aed" stopOpacity="0.16" />
-                      <stop offset="88%" stopColor="#6b33d3" stopOpacity="0.02" />
-                      <stop offset="100%" stopColor="#4c1d95" stopOpacity="0" />
+                      <stop offset="0%" stopColor="#DDD1FA" stopOpacity="0.85" />
+                      <stop offset="16%" stopColor="#B89DF2" stopOpacity="0.72" />
+                      <stop offset="42%" stopColor="#7D42E3" stopOpacity="0.5" />
+                      <stop offset="68%" stopColor="#6B33D3" stopOpacity="0.25" />
+                      <stop offset="86%" stopColor="#5924BE" stopOpacity="0.05" />
+                      <stop offset="100%" stopColor="#371488" stopOpacity="0" />
                     </linearGradient>
                     <filter id="bcl-soft-penumbra" x="-20%" y="-40%" width="140%" height="180%">
                       <feGaussianBlur stdDeviation="14" />

@@ -11,6 +11,7 @@ import {
   Italianno,
   Great_Vibes,
   WindSong,
+  Birthstone,
 } from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import 'leaflet/dist/leaflet.css'
@@ -98,6 +99,13 @@ const windSong = WindSong({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-windsong',
+  display: 'swap',
+})
+
+const birthstone = Birthstone({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-birthstone',
   display: 'swap',
 })
 
@@ -197,7 +205,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     ],
   }
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${caveat.variable} ${alexBrush.variable} ${parisienne.variable} ${sacramento.variable} ${homemadeApple.variable} ${playfairDisplay.variable} ${italianno.variable} ${greatVibes.variable} ${windSong.variable}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${caveat.variable} ${alexBrush.variable} ${parisienne.variable} ${sacramento.variable} ${homemadeApple.variable} ${playfairDisplay.variable} ${italianno.variable} ${greatVibes.variable} ${windSong.variable} ${birthstone.variable}`}>
       <body>
         <script
           id="media-abort-guard"
