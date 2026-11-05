@@ -627,9 +627,9 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         const p = Math.min(1, Math.max(0, progress));
 
         cardMeshesRef.current.forEach((card, i) => {
-          const cardStart = i * 0.08;
-          const cardEnd = cardStart + 0.32;
-          const localP = Math.min(1, Math.max(0, (p - cardStart) / (cardEnd - cardStart)));
+          const cardStart = i * 0.07;
+          const cardDuration = 0.28;
+          const localP = Math.min(1, Math.max(0, (p - cardStart) / cardDuration));
 
           if (localP <= 0) {
             card.group.visible = false;
@@ -648,21 +648,41 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
               cards[i]!.style.visibility = 'hidden';
             }
 
-            const crumpleP = Math.min(1, localP / 0.42);
-            deformMesh(card, crumpleP);
-
-            const flightP = Math.max(0, (localP - 0.38) / 0.62);
-            const curX = card.startX + (card.mouthX - card.startX) * flightP;
-            const arc = 4 * card.arcH * flightP * (1 - flightP);
-            const curY = card.startY + (card.mouthY - card.startY) * flightP + arc;
-            const curZ = Math.sin(flightP * Math.PI) * 140 - (flightP > 0.8 ? (flightP - 0.8) * 200 : 0);
-
-            card.group.position.set(curX, curY, curZ);
-            card.group.rotation.set(flightP * card.tumbleX, flightP * card.tumbleY, flightP * card.tumbleZ);
-
-            const shrink = flightP > 0.75 ? 1 - ((flightP - 0.75) / 0.25) * 0.7 : 1;
-            const scale = card.cardWidth * shrink;
-            card.group.scale.set(scale, scale, scale);
+            if (localP <= 0.45) {
+              // ── Phase A: In-Place 3D Crumpling ──
+              const crumpleP = localP / 0.45;
+              const foldEase = crumpleP * crumpleP * (3 - 2 * crumpleP);
+              deformMesh(card, foldEase);
+              const liftZ = Math.sin(crumpleP * Math.PI) * 35;
+              card.group.position.set(card.startX, card.startY, liftZ);
+              const twist = crumpleP * 0.25;
+              card.group.rotation.set(twist * 0.4, -twist * 0.3, twist * (i % 2 === 0 ? 0.6 : -0.6));
+              card.group.scale.set(card.cardWidth, card.cardWidth, card.cardWidth);
+            } else {
+              // ── Phase B: 3D Parabolic Flight to Dustbin ──
+              deformMesh(card, 1);
+              const flightP = (localP - 0.45) / 0.55;
+              const pEase = flightP * flightP * (3 - 2 * flightP);
+              const curX = card.startX + (card.mouthX - card.startX) * pEase;
+              const arc = 4 * card.arcH * flightP * (1 - flightP);
+              const curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
+              let curZ = 35 * (1 - flightP) + Math.sin(flightP * Math.PI) * 150;
+              if (flightP > 0.8) {
+                curZ -= ((flightP - 0.8) / 0.2) * 120;
+              }
+              card.group.position.set(curX, curY, curZ);
+              card.group.rotation.set(
+                0.2 + flightP * card.tumbleX,
+                -0.15 + flightP * card.tumbleY,
+                (i % 2 === 0 ? 0.3 : -0.3) + flightP * card.tumbleZ
+              );
+              let shrink = 1;
+              if (flightP > 0.78) {
+                shrink = 1 - ((flightP - 0.78) / 0.22) * 0.75;
+              }
+              const finalScale = card.cardWidth * shrink;
+              card.group.scale.set(finalScale, finalScale, finalScale);
+            }
           } else {
             card.group.visible = false;
             card.isCaught = true;

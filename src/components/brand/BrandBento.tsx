@@ -185,7 +185,7 @@ export function BrandBento() {
       const totalScrollable = Math.max(1, rect.height - V);
       const secProgress = clamp(-rect.top / totalScrollable);
 
-      if (secProgress < 0.10) {
+      if (secProgress < 0.08) {
         setMorphProgress(0);
         setIsBinOpen(false);
         setIsBinSettled(false);
@@ -206,14 +206,19 @@ export function BrandBento() {
           }
         });
         setLanded({});
-      } else if (secProgress < 0.68) {
+      } else if (secProgress < 0.86) {
         setIsBinOpen(true);
         setIsBinSettled(false);
 
-        const p = clamp((secProgress - 0.10) / 0.58);
+        const p = clamp((secProgress - 0.08) / 0.78);
         setMorphProgress(p);
-        setClearedCount(Math.min(8, Math.floor(p * 9)));
         crumpleCanvasRef.current?.setScrollProgress(p);
+
+        let caught = 0;
+        for (let i = 0; i < 8; i++) {
+          if (p >= i * 0.07 + 0.28) caught++;
+        }
+        setClearedCount(caught);
 
         afterCardsRef.current.forEach((a) => {
           if (a) {
@@ -280,7 +285,7 @@ export function BrandBento() {
   };
 
   const morph = morphProgress;
-  const isAfterActive = morph >= 0.5;
+  const isAfterActive = morph >= 0.88;
   // Helper to render each tile:
   // 1. BEFORE CARD stays where it is from before (grounded in the grid)
   // 2. AFTER CARD (purple Gradient) comes flying into the screen with the 3D flying transition

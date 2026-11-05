@@ -35,9 +35,9 @@ export function BentoDustbin({
       <div className="bbo-dustbin-badge">
         <span className="bbo-dustbin-dot" />
         <span className="bbo-dustbin-text">
-          {isAfterActive
+          {clearedCount >= 8 && isAfterActive
             ? '✓ 8/8 Cleared · Clean Board'
-            : isOpen && clearedCount > 0 && clearedCount < 8
+            : isOpen && clearedCount > 0
             ? `Tossing (${clearedCount}/8)...`
             : '🗑️ Toss Clutter'}
         </span>
