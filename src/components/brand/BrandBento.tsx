@@ -101,7 +101,7 @@ export function BrandBento() {
         if (el) {
           const rect = el.getBoundingClientRect();
           const totalScrollable = Math.max(1, rect.height - window.innerHeight);
-          const targetScroll = window.scrollY + rect.top + 0.78 * totalScrollable;
+          const targetScroll = window.scrollY + rect.top + 0.90 * totalScrollable;
           window.scrollTo({ top: targetScroll, behavior: 'smooth' });
         }
 
@@ -111,7 +111,7 @@ export function BrandBento() {
           if (ac) {
             bloomTl.fromTo(
               ac,
-              { scale: 0.85, opacity: 0, filter: 'blur(8px)' },
+              { scale: 0.88, opacity: 0, filter: 'blur(8px)' },
               { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.45, ease: 'back.out(1.4)' },
               idx === 0 ? 0 : '-=0.34'
             );
@@ -121,7 +121,7 @@ export function BrandBento() {
         if (manualTimer.current) window.clearTimeout(manualTimer.current);
         manualTimer.current = window.setTimeout(() => {
           setIsManualOverride(false);
-        }, 800);
+        }, 1600);
       }
     );
   };
@@ -185,7 +185,7 @@ export function BrandBento() {
       const totalScrollable = Math.max(1, rect.height - V);
       const secProgress = clamp(-rect.top / totalScrollable);
 
-      if (secProgress < 0.08) {
+      if (secProgress < 0.06) {
         setMorphProgress(0);
         setIsBinOpen(false);
         setIsBinSettled(false);
@@ -207,26 +207,45 @@ export function BrandBento() {
         });
         setLanded({});
       } else if (secProgress < 0.86) {
-        setIsBinOpen(true);
-        setIsBinSettled(false);
-
-        const p = clamp((secProgress - 0.08) / 0.78);
+        const p = clamp((secProgress - 0.06) / 0.78);
         setMorphProgress(p);
         crumpleCanvasRef.current?.setScrollProgress(p);
 
-        let caught = 0;
-        for (let i = 0; i < 8; i++) {
-          if (p >= i * 0.07 + 0.28) caught++;
-        }
-        setClearedCount(caught);
+        if (p < 0.68) {
+          // Cards actively crumpling and tossing into open dustbin
+          setIsBinOpen(true);
+          setIsBinSettled(false);
 
-        afterCardsRef.current.forEach((a) => {
-          if (a) {
-            a.style.opacity = '0';
-            a.style.transform = 'scale(0.85)';
+          let caught = 0;
+          for (let i = 0; i < 8; i++) {
+            if (p >= i * 0.055 + 0.22) caught++;
           }
-        });
-        setLanded({});
+          setClearedCount(caught);
+
+          afterCardsRef.current.forEach((a) => {
+            if (a) {
+              a.style.opacity = '0';
+              a.style.transform = 'scale(0.85)';
+            }
+          });
+          setLanded({});
+        } else {
+          // All 8 cards cleared into dustbin! Lid closed, clean board, purple cards blooming!
+          setIsBinOpen(false);
+          setIsBinSettled(true);
+          setClearedCount(8);
+
+          const bloomP = clamp((p - 0.68) / 0.28);
+          afterCardsRef.current.forEach((a, idx) => {
+            if (a) {
+              const cardDelay = idx * 0.035;
+              const cardP = clamp((bloomP - cardDelay) / (1 - cardDelay));
+              a.style.opacity = `${cardP}`;
+              a.style.transform = `scale(${0.90 + 0.10 * cardP})`;
+            }
+          });
+          setLanded(Object.fromEntries(TILES.map((t) => [t.id, true])));
+        }
       } else {
         // Fully into After state
         setIsBinOpen(false);
@@ -285,7 +304,7 @@ export function BrandBento() {
   };
 
   const morph = morphProgress;
-  const isAfterActive = morph >= 0.88;
+  const isAfterActive = morph >= 0.68;
   // Helper to render each tile:
   // 1. BEFORE CARD stays where it is from before (grounded in the grid)
   // 2. AFTER CARD (purple Gradient) comes flying into the screen with the 3D flying transition

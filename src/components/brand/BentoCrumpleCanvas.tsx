@@ -181,7 +181,7 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
       if (bin) {
         const binRect = bin.getBoundingClientRect();
         mouthX = binRect.left + 58 - (stageRect.left + stageW / 2);
-        mouthY = stageRect.top + stageH / 2 - (binRect.top + 28);
+        mouthY = stageRect.top + stageH / 2 - (binRect.top + 46);
       }
 
       cardMeshesRef.current.forEach((cardMesh, i) => {
@@ -201,7 +201,8 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         cardMesh.startY = startY;
         cardMesh.mouthX = mouthX;
         cardMesh.mouthY = mouthY;
-        cardMesh.arcH = Math.max(120, Math.min(280, Math.hypot(mouthX - startX, mouthY - startY) * 0.22));
+        const distToMouth = Math.hypot(mouthX - startX, mouthY - startY);
+        cardMesh.arcH = Math.max(130, Math.min(260, distToMouth * 0.22));
 
         if (!cardMesh.isActive) {
           cardMesh.group.position.set(startX, startY, 0);
@@ -565,13 +566,22 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
 
                 const curX = card.startX + (card.mouthX - card.startX) * pEase;
                 const arc = 4 * card.arcH * p * (1 - p);
-                const curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
+                let curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
 
                 // High 3D arc leaping out towards camera, then diving deep into the dustbin hole
                 let curZ = 35 * (1 - p) + Math.sin(p * Math.PI) * 150;
-                if (p > 0.8) {
-                  const plunge = (p - 0.8) / 0.2;
-                  curZ -= plunge * 120;
+                let scaleMul = 1;
+
+                if (p > 0.72) {
+                  const plunge = (p - 0.72) / 0.28;
+                  curZ -= plunge * 140;
+                  curY -= plunge * 50; // Plunge DOWN into the canister interior!
+                  scaleMul = Math.max(0.01, 1 - plunge * 0.96);
+                }
+
+                if (p >= 0.95) {
+                  // Vanish completely into the dark void
+                  card.group.visible = false;
                 }
 
                 card.group.position.set(curX, curY, curZ);
@@ -581,19 +591,13 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
                 card.group.rotation.y = -0.15 + p * card.tumbleY;
                 card.group.rotation.z = (i % 2 === 0 ? 0.3 : -0.3) + p * card.tumbleZ;
 
-                // Shrink into the dark void of the dustbin opening
-                let scaleMul = 1;
-                if (p > 0.78) {
-                  const shrinkP = (p - 0.78) / 0.22;
-                  scaleMul = 1 - shrinkP * 0.75;
-                }
                 const finalScale = card.cardWidth * scaleMul;
                 card.group.scale.set(finalScale, finalScale, finalScale);
               } else {
                 // Plunged into dustbin!
+                card.group.visible = false;
                 if (!card.isCaught) {
                   card.isCaught = true;
-                  card.group.visible = false;
                   onCardCaught(i);
                 }
               }
@@ -607,6 +611,14 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
           if (!allFinished) {
             animFrameRef.current = requestAnimationFrame(loop);
           } else {
+            // Guarantee all cards are completely invisible and caught
+            cardMeshesRef.current.forEach((c) => {
+              c.group.visible = false;
+              c.isCaught = true;
+            });
+            if (rendererRef.current && sceneRef.current && cameraRef.current) {
+              rendererRef.current.render(sceneRef.current, cameraRef.current);
+            }
             isPlayingRef.current = false;
             onComplete();
           }
@@ -626,9 +638,30 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         const cards = beforeCardsRef.current;
         const p = Math.min(1, Math.max(0, progress));
 
+        // When p >= 0.68, all cards are inside the dustbin!
+        if (p >= 0.68) {
+          cardMeshesRef.current.forEach((card, idx) => {
+            card.group.visible = false;
+            card.isCaught = true;
+            if (cards && cards[idx]) {
+              cards[idx]!.style.opacity = '0';
+              cards[idx]!.style.visibility = 'hidden';
+            }
+          });
+          if (rendererRef.current && sceneRef.current && cameraRef.current) {
+            rendererRef.current.render(sceneRef.current, cameraRef.current);
+          }
+          return;
+        }
+
+        // Active cascade for p < 0.68:
+        // 8 cards spread across p = 0.0 to 0.68
+        // Each card has stagger = 0.055, duration = 0.22
+        const stagger = 0.055;
+        const cardDuration = 0.22;
+
         cardMeshesRef.current.forEach((card, i) => {
-          const cardStart = i * 0.07;
-          const cardDuration = 0.28;
+          const cardStart = i * stagger;
           const localP = Math.min(1, Math.max(0, (p - cardStart) / cardDuration));
 
           if (localP <= 0) {
@@ -648,9 +681,9 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
               cards[i]!.style.visibility = 'hidden';
             }
 
-            if (localP <= 0.45) {
+            if (localP <= 0.42) {
               // ── Phase A: In-Place 3D Crumpling ──
-              const crumpleP = localP / 0.45;
+              const crumpleP = localP / 0.42;
               const foldEase = crumpleP * crumpleP * (3 - 2 * crumpleP);
               deformMesh(card, foldEase);
               const liftZ = Math.sin(crumpleP * Math.PI) * 35;
@@ -661,29 +694,37 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
             } else {
               // ── Phase B: 3D Parabolic Flight to Dustbin ──
               deformMesh(card, 1);
-              const flightP = (localP - 0.45) / 0.55;
+              const flightP = (localP - 0.42) / 0.58;
               const pEase = flightP * flightP * (3 - 2 * flightP);
               const curX = card.startX + (card.mouthX - card.startX) * pEase;
               const arc = 4 * card.arcH * flightP * (1 - flightP);
-              const curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
+              let curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
               let curZ = 35 * (1 - flightP) + Math.sin(flightP * Math.PI) * 150;
-              if (flightP > 0.8) {
-                curZ -= ((flightP - 0.8) / 0.2) * 120;
+
+              let scaleMul = 1;
+              if (flightP > 0.72) {
+                const plunge = (flightP - 0.72) / 0.28;
+                curZ -= plunge * 140;
+                curY -= plunge * 50; // Plunge DOWN into the canister opening!
+                scaleMul = Math.max(0.01, 1 - plunge * 0.96);
               }
+
+              if (flightP >= 0.95) {
+                // Already inside the dark opening, hide completely!
+                card.group.visible = false;
+              }
+
               card.group.position.set(curX, curY, curZ);
               card.group.rotation.set(
                 0.2 + flightP * card.tumbleX,
                 -0.15 + flightP * card.tumbleY,
                 (i % 2 === 0 ? 0.3 : -0.3) + flightP * card.tumbleZ
               );
-              let shrink = 1;
-              if (flightP > 0.78) {
-                shrink = 1 - ((flightP - 0.78) / 0.22) * 0.75;
-              }
-              const finalScale = card.cardWidth * shrink;
+              const finalScale = card.cardWidth * scaleMul;
               card.group.scale.set(finalScale, finalScale, finalScale);
             }
           } else {
+            // localP >= 1: 100% swallowed into dustbin
             card.group.visible = false;
             card.isCaught = true;
             if (cards && cards[i]) {

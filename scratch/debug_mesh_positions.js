@@ -44,3 +44,4 @@ const { chromium } = require(path.resolve('node_modules/playwright'));
 
   await browser.close();
 })();
+

@@ -407,8 +407,9 @@
   transform: rotate(56deg);
 }
 
-.bbo-dustbin.is-settled .bbo-can-lid {
-  transform: rotate(0deg);
+.bbo-dustbin.is-settled .bbo-can-lid,
+.bbo-dustbin.is-after-active .bbo-can-lid {
+  transform: rotate(0deg) !important;
 }
 
 /* Canister catch squash & stretch */
