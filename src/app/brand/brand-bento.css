@@ -231,11 +231,56 @@
   display: flex;
   flex-direction: column;
   z-index: 1;
-  transform: none !important;
+  transform-origin: center center;
   box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s, border-radius 0.3s;
+  will-change: transform, opacity, border-radius;
 }
 
-/* ── 2. AFTER CARD: The purple Gradient card that flies into screen ────── */
+/* Crease Overlay for realistic paper crumpling */
+.bbo-card-before::before {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  background: 
+    linear-gradient(135deg, rgba(0,0,0,0.32) 0%, transparent 20%, rgba(255,255,255,0.48) 23%, transparent 36%),
+    linear-gradient(45deg, transparent 40%, rgba(0,0,0,0.36) 50%, rgba(255,255,255,0.52) 54%, transparent 68%),
+    linear-gradient(215deg, transparent 25%, rgba(0,0,0,0.42) 45%, transparent 58%);
+  mix-blend-mode: multiply;
+  transition: opacity 0.2s ease-out;
+}
+
+/* Crumpled Paper Ball State */
+.bbo-card-before.is-crumpled {
+  border-radius: 46% 54% 63% 37% / 41% 59% 43% 57% !important;
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #EDE8F5 35%, #D6CCE8 70%, #AFA0CE 100%) !important;
+  box-shadow: 
+    0 16px 32px rgba(0, 0, 0, 0.5),
+    inset -6px -8px 14px rgba(35, 12, 65, 0.65),
+    inset 6px 8px 12px rgba(255, 255, 255, 0.9) !important;
+  z-index: 55 !important;
+  overflow: hidden !important;
+}
+
+.bbo-card-before.is-crumpled::before {
+  opacity: 1 !important;
+  background: 
+    linear-gradient(135deg, rgba(20, 5, 45, 0.45) 0%, transparent 18%, rgba(255, 255, 255, 0.7) 22%, transparent 36%),
+    linear-gradient(45deg, transparent 38%, rgba(20, 5, 45, 0.5) 48%, rgba(255, 255, 255, 0.8) 52%, transparent 66%),
+    linear-gradient(220deg, transparent 20%, rgba(20, 5, 45, 0.55) 44%, transparent 60%) !important;
+}
+
+.bbo-card-before.is-crumpled > * {
+  transform: scale(0.4) !important;
+  filter: contrast(160%) brightness(85%) blur(0.5px) !important;
+  opacity: 0.65 !important;
+  transform-origin: center center;
+}
+
+/* ── 2. AFTER CARD: The purple Gradient card that emerges into screen ────── */
 .bbo-t-after {
   --e: 0;
   --mx: 50%;
@@ -250,22 +295,151 @@
   display: flex;
   flex-direction: column;
   z-index: 2;
-  transform: translate3d(calc((1 - var(--e)) * var(--fx) * 1vw), calc((1 - var(--e)) * var(--fy) * 1vh), 0)
-             rotate(calc((1 - var(--e)) * var(--fr) * 1deg))
-             scale(calc(0.5 + 0.5 * var(--e)));
+  transform: scale(calc(0.85 + 0.15 * var(--e)));
   opacity: clamp(0, calc(var(--e) * 2.8), 1);
   will-change: transform, opacity;
   pointer-events: none;
-  transition: box-shadow 0.35s, translate 0.35s var(--b-ease);
+  transition: box-shadow 0.35s, translate 0.35s var(--b-ease), opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bbo-t-after.is-in {
-  pointer-events: auto;
+.bbo-t-after.is-in,
+.bbo.is-after-mode .bbo-t-after {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  pointer-events: auto !important;
+  box-shadow: 0 10px 30px -14px rgba(107, 51, 211, 0.5), 0 0 20px rgba(107, 51, 211, 0.15);
 }
 
-.bbo-t-after.is-in:hover {
+.bbo.is-after-mode .bbo-card-before {
+  opacity: 0 !important;
+  transform: scale(0) !important;
+  pointer-events: none !important;
+}
+
+.bbo-t-after.is-in:hover,
+.bbo.is-after-mode .bbo-t-after:hover {
   translate: 0 -3px;
-  box-shadow: 0 20px 36px -20px rgba(107, 51, 211, 0.45);
+  box-shadow: 0 20px 36px -20px rgba(107, 51, 211, 0.65), 0 0 24px rgba(107, 51, 211, 0.3);
+}
+
+/* ── 3. Popped-Out Dustbin (Bottom-Right) ───────────────────────────────── */
+.bbo-dustbin {
+  position: absolute;
+  right: max(24px, calc((100vw - 1360px) / 2 + 16px));
+  bottom: 8px;
+  width: 116px;
+  height: 136px;
+  z-index: 60;
+  cursor: pointer;
+  user-select: none;
+  transform-origin: 58px 120px;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s;
+}
+
+.bbo-dustbin:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.bbo-dustbin:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Status badge floating above dustbin */
+.bbo-dustbin-badge {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  background: #170E2C;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(12, 5, 26, 0.4), 0 0 12px rgba(107, 51, 211, 0.25);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.bbo-dustbin-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #A78BFA;
+  box-shadow: 0 0 6px #A78BFA;
+  animation: bboDotPulse 2s infinite ease-in-out;
+}
+
+@keyframes bboDotPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+.bbo-dustbin-text {
+  font: 700 10.5px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.04em;
+  color: #DDD6FE;
+}
+
+.bbo-dustbin.is-after-active .bbo-dustbin-badge {
+  background: #231242;
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.bbo-dustbin.is-after-active .bbo-dustbin-dot {
+  background: #10B981;
+  box-shadow: 0 0 6px #10B981;
+}
+
+.bbo-dustbin.is-after-active .bbo-dustbin-text {
+  color: #A7F3D0;
+}
+
+/* Hinged Lid */
+.bbo-can-lid {
+  transform-origin: 100px 18px;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bbo-dustbin.is-open .bbo-can-lid {
+  transform: rotate(56deg);
+}
+
+.bbo-dustbin.is-settled .bbo-can-lid {
+  transform: rotate(0deg);
+}
+
+/* Canister catch squash & stretch */
+.bbo-can-body {
+  transform-origin: 60px 116px;
+}
+
+.bbo-dustbin.is-catching .bbo-can-body {
+  animation: bboBinSquash 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes bboBinSquash {
+  0% { transform: scale(1.09, 0.91); }
+  50% { transform: scale(0.96, 1.03); }
+  100% { transform: scale(1, 1); }
+}
+
+/* Particle puffs on catch */
+.bbo-can-particles {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bbo-dustbin.is-catching .bbo-can-particles {
+  animation: bboPuffExplode 0.35s ease-out forwards;
+}
+
+@keyframes bboPuffExplode {
+  0% { opacity: 0; transform: translateY(0) scale(0.5); }
+  30% { opacity: 1; transform: translateY(-8px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0); }
 }
 
 /* Light beam following pointer across After cards */
@@ -1945,4 +2119,63 @@
   .bbo { height: auto; }
   .bbo-stage { position: relative; height: auto; min-height: 100svh; }
   .bbo-t-after { transform: none !important; opacity: 1 !important; }
+}
+
+/* ── Real Three.js 3D Paper Crumple Canvas (React Bits PaperCrumple Physics) ── */
+.bbo-crumple-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 55; /* Above bbo-grid, below dustbin (z-index: 60) */
+}
+
+.bbo-bf-kit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bbo-3d-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ECE5F8;
+  border: 1px solid rgba(107, 51, 211, 0.2);
+  color: #6B33D3;
+  font: 700 10.5px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.bbo-3d-toggle-btn:hover {
+  background: #6B33D3;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(107, 51, 211, 0.35);
+  transform: translateY(-1px);
+}
+
+.bbo-3d-crumple-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bbo-3d-hint {
+  margin: 6px 0 0;
+  font-size: 10.5px;
+  color: #7B6E94;
+  text-align: center;
+  font-family: ui-monospace, monospace;
 }

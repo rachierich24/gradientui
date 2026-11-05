@@ -31,18 +31,16 @@
   transform: translate(-50%, 0);
   width: 1200px;
   height: 600px;
-  background: radial-gradient(
-    ellipse 60% 50% at center,
-    rgba(107, 51, 211, 0.04) 0%,
-    rgba(107, 51, 211, 0.01) 50%,
-    transparent 75%
-  );
+  background: radial-gradient(ellipse 60% 50% at center,
+      rgba(107, 51, 211, 0.05) 0%,
+      rgba(107, 51, 211, 0.015) 50%,
+      transparent 75%);
   pointer-events: none;
   z-index: 0;
   border-radius: 50%;
 }
 
-/* Pinned Wrapper for GSAP ScrollTrigger: Centered vertically below navbar */
+/* Pinned Wrapper for GSAP ScrollTrigger with 3D Perspective */
 .bdb-pin-wrap {
   position: relative;
   width: 100%;
@@ -55,6 +53,8 @@
   padding-bottom: 8px;
   box-sizing: border-box;
   overflow: hidden;
+  perspective: 1400px;
+  perspective-origin: center 38%;
 }
 
 /* Wide Centred Content Container (1400px) */
@@ -70,31 +70,12 @@
 
 /* ─── 1. Editorial Heading Block (Stationary Anchor) ──────────────────────── */
 .bdb-editorial-header {
-  margin-bottom: 6px;
-}
-
-.bdb-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 9.5px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #6B33D3;
-  margin-bottom: 2px;
-}
-
-.bdb-eyebrow-pip {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #6B33D3;
+  margin-bottom: clamp(14px, 1.8vh, 22px);
 }
 
 .bdb-header-row {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
@@ -105,12 +86,12 @@
 }
 
 .bdb-title {
-  font-size: clamp(26px, 2.5vw, 36px);
+  font-size: clamp(28px, 3vw, 50px);
   font-weight: 850;
-  line-height: 1.12;
+  line-height: 1.1;
   letter-spacing: -0.035em;
   color: #19171E;
-  margin: 0 0 3px 0;
+  margin: 0 0 30px 0;
 }
 
 .bdb-title-purple {
@@ -175,9 +156,45 @@
   background: #6B33D3;
 }
 
+/* ─── 3D Perspective Stage for Dashboard ─────────────────────────────────── */
+.bdb-stage-3d {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1100px;
+  perspective-origin: 50% 36%;
+  transform-style: preserve-3d;
+}
+
+/* ─── Ambient Purple Backlight Glowing From Behind Dashboard ────────────── */
+.bdb-dashboard-backlight {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%);
+  width: min(1360px, 96%);
+  height: 560px;
+  border-radius: 40px;
+  background: radial-gradient(
+    ellipse 85% 70% at 50% 48%,
+    rgba(107, 51, 211, 0.36) 0%,
+    rgba(139, 92, 246, 0.22) 35%,
+    rgba(168, 85, 247, 0.12) 60%,
+    transparent 78%
+  );
+  filter: blur(52px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
 /* ─── 2. The Dashboard Frame (Aspect Ratio ~2.65:1, 520px Height) ────────── */
 .bdb-viewport-frame {
   position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1380px;
   height: 550px;
@@ -189,10 +206,12 @@
   -moz-osx-font-smoothing: grayscale;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.8),
-    0 16px 36px -10px rgba(107, 51, 211, 0.06),
-    0 1px 3px rgba(0, 0, 0, 0.03);
+    0 24px 60px -12px rgba(107, 51, 211, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  will-change: transform;
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  transform-origin: center 40%;
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
@@ -495,10 +514,21 @@
   margin-right: -4px;
 }
 
-.bdb-av-0 { background: #6B33D3; }
-.bdb-av-1 { background: #6E44BE; }
-.bdb-av-2 { background: #8E68D8; }
-.bdb-av-3 { background: #2A1752; }
+.bdb-av-0 {
+  background: #6B33D3;
+}
+
+.bdb-av-1 {
+  background: #6E44BE;
+}
+
+.bdb-av-2 {
+  background: #8E68D8;
+}
+
+.bdb-av-3 {
+  background: #2A1752;
+}
 
 .bdb-kpi-avatar-more {
   font-size: 8px;
@@ -1200,8 +1230,15 @@
 }
 
 @keyframes bdbPing {
-  0% { transform: scale(0.9); opacity: 0.8; }
-  100% { transform: scale(2.2); opacity: 0; }
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
 }
 
 .bdb-marker-ping {
@@ -1371,8 +1408,13 @@
   margin-right: -4px;
 }
 
-.bdb-hav:nth-child(2) { background: #7C53CE; }
-.bdb-hav:nth-child(3) { background: #9F7DE8; }
+.bdb-hav:nth-child(2) {
+  background: #7C53CE;
+}
+
+.bdb-hav:nth-child(3) {
+  background: #9F7DE8;
+}
 
 .bdb-rating-overall {
   display: flex;
@@ -1491,8 +1533,17 @@
 }
 
 @keyframes bdbPulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
 }
 
 .bdb-activity-list {
@@ -1896,7 +1947,9 @@
 }
 
 @keyframes bdbSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -2312,12 +2365,20 @@
   box-shadow: 0 4px 12px rgba(20, 16, 30, 0.05), 0 2px 6px rgba(107, 51, 211, 0.04);
 }
 
-/* Card 1: Purple Hero Card with Gradient & Contrast */
+/* Card 1: Purple Hero Card - Solid Brand Purple matching Navbar (#6B33D3) */
 .bdb-kpi-hero-card {
-  background: linear-gradient(135deg, #6B33D3 0%, #3B1B76 100%);
-  border: 1px solid #432284;
+  background: #6B33D3;
+  border: 1px solid #6B33D3;
   color: #FFFFFF;
-  box-shadow: 0 3px 10px rgba(107, 51, 211, 0.28), 0 1px 3px rgba(107, 51, 211, 0.15);
+  box-shadow: 0 4px 16px rgba(107, 51, 211, 0.32), 0 1px 3px rgba(107, 51, 211, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bdb-kpi-hero-card:hover {
+  background: #5924BE;
+  border-color: #5924BE;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 20px rgba(107, 51, 211, 0.42), 0 2px 6px rgba(107, 51, 211, 0.22);
 }
 
 .bdb-kpi-card-top {

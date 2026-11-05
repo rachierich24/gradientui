@@ -808,7 +808,6 @@ export function BrandDashboard() {
   const [hoveredMarker, setHoveredMarker] = useState<MapMarker | null>(null);
   const [activeWeekIndex, setActiveWeekIndex] = useState<number>(4); // W5 (current)
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [motionPhase, setMotionPhase] = useState<'entrance' | 'center' | 'exit'>('center');
   const [mapViewMode, setMapViewMode] = useState<'corridors' | 'routes'>('corridors');
 
   // Resize listener
@@ -821,102 +820,107 @@ export function BrandDashboard() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  /* ─── Scroll-Driven Animation Implementation (GSAP + ScrollTrigger) ───────
-     THE WHOLE DASHBOARD MOVES ACROSS SCREEN:
-     • Phase 1 (0% - 33%): Glides from left side of screen into center
-     • Phase 2 (33% - 67%): Settles in center of screen directly under stationary heading
-     • Phase 3 (67% - 100%): Moves towards right side of screen and exits
-     ────────────────────────────────────────────────────────────────────────── */
+  // Scroll-driven 3D entrance: Dashboard comes into the screen as you scroll down
   useIsomorphicLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (isMobile || prefersReducedMotion) {
-      if (frameRef.current) gsap.set(frameRef.current, { clearProps: 'all' });
-      return;
-    }
-
     const section = sectionRef.current;
     const pinWrap = pinWrapRef.current;
     const frame = frameRef.current;
     if (!section || !pinWrap || !frame) return;
 
-    const ctx = gsap.context(() => {
-      const getTravelDistance = () => {
-        const winW = window.innerWidth;
-        const frameW = frame.offsetWidth || 1400;
-        return Math.round((winW + frameW) / 2 + 100);
-      };
+    if (isMobile || prefersReducedMotion) {
+      gsap.set(frame, { clearProps: 'all' });
+      const backlight = section.querySelector('.bdb-dashboard-backlight');
+      if (backlight) gsap.set(backlight, { opacity: 1, scale: 1 });
+      return;
+    }
 
-      // Initial state: Off-screen to the left
+    const ctx = gsap.context(() => {
+      // 1. Initial State: Deep in Z-axis (recessed into 3D space), tilted back, floating down
       gsap.set(frame, {
-        x: -getTravelDistance(),
-        opacity: 0,
-        scale: 0.97,
+        z: -520,
+        rotateX: 24,
+        y: 85,
+        opacity: 0.35,
+        transformOrigin: '50% 38%',
       });
 
-      // Master Pinned Scroll-Driven Timeline
+      const heading = section.querySelector('.bdb-editorial-header');
+      const backlight = section.querySelector('.bdb-dashboard-backlight');
+      if (backlight) {
+        // Purple backlight is completely invisible while dashboard is entering / loading
+        gsap.set(backlight, { opacity: 0, scale: 0.94 });
+      }
+
+      // Master Pinned Scroll-Driven Timeline:
+      // The section pins at top top; as the user scrolls, the dashboard translates forward
+      // along the Z axis, straightens its 3D pitch, and glides right into the screen.
       const masterTL = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           id: 'dashboard-scroll-track',
           start: 'top top',
-          end: () => `+=${window.innerHeight * 2.2}`,
+          end: () => `+=${Math.min(window.innerHeight * 1.15, 1000)}`,
           pin: pinWrap,
           pinSpacing: true,
           scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const p = self.progress;
-            if (p < 0.33) setMotionPhase('entrance');
-            else if (p <= 0.67) setMotionPhase('center');
-            else setMotionPhase('exit');
-          },
         },
       });
 
-      // 1. Entrance: Glides from left of screen into center
-      masterTL.to(frame, {
-        x: 0,
-        opacity: 1,
-        scale: 1,
-        ease: 'power2.out',
-        duration: 0.33,
-      });
+      // Phase 1 (0 -> 0.65 progress): Dashboard translates in Z-axis into the screen!
+      // z: -520 -> 0, rotateX: 24 -> 0, y: 85 -> 0, opacity: 0.35 -> 1.0
+      masterTL.to(
+        frame,
+        {
+          z: 0,
+          rotateX: 0,
+          y: 0,
+          opacity: 1,
+          ease: 'power2.out',
+          duration: 0.65,
+        },
+        0
+      );
 
-      // 2. Settling & Center Dwell: Rests in center directly below stationary heading
+      // Purple backlight appears ONLY when the dashboard is fully loaded & docked
+      if (backlight) {
+        masterTL.fromTo(
+          backlight,
+          { opacity: 0, scale: 0.94 },
+          {
+            opacity: 1,
+            scale: 1,
+            ease: 'power2.out',
+            duration: 0.20,
+          },
+          0.60
+        );
+      }
+
+      if (heading) {
+        masterTL.fromTo(
+          heading,
+          { opacity: 0.5, y: -15 },
+          { opacity: 1, y: 0, ease: 'power2.out', duration: 0.4 },
+          0
+        );
+      }
+
+      // Phase 2 (0.65 -> 1.0 progress): Stable dwell period
+      // The dashboard stays perfectly docked in center at z: 0 with glowing backlight
       masterTL.to(frame, {
-        x: 0,
-        opacity: 1,
-        scale: 1,
+        z: 0,
+        rotateX: 0,
+        y: 0,
+        duration: 0.35,
         ease: 'none',
-        duration: 0.34,
-      });
-
-      // 3. Exit: Moves towards right side and exits off-screen
-      masterTL.to(frame, {
-        x: () => getTravelDistance(),
-        opacity: 0,
-        scale: 0.97,
-        ease: 'power2.in',
-        duration: 0.33,
       });
     }, section);
 
     return () => ctx.revert();
   }, [isMobile]);
-
-  // Jump to phase helper for quick navigation pills
-  const jumpToPhase = (phase: 'entrance' | 'center' | 'exit') => {
-    setMotionPhase(phase);
-    const st = ScrollTrigger.getById('dashboard-scroll-track');
-    if (!st) return;
-    const targetProgress = phase === 'entrance' ? 0.05 : phase === 'center' ? 0.50 : 0.95;
-    const targetScroll = st.start + (st.end - st.start) * targetProgress;
-    window.scrollTo({
-      top: targetScroll,
-      behavior: 'smooth',
-    });
-  };
 
   return (
     <section ref={sectionRef} className="bdb-section" id="dashboard" aria-label="Brand Analytics Dashboard Showcase">
@@ -927,30 +931,20 @@ export function BrandDashboard() {
         <div className="bdb-container">
           {/* ─── SECTION HEADING BLOCK (Stationary Anchor) ─── */}
           <div className="bdb-editorial-header">
-            {/* 1. Small Editorial Eyebrow */}
-            <div className="bdb-eyebrow">
-              <span className="bdb-eyebrow-pip" aria-hidden="true" />
-              <span>BRAND INTELLIGENCE PLATFORM · LIVE CAMPAIGN TELEMETRY</span>
-            </div>
-
-            {/* 2. Strong Headline & Supporting Description Row */}
             <div className="bdb-header-row">
               <div className="bdb-title-wrap">
                 <h2 className="bdb-title">
                   Live analytics <span className="bdb-title-purple">dashboard for brands.</span>
                 </h2>
-                <p className="bdb-sub">
-                  Track trial dispatches, barista sensory ratings, and weekly reorders across your café network in real time.
-                </p>
               </div>
-
-              {/* Trajectory Phase Switcher (Interactive Pills) */}
-             
             </div>
           </div>
 
           {/* ─── 3. THE DASHBOARD: VISUAL HERO OF THIS SECTION (Aspect Ratio ~2.65:1, 520px height) ─── */}
-          <div ref={frameRef} className="bdb-viewport-frame">
+          <div className="bdb-stage-3d">
+            {/* Ambient Purple Backlight Glowing From Behind Dashboard */}
+            <div className="bdb-dashboard-backlight" aria-hidden="true" />
+            <div ref={frameRef} className="bdb-viewport-frame">
             {/* ─── 1. Left Slim Navigation Rail (RestroFlow Aesthetic) ─── */}
             <nav className="bdb-nav-rail" aria-label="Brand Portal Navigation">
               <div className="bdb-rail-top">
@@ -1370,6 +1364,7 @@ export function BrandDashboard() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   );
 }

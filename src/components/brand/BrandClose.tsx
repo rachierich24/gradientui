@@ -4,8 +4,42 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export function BrandClose({ onStart }: { onStart: () => void }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [torchMode, setTorchMode] = useState<'idle' | 'activating' | 'torch'>('idle');
+  const timerRef = useRef<NodeJS.Timeout[]>([]);
   const secRef = useRef<HTMLElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
+
+  // Clear timers on unmount
+  useEffect(() => {
+    return () => {
+      timerRef.current.forEach((t) => clearTimeout(t));
+    };
+  }, []);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (torchMode !== 'idle') return;
+
+    // Trigger 2-3 second cinematic torch transition
+    setTorchMode('activating');
+
+    // Settle into full torch at 1900ms
+    const t1 = setTimeout(() => {
+      setTorchMode('torch');
+    }, 1900);
+
+    // After the transition finishes (at 2400ms), execute button functionality
+    const t2 = setTimeout(() => {
+      onStart();
+    }, 2400);
+
+    // Reset back to idle button after 7.5 seconds so user can replay if modal closes
+    const t3 = setTimeout(() => {
+      setTorchMode('idle');
+    }, 7500);
+
+    timerRef.current = [t1, t2, t3];
+  };
 
   // Scroll-based progress tracker: drives line emergence from screen edges and projector light beam
   useEffect(() => {
@@ -130,16 +164,17 @@ export function BrandClose({ onStart }: { onStart: () => void }) {
         </p>
 
         {/* ─── Centered CTA Design with Realistic Minimal Volumetric Light Projector ─── */}
-        <div className="bcl-center-cta">
+        <div className={`bcl-center-cta cta-mode-${torchMode}`}>
           <button
             ref={btnRef}
             type="button"
-            className={`bcl-central-btn ${isHovered ? 'is-hovered' : ''}`}
-            onClick={onStart}
+            className={`bcl-central-btn mode-${torchMode} ${isHovered ? 'is-hovered' : ''}`}
+            onClick={handleClick}
             onPointerMove={handlePointerMove}
             onPointerEnter={() => setIsHovered(true)}
             onPointerLeave={handlePointerLeave}
             aria-label="Build Your Brand Identity - Launch Trial"
+            disabled={torchMode === 'activating'}
           >
             {/* Left side chassis: Minimal Matte Obsidian Capsule */}
             <span className="bcl-cbtn-left">
@@ -151,10 +186,14 @@ export function BrandClose({ onStart }: { onStart: () => void }) {
             <span className="bcl-cbtn-slit-wrap" aria-hidden="true">
               <span className="bcl-cbtn-slit" />
               <span className="bcl-cbtn-slit-halo" />
+              <span className="bcl-cbtn-slit-flare" />
             </span>
 
             {/* Projector Section: Volumetric Light Beams OUT of the button */}
             <span className="bcl-cbtn-projector">
+              {/* Dark right cover enclosing the button into a normal, complete pill before click */}
+              <span className="bcl-cbtn-right-cover" aria-hidden="true" />
+
               <span className="bcl-light-rig" aria-hidden="true">
                 <span className="bcl-beam-ambient" />
                 <svg

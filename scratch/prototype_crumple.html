@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Crumple & Toss Physics Prototype</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 30px;
+    background: #FFFFFF;
+    color: #1A1428;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+  .stage {
+    position: relative;
+    max-width: 1200px;
+    height: 720px;
+    margin: 0 auto;
+    background: #FAF8FD;
+    border-radius: 28px;
+    padding: 30px;
+    border: 1px solid rgba(107, 51, 211, 0.12);
+    overflow: hidden;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .btn-toss {
+    background: #6B33D3;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 4px 14px rgba(107, 51, 211, 0.35);
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 240px);
+    gap: 16px;
+    height: 520px;
+  }
+  .slot {
+    position: relative;
+  }
+
+  /* Card */
+  .card-before {
+    position: absolute;
+    inset: 0;
+    background: #F3EFF8;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    border: 1px solid rgba(107, 51, 211, 0.1);
+    transform-origin: center center;
+    transition: box-shadow 0.3s;
+    overflow: hidden;
+    z-index: 10;
+  }
+  .card-before h3 {
+    margin: 8px 0 4px;
+    font-size: 18px;
+    color: #241D35;
+  }
+  .card-before p {
+    font-size: 13px;
+    color: #726888;
+    margin: 0;
+  }
+  .card-before .chip {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(220, 38, 38, 0.1);
+    color: #DC2626;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* Purple Card After */
+  .card-after {
+    position: absolute;
+    inset: 0;
+    background: #6B33D3;
+    color: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 12px 32px rgba(107, 51, 211, 0.4);
+    opacity: 0;
+    transform: scale(0.85);
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card-after h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  /* Paper Crumple Overlay */
+  .crumple-crease {
+    position: absolute;
+    inset: -20px;
+    background: 
+      linear-gradient(135deg, rgba(0,0,0,0.3) 0%, transparent 20%, rgba(255,255,255,0.45) 23%, transparent 36%),
+      linear-gradient(45deg, transparent 40%, rgba(0,0,0,0.35) 50%, rgba(255,255,255,0.5) 54%, transparent 68%),
+      linear-gradient(215deg, transparent 25%, rgba(0,0,0,0.4) 45%, transparent 58%);
+    mix-blend-mode: multiply;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  /* Dustbin container in bottom right */
+  .dustbin-anchor {
+    position: absolute;
+    right: 28px;
+    bottom: 20px;
+    width: 110px;
+    height: 130px;
+    z-index: 40;
+    pointer-events: none;
+    transform-origin: 55px 120px;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="header">
+      <h2 class="title" id="stageTitle">Fragmented operations. Manual coordination.</h2>
+      <button class="btn-toss" onclick="runTossAnimation()">🗑️ Toss Clutter & Transform</button>
+    </div>
+
+    <div class="grid" id="grid">
+      <!-- 6 Sample slots for testing -->
+      <div class="slot">
+        <div class="card-before" id="card0">
+          <div class="crumple-crease"></div>
+          <span class="chip">MANUAL OUTREACH</span>
+          <h3>Finding your next café.</h3>
+          <p>Cold email sent 14 days ago · No reply</p>
+        </div>
+        <div class="card-after" id="after0">
+          <h3>Targeted Café Matching</h3>
+          <p>Verified matches in Delhi NCR with instant trial delivery.</p>
+        </div>
+      </div>
+
+      <div class="slot">
+        <div class="card-before" id="card1">
+          <div class="crumple-crease"></div>
+          <span class="chip">COLD CALLS</span>
+          <h3>One café at a time.</h3>
+          <p>18 calls made · 1 callback pending</p>
+        </div>
+        <div class="card-after" id="after1">
+          <h3>Your Brand in Every App</h3>
+          <p>120+ café owners claim trial kits inside the owner app.</p>
+        </div>
+      </div>
+
+      <div class="slot">
+        <div class="card-before" id="card2">
+          <div class="crumple-crease"></div>
+          <span class="chip">UNTRACKED</span>
+          <h3>Where is your product?</h3>
+          <p>3 couriers · 0 confirmations</p>
+        </div>
+        <div class="card-after" id="after2">
+          <h3>Live Delivery Telemetry</h3>
+          <p>Piggyback on daily milk runs with door-to-door GPS proof.</p>
+        </div>
+      </div>
+
+      <div class="slot">
+        <div class="card-before" id="card3">
+          <div class="crumple-crease"></div>
+          <span class="chip">UNSTRUCTURED</span>
+          <h3>Feedback scattered.</h3>
+          <p>WhatsApp voice notes & missed messages</p>
+        </div>
+        <div class="card-after" id="after3">
+          <h3>4.8 Sensory Rating</h3>
+          <p>67 verified barista cupping scores recorded directly.</p>
+        </div>
+      </div>
+
+      <div class="slot">
+        <div class="card-before" id="card4">
+          <div class="crumple-crease"></div>
+          <span class="chip">SPECULATIVE</span>
+          <h3>Producing with no demand.</h3>
+          <p>Batch Guess: 4,000 L · Actual Need: 2,400 L</p>
+        </div>
+        <div class="card-after" id="after4">
+          <h3>Demand Forecasting</h3>
+          <p>Real-time weekly PO reorder velocity prevents overproduction.</p>
+        </div>
+      </div>
+
+      <div class="slot">
+        <div class="card-before" id="card5">
+          <div class="crumple-crease"></div>
+          <span class="chip">+38% EXCESS</span>
+          <h3>Wastage adds up: 1,600 L</h3>
+          <p>Unsold stock dumped per cycle</p>
+        </div>
+        <div class="card-after" id="after5">
+          <h3>Zero Wastage Routing</h3>
+          <p>Guaranteed absorption across 24 verified repeat accounts.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- The Dustbin -->
+    <div class="dustbin-anchor" id="dustbin">
+      <svg width="110" height="130" viewBox="0 -20 120 150" fill="none">
+        <defs>
+          <linearGradient id="canBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#180F2E" />
+            <stop offset="25%" stop-color="#321D58" />
+            <stop offset="50%" stop-color="#46297A" />
+            <stop offset="75%" stop-color="#281648" />
+            <stop offset="100%" stop-color="#120A22" />
+          </linearGradient>
+          <radialGradient id="voidGrad" cx="50%" cy="30%" r="60%">
+            <stop offset="0%" stop-color="#3B1C6E" />
+            <stop offset="50%" stop-color="#130728" />
+            <stop offset="100%" stop-color="#05010A" />
+          </radialGradient>
+          <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7C3AED" />
+            <stop offset="35%" stop-color="#DDD6FE" />
+            <stop offset="70%" stop-color="#A78BFA" />
+            <stop offset="100%" stop-color="#5B21B6" />
+          </linearGradient>
+          <linearGradient id="lidGrad" x1="0%" y1="0%" x2="100%" y2="50%">
+            <stop offset="0%" stop-color="#3B1F6E" />
+            <stop offset="40%" stop-color="#552E9B" />
+            <stop offset="100%" stop-color="#1F0F3D" />
+          </linearGradient>
+          <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#9CA3AF" />
+            <stop offset="50%" stop-color="#FFFFFF" />
+            <stop offset="100%" stop-color="#6B7280" />
+          </linearGradient>
+        </defs>
+        <ellipse cx="60" cy="116" rx="42" ry="7" fill="rgba(15, 6, 32, 0.4)" filter="blur(3px)" />
+        <g id="binCanister">
+          <ellipse cx="60" cy="24" rx="40" ry="13" fill="url(#voidGrad)" stroke="#2E1650" stroke-width="1.5" />
+          <ellipse cx="60" cy="26" rx="26" ry="7" fill="#8B5CF6" opacity="0.4" filter="blur(3px)" />
+          <path d="M 20,24 L 27,106 Q 60,116 93,106 L 100,24 Q 60,36 20,24 Z" fill="url(#canBodyGrad)" />
+          <path d="M 36,29 L 41,108" stroke="rgba(255,255,255,0.09)" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M 52,31 L 54,110" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M 68,31 L 66,110" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M 84,29 L 79,108" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M 27,106 Q 60,116 93,106" stroke="#8B5CF6" stroke-width="2.5" fill="none" opacity="0.8" />
+          <path d="M 20,24 Q 60,38 100,24" stroke="url(#rimGrad)" stroke-width="3.5" fill="none" stroke-linecap="round" />
+        </g>
+        <!-- Lid hinged on right -->
+        <g id="binLid" style="transform-origin: 100px 18px;">
+          <path d="M 16,20 Q 60,6 104,20 Q 60,28 16,20 Z" fill="url(#lidGrad)" stroke="#4C268A" stroke-width="1.5" />
+          <path d="M 14,21 Q 60,31 106,21" stroke="url(#rimGrad)" stroke-width="2" fill="none" />
+          <rect x="50" y="6" width="20" height="5" rx="2.5" fill="url(#handleGrad)" stroke="#374151" stroke-width="0.8" />
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    function runTossAnimation() {
+      const tl = gsap.timeline();
+      const bin = document.getElementById('dustbin');
+      const binLid = document.getElementById('binLid');
+      const binCan = document.getElementById('binCanister');
+      const binRect = bin.getBoundingClientRect();
+      const mouthX = binRect.left + 60;
+      const mouthY = binRect.top + 24;
+
+      // 1. Bin pops up and springs lid open
+      tl.to(bin, { scale: 1.1, duration: 0.25, ease: "back.out(2)" })
+        .to(binLid, { rotate: 55, duration: 0.35, ease: "back.out(2.5)" }, "-=0.15");
+
+      // 2. Cascade crumple and toss for each card
+      const numCards = 6;
+      for (let i = 0; i < numCards; i++) {
+        const card = document.getElementById('card' + i);
+        const crease = card.querySelector('.crumple-crease');
+        const cardRect = card.getBoundingClientRect();
+        const startX = cardRect.left + cardRect.width / 2;
+        const startY = cardRect.top + cardRect.height / 2;
+        const dx = mouthX - startX;
+        const dy = mouthY - startY;
+        const arcY = Math.min(-120, -Math.hypot(dx, dy) * 0.22);
+
+        const cardTl = gsap.timeline();
+
+        // Step A: Crumple in place
+        cardTl.to(crease, { opacity: 1, duration: 0.18 })
+              .to(card, {
+                scale: 0.22,
+                borderRadius: "46% 54% 63% 37% / 41% 59% 43% 57%",
+                boxShadow: "0 14px 28px rgba(0,0,0,0.5), inset -6px -8px 12px rgba(30,10,60,0.6)",
+                rotateZ: gsap.utils.random(-45, 45),
+                rotateX: gsap.utils.random(-30, 30),
+                duration: 0.32,
+                ease: "power2.in"
+              }, 0);
+
+        // Step B: Trajectory to dustbin mouth
+        cardTl.to(card, {
+          x: dx,
+          y: dy,
+          rotateZ: "+=540",
+          rotateX: "+=360",
+          duration: 0.55,
+          ease: "power1.in",
+          // custom parabolic curve using onUpdate or motion path
+        })
+        .to(card, {
+          scale: 0,
+          opacity: 0,
+          duration: 0.12,
+          ease: "power2.in",
+          onStart: () => {
+            // Bin catch recoil
+            gsap.fromTo(binCan, 
+              { scaleX: 1.08, scaleY: 0.92 }, 
+              { scaleX: 1, scaleY: 1, duration: 0.25, ease: "elastic.out(1, 0.4)" }
+            );
+          }
+        }, "-=0.1");
+
+        tl.add(cardTl, 0.2 + i * 0.14);
+      }
+
+      // 3. Lid snaps shut
+      tl.to(binLid, { 
+        rotate: 0, 
+        duration: 0.35, 
+        ease: "bounce.out" 
+      }, "+=0.1");
+
+      // 4. Headline changes & Purple Cards bloom
+      tl.to("#stageTitle", {
+        opacity: 0,
+        y: -10,
+        duration: 0.2,
+        onComplete: () => {
+          document.getElementById('stageTitle').innerText = "Every café you sell to, on one connected board.";
+        }
+      }, "-=0.2")
+      .to("#stageTitle", { opacity: 1, y: 0, duration: 0.3 })
+      .to(".card-after", {
+        opacity: 1,
+        scale: 1,
+        stagger: 0.08,
+        duration: 0.45,
+        ease: "back.out(1.4)"
+      }, "-=0.2");
+    }
+  </script>
+</body>
+</html>

@@ -568,7 +568,7 @@
 .bfx-s-demand .ddm-pin-wrapper {
   --e-p: clamp(0, (var(--k) - var(--pin-d, 0.15)) * 3, 1);
   --q-p: calc(var(--e-p) * (2 - var(--e-p)));
-  transform: translate(-50%, -100%) translate3d(0, calc((1 - var(--q-p)) * -18px), 0);
+  transform: translate(-50%, -100%) scale(var(--pin-scale, 1)) translate3d(0, calc((1 - var(--q-p)) * -18px), 0);
   opacity: var(--q-p);
 }
 
@@ -583,31 +583,128 @@
   height: 100%;
 }
 
-/* ─── Dedicated Map Viewport (Ensures Northern Edge Is 100% Visible) ─── */
+/* ─── Dedicated Interactive Map Viewport (Zoom, Pan, Tilt Stage) ─── */
 .ddm-map-viewport {
   position: absolute;
-  top: 52px;
-  bottom: 46px;
-  left: 8px;
-  right: 8px;
-  border-radius: 12px;
-  overflow: visible;
+  top: 48px;
+  bottom: 52px;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.ddm-map-viewport.is-dragging {
+  cursor: grabbing;
 }
 
-.ddm-bg-plate {
+/* Unified 3D Map Tilt Stage */
+.ddm-tilt-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ddm-map-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 20px 38px rgba(107, 51, 211, 0.16)) drop-shadow(0 6px 14px rgba(15, 23, 42, 0.08));
+}
+
+.ddm-pins-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* ─── Dynamic Cursor Spotlight ─── */
+.ddm-map-spotlight {
+  position: absolute;
+  inset: -100px;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+/* ─── Interactive Elevation Wireframe Grid ─── */
+.ddm-wireframe-grid {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  border-radius: 12px;
-  overflow: hidden;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background-size: 32px 32px;
+  background-image:
+    linear-gradient(to right, rgba(107, 51, 211, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(107, 51, 211, 0.08) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
 }
-.ddm-bg-plate img {
+.ddm-wireframe-grid.is-active {
+  opacity: 1;
+}
+
+/* ─── Dynamic Heatmap Contour Ripples at Hubs ─── */
+.ddm-heatmap-ripples {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 32%;
-  display: block;
+  pointer-events: none;
+  z-index: 4;
+}
+.ddm-ripple-group {
+  opacity: 0.45;
+  transition: opacity 0.35s ease;
+}
+.ddm-ripple-group.is-hot {
+  opacity: 1;
+}
+.ddm-contour-r1,
+.ddm-contour-r2,
+.ddm-contour-r3 {
+  fill: none;
+  stroke: rgba(107, 51, 211, 0.25);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 3;
+  transition: all 0.35s ease;
+}
+.ddm-ripple-group.is-hot .ddm-contour-r1 {
+  stroke: #6B33D3;
+  stroke-width: 2;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 6px rgba(107, 51, 211, 0.6));
+  animation: ddm-pulse-contour 2s infinite ease-in-out;
+}
+.ddm-ripple-group.is-hot .ddm-contour-r2 {
+  stroke: rgba(107, 51, 211, 0.6);
+  stroke-width: 1.6;
+  animation: ddm-pulse-contour 2.4s infinite ease-in-out 0.2s;
+}
+.ddm-ripple-group.is-hot .ddm-contour-r3 {
+  stroke: rgba(107, 51, 211, 0.35);
+  stroke-width: 1.2;
+  animation: ddm-pulse-contour 2.8s infinite ease-in-out 0.4s;
+}
+
+@keyframes ddm-pulse-contour {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
 }
 
 /* ─── Network Routes & Flowing Demand Particles ─── */
@@ -740,45 +837,159 @@
   box-shadow: 0 2px 8px rgba(107, 51, 211, 0.35);
 }
 
-/* ─── Floating Top-Left Overall Demand Card (Compact & Clear of Pins) ─── */
-.ddm-card-demand {
+/* ─── Unified Floating Left Telemetry & Intensity Panel (Deep Zoom Clarity) ─── */
+.ddm-floating-panel {
   position: absolute;
   left: 12px;
   top: 56px;
   z-index: 25;
-  width: 104px;
-  padding: 6px 8px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
+  width: 132px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  border-radius: 12px;
   border: 1.5px solid rgba(107, 51, 211, 0.18);
-  box-shadow: 0 4px 14px rgba(43, 23, 96, 0.08);
+  box-shadow: 0 8px 24px -4px rgba(43, 23, 96, 0.1), 0 2px 6px rgba(107, 51, 211, 0.06);
   pointer-events: auto;
+  transition: opacity 0.3s ease, background 0.2s ease, width 0.25s ease, padding 0.25s ease;
+}
+.ddm-floating-panel.is-zoomed-view {
+  opacity: 0.88;
+  background: rgba(255, 255, 255, 0.84);
+}
+.ddm-floating-panel.is-zoomed-view:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.98);
+}
+.ddm-floating-panel.is-collapsed {
+  width: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+/* Compact Pill when Panel is Minimized */
+.ddm-panel-pill-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  border-radius: 9999px;
+  border: 1.5px solid rgba(107, 51, 211, 0.22);
+  box-shadow: 0 4px 14px rgba(107, 51, 211, 0.16);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.ddm-panel-pill-toggle:hover {
+  border-color: #6B33D3;
+  box-shadow: 0 6px 18px rgba(107, 51, 211, 0.25);
+  transform: translateY(-1px);
+}
+.ddm-pill-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: #6B33D3;
+}
+.ddm-pill-zones {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #64748B;
+}
+.ddm-pill-arrow {
+  width: 12px;
+  height: 12px;
+  color: #6B33D3;
+}
+
+/* Panel Internal Body */
+.ddm-side-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ddm-head-left {
+  display: flex;
+  align-items: center;
+  gap: 4.5px;
 }
 .ddm-side-card-title {
   font-size: 8.5px;
-  font-weight: 700;
+  font-weight: 750;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: #64748B;
 }
+.ddm-panel-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  border: 1px solid rgba(107, 51, 211, 0.15);
+  background: transparent;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.ddm-panel-collapse-btn svg {
+  width: 12px;
+  height: 12px;
+}
+.ddm-panel-collapse-btn:hover {
+  background: #EDE9FE;
+  color: #6B33D3;
+  border-color: rgba(107, 51, 211, 0.3);
+}
+
+.ddm-side-live-dot {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+  animation: ddm-dot-pulse 2s infinite ease-in-out;
+}
+@keyframes ddm-dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+.ddm-demand-hero {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 3px;
+}
 .ddm-demand-num {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
   color: #6B33D3;
-  margin-top: 1px;
   display: flex;
   align-items: center;
   gap: 2px;
+  letter-spacing: -0.02em;
 }
 .ddm-demand-arrow {
   font-size: 12px;
   color: #6B33D3;
 }
+.ddm-side-card-sub {
+  font-size: 7.5px;
+  font-weight: 600;
+  color: #94A3B8;
+  white-space: nowrap;
+}
+
 .ddm-sparkline-wrap {
-  width: 70px;
-  height: 14px;
-  margin: 2px 0 1px;
+  width: 100%;
+  height: 16px;
+  margin: 3px 0 4px;
 }
 .ddm-sparkline-svg {
   width: 100%;
@@ -786,43 +997,65 @@
   display: block;
   overflow: visible;
 }
-.ddm-side-card-sub {
+
+.ddm-side-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 2px;
+}
+.ddm-side-m-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 8px;
+}
+.ddm-side-m-label {
+  color: #64748B;
   font-weight: 500;
-  color: #94A3B8;
+}
+.ddm-side-m-val {
+  color: #1A0C38;
+  font-weight: 700;
 }
 
-/* ─── Floating Middle-Left Demand Intensity Legend Card (Compact & Clear of Pins) ─── */
-.ddm-card-legend {
-  position: absolute;
-  left: 12px;
-  top: 118px;
-  z-index: 25;
-  width: 104px;
-  padding: 6px 8px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
-  border: 1.5px solid rgba(107, 51, 211, 0.18);
-  box-shadow: 0 4px 14px rgba(43, 23, 96, 0.08);
-  pointer-events: auto;
+.ddm-side-panel-divider {
+  height: 1px;
+  background: rgba(107, 51, 211, 0.1);
+  margin: 6px 0 5px;
 }
+
+.ddm-side-tiers-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+.ddm-side-filter-badge {
+  font-size: 7.5px;
+  font-weight: 700;
+  padding: 1px 4.5px;
+  border-radius: 999px;
+  background: #EDE9FE;
+  color: #6B33D3;
+}
+
 .ddm-legend-grid {
   display: flex;
   flex-direction: column;
   gap: 2.5px;
-  margin-top: 4px;
 }
 .ddm-legend-chip-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 1.5px 3px;
-  border-radius: 4px;
+  justify-content: space-between;
+  padding: 2px 4px;
+  border-radius: 5px;
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
   transition: all 0.15s ease;
+  width: 100%;
 }
 .ddm-legend-chip-btn:hover {
   background: rgba(107, 51, 211, 0.06);
@@ -830,6 +1063,11 @@
 .ddm-legend-chip-btn.is-active {
   background: #EDE9FE;
   border-color: rgba(107, 51, 211, 0.25);
+}
+.ddm-legend-chip-left {
+  display: flex;
+  align-items: center;
+  gap: 4.5px;
 }
 .ddm-legend-swatch {
   width: 7px;
@@ -839,21 +1077,63 @@
 }
 .ddm-legend-chip-name {
   font-size: 8.5px;
-  font-weight: 600;
+  font-weight: 650;
   color: #1E293B;
   white-space: nowrap;
 }
+.ddm-legend-chip-pill {
+  font-size: 7.5px;
+  font-weight: 600;
+  color: #6B33D3;
+  background: rgba(107, 51, 211, 0.08);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
 
-/* ─── Interactive Cluster Pins with Zero-Flicker Hitbox & Bridge ─── */
+/* ─── Vector Expressway Network & Deep Zoom Micro-Detailing ─── */
+.ddm-arterial-network {
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.ddm-ring-road,
+.ddm-inner-ring {
+  fill: none;
+  stroke: rgba(107, 51, 211, 0.22);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 3;
+}
+.ddm-cp-circle,
+.ddm-cp-circle-outer {
+  fill: none;
+  stroke: rgba(107, 51, 211, 0.25);
+  stroke-width: 1.1;
+  stroke-dasharray: 3 3;
+}
+.ddm-pin-zoom-metric {
+  font-size: 9px;
+  font-weight: 600;
+  color: #6B33D3;
+  margin-left: 2px;
+  opacity: 0.95;
+  transition: opacity 0.2s ease;
+}
+.ddm-pin-wrapper.is-selected .ddm-pin-zoom-metric {
+  color: #EDE9FE;
+}
+
+/* ─── Interactive Cluster Pins (Flicker-Free, Crisp Hitbox) ─── */
 .ddm-pin-wrapper {
   position: absolute;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -100%) scale(var(--pin-scale, 1));
+  transform-origin: 50% 100%;
   z-index: 20;
   cursor: pointer;
   pointer-events: auto;
-  padding: 8px 10px;
-  margin: -8px -10px;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
+  will-change: transform, opacity;
+}
+.ddm-pin-wrapper * {
+  pointer-events: none;
 }
 .ddm-pin-wrapper.is-dimmed {
   opacity: 0.14;
@@ -869,14 +1149,18 @@
   gap: 4px;
   height: 26px;
   padding: 0 9px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(8px);
+  background: #ffffff;
   border-radius: 9999px;
   box-shadow: 0 3px 10px rgba(107, 51, 211, 0.15), 0 1px 3px rgba(15, 23, 42, 0.05);
   border: 1px solid rgba(107, 51, 211, 0.18);
   white-space: nowrap;
-  pointer-events: none;
-  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  pointer-events: auto !important;
+  cursor: pointer;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  will-change: border-color, box-shadow, background-color;
 }
 .ddm-pin-wrapper:hover .ddm-pin-badge {
   border-color: #6B33D3;
@@ -988,169 +1272,89 @@
   }
 }
 
-/* ─── Sensory Hover Detail Card (Pure White with Purple Accents & Bridge) ─── */
-.ddm-tooltip {
+/* ─── Floating Glass Map Controls ─── */
+.ddm-map-controls {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  width: 210px;
-  padding: 9px 11px;
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1.5px solid rgba(107, 51, 211, 0.22);
-  box-shadow: 0 16px 36px -6px rgba(107, 51, 211, 0.2), 0 4px 12px rgba(43, 23, 96, 0.08);
-  color: #1A0C38;
-  z-index: 60;
-  pointer-events: auto !important;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
-}
-
-/* Invisible bridge so cursor moving between badge and tooltip NEVER loses hover */
-.ddm-tooltip::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 14px;
-  background: transparent;
+  right: 14px;
+  top: 14px;
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 9px;
+  border: 1px solid rgba(107, 51, 211, 0.16);
+  box-shadow: 0 4px 14px rgba(43, 23, 96, 0.1);
   pointer-events: auto;
 }
 
-.ddm-tooltip.is-tooltip-bottom {
-  bottom: auto;
-  top: calc(100% + 8px);
-  transform: translateX(-50%) translateY(-4px);
-}
-.ddm-tooltip.is-tooltip-bottom::before {
-  top: auto;
-  bottom: 100%;
-  height: 14px;
-}
-
-.ddm-tooltip.is-tooltip-left {
-  left: -4px;
-  transform: translateY(4px);
-}
-.ddm-tooltip.is-tooltip-left.is-tooltip-bottom {
-  transform: translateY(-4px);
-}
-
-.ddm-tooltip.is-tooltip-right {
-  left: auto;
-  right: -4px;
-  transform: translateY(4px);
-}
-.ddm-tooltip.is-tooltip-right.is-tooltip-bottom {
-  transform: translateY(-4px);
-}
-
-.ddm-pin-wrapper:hover .ddm-tooltip,
-.ddm-pin-wrapper.is-selected .ddm-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-.ddm-pin-wrapper:hover .ddm-tooltip.is-tooltip-left,
-.ddm-pin-wrapper.is-selected .ddm-tooltip.is-tooltip-left {
-  transform: translateY(0);
-}
-.ddm-pin-wrapper:hover .ddm-tooltip.is-tooltip-right,
-.ddm-pin-wrapper.is-selected .ddm-tooltip.is-tooltip-right {
-  transform: translateY(0);
-}
-
-.ddm-tooltip-head {
+.ddm-ctrl-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.16s ease;
 }
-.ddm-tooltip-title {
-  font-size: 12px;
-  font-weight: 750;
-  color: #1A0C38;
-  letter-spacing: -0.01em;
+.ddm-ctrl-btn svg {
+  width: 13px;
+  height: 13px;
 }
-.ddm-tooltip-badge {
-  font-size: 9.5px;
-  padding: 2px 6px;
-  border-radius: 999px;
+.ddm-ctrl-btn:hover {
   background: #EDE9FE;
   color: #6B33D3;
-  font-weight: 700;
-  border: 1px solid rgba(107, 51, 211, 0.18);
 }
-.ddm-tooltip-live {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 4px;
-  font-size: 9.5px;
-  font-weight: 600;
-  color: #6B33D3;
-}
-.ddm-live-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
+.ddm-ctrl-btn.is-active {
   background: #6B33D3;
-  box-shadow: 0 0 6px rgba(107, 51, 211, 0.8);
-  animation: ddm-pulse-purple 1.5s infinite;
+  color: #ffffff;
 }
-@keyframes ddm-pulse-purple {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-.ddm-tooltip-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(107, 51, 211, 0.1);
-}
-.ddm-tooltip-label {
-  display: block;
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #64748B;
-}
-.ddm-tooltip-val {
-  font-size: 11px;
+.ddm-ctrl-badge {
+  font-size: 8.5px;
   font-weight: 700;
-  color: #1A0C38;
+  color: #6B33D3;
+  letter-spacing: -0.02em;
 }
-.ddm-tooltip-val-growth {
-  font-size: 11px;
-  font-weight: 800;
+.ddm-ctrl-badge:hover {
+  background: #EDE9FE;
+}
+.ddm-ctrl-reset {
   color: #6B33D3;
 }
-.ddm-tooltip-val-score {
-  font-size: 11px;
-  font-weight: 800;
-  color: #7C3AED;
-}
-.ddm-tooltip-foot {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  padding-top: 5px;
-  border-top: 1px solid rgba(107, 51, 211, 0.1);
+
+/* ─── Subtle Navigation Hint Badge ─── */
+.ddm-map-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 28;
+  padding: 3.5px 11px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 999px;
+  border: 1px solid rgba(107, 51, 211, 0.16);
+  box-shadow: 0 2px 8px rgba(43, 23, 96, 0.08);
   font-size: 9.5px;
-}
-.ddm-tooltip-foot-label {
-  color: #64748B;
-}
-.ddm-tooltip-foot-val {
+  font-weight: 600;
   color: #6B33D3;
-  font-weight: 700;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.ddm-map-hint.is-faded {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
 }
 
 /* ─── Bottom Scrubber Bar & Telemetry (Minimal & Sleek) ─── */

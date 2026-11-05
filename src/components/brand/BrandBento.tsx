@@ -16,6 +16,10 @@
  */
 
 import React, { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react';
+import { gsap } from 'gsap';
+import { BentoDustbin } from './BentoDustbin';
+import { BentoCrumpleCanvas, type BentoCrumpleHandle } from './BentoCrumpleCanvas';
+import { PaperCrumple } from '@/components/ui/PaperCrumple';
 import { fmt, reduced, useTween } from './shared';
 import { ATTRS, CAFES, DAYS, EVENTS, HUBS, VERDICT } from './trial-data';
 import { openContactSalesModal } from '@/components/ContactSalesModal';
@@ -24,16 +28,16 @@ type Vars = CSSProperties & Record<`--${string}`, string | number>;
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
 const out3 = (k: number) => 1 - (1 - k) ** 3;
 
-// Each tile: where it flies in from (vw, vh), how far it's turned, and when it sets off (share of the build)
+// Each tile in DOM order (Row 1 to Row 3)
 const TILES = [
   { id: 'brand', from: [-40, -30], r: -14, at: 0 },
-  { id: 'feed', from: [40, -26], r: 10, at: 0.05 },
-  { id: 'reach', from: [4, -50], r: 8, at: 0.10 },
-  { id: 'kit', from: [6, 56], r: -9, at: 0.15 },
-  { id: 'num', from: [-48, 10], r: -11, at: 0.20 },
-  { id: 'waste', from: [46, 36], r: -12, at: 0.25 },
-  { id: 'rate', from: [-14, 54], r: 12, at: 0.30 },
-  { id: 'chart', from: [-36, 48], r: 6, at: 0.35 },
+  { id: 'reach', from: [4, -50], r: 8, at: 0.05 },
+  { id: 'feed', from: [40, -26], r: 10, at: 0.10 },
+  { id: 'num', from: [-48, 10], r: -11, at: 0.15 },
+  { id: 'rate', from: [-14, 54], r: 12, at: 0.20 },
+  { id: 'kit', from: [6, 56], r: -9, at: 0.25 },
+  { id: 'chart', from: [-36, 48], r: 6, at: 0.30 },
+  { id: 'waste', from: [46, 36], r: -12, at: 0.35 },
 ] as const;
 
 type TileId = (typeof TILES)[number]['id'];
@@ -47,68 +51,198 @@ const FLIGHT = 0.44;
 
 export function BrandBento() {
   const secRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const tilesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const beforeCardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const afterCardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const dustbinRef = useRef<HTMLDivElement>(null);
+  const crumpleCanvasRef = useRef<BentoCrumpleHandle>(null);
+  const activeTimeline = useRef<gsap.core.Timeline | null>(null);
+
   const [landed, setLanded] = useState<Record<string, boolean>>({});
   const [morphProgress, setMorphProgress] = useState(0); // 0 = Before, 1 = After
   const [isManualOverride, setIsManualOverride] = useState(false);
+  const [isBinOpen, setIsBinOpen] = useState(false);
+  const [isBinCatching, setIsBinCatching] = useState(false);
+  const [isBinSettled, setIsBinSettled] = useState(false);
+  const [clearedCount, setClearedCount] = useState(0);
+  const [isTossAnimating, setIsTossAnimating] = useState(false);
   const manualTimer = useRef<number | null>(null);
 
+  // ── Phased Programmatic Sequence: Real Three.js Paper Crumple & 3D Toss Cascade ──
+  const playCrumpleAndTossSequence = () => {
+    if (isTossAnimating) return;
+    setIsManualOverride(true);
+    setIsTossAnimating(true);
+    if (activeTimeline.current) activeTimeline.current.kill();
+
+    // 1. Dustbin lid pops open
+    setIsBinOpen(true);
+    setIsBinSettled(false);
+    setClearedCount(0);
+
+    // 2. Three.js PaperCrumple physics & 3D parabolic trajectory cascade
+    crumpleCanvasRef.current?.playTossSequence(
+      (cardIndex) => {
+        setIsBinCatching(true);
+        setTimeout(() => setIsBinCatching(false), 240);
+        setClearedCount(cardIndex + 1);
+      },
+      () => {
+        setIsTossAnimating(false);
+        setMorphProgress(1);
+        setClearedCount(8);
+        setIsBinSettled(true);
+        setIsBinOpen(false);
+        setLanded(Object.fromEntries(TILES.map((t) => [t.id, true])));
+
+        // Smoothly ensure page scroll matches After position
+        const el = secRef.current;
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const totalScrollable = Math.max(1, rect.height - window.innerHeight);
+          const targetScroll = window.scrollY + rect.top + 0.78 * totalScrollable;
+          window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        }
+
+        // Bloom After purple cards into their grid slots
+        const bloomTl = gsap.timeline();
+        afterCardsRef.current.forEach((ac, idx) => {
+          if (ac) {
+            bloomTl.fromTo(
+              ac,
+              { scale: 0.85, opacity: 0, filter: 'blur(8px)' },
+              { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.45, ease: 'back.out(1.4)' },
+              idx === 0 ? 0 : '-=0.34'
+            );
+          }
+        });
+
+        if (manualTimer.current) window.clearTimeout(manualTimer.current);
+        manualTimer.current = window.setTimeout(() => {
+          setIsManualOverride(false);
+        }, 800);
+      }
+    );
+  };
+
+  // ── Reset Back to Initial Manual Coordination Cards ──
+  const resetToBefore = () => {
+    if (activeTimeline.current) activeTimeline.current.kill();
+    setIsManualOverride(true);
+    setIsTossAnimating(false);
+    setMorphProgress(0);
+    setLanded({});
+    setIsBinOpen(false);
+    setIsBinSettled(false);
+    setClearedCount(0);
+
+    crumpleCanvasRef.current?.reset();
+
+    // Smoothly scroll back to top of the section
+    const el = secRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const targetScroll = window.scrollY + rect.top + 20;
+      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    }
+
+    // Reset before cards back to pristine initial state
+    beforeCardsRef.current.forEach((card) => {
+      if (card) {
+        card.style.opacity = '1';
+        card.style.visibility = 'visible';
+        card.style.transform = '';
+      }
+    });
+
+    // Reset after cards
+    afterCardsRef.current.forEach((ac) => {
+      if (ac) {
+        gsap.set(ac, { opacity: 0, scale: 0.85, clearProps: 'filter' });
+      }
+    });
+
+    if (manualTimer.current) window.clearTimeout(manualTimer.current);
+    manualTimer.current = window.setTimeout(() => {
+      setIsManualOverride(false);
+    }, 600);
+  };
+
+  // ── Scroll-Linked Timeline Controller ──
   useEffect(() => {
     const el = secRef.current;
     if (!el) return;
 
     let rafId = 0;
-    let seen = '';
 
     const onScroll = () => {
       rafId = 0;
+      if (isManualOverride || isTossAnimating) return;
+
       const V = window.innerHeight;
-      const wide = window.innerWidth > 980;
-      const still = reduced();
       const rect = el.getBoundingClientRect();
       const totalScrollable = Math.max(1, rect.height - V);
-
-      // Section scroll progress (0 to 1)
       const secProgress = clamp(-rect.top / totalScrollable);
 
-      // ── The purple After cards fly into the screen ──
-      // Driven by BUILD range [0.06, 0.72]
-      const buildNorm = clamp((secProgress - BUILD[0]) / (BUILD[1] - BUILD[0]));
-      const nowLanded: string[] = [];
+      if (secProgress < 0.10) {
+        setMorphProgress(0);
+        setIsBinOpen(false);
+        setIsBinSettled(false);
+        setClearedCount(0);
+        crumpleCanvasRef.current?.reset();
 
-      TILES.forEach((t, i) => {
-        const tile = tilesRef.current[i];
-        if (!tile) return;
+        beforeCardsRef.current.forEach((c) => {
+          if (c) {
+            c.style.opacity = '1';
+            c.style.visibility = 'visible';
+            c.style.transform = '';
+          }
+        });
+        afterCardsRef.current.forEach((a) => {
+          if (a) {
+            a.style.opacity = '0';
+            a.style.transform = 'scale(0.85)';
+          }
+        });
+        setLanded({});
+      } else if (secProgress < 0.68) {
+        setIsBinOpen(true);
+        setIsBinSettled(false);
 
-        let k: number;
-        if (still) {
-          k = 1;
-        } else if (wide) {
-          k = clamp((buildNorm - t.at) / FLIGHT);
-        } else {
-          const parentRect = tile.parentElement!.getBoundingClientRect();
-          k = clamp((0.98 * V - parentRect.top) / (0.42 * V));
-        }
+        const p = clamp((secProgress - 0.10) / 0.58);
+        setMorphProgress(p);
+        setClearedCount(Math.min(8, Math.floor(p * 9)));
+        crumpleCanvasRef.current?.setScrollProgress(p);
 
-        const e = out3(k);
-        tile.style.setProperty('--e', e.toFixed(4));
-        if (e > 0.985) nowLanded.push(t.id);
-      });
+        afterCardsRef.current.forEach((a) => {
+          if (a) {
+            a.style.opacity = '0';
+            a.style.transform = 'scale(0.85)';
+          }
+        });
+        setLanded({});
+      } else {
+        // Fully into After state
+        setIsBinOpen(false);
+        setIsBinSettled(true);
+        setClearedCount(8);
+        setMorphProgress(1);
+        crumpleCanvasRef.current?.setScrollProgress(1);
 
-      const landKey = nowLanded.join();
-      if (landKey !== seen) {
-        seen = landKey;
-        setLanded(Object.fromEntries(nowLanded.map((id) => [id, true])));
-      }
-
-      // Morph progress for headline & state switcher
-      if (!isManualOverride) {
-        if (still) {
-          setMorphProgress(1);
-        } else {
-          const morph = clamp((secProgress - 0.14) / 0.52);
-          setMorphProgress(morph);
-        }
+        beforeCardsRef.current.forEach((c) => {
+          if (c) {
+            c.style.opacity = '0';
+            c.style.visibility = 'hidden';
+          }
+        });
+        afterCardsRef.current.forEach((a) => {
+          if (a) {
+            a.style.opacity = '1';
+            a.style.transform = 'scale(1)';
+          }
+        });
+        setLanded(Object.fromEntries(TILES.map((t) => [t.id, true])));
       }
     };
 
@@ -125,9 +259,9 @@ export function BrandBento() {
       window.removeEventListener('scroll', kick);
       window.removeEventListener('resize', kick);
     };
-  }, [isManualOverride]);
+  }, [isManualOverride, isTossAnimating]);
 
-  // Pointer light that follows the cursor across cards
+  // Pointer light that follows cursor across cards
   const handlePointerGlow = (e: PointerEvent<HTMLDivElement>) => {
     const target = (e.target as HTMLElement).closest<HTMLElement>('.bbo-t-after');
     if (!target) return;
@@ -138,33 +272,15 @@ export function BrandBento() {
 
   // Toggle button between states
   const handleToggleState = (targetState: 0 | 1) => {
-    setIsManualOverride(true);
-    setMorphProgress(targetState);
-
-    TILES.forEach((_, i) => {
-      const tile = tilesRef.current[i];
-      if (tile) tile.style.setProperty('--e', targetState === 1 ? '1' : '0');
-    });
-    setLanded(targetState === 1 ? Object.fromEntries(TILES.map((t) => [t.id, true])) : {});
-
-    const el = secRef.current;
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const totalScrollable = Math.max(1, rect.height - window.innerHeight);
-      // Scroll to Before view (0.02) or After view (0.82)
-      const targetScroll = window.scrollY + rect.top + (targetState === 0 ? 0.02 : 0.82) * totalScrollable;
-      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    if (targetState === 1) {
+      playCrumpleAndTossSequence();
+    } else {
+      resetToBefore();
     }
-
-    if (manualTimer.current) window.clearTimeout(manualTimer.current);
-    manualTimer.current = window.setTimeout(() => {
-      setIsManualOverride(false);
-    }, 1200);
   };
 
   const morph = morphProgress;
   const isAfterActive = morph >= 0.5;
-
   // Helper to render each tile:
   // 1. BEFORE CARD stays where it is from before (grounded in the grid)
   // 2. AFTER CARD (purple Gradient) comes flying into the screen with the 3D flying transition
@@ -182,8 +298,9 @@ export function BrandBento() {
 
     return (
       <div className={`bbo-slot bbo-a-${id}`}>
-        {/* 1. BEFORE CARD: Grounded, stays where it is from before */}
+        {/* 1. BEFORE CARD: Crumples like paper and tosses into dustbin */}
         <div
+          ref={(n) => { beforeCardsRef.current[i] = n; }}
           className={`bbo-card-before ${toneBefore}`}
           role="group"
           aria-label={`Before: ${label}`}
@@ -191,9 +308,12 @@ export function BrandBento() {
           {beforeContent}
         </div>
 
-        {/* 2. AFTER CARD (PURPLE/LAVENDER): Comes flying into screen */}
+        {/* 2. AFTER CARD (PURPLE/LAVENDER): Blooms into place on clean board */}
         <div
-          ref={(n) => { tilesRef.current[i] = n; }}
+          ref={(n) => {
+            tilesRef.current[i] = n;
+            afterCardsRef.current[i] = n;
+          }}
           className={`bbo-t-after ${toneAfter}${isTileLanded ? ' is-in' : ''}`}
           style={{ '--fx': t.from[0], '--fy': t.from[1], '--fr': t.r } as Vars}
           role="group"
@@ -206,8 +326,8 @@ export function BrandBento() {
   };
 
   return (
-    <section ref={secRef} className="bbo" id="system" aria-labelledby="bbo-title" style={{ '--morph': morph } as Vars}>
-      <div className="bbo-stage">
+    <section ref={secRef} className={`bbo ${isAfterActive ? 'is-after-mode' : ''}`} id="system" aria-labelledby="bbo-title" style={{ '--morph': morph } as Vars}>
+      <div ref={stageRef} className="bbo-stage">
         {/* Dynamic Header with State Indicator & Crossfading Headline */}
         <header className="bbo-head">
           <div className="bbo-head-main">
@@ -356,6 +476,31 @@ export function BrandBento() {
             (on) => <Waste on={on} />
           )}
         </div>
+
+        {/* Real Three.js 3D Paper Crumple Canvas (React Bits solver) */}
+        <BentoCrumpleCanvas
+          ref={crumpleCanvasRef}
+          beforeCardsRef={beforeCardsRef}
+          dustbinRef={dustbinRef}
+          stageRef={stageRef}
+        />
+
+        {/* Popped-Out Modern Industrial Dustbin in Bottom Right */}
+        <BentoDustbin
+          isOpen={isBinOpen}
+          isCatching={isBinCatching}
+          isSettled={isBinSettled}
+          clearedCount={clearedCount}
+          isAfterActive={isAfterActive}
+          onTriggerToss={() => {
+            if (isAfterActive) {
+              resetToBefore();
+            } else {
+              playCrumpleAndTossSequence();
+            }
+          }}
+          dustbinRef={dustbinRef}
+        />
 
         <p className="bbo-foot">
           {isAfterActive ? 'Sample figures · names are illustrative' : 'Fragmented operations typical in manual F&B distribution'}
@@ -564,47 +709,91 @@ function CardEBefore() {
   );
 }
 
-/** CARD F (BEFORE): Paper dispatch tag with unconfirmed outcomes */
+/** CARD F (BEFORE): Paper dispatch tag with unconfirmed outcomes & optional 3D PaperCrumple */
 function CardFBefore() {
+  const [show3D, setShow3D] = useState(false);
+
   return (
     <div className="bbo-bf-kit">
-      <h3>Samples sent. Follow-ups pending.</h3>
-      <div className="bbo-bf-tag">
-        <header>
-          <small>MANUAL SAMPLE</small>
-          <b>BATCH-04</b>
-        </header>
-        <p className="bbo-bf-tag-to">
-          <small>To</small>
-          <span>Blue Tokai (?) · Khan Market</span>
-        </p>
-        <ol>
-          <li className="is-done">
-            <i>?</i>
-            <b>Dispatched</b>
-            <em>Oct 12</em>
-          </li>
-          <li className="is-warn">
-            <i>?</i>
-            <b>Left at reception</b>
-            <em>Oct 14</em>
-          </li>
-          <li>
-            <i>—</i>
-            <b>Barista cupping score</b>
-            <em>No record</em>
-          </li>
-          <li>
-            <i>—</i>
-            <b>Repeat reorder</b>
-            <em>Never called back</em>
-          </li>
-        </ol>
-        <footer>
-          <span className="bbo-bf-stamp">Awaiting Call</span>
-          <span className="bbo-bf-note">No centralized follow-up</span>
-        </footer>
+      <div className="bbo-bf-kit-header">
+        <h3>Samples sent. Follow-ups pending.</h3>
+        <button
+          type="button"
+          className="bbo-3d-toggle-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShow3D(!show3D);
+          }}
+          title={show3D ? "Switch to standard card view" : "Switch to interactive 3D WebGL paper crumple"}
+        >
+          {show3D ? '📄 Card' : '✨ 3D Crumple'}
+        </button>
       </div>
+
+      {show3D ? (
+        <div className="bbo-3d-crumple-wrap">
+          <PaperCrumple
+            src="/brand/manual-sample-tag.png"
+            alt="Manual sample dispatch slip"
+            width={240}
+            height={300}
+            sceneHeight={300}
+            releaseBehavior="creased"
+            crumpleAmount={0.85}
+            crumpleDuration={0.45}
+            releaseDuration={0.4}
+            foldCount={7}
+            foldSharpness={0.65}
+            wrinkleDepth={0.75}
+            creaseStrength={0.22}
+            paperColor="#F4F0E8"
+            paperTexture={0.1}
+            lightIntensity={1.8}
+            lightAngle={-35}
+            draggable={true}
+            returnToOrigin={true}
+          />
+          <span className="bbo-3d-hint">Hold & drag to crumple with Three.js</span>
+        </div>
+      ) : (
+        <div className="bbo-bf-tag">
+          <header>
+            <small>MANUAL SAMPLE</small>
+            <b>BATCH-04</b>
+          </header>
+          <p className="bbo-bf-tag-to">
+            <small>To</small>
+            <span>Blue Tokai (?) · Khan Market</span>
+          </p>
+          <ol>
+            <li className="is-done">
+              <i>?</i>
+              <b>Dispatched</b>
+              <em>Oct 12</em>
+            </li>
+            <li className="is-warn">
+              <i>?</i>
+              <b>Left at reception</b>
+              <em>Oct 14</em>
+            </li>
+            <li>
+              <i>—</i>
+              <b>Barista cupping score</b>
+              <em>No record</em>
+            </li>
+            <li>
+              <i>—</i>
+              <b>Repeat reorder</b>
+              <em>Never called back</em>
+            </li>
+          </ol>
+          <footer>
+            <span className="bbo-bf-stamp">Awaiting Call</span>
+            <span className="bbo-bf-note">No centralized follow-up</span>
+          </footer>
+        </div>
+      )}
+
       <p className="bbo-bf-sub">Trial progress is difficult to track.</p>
     </div>
   );
