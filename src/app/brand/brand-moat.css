@@ -1,0 +1,750 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Brand Portal Moat & Capabilities Section ("What We Do For Brands")
+   Linear Precision + Stripe Product Storytelling + Gradient Identity:
+   - Light: white ground, ink type, the brand purple (#6B33D3) as the one accent, soft lilac depth instead of glow
+   - Foreground 3D product visuals on pale lilac stages, with soft contact shadows
+   - Streamlined, high-signal product interfaces (~30% noise reduction)
+   - Zero layout shift: rock-solid 3-column grid locked with minmax(0, 1fr)
+   - Inter-card hover dimming & purposeful, restrained micro-interactions
+───────────────────────────────────────────────────────────────────────── */
+
+.bmoat-section {
+  position: relative;
+  width: 100%;
+  background-color: #FFFFFF;
+  color: #15111D;
+  padding: clamp(88px, 12vh, 140px) 0 clamp(96px, 13vh, 150px);
+  overflow: visible;
+  box-sizing: border-box;
+  scroll-margin-top: 100px;
+}
+
+/* A faint lilac wash behind the header */
+.bmoat-bg-glow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -15%);
+  width: 1100px;
+  height: 550px;
+  background: radial-gradient(ellipse 65% 55% at center, rgba(107, 51, 211, 0.07) 0%, rgba(107, 51, 211, 0.02) 50%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.bmoat-container {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 40px);
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* ─── Editorial Section Header (Linear / Stripe precision) ────────── */
+.bmoat-header {
+  max-width: 820px;
+  margin-bottom: clamp(74px, 8.5vh, 92px);
+}
+
+.bmoat-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6B33D3;
+  margin-bottom: 14px;
+}
+
+.bmoat-eyebrow-line {
+  width: 20px;
+  height: 1px;
+  background: #6B33D3;
+}
+
+.bmoat-title {
+  font-size: clamp(32px, 3.6vw, 48px);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #15111D;
+  margin: 0 0 14px 0;
+  font-family: var(--font-sans);
+}
+
+.bmoat-sub {
+  font-size: clamp(14.5px, 1.15vw, 16.5px);
+  line-height: 1.6;
+  color: #5C5668;
+  max-width: 640px;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ─── 3-Column Cards Grid with Zero Layout Shift ─────────────────── */
+.bmoat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  position: relative;
+  align-items: stretch;
+}
+
+/* Sibling Dimming on Grid Hover (Linear continuity) */
+.bmoat-grid:hover .bmoat-card-wrap:not(:hover) {
+  opacity: 0.72;
+}
+
+@media (max-width: 1080px) {
+  .bmoat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (max-width: 960px) {
+  .bmoat-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 18px;
+    padding: 0 4px 16px 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .bmoat-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .bmoat-card-wrap {
+    min-width: 320px;
+    max-width: 345px;
+    width: 335px;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+  }
+  .bmoat-card {
+    padding: 22px 18px 20px 18px;
+  }
+  .bmoat-stage-left {
+    width: 86px;
+  }
+  .bmoat-stage-img {
+    max-height: 142px;
+  }
+  .bmoat-stage-img.bottle {
+    max-height: 150px;
+  }
+  .bmoat-stage-shadow {
+    width: 70px;
+  }
+  .bmoat-stage-turntable {
+    width: 72px;
+  }
+  .bmoat-hud-badge-green {
+    font-size: 8.8px;
+    gap: 4px;
+  }
+  .bmoat-hud-capsule-purple {
+    font-size: 7.5px;
+    padding: 1.5px 5px;
+  }
+}
+
+/* ─── Card Wrapper with Oversized Numerals ───────────────────────── */
+.bmoat-card-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  transition: opacity 280ms ease;
+}
+
+/* Oversized Background Number in Restrained Violet Contour */
+.bmoat-bg-num {
+  position: absolute;
+  top: -82px;
+  right: 20px;
+  font-size: clamp(110px, 9vw, 136px);
+  font-weight: 900;
+  font-family: var(--font-sans);
+  line-height: 0.82;
+  color: rgba(107, 51, 211, 0.04);
+  -webkit-text-stroke: 1.5px rgba(107, 51, 211, 0.3);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  letter-spacing: -0.04em;
+  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bmoat-card-wrap:hover .bmoat-bg-num,
+.bmoat-bg-num.is-lit {
+  color: rgba(107, 51, 211, 0.08);
+  -webkit-text-stroke: 1.5px rgba(107, 51, 211, 0.7);
+}
+
+/* ─── White Card with a Hairline Lilac Border ────────────────────── */
+.bmoat-card {
+  position: relative;
+  z-index: 2;
+  background: #FFFFFF;
+  border: 1px solid #E9E3F5;
+  border-radius: 20px;
+  padding: 26px 24px 24px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  cursor: default;
+  box-shadow: 0 1px 2px rgba(21, 17, 29, 0.04), 0 22px 44px -28px rgba(53, 26, 110, 0.28);
+  transition: border-color 240ms ease, box-shadow 240ms ease;
+}
+
+.bmoat-card.is-hovered,
+.bmoat-card:hover {
+  border-color: #CDBDF2;
+  box-shadow: 0 1px 2px rgba(21, 17, 29, 0.04), 0 28px 56px -28px rgba(53, 26, 110, 0.4);
+}
+
+.bmoat-card-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+/* ─── Card Header: Pillar Badge, Confident Title & Crisp Subtitle ── */
+.bmoat-card-top {
+  margin-bottom: 12px;
+}
+
+.bmoat-pillar-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5522B8;
+  background: #F3EEFD;
+  border: 1px solid #E2D6FA;
+  border-radius: 5px;
+  padding: 2.5px 7px;
+  margin-bottom: 8px;
+  font-family: var(--font-sans);
+}
+
+.bmoat-card-title {
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  color: #15111D;
+  margin: 0 0 6px 0;
+  font-family: var(--font-sans);
+  line-height: 1.2;
+}
+
+.bmoat-pillar-sub {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #6E6879;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ─── Graphic Frame: Container for 3D Stage + Layered Interface ──── */
+.bmoat-graphic-frame {
+  width: 100%;
+  min-width: 0;
+  height: 216px;
+  background: radial-gradient(ellipse at 32% 62%, rgba(107, 51, 211, 0.1) 0%, #F7F4FD 60%, #F2EEFB 100%);
+  border: 1px solid #ECE5F8;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  transition: border-color 240ms ease;
+}
+
+.bmoat-card:hover .bmoat-graphic-frame {
+  border-color: #DCCFF6;
+}
+
+.bmoat-frame-bg-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bmoat-workspace {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── Foreground 3D Interactive Artwork Stage (Left Column) ──────── */
+.bmoat-stage-left {
+  width: 114px;
+  flex-shrink: 0;
+  height: 184px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+}
+
+.bmoat-3d-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+}
+
+.bmoat-3d-wrap:active {
+  cursor: grabbing;
+}
+
+.bmoat-stage-img {
+  max-height: 160px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 20px rgba(53, 26, 110, 0.22));
+  transform: translateY(0);
+  transition: transform 280ms ease, filter 280ms ease;
+  animation: bmoat-float 4.8s ease-in-out infinite;
+  pointer-events: auto;
+}
+
+.bmoat-stage-img.bottle {
+  max-height: 168px;
+}
+
+.bmoat-card:hover .bmoat-stage-img {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 16px 24px rgba(53, 26, 110, 0.3));
+}
+
+.bmoat-stage-shadow {
+  position: absolute;
+  bottom: 4px;
+  width: 80px;
+  height: 14px;
+  background: radial-gradient(ellipse, rgba(53, 26, 110, 0.3) 0%, rgba(107, 51, 211, 0.12) 45%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(3px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bmoat-stage-turntable {
+  position: absolute;
+  bottom: 3px;
+  width: 82px;
+  height: 20px;
+  background: radial-gradient(ellipse, #FFFFFF 0%, #EDE6FB 75%);
+  border: 1px solid #DCCFF6;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(53, 26, 110, 0.14);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes bmoat-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.5px); }
+}
+
+/* ─── Layered Interface Preview (Right Column Minimal HUD) ───────── */
+.bmoat-hud-right {
+  flex: 1;
+  min-width: 0;
+  height: 180px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #E9E3F5;
+  border-radius: 12px;
+  padding: 12px 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  margin-left: 10px;
+  box-shadow: 0 12px 26px -14px rgba(53, 26, 110, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bmoat-hud-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.bmoat-hud-badge-clean {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #15111D;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+}
+
+.bmoat-live-dot {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #6B33D3;
+  box-shadow: 0 0 0 3px rgba(107, 51, 211, 0.16);
+  flex-shrink: 0;
+}
+
+.bmoat-hud-capsule-purple {
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  color: #5522B8;
+  background: #F3EEFD;
+  border: 1px solid #E2D6FA;
+  border-radius: 999px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── Hero Stat / Number Callout ─────────────────────────────────── */
+.bmoat-hud-stat-hero {
+  margin: 1px 0;
+}
+
+.bmoat-hud-big-num {
+  font-size: 18px;
+  font-weight: 800;
+  color: #15111D;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-family: var(--font-sans);
+}
+
+.bmoat-hud-unit {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6B33D3;
+  margin-left: 2px;
+}
+
+.bmoat-hud-sublabel {
+  font-size: 8px;
+  color: #8A8496;
+  font-weight: 500;
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+/* ─── Card 01: Clean Forecast Sparkline ──────────────────────────── */
+.bmoat-hud-chart-box {
+  position: relative;
+  margin: 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bmoat-hud-chart-svg {
+  width: 100%;
+  height: 48px;
+  overflow: visible;
+}
+
+.bmoat-hud-axis-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+  font-size: 7.5px;
+  font-weight: 600;
+  color: #A39DB0;
+}
+
+.bmoat-hud-axis-lbl {
+  cursor: pointer;
+  transition: color 160ms ease;
+  user-select: none;
+}
+
+.bmoat-hud-axis-lbl.active,
+.bmoat-hud-axis-lbl:hover {
+  color: #6B33D3;
+  font-weight: 750;
+}
+
+/* ─── Card 02: Venue Hero & Minimal Sensory Card ─────────────────── */
+.bmoat-hud-venue-hero {
+  margin: 1px 0;
+}
+
+.bmoat-hud-venue-name {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: #15111D;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmoat-hud-venue-loc {
+  font-size: 8px;
+  color: #8A8496;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmoat-hud-score-card {
+  background: #F7F4FD;
+  border: 1px solid #ECE5F8;
+  border-radius: 7px;
+  padding: 6px 8px;
+  margin: 2px 0;
+}
+
+.bmoat-hud-score-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bmoat-hud-score-badge {
+  font-size: 8px;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: #6B33D3;
+  border: 1px solid #7F48E8;
+  border-radius: 4px;
+  padding: 1.5px 5px;
+}
+
+.bmoat-hud-score-text {
+  font-size: 7.8px;
+  color: #4B4558;
+  font-weight: 600;
+}
+
+.bmoat-hud-verdict-clean {
+  font-size: 7.8px;
+  color: #5522B8;
+  font-weight: 500;
+  margin-top: 3px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Card 03: Active PO Hero & Minimalist Account Tabs ─────────── */
+.bmoat-hud-po-hero {
+  background: #F7F4FD;
+  border: 1px solid #ECE5F8;
+  border-radius: 7px;
+  padding: 6px 8px;
+  margin: 1px 0;
+}
+
+.bmoat-hud-po-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.bmoat-hud-po-hero-name {
+  font-size: 11px;
+  font-weight: 750;
+  color: #15111D;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.bmoat-hud-po-hero-qty {
+  font-size: 8px;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: #6B33D3;
+  border: 1px solid #7F48E8;
+  border-radius: 4px;
+  padding: 1.5px 5px;
+  flex-shrink: 0;
+}
+
+.bmoat-hud-po-hero-status {
+  font-size: 7.5px;
+  font-weight: 600;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmoat-hud-tabs-row {
+  display: flex;
+  gap: 4px;
+  margin: 2px 0;
+}
+
+.bmoat-hud-tab-chip {
+  flex: 1;
+  padding: 3.5px 0;
+  font-size: 7.8px;
+  font-weight: 700;
+  color: #6E6879;
+  background: #F7F4FD;
+  border: 1px solid #ECE5F8;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 160ms ease;
+  white-space: nowrap;
+}
+
+.bmoat-hud-tab-chip:hover,
+.bmoat-hud-tab-chip.active {
+  color: #FFFFFF;
+  background: #6B33D3;
+  border-color: #6B33D3;
+  box-shadow: 0 4px 10px -4px rgba(107, 51, 211, 0.55);
+}
+
+/* ─── Shared Minimalist Footer ───────────────────────────────────── */
+.bmoat-hud-footer-clean {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(21, 17, 29, 0.07);
+  padding-top: 5px;
+  font-size: 7.8px;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  gap: 6px;
+}
+
+.bmoat-hud-footer-cluster {
+  color: #8A8496;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bmoat-hud-footer-pill {
+  color: #6B33D3;
+  font-weight: 700;
+  font-size: 7.2px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* ─── Bottom Area: Minimal Pillar Impact Metrics & Commercial Tags ─ */
+.bmoat-pillar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.bmoat-pillar-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: #F7F4FD;
+  border: 1px solid #ECE5F8;
+  border-radius: 9px;
+}
+
+.bmoat-metric-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bmoat-metric-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: #15111D;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-family: var(--font-sans);
+}
+
+.bmoat-metric-lbl {
+  font-size: 7.8px;
+  font-weight: 600;
+  color: #8A8496;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bmoat-metric-sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(21, 17, 29, 0.08);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.bmoat-pillar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bmoat-pillar-tag {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: #4B4558;
+  background: #FFFFFF;
+  border: 1px solid #E6DFF3;
+  border-radius: 999px;
+  padding: 3px 9px;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}

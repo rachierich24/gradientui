@@ -1,0 +1,668 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   BrandClose (components/brand/BrandClose.tsx)
+   - Leftmost and Rightmost Screen-Edge 3D Arc Lines
+   - Scroll-Driven Entrance Transitions (Emerging from outer screen perimeters)
+   - Symmetrically Centered CTA Design
+   - Projector Light Beam Extending OUT of the Button with Photon Waves
+───────────────────────────────────────────────────────────────────────── */
+
+.bcl {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: radial-gradient(ellipse 90% 70% at 50% 45%, #180D35 0%, #0D071E 55%, #080412 100%);
+  background-color: #0D071E;
+  color: #FFFFFF;
+  padding: clamp(100px, 14vh, 160px) 24px clamp(80px, 11vh, 130px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Subtle ambient backdrop radial aura */
+.bcl::before {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1200px;
+  height: 700px;
+  background: radial-gradient(ellipse 65% 50% at center, rgba(107, 51, 211, 0.22) 0%, rgba(89, 36, 190, 0.08) 45%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+/* ─── Inner Centered Layout ─── */
+.bcl-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* ─── Leftmost 3D Arc (Hugging the absolute left screen edge) ─── */
+.bcl-arc-svg {
+  filter: drop-shadow(0 14px 44px rgba(168, 85, 247, 0.42));
+}
+
+.bcl-arc-left {
+  position: absolute;
+  left: -35px;
+  top: 50%;
+  width: clamp(300px, 28vw, 440px);
+  height: clamp(300px, 28vw, 440px);
+  pointer-events: none;
+  z-index: 1;
+  /* Pure scroll-driven: emerges slowly from the left edge (strictly scroll-based, no timer transition) */
+  transform: translateY(-50%) translateX(calc((1 - var(--scroll-p, 0)) * -180px));
+  opacity: calc(clamp(0.12, var(--scroll-p, 0) * 1.4, 1));
+  will-change: transform, opacity;
+}
+
+/* ─── Rightmost 3D Arc (Hugging the absolute right screen edge) ─── */
+.bcl-arc-right {
+  position: absolute;
+  right: -35px;
+  top: 50%;
+  width: clamp(300px, 28vw, 440px);
+  height: clamp(300px, 28vw, 440px);
+  pointer-events: none;
+  z-index: 1;
+  /* Pure scroll-driven: emerges slowly from the right edge (strictly scroll-based, no timer transition) */
+  transform: translateY(-50%) translateX(calc((1 - var(--scroll-p, 0)) * 180px));
+  opacity: calc(clamp(0.12, var(--scroll-p, 0) * 1.4, 1));
+  will-change: transform, opacity;
+}
+
+/* Pure scroll-driven stroke drawing for the 3D purple arc lines (strictly scroll-based, no timer transition) */
+.bcl-arc-path {
+  stroke-dasharray: 400;
+  stroke-dashoffset: calc((1 - var(--scroll-p, 0)) * 400);
+  will-change: stroke-dashoffset;
+}
+
+/* ─── Pill Badge ─── */
+.bcl-pill {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: #F8F5FF;
+  border: 1px solid rgba(107, 51, 211, 0.22);
+  font-size: 13.5px;
+  font-weight: 550;
+  color: #6B33D3;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(107, 51, 211, 0.06);
+}
+
+.bcl-pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6B33D3;
+  box-shadow: 0 0 8px rgba(107, 51, 211, 0.85);
+  animation: bcl-pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes bcl-pulse-dot {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.35);
+    opacity: 0.65;
+  }
+}
+
+/* ─── Main Headline ─── */
+.bcl-title {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(42px, 10vw, 108px);
+  font-weight: 750;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.6);
+  margin: 50px 0 18px 0;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+
+/* ─── Subtitle ─── */
+.bcl-sub {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(15.5px, 1.8vw, 17.5px);
+  line-height: 1.55;
+  color: #A99EC0;
+  max-width: 560px;
+  margin: 0 0 150px 0;
+  text-wrap: balance;
+}
+
+/* ─── CENTRAL CTA DESIGN ─── */
+.bcl-center-cta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Symmetrically Centered Pill Capsule Assembly */
+.bcl-central-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  outline: none;
+  user-select: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bcl-central-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Left Chassis: Precision Matte Obsidian Capsule */
+.bcl-cbtn-left {
+  position: relative;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 16px 0 22px;
+  background: #0E0422;
+  border-radius: 9999px 0 0 9999px;
+  border: 1px solid rgba(107, 51, 211, 0.45);
+  border-right: none;
+  box-shadow:
+    0 4px 16px -2px rgba(14, 4, 34, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 0 16px rgba(107, 51, 211, 0.22) inset;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bcl-central-btn:hover .bcl-cbtn-left,
+.bcl-central-btn.is-hovered .bcl-cbtn-left {
+  background: #180838;
+  border-color: rgba(184, 157, 242, 0.7);
+  box-shadow:
+    0 6px 22px -2px rgba(107, 51, 211, 0.38),
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 0 22px rgba(107, 51, 211, 0.32) inset;
+}
+
+.bcl-cbtn-plus {
+  font-size: 19px;
+  font-weight: 300;
+  color: #B89DF2;
+  line-height: 1;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.bcl-central-btn:hover .bcl-cbtn-plus,
+.bcl-central-btn.is-hovered .bcl-cbtn-plus {
+  transform: rotate(90deg) scale(1.15);
+  color: #ffffff;
+}
+
+.bcl-cbtn-action {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* Optical Aperture / Laser Slit */
+.bcl-cbtn-slit-wrap {
+  position: relative;
+  z-index: 12;
+  width: 2.5px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bcl-cbtn-slit {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, #ffffff 25%, #ffffff 75%, rgba(255,255,255,0.4) 100%);
+  border-radius: 1px;
+  box-shadow:
+    0 0 3px rgba(255,255,255,0.6),
+    0 0 8px rgba(107, 51, 211, 0.3);
+  transition: all 0.4s ease;
+}
+
+.bcl-central-btn.mode-activating .bcl-cbtn-slit,
+.bcl-central-btn.mode-torch .bcl-cbtn-slit,
+.bcl-central-btn:hover .bcl-cbtn-slit,
+.bcl-central-btn.is-hovered .bcl-cbtn-slit {
+  box-shadow:
+    0 0 6px #ffffff,
+    0 0 16px #ffffff,
+    0 0 28px #B89DF2,
+    0 0 48px #6B33D3;
+}
+
+/* Subtle vertical halo at the slit aperture */
+.bcl-cbtn-slit-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 52px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.85) 0%, rgba(107, 51, 211, 0.45) 50%, transparent 80%);
+  filter: blur(2px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.bcl-central-btn.mode-activating .bcl-cbtn-slit-halo,
+.bcl-central-btn.mode-torch .bcl-cbtn-slit-halo {
+  opacity: 1;
+}
+
+/* Slit Ignition Flare Burst */
+.bcl-cbtn-slit-flare {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(184, 157, 242, 0.8) 40%, rgba(107, 51, 211, 0) 75%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.bcl-central-btn.mode-activating .bcl-cbtn-slit-flare {
+  animation: bcl-flare-burst 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bcl-flare-burst {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  35% { transform: translate(-50%, -50%) scale(2.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* Projector Stage / Right Chassis */
+.bcl-cbtn-projector {
+  position: relative;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 22px 0 14px;
+  cursor: pointer;
+  border-radius: 0 9999px 9999px 0;
+  transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bcl-central-btn.mode-activating .bcl-cbtn-projector,
+.bcl-central-btn.mode-torch .bcl-cbtn-projector {
+  padding: 0 40px 0 26px;
+}
+
+/* Dark Right Cover: Completes the pill button in mode-idle */
+.bcl-cbtn-right-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: #0E0422;
+  border-radius: 0 9999px 9999px 0;
+  border: 1px solid rgba(107, 51, 211, 0.45);
+  border-left: none;
+  box-shadow:
+    0 4px 16px -2px rgba(14, 4, 34, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 0 16px rgba(107, 51, 211, 0.22) inset;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
+  pointer-events: none;
+  opacity: 1;
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.bcl-central-btn.mode-idle:hover .bcl-cbtn-right-cover,
+.bcl-central-btn.mode-idle.is-hovered .bcl-cbtn-right-cover {
+  background: #180838;
+  border-color: rgba(184, 157, 242, 0.7);
+  box-shadow:
+    0 6px 22px -2px rgba(107, 51, 211, 0.38),
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 0 22px rgba(107, 51, 211, 0.32) inset;
+}
+
+/* When activating or torch: right cover unlatches and dissolves */
+.bcl-central-btn.mode-activating .bcl-cbtn-right-cover,
+.bcl-central-btn.mode-torch .bcl-cbtn-right-cover {
+  opacity: 0;
+  transform: scaleX(0.1);
+  pointer-events: none;
+}
+
+/* Volumetric Light Rig (Hidden in idle, shoots open in activating/torch) */
+.bcl-light-rig {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
+  width: 480px;
+  height: 220px;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0;
+  transition: transform 1.6s cubic-bezier(0.08, 0.85, 0.2, 1),
+              opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.bcl-central-btn.mode-activating .bcl-light-rig,
+.bcl-central-btn.mode-torch .bcl-light-rig {
+  opacity: 1;
+  transform: translateY(-50%) scaleX(1);
+}
+
+/* Soft atmospheric ambient mist */
+.bcl-beam-ambient {
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 500px;
+  height: 240px;
+  background: radial-gradient(ellipse 75% 50% at 12% 50%, rgba(107, 51, 211, 0.32) 0%, rgba(89, 36, 190, 0.14) 45%, transparent 75%);
+  filter: blur(28px);
+  transition: opacity 0.35s ease;
+}
+
+.bcl-central-btn:hover .bcl-beam-ambient,
+.bcl-central-btn.is-hovered .bcl-beam-ambient {
+  opacity: 1.3;
+}
+
+/* Feathered SVG Volumetric Beam */
+.bcl-beam-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bcl-central-btn:hover .bcl-beam-svg,
+.bcl-central-btn.is-hovered .bcl-beam-svg {
+  transform: scaleX(1.06) scaleY(1.03);
+}
+
+/* Continuous photon wave stream flowing OUT of button */
+.bcl-photon-stream-box {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 480px;
+  height: 180px;
+  pointer-events: none;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
+}
+
+.bcl-photon-wave-1,
+.bcl-photon-wave-2 {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 140px;
+  height: 150px;
+  background: radial-gradient(ellipse at 15% 50%, rgba(255,255,255,0.7) 0%, rgba(184, 157, 242, 0.35) 45%, transparent 75%);
+  filter: blur(10px);
+  opacity: 0;
+  animation: bcl-photon-flow 3s infinite cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+.bcl-photon-wave-2 {
+  animation-delay: 1.5s;
+}
+
+@keyframes bcl-photon-flow {
+  0% {
+    transform: translateY(-50%) translateX(-20px) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-50%) translateX(360px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Refined typography */
+.bcl-cbtn-text {
+  position: relative;
+  z-index: 15;
+  font-size: 15px;
+  font-weight: 550;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(14, 4, 34, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: text-shadow 0.8s ease;
+}
+
+.bcl-central-btn.mode-activating .bcl-cbtn-text,
+.bcl-central-btn.mode-torch .bcl-cbtn-text,
+.bcl-central-btn.mode-torch:hover .bcl-cbtn-text {
+  text-shadow:
+    0 1px 2px rgba(14, 4, 34, 0.5),
+    0 0 18px #ffffff,
+    0 0 32px #B89DF2,
+    0 0 48px #6B33D3;
+}
+
+.bcl-cbtn-chevron {
+  width: 14px;
+  height: 14px;
+  stroke: #ffffff;
+  stroke-width: 2.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bcl-central-btn:hover .bcl-cbtn-chevron,
+.bcl-central-btn.is-hovered .bcl-cbtn-chevron {
+  transform: translateX(4px);
+}
+
+.bcl-central-btn:active {
+  transform: scale(0.98);
+}
+
+.bcl-central-btn:focus-visible {
+  outline: 2px solid #6B33D3;
+  outline-offset: 6px;
+  border-radius: 9999px;
+}
+
+/* ─── 3D Perspective Grid Floor (Centered) ─── */
+.bcl-grid-floor {
+  position: relative;
+  width: clamp(320px, 62vw, 620px);
+  height: 85px;
+  margin-top: 12px;
+  overflow: hidden;
+  perspective: 340px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 65% 55% at 55% 20%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 55% 20%, black 20%, transparent 80%);
+}
+
+.bcl-grid-plane {
+  position: absolute;
+  inset: -60% -20% 0 -20%;
+  transform: rotateX(68deg);
+  background-size: 26px 26px;
+  background-image:
+    linear-gradient(to right, rgba(168, 85, 247, 0.32) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(168, 85, 247, 0.32) 1px, transparent 1px);
+}
+
+.bcl-grid-light-spot {
+  position: absolute;
+  left: 48%;
+  top: 0;
+  width: 360px;
+  height: 85px;
+  background: radial-gradient(ellipse 65% 50% at 50% 25%, rgba(168, 85, 247, 0.68) 0%, rgba(107, 51, 211, 0.35) 50%, transparent 75%);
+  filter: blur(14px);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cta-mode-activating .bcl-grid-light-spot,
+.cta-mode-torch .bcl-grid-light-spot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── Secondary Question Prompt (Centered) ─── */
+.bcl-footer-note-btn {
+  margin-top: 8px;
+  padding: 6px 14px;
+  border: 0;
+  background: transparent;
+  font-size: 14.5px;
+  font-weight: 550;
+  color: #C084FC;
+  opacity: 0.95;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: color 0.2s, opacity 0.2s, transform 0.2s, text-shadow 0.2s;
+  text-decoration: none;
+}
+
+.bcl-footer-note-btn:hover {
+  opacity: 1;
+  color: #E9D5FF;
+  text-shadow: 0 0 16px rgba(192, 132, 252, 0.65);
+  transform: translateY(-1px);
+}
+
+/* ─── Mobile Responsiveness ─── */
+@media (max-width: 768px) {
+  .bcl {
+    padding: 60px 16px 50px;
+  }
+
+  .bcl-title {
+    font-size: 36px;
+    letter-spacing: -0.03em;
+  }
+
+  .bcl-sub {
+    font-size: 14.5px;
+    margin-bottom: 34px;
+  }
+
+  .bcl-arc-left {
+    left: -110px;
+    top: 72%;
+    width: 210px;
+    height: 210px;
+    opacity: 0.38;
+  }
+
+  .bcl-arc-right {
+    right: -110px;
+    top: 72%;
+    width: 210px;
+    height: 210px;
+    opacity: 0.38;
+  }
+
+  .bcl-central-btn {
+    transform: scale(0.85);
+    transform-origin: center;
+  }
+
+  .bcl-grid-floor {
+    width: 100%;
+    height: 60px;
+  }
+
+  .bcl-footer-note-btn {
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bcl-pill-dot {
+    animation: none;
+  }
+
+  .bcl-arc-path,
+  .bcl-arc-left,
+  .bcl-arc-right,
+  .bcl-light-rig,
+  .bcl-photon-wave-1,
+  .bcl-photon-wave-2,
+  .bcl-central-btn,
+  .bcl-cbtn-plus,
+  .bcl-cbtn-slit,
+  .bcl-cbtn-chevron {
+    transition: none !important;
+    animation: none !important;
+  }
+}
