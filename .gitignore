@@ -19,3 +19,4 @@ package-lock.json
 pnpm-workspace.yaml
 
 .claude/
+scratch/

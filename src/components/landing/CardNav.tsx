@@ -114,7 +114,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
       {
         label: 'For Brands',
         description: 'See demand before it moves. Direct consumption telemetry & retail coverage.',
-        href: '#for-brands',
+        href: '/brand',
         accent: '#6D28D9',
         badge: 'Live',
         icon: 'brand',

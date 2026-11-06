@@ -1,0 +1,989 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Brand Portal Transformation Section ("Before vs With Gradient")
+   Dark Purple Only · Minimal & Concise Content
+   Inspiration: High-End Minimalist SaaS Cards & Continuous Laser Circuit
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ─── 0. Section Wrapper & Ambient Purple Glow ───────────────────────── */
+.btrans-section {
+  position: relative;
+  width: 100%;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  padding: clamp(68px, 8.5vh, 110px) 0 clamp(80px, 9.5vh, 120px);
+  overflow: hidden;
+  box-sizing: border-box;
+  scroll-margin-top: 80px;
+}
+
+/* Subtle, pure purple ambient radial backlight */
+.btrans-bg-glow {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  transform: translate(-50%, -14%);
+  width: 1200px;
+  height: 580px;
+  background: radial-gradient(
+    ellipse 65% 50% at center,
+    rgba(107, 51, 211, 0.06) 0%,
+    rgba(107, 51, 211, 0.03) 50%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.btrans-container {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 3.5vw, 40px);
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* ─── 1. Editorial Header & Toggle Switcher ──────────────────────────── */
+.btrans-header-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.btrans-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6B33D3;
+  margin-bottom: 12px;
+}
+
+.btrans-eyebrow-line {
+  width: 20px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #6B33D3, #6B33D3);
+  border-radius: 2px;
+}
+
+.btrans-header-content {
+  max-width: 720px;
+  margin: 0 auto 22px;
+}
+
+.btrans-title {
+  font-size: clamp(32px, 3.8vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #0F172A;
+  margin: 0 0 12px 0;
+  transition: color 0.25s ease;
+}
+
+.btrans-title-highlight {
+  background: linear-gradient(135deg, #3A1F70 0%, #6B33D3 60%, #7F48E8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btrans-title-muted {
+  color: #64748B;
+}
+
+.btrans-sub {
+  font-size: clamp(14.5px, 1.15vw, 16px);
+  line-height: 1.55;
+  color: #64748B;
+  max-width: 600px;
+  margin: 0 auto;
+  transition: opacity 0.25s ease;
+}
+
+/* ─── Interactive Orchid-Style Toggle Switch (Strict Purple & White) ─── */
+.btrans-toggle-container {
+  display: inline-flex;
+  align-items: center;
+  background: #FAF5FF;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(107, 51, 211, 0.2);
+  box-shadow: inset 0 1px 3px rgba(107, 51, 211, 0.04), 0 2px 8px rgba(107, 51, 211, 0.06);
+}
+
+.btrans-toggle-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.btrans-toggle-pill:hover {
+  color: #6B33D3;
+}
+
+.btrans-toggle-pill.is-active {
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+.btrans-toggle-pill.is-active.is-with {
+  color: #6B33D3;
+  font-weight: 700;
+  box-shadow: 0 2px 14px rgba(107, 51, 211, 0.2), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.btrans-toggle-pill.is-active.is-without {
+  color: #475569;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btrans-toggle-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #CBD5E1;
+  transition: all 0.2s ease;
+}
+
+.btrans-toggle-pill.is-active .btrans-toggle-dot.with {
+  background: #6B33D3;
+  box-shadow: 0 0 0 3px rgba(107, 51, 211, 0.25);
+  transform: scale(1.15);
+}
+
+.btrans-toggle-pill.is-active .btrans-toggle-dot.without {
+  background: #94A3B8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+  transform: scale(1.1);
+}
+
+/* ─── 2. Architecture Canvas (Pure White Minimal Theme) ───────────────── */
+.btrans-canvas {
+  position: relative;
+  width: 100%;
+  background-color: #FFFFFF;
+  background-image: radial-gradient(rgba(107, 51, 211, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-radius: 24px;
+  padding: 28px 24px 32px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btrans-canvas.is-connected {
+  border: 1px solid rgba(107, 51, 211, 0.22);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    0 24px 60px -15px rgba(107, 51, 211, 0.1),
+    0 0 0 1px rgba(107, 51, 211, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.btrans-canvas.is-fragmented {
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.03);
+}
+
+/* ─── Tier 1: Top Suppliers Frame ─── */
+.btrans-top-frame {
+  position: relative;
+  border-radius: 18px;
+  padding: 18px 20px 20px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.btrans-canvas.is-connected .btrans-top-frame {
+  background: linear-gradient(180deg, rgba(250, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.96) 100%);
+  border: 1px solid rgba(107, 51, 211, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 16px rgba(107, 51, 211, 0.05);
+}
+
+.btrans-canvas.is-fragmented .btrans-top-frame {
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.7) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+}
+
+.btrans-frame-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btrans-frame-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 5px 14px;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.btrans-frame-tag.tag-verified {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+  color: #5522B8;
+  border: 1px solid rgba(107, 51, 211, 0.28);
+  box-shadow: 0 2px 8px rgba(107, 51, 211, 0.08);
+}
+
+.btrans-frame-tag.tag-muted {
+  background: #F8FAFC;
+  color: #64748B;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+}
+
+.btrans-live-pulse-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6B33D3;
+  box-shadow: 0 0 0 3px rgba(107, 51, 211, 0.25);
+  animation: btransPulse 1.8s infinite;
+}
+
+.btrans-hollow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid #94A3B8;
+}
+
+@keyframes btransPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 3px rgba(107, 51, 211, 0.25);
+  }
+  50% {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 6px rgba(107, 51, 211, 0.1);
+  }
+}
+
+/* 4 Minimalist Supplier Cards Grid (Inspiration from Clean Pricing/Service Cards) */
+.btrans-suppliers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.btrans-supplier-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid rgba(107, 51, 211, 0.14);
+  border-radius: 14px;
+  padding: 16px 15px 14px;
+  box-shadow: 0 2px 8px rgba(107, 51, 211, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btrans-supplier-card:hover,
+.btrans-supplier-card.is-hovered {
+  transform: translateY(-3px);
+  border-color: rgba(107, 51, 211, 0.38);
+  box-shadow: 0 12px 30px rgba(107, 51, 211, 0.12), 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+/* Card Top Pill & Icon (Like "Core", "Velocity" in inspiration) */
+.btrans-card-top-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.btrans-pill-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5522B8;
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3EEFD 100%);
+  border: 1px solid rgba(107, 51, 211, 0.2);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.btrans-card-top-pill .btrans-supplier-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%);
+  color: #6B33D3;
+  box-shadow: 0 1px 3px rgba(107, 51, 211, 0.08);
+}
+
+.btrans-supplier-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0F172A;
+  margin: 0 0 12px 0;
+  line-height: 1.25;
+}
+
+/* Feature List (Concise list with icons inspired by uploaded reference image) */
+.btrans-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.btrans-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+
+.btrans-feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B33D3;
+  flex-shrink: 0;
+}
+
+.btrans-feature-icon.icon-muted {
+  color: #94A3B8;
+}
+
+.btrans-feature-text {
+  font-weight: 500;
+  color: #1E293B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-feature-text.text-muted {
+  color: #64748B;
+}
+
+.btrans-supplier-footer {
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+  padding-top: 8px;
+}
+
+.btrans-supplier-status {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-supplier-status.status-ok {
+  color: #6B33D3;
+}
+
+.btrans-supplier-status.status-muted {
+  color: #64748B;
+}
+
+/* ─── Tier 2: The Middle Integration Bus & Protocol Highway ──────────── */
+.btrans-middle-bus-zone {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btrans-svg-bus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Synchronized Two-Phase DARK PURPLE Laser Beams ─────────────────── */
+.btrans-feeder-beam {
+  stroke-dasharray: 50 150;
+  stroke-dashoffset: 100;
+  animation: btransFeederFlow 4.5s cubic-bezier(0.25, 0, 0.4, 1) infinite;
+  will-change: stroke-dashoffset, opacity;
+}
+
+@keyframes btransFeederFlow {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  15% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  18% {
+    stroke-dashoffset: -50;
+    opacity: 0;
+  }
+  18.1%, 100% {
+    opacity: 0;
+    stroke-dashoffset: -50;
+  }
+}
+
+.btrans-branch-beam {
+  stroke-dasharray: 130 370;
+  stroke-dashoffset: 500;
+  animation: btransBranchFlow 4.5s cubic-bezier(0.25, 0, 0.4, 1) infinite;
+  will-change: stroke-dashoffset, opacity;
+}
+
+@keyframes btransBranchFlow {
+  0%, 14.9% {
+    stroke-dashoffset: 500;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    stroke-dashoffset: 500;
+  }
+  32% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  36% {
+    stroke-dashoffset: -130;
+    opacity: 0;
+  }
+  36.1%, 100% {
+    opacity: 0;
+    stroke-dashoffset: -130;
+  }
+}
+
+/* Dividing Junction Rings & Destination Pips (Dark Purple) */
+.btrans-junction-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: btransJunctionRipple 4.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes btransJunctionRipple {
+  0%, 14% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  19% {
+    transform: scale(1.8);
+    opacity: 0.8;
+  }
+  28% {
+    transform: scale(3);
+    opacity: 0;
+  }
+  28.1%, 100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.btrans-dest-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: btransDestRipple 4.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes btransDestRipple {
+  0%, 31% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  32% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  36% {
+    transform: scale(1.8);
+    opacity: 0.8;
+  }
+  44% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+  44.1%, 100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+/* 6 Protocol Badges positioned along the central line */
+.btrans-protocols-row {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.btrans-protocol-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.btrans-protocol-disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.8px solid rgba(107, 51, 211, 0.28);
+  box-shadow:
+    0 6px 18px rgba(107, 51, 211, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btrans-protocol-node.is-with .btrans-protocol-disc {
+  border-color: rgba(107, 51, 211, 0.4);
+  box-shadow:
+    0 0 0 5px rgba(107, 51, 211, 0.08),
+    0 8px 24px rgba(107, 51, 211, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: btransPulseGlow 3.5s ease-in-out infinite;
+}
+
+@keyframes btransPulseGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 5px rgba(107, 51, 211, 0.08),
+      0 8px 24px rgba(107, 51, 211, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(107, 51, 211, 0.14),
+      0 10px 28px rgba(107, 51, 211, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+}
+
+.btrans-protocol-node.is-with:hover .btrans-protocol-disc,
+.btrans-protocol-node.is-with.is-hovered .btrans-protocol-disc {
+  transform: translateY(-5px) scale(1.12);
+  border-color: #6B33D3;
+  box-shadow:
+    0 0 0 8px rgba(107, 51, 211, 0.22),
+    0 14px 36px rgba(107, 51, 211, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.btrans-protocol-node.is-without .btrans-protocol-disc {
+  border: 1.5px dashed rgba(148, 163, 184, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.btrans-protocol-node.is-without:hover .btrans-protocol-disc,
+.btrans-protocol-node.is-without.is-hovered .btrans-protocol-disc {
+  transform: translateY(-3px) scale(1.06);
+  border-color: #64748B;
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.2);
+}
+
+.btrans-protocol-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B33D3;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.btrans-protocol-node.is-without .btrans-protocol-icon {
+  color: #64748B;
+}
+
+.btrans-protocol-node:hover .btrans-protocol-icon {
+  transform: scale(1.1);
+}
+
+.btrans-protocol-pill-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #1E293B;
+  background: #FFFFFF;
+  border: 1px solid rgba(107, 51, 211, 0.22);
+  padding: 2.5px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.btrans-protocol-node.is-with:hover .btrans-protocol-pill-label {
+  background: #FAF5FF;
+  color: #5522B8;
+  border-color: #6B33D3;
+  box-shadow: 0 2px 6px rgba(107, 51, 211, 0.12);
+}
+
+.btrans-protocol-node.is-without .btrans-protocol-pill-label {
+  color: #64748B;
+  border-color: rgba(148, 163, 184, 0.35);
+  border-style: dashed;
+}
+
+/* Tooltip on hover */
+.btrans-protocol-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: #15111D;
+  border: 1px solid rgba(107, 51, 211, 0.4);
+  color: #FFFFFF;
+  padding: 8px 13px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  white-space: nowrap;
+  box-shadow: 0 14px 32px rgba(21, 17, 29, 0.4), 0 0 0 1px rgba(107, 51, 211, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+
+.btrans-protocol-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #15111D transparent transparent transparent;
+}
+
+.btrans-protocol-node:hover .btrans-protocol-tooltip,
+.btrans-protocol-node.is-hovered .btrans-protocol-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.btrans-tooltip-title {
+  font-weight: 600;
+  color: #F8FAFC;
+}
+
+.btrans-tooltip-metric {
+  font-size: 10px;
+  font-weight: 700;
+  color: #A78BFA;
+  margin-top: 3px;
+}
+
+/* ─── Tier 3: Bottom 5 Concise Café Destination Cards ───────────────── */
+.btrans-bottom-cafes {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.btrans-cafes-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.btrans-cafe-card {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 14px 13px 12px;
+  box-sizing: border-box;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btrans-cafe-card.card-with {
+  border: 1px solid rgba(107, 51, 211, 0.16);
+  box-shadow: 0 2px 8px rgba(107, 51, 211, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.btrans-cafe-card.card-with:hover {
+  transform: translateY(-3px);
+  border-color: rgba(107, 51, 211, 0.4);
+  box-shadow: 0 14px 32px rgba(107, 51, 211, 0.14), 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.btrans-cafe-card.card-without {
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  background: #F8FAFC;
+}
+
+.btrans-card-top-pill .btrans-cafe-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%);
+  color: #6B33D3;
+  box-shadow: 0 1px 3px rgba(107, 51, 211, 0.08);
+}
+
+.btrans-cafe-card.card-without .btrans-cafe-avatar {
+  background: #F1F5F9;
+  color: #64748B;
+  box-shadow: none;
+}
+
+.btrans-pill-badge.badge-ok {
+  color: #5522B8;
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3EEFD 100%);
+  border-color: rgba(107, 51, 211, 0.22);
+}
+
+.btrans-pill-badge.badge-muted {
+  color: #64748B;
+  background: #F1F5F9;
+  border-color: rgba(148, 163, 184, 0.4);
+  border-style: dashed;
+}
+
+.btrans-cafe-name-wrap {
+  margin-bottom: 10px;
+}
+
+.btrans-cafe-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btrans-cafe-sub {
+  font-size: 10px;
+  color: #64748B;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── 3. High-Impact Summary Comparison Bar ─────────────────────────── */
+.btrans-summary-strip {
+  margin-top: 40px;
+}
+
+.btrans-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.btrans-summary-card {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 24px 22px;
+  box-sizing: border-box;
+  transition: all 0.28s ease;
+}
+
+.btrans-summary-card.card-with {
+  border: 1px solid rgba(107, 51, 211, 0.18);
+  box-shadow: 0 8px 24px rgba(107, 51, 211, 0.05);
+}
+
+.btrans-summary-card.card-with:hover {
+  transform: translateY(-3px);
+  border-color: rgba(107, 51, 211, 0.38);
+  box-shadow: 0 16px 40px rgba(107, 51, 211, 0.12);
+}
+
+.btrans-summary-card.card-without {
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  background: #F8FAFC;
+}
+
+.btrans-summary-metric {
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+
+.btrans-summary-metric.metric-with {
+  background: linear-gradient(135deg, #5522B8 0%, #6B33D3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btrans-summary-metric.metric-without {
+  color: #64748B;
+}
+
+.btrans-summary-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 5px 0;
+}
+
+.btrans-summary-desc {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #64748B;
+  margin: 0;
+}
+
+/* ─── 4. Responsive Breakpoints ──────────────────────────────────────── */
+
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+  .btrans-svg-bus {
+    display: none;
+  }
+
+  .btrans-middle-bus-zone {
+    height: auto;
+    padding: 24px 0;
+  }
+
+  .btrans-suppliers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .btrans-cafes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .btrans-cafes-grid > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .btrans-protocols-row {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .btrans-protocol-disc {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .btrans-section {
+    padding: 56px 0 76px;
+  }
+
+  .btrans-header-wrap {
+    margin-bottom: 28px;
+  }
+
+  .btrans-canvas {
+    padding: 18px 14px 22px;
+    border-radius: 18px;
+  }
+
+  .btrans-suppliers-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .btrans-middle-bus-zone {
+    height: auto;
+    padding: 20px 0;
+  }
+
+  .btrans-svg-bus {
+    display: none;
+  }
+
+  .btrans-protocols-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 0;
+  }
+
+  .btrans-protocol-node {
+    gap: 4px;
+  }
+
+  .btrans-protocol-disc {
+    width: 42px;
+    height: 42px;
+  }
+
+  .btrans-protocol-pill-label {
+    font-size: 9px;
+  }
+
+  .btrans-cafes-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .btrans-cafes-grid > :last-child {
+    grid-column: auto;
+  }
+
+  .btrans-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
