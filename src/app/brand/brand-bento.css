@@ -322,26 +322,66 @@
   box-shadow: 0 20px 36px -20px rgba(107, 51, 211, 0.65), 0 0 24px rgba(107, 51, 211, 0.3);
 }
 
-/* ── 3. Popped-Out Dustbin (Bottom-Right) ───────────────────────────────── */
+/* ── 3. Popped-Out Dustbin (Central Hero Position) ────────────────────────── */
 .bbo-dustbin {
   position: absolute;
-  right: max(24px, calc((100vw - 1360px) / 2 + 16px));
-  bottom: 8px;
-  width: 116px;
-  height: 136px;
-  z-index: 60;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: 126px;
+  height: 148px;
+  z-index: 65;
   cursor: pointer;
   user-select: none;
-  transform-origin: 58px 120px;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s;
+  transform-origin: center bottom;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.45s ease;
 }
 
-.bbo-dustbin:hover {
-  transform: translateY(-4px) scale(1.05);
+.bbo-dustbin:hover:not(.is-after-active) {
+  transform: translate(-50%, -54%) scale(1.06);
+  filter: drop-shadow(0 16px 32px rgba(107, 51, 211, 0.45));
 }
 
-.bbo-dustbin:active {
-  transform: translateY(0) scale(0.97);
+.bbo-dustbin:active:not(.is-after-active) {
+  transform: translate(-50%, -49%) scale(0.97);
+}
+
+/* Ground shadow under center dustbin */
+.bbo-dustbin::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 104px;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(16, 7, 34, 0.45) 0%, rgba(16, 7, 34, 0) 72%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+}
+
+/* Dustbin vanishes completely when new After cards arrive */
+.bbo-dustbin.is-after-active,
+.bbo-dustbin.is-vanished {
+  opacity: 0 !important;
+  transform: translate(-50%, -42%) scale(0.35) !important;
+  pointer-events: none !important;
+  filter: blur(8px) !important;
+}
+
+.bbo-dustbin.is-after-active::after,
+.bbo-dustbin.is-vanished::after {
+  opacity: 0 !important;
+  transform: translateX(-50%) scale(0.3) !important;
+}
+
+.bbo-dustbin-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
 }
 
 /* Status badge floating above dustbin */

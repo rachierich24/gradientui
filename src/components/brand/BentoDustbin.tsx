@@ -24,11 +24,11 @@ export function BentoDustbin({
   return (
     <div
       ref={dustbinRef}
-      className={`bbo-dustbin ${isOpen ? 'is-open' : ''} ${isCatching ? 'is-catching' : ''} ${isSettled ? 'is-settled' : ''} ${isAfterActive ? 'is-after-active' : ''}`}
+      className={`bbo-dustbin ${isOpen ? 'is-open' : ''} ${isCatching ? 'is-catching' : ''} ${isSettled ? 'is-settled' : ''} ${isAfterActive ? 'is-after-active is-vanished' : ''}`}
       onClick={onTriggerToss}
       role="button"
       tabIndex={0}
-      title={isAfterActive ? 'Click to reset & review manual coordination' : 'Click to toss manual clutter into dustbin'}
+      title={isAfterActive ? 'Clean board active' : 'Click to toss manual clutter into central dustbin'}
       aria-label="Trash the manual coordination clutter"
     >
       {/* Status Pill Badge */}
@@ -46,8 +46,8 @@ export function BentoDustbin({
       {/* Modern High-End Industrial Vector Dustbin */}
       <div className="bbo-dustbin-art">
         <svg
-          width="116"
-          height="136"
+          width="100%"
+          height="100%"
           viewBox="0 -24 120 156"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

@@ -175,13 +175,13 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
 
       rendererRef.current.setSize(stageW, stageH, false);
 
-      // Dustbin mouth in 3D world space
-      let mouthX = stageW / 2 - 80;
-      let mouthY = -stageH / 2 + 80;
+      // Dustbin mouth in 3D world space (centered)
+      let mouthX = 0;
+      let mouthY = 0;
       if (bin) {
         const binRect = bin.getBoundingClientRect();
-        mouthX = binRect.left + 58 - (stageRect.left + stageW / 2);
-        mouthY = stageRect.top + stageH / 2 - (binRect.top + 46);
+        mouthX = binRect.left + binRect.width / 2 - (stageRect.left + stageW / 2);
+        mouthY = stageRect.top + stageH / 2 - (binRect.top + 48);
       }
 
       cardMeshesRef.current.forEach((cardMesh, i) => {
@@ -202,7 +202,7 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         cardMesh.mouthX = mouthX;
         cardMesh.mouthY = mouthY;
         const distToMouth = Math.hypot(mouthX - startX, mouthY - startY);
-        cardMesh.arcH = Math.max(130, Math.min(260, distToMouth * 0.22));
+        cardMesh.arcH = Math.max(140, Math.min(260, distToMouth * 0.38));
 
         if (!cardMesh.isActive) {
           cardMesh.group.position.set(startX, startY, 0);
@@ -258,9 +258,9 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
       dirLight.position.set(-240, 360, 480);
       scene.add(dirLight);
 
-      // Subtle violet rim light from dustbin side
-      const purpleRim = new THREE.PointLight(0xa78bfa, 2.2, 1400);
-      purpleRim.position.set(stageW / 2 - 100, -stageH / 2 + 100, 200);
+      // Subtle violet rim light from central dustbin
+      const purpleRim = new THREE.PointLight(0xa78bfa, 2.5, 1200);
+      purpleRim.position.set(0, 0, 220);
       scene.add(purpleRim);
 
       // Subtle paper grain bump texture
@@ -296,7 +296,7 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
       const cardMeshes: CardMeshInfo[] = [];
 
       for (let i = 0; i < 8; i++) {
-        const resolution = 14;
+        const resolution = 16;
         const aspect = CARD_ASPECTS[i];
         const shortSide = Math.min(1, aspect);
         const columns = Math.max(8, Math.round(resolution / Math.max(1, aspect)));
@@ -343,9 +343,9 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         }
 
         // Run the React Bits createPaperPath physics simulation (64 samples)
-        const foldTotal = 6 + (i % 3);
-        const sharpness = 0.65;
-        const depth = 0.8;
+        const foldTotal = 8 + (i % 3);
+        const sharpness = 0.72;
+        const depth = 0.95;
         const paperPath = createPaperPath(
           original,
           indices,
@@ -505,11 +505,11 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         const cards = beforeCardsRef.current;
 
         // Timing per card (seconds)
-        // Phase A: In-place paper crumpling (0.32s) -> forms tight paper ball
-        // Phase B: 3D parabolic launch & flight to dustbin (0.42s)
-        const crumpleDuration = 0.32;
-        const flightDuration = 0.42;
-        const stagger = 0.12;
+        // Phase A: In-place paper crumpling (0.72s) -> tactile paper creasing & contraction
+        // Phase B: 3D parabolic launch & flight to central dustbin (0.68s)
+        const crumpleDuration = 0.72;
+        const flightDuration = 0.68;
+        const stagger = 0.18;
 
         const loop = (time: number) => {
           const elapsed = (time - startTime) / 1000;
@@ -543,15 +543,19 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
               deformMesh(card, foldEase);
 
               // Lift slightly towards camera as paper contracts into wad
-              const liftZ = Math.sin(foldProgress * Math.PI) * 35;
+              const liftZ = Math.sin(foldProgress * Math.PI) * 48;
               card.group.position.set(card.startX, card.startY, liftZ);
 
               // Subtle natural twist during crumple
-              const twist = foldProgress * 0.25;
-              card.group.rotation.set(twist * 0.4, -twist * 0.3, twist * (i % 2 === 0 ? 0.6 : -0.6));
+              const twist = foldProgress * 0.35;
+              card.group.rotation.set(
+                twist * 0.45,
+                -twist * 0.35,
+                twist * (i % 2 === 0 ? 0.7 : -0.7)
+              );
               card.group.scale.set(card.cardWidth, card.cardWidth, card.cardWidth);
             } else {
-              // ── Phase B: 3D Flight & Parabolic Toss to Dustbin ──
+              // ── Phase B: 3D Flight & Parabolic Toss to Central Dustbin ──
               deformMesh(card, 1); // Keep fully crumpled!
 
               const flightTime = cardTime - crumpleDuration;
@@ -562,20 +566,20 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
                 allFinished = false;
 
                 const p = flightProgress;
-                const pEase = p * p * (3 - 2 * p);
+                const pEase = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
 
                 const curX = card.startX + (card.mouthX - card.startX) * pEase;
                 const arc = 4 * card.arcH * p * (1 - p);
                 let curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
 
                 // High 3D arc leaping out towards camera, then diving deep into the dustbin hole
-                let curZ = 35 * (1 - p) + Math.sin(p * Math.PI) * 150;
+                let curZ = 35 * (1 - p) + Math.sin(p * Math.PI) * 160;
                 let scaleMul = 1;
 
-                if (p > 0.72) {
-                  const plunge = (p - 0.72) / 0.28;
-                  curZ -= plunge * 140;
-                  curY -= plunge * 50; // Plunge DOWN into the canister interior!
+                if (p > 0.70) {
+                  const plunge = (p - 0.70) / 0.30;
+                  curZ -= plunge * 150;
+                  curY -= plunge * 55; // Plunge DOWN into the center canister interior!
                   scaleMul = Math.max(0.01, 1 - plunge * 0.96);
                 }
 
@@ -638,8 +642,8 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
         const cards = beforeCardsRef.current;
         const p = Math.min(1, Math.max(0, progress));
 
-        // When p >= 0.68, all cards are inside the dustbin!
-        if (p >= 0.68) {
+        // When p >= 0.74, all cards are cleanly inside the central dustbin!
+        if (p >= 0.74) {
           cardMeshesRef.current.forEach((card, idx) => {
             card.group.visible = false;
             card.isCaught = true;
@@ -654,11 +658,11 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
           return;
         }
 
-        // Active cascade for p < 0.68:
-        // 8 cards spread across p = 0.0 to 0.68
-        // Each card has stagger = 0.055, duration = 0.22
+        // Active cascade for p < 0.74:
+        // 8 cards spread across p = 0.0 to 0.74
+        // Each card has stagger = 0.055, duration = 0.32
         const stagger = 0.055;
-        const cardDuration = 0.22;
+        const cardDuration = 0.32;
 
         cardMeshesRef.current.forEach((card, i) => {
           const cardStart = i * stagger;
@@ -681,31 +685,35 @@ export const BentoCrumpleCanvas = forwardRef<BentoCrumpleHandle, BentoCrumpleCan
               cards[i]!.style.visibility = 'hidden';
             }
 
-            if (localP <= 0.42) {
+            if (localP <= 0.45) {
               // ── Phase A: In-Place 3D Crumpling ──
-              const crumpleP = localP / 0.42;
+              const crumpleP = localP / 0.45;
               const foldEase = crumpleP * crumpleP * (3 - 2 * crumpleP);
               deformMesh(card, foldEase);
-              const liftZ = Math.sin(crumpleP * Math.PI) * 35;
+              const liftZ = Math.sin(crumpleP * Math.PI) * 48;
               card.group.position.set(card.startX, card.startY, liftZ);
-              const twist = crumpleP * 0.25;
-              card.group.rotation.set(twist * 0.4, -twist * 0.3, twist * (i % 2 === 0 ? 0.6 : -0.6));
+              const twist = crumpleP * 0.35;
+              card.group.rotation.set(
+                twist * 0.45,
+                -twist * 0.35,
+                twist * (i % 2 === 0 ? 0.7 : -0.7)
+              );
               card.group.scale.set(card.cardWidth, card.cardWidth, card.cardWidth);
             } else {
-              // ── Phase B: 3D Parabolic Flight to Dustbin ──
+              // ── Phase B: 3D Parabolic Flight to Central Dustbin ──
               deformMesh(card, 1);
-              const flightP = (localP - 0.42) / 0.58;
-              const pEase = flightP * flightP * (3 - 2 * flightP);
+              const flightP = (localP - 0.45) / 0.55;
+              const pEase = flightP < 0.5 ? 2 * flightP * flightP : 1 - Math.pow(-2 * flightP + 2, 2) / 2;
               const curX = card.startX + (card.mouthX - card.startX) * pEase;
               const arc = 4 * card.arcH * flightP * (1 - flightP);
               let curY = card.startY + (card.mouthY - card.startY) * pEase + arc;
-              let curZ = 35 * (1 - flightP) + Math.sin(flightP * Math.PI) * 150;
+              let curZ = 35 * (1 - flightP) + Math.sin(flightP * Math.PI) * 160;
 
               let scaleMul = 1;
-              if (flightP > 0.72) {
-                const plunge = (flightP - 0.72) / 0.28;
-                curZ -= plunge * 140;
-                curY -= plunge * 50; // Plunge DOWN into the canister opening!
+              if (flightP > 0.70) {
+                const plunge = (flightP - 0.70) / 0.30;
+                curZ -= plunge * 150;
+                curY -= plunge * 55; // Plunge DOWN into the center canister opening!
                 scaleMul = Math.max(0.01, 1 - plunge * 0.96);
               }
 

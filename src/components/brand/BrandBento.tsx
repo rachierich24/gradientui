@@ -112,8 +112,8 @@ export function BrandBento() {
             bloomTl.fromTo(
               ac,
               { scale: 0.88, opacity: 0, filter: 'blur(8px)' },
-              { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.45, ease: 'back.out(1.4)' },
-              idx === 0 ? 0 : '-=0.34'
+              { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.55, ease: 'back.out(1.4)' },
+              idx === 0 ? 0 : '-=0.40'
             );
           }
         });
@@ -121,7 +121,7 @@ export function BrandBento() {
         if (manualTimer.current) window.clearTimeout(manualTimer.current);
         manualTimer.current = window.setTimeout(() => {
           setIsManualOverride(false);
-        }, 1600);
+        }, 1800);
       }
     );
   };
@@ -159,14 +159,17 @@ export function BrandBento() {
     // Reset after cards
     afterCardsRef.current.forEach((ac) => {
       if (ac) {
-        gsap.set(ac, { opacity: 0, scale: 0.85, clearProps: 'filter' });
+        gsap.killTweensOf(ac);
+        gsap.set(ac, { opacity: 0, scale: 0.85, clearProps: 'all' });
+        ac.style.opacity = '0';
+        ac.style.transform = 'scale(0.85)';
       }
     });
 
     if (manualTimer.current) window.clearTimeout(manualTimer.current);
     manualTimer.current = window.setTimeout(() => {
       setIsManualOverride(false);
-    }, 600);
+    }, 1600);
   };
 
   // ── Scroll-Linked Timeline Controller ──
@@ -211,14 +214,14 @@ export function BrandBento() {
         setMorphProgress(p);
         crumpleCanvasRef.current?.setScrollProgress(p);
 
-        if (p < 0.68) {
-          // Cards actively crumpling and tossing into open dustbin
+        if (p < 0.74) {
+          // Cards actively crumpling and tossing into open central dustbin
           setIsBinOpen(true);
           setIsBinSettled(false);
 
           let caught = 0;
           for (let i = 0; i < 8; i++) {
-            if (p >= i * 0.055 + 0.22) caught++;
+            if (p >= i * 0.055 + 0.30) caught++;
           }
           setClearedCount(caught);
 
@@ -230,12 +233,12 @@ export function BrandBento() {
           });
           setLanded({});
         } else {
-          // All 8 cards cleared into dustbin! Lid closed, clean board, purple cards blooming!
+          // All 8 cards cleared into dustbin! Lid closed, clean board, central dustbin vanishes, purple cards blooming!
           setIsBinOpen(false);
           setIsBinSettled(true);
           setClearedCount(8);
 
-          const bloomP = clamp((p - 0.68) / 0.28);
+          const bloomP = clamp((p - 0.74) / 0.24);
           afterCardsRef.current.forEach((a, idx) => {
             if (a) {
               const cardDelay = idx * 0.035;
@@ -304,7 +307,7 @@ export function BrandBento() {
   };
 
   const morph = morphProgress;
-  const isAfterActive = morph >= 0.68;
+  const isAfterActive = morph >= 0.74;
   // Helper to render each tile:
   // 1. BEFORE CARD stays where it is from before (grounded in the grid)
   // 2. AFTER CARD (purple Gradient) comes flying into the screen with the 3D flying transition
