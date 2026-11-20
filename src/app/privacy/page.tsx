@@ -21,7 +21,7 @@ const sections = [
   },
   {
     title: '4. Cookies',
-    body: 'We use cookies and similar tracking technologies to maintain your session, remember your preferences, and understand how you use our platform. You can control cookie settings through your browser preferences. Disabling certain cookies may affect platform functionality. We use analytics cookies (e.g. Mixpanel, PostHog) to understand aggregate usage patterns these do not identify you personally.',
+    body: 'We use cookies and similar tracking technologies to maintain your session, remember your preferences, and understand how you use our platform. You can control cookie settings through your browser preferences. Disabling certain cookies may affect platform functionality. On our website, we use analytics cookies (e.g. Mixpanel, PostHog) to understand aggregate usage patterns these do not identify you personally. Our mobile apps do not use these cookies or any analytics tools.',
   },
   {
     title: '5. Data Retention',
@@ -32,7 +32,11 @@ const sections = [
     body: 'Under the Digital Personal Data Protection Act (DPDP Act), you have the right to: (a) access the personal data we hold about you; (b) correct inaccurate data; (c) request erasure of your data (subject to legal obligations); (d) withdraw consent where processing is based on consent; and (e) nominate a person to exercise your rights in the event of death or incapacity. To exercise these rights, contact us at hello@unifiednexgrade.com.',
   },
   {
-    title: '7. Contact',
+    title: '7. Mobile Apps',
+    body: 'Our Gradient app for cafes on iOS and Android lets you sign in with your phone number and a one-time code. The app uses your phone number, name, email address (optional), delivery addresses, GSTIN (optional), order history, account ID, and the product ratings and reviews your cafe writes, only to provide the app\'s features. Location access is optional and is used only to prefill a delivery address: your phone\'s built-in address lookup turns the coordinates into an address, and the coordinates are saved with that address. To draw the route map for order tracking, the app sends only the start and end coordinates of the delivery to the public OSRM routing service (router.project-osrm.org). The apps contain no analytics, advertising or crash-reporting SDKs and do not track you. You can delete your account in the app under Profile > Delete account, or at https://gradient365.com/delete-account. To report a review, email support@gradient365.com.',
+  },
+  {
+    title: '8. Contact',
     body: 'For any privacy-related questions or to exercise your rights, contact our Data Protection Officer at hello@unifiednexgrade.com. We will respond to all requests within 30 days. Our registered office is in Delhi, India.',
   },
 ]
@@ -51,7 +55,7 @@ export default function PrivacyPage() {
             <h1 style={{ fontSize: 'clamp(28px, 3.5vw, 48px)', fontWeight: 300, letterSpacing: '-0.02em', color: '#061b31', marginBottom: '16px' }}>
               Privacy Policy
             </h1>
-            <p style={{ fontSize: '15px', color: '#425466' }}>Last updated: May 2026</p>
+            <p style={{ fontSize: '15px', color: '#425466' }}>Last updated: November 2026</p>
           </div>
         </section>
 
