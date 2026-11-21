@@ -17,7 +17,8 @@
 .cst-head p b { font-family: var(--cafe-display); font-weight: 900; color: var(--cst-ink); }
 .cst-cards { position: absolute; inset: 0; z-index: 6; }
 /* a card: placed by the layout, moved per frame (transform), straightened on hover by its inner layer */
-.cst-card { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: 280px; height: 370px; visibility: hidden; will-change: transform, opacity; }
+/* top: y% of the height left below the nav (56px) once the card (370px) is in; CARD_TOP in the component matches it */
+.cst-card { position: absolute; left: calc(var(--x) * 1%); top: calc(56px + (100% - 426px) * var(--y) / 100); width: 280px; height: 370px; visibility: hidden; will-change: transform, opacity; }
 .cst-card.is-hover { z-index: 30 !important; }
 .cst-card-tilt { position: absolute; inset: 0; display: block; padding: 0; border: 0; background: none; color: #fff; font: inherit; text-align: left; cursor: pointer;
   transition: transform .4s ease; }
@@ -31,6 +32,8 @@
 .cst-card-foot { position: absolute; left: 0; right: 0; bottom: 0; padding: 72px 20px 70px;
   background: linear-gradient(0deg, rgba(20, 9, 6, .82) 0%, rgba(20, 9, 6, .6) 45%, rgba(20, 9, 6, 0) 100%); }
 .cst-card-foot small { display: block; margin-top: 8px; font: 500 12px/1.3 var(--cafe-sans); color: rgba(255, 255, 255, .74); }
+.cst-card-foot { transition: opacity .25s ease; }
+.cst-card.is-hover .cst-card-foot { opacity: 0; }
 /* hovered: darkened, with its headline (umano) */
 .cst-card-over { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; padding: 24px 24px 16px; background: rgba(20, 9, 6, .88); opacity: 0; transition: opacity .3s ease; }
 .cst-card.is-hover .cst-card-over { opacity: 1; }
@@ -40,6 +43,7 @@
 .cst-card-btn svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 /* the three chips umano pops out to the card's right */
 .cst-chips { position: absolute; left: calc(100% + 20px); top: 20px; width: 160px; pointer-events: none; }
+.cst-card.is-right .cst-chips { left: auto; right: calc(100% + 20px); }
 .cst-chip { position: absolute; left: 0; top: calc(var(--i) * 90px); width: 160px; padding: 14px 16px; border-radius: 14px; background: #fff; color: var(--cst-ink);
   box-shadow: 0 0 0 1px var(--cst-line), 0 18px 36px -14px rgba(60, 20, 10, .32); opacity: 0; transform: translateY(calc(40px + var(--i) * 20px)) rotate(0deg) scale(.85);
   transition: opacity .3s ease calc(var(--i) * .07s), transform .45s cubic-bezier(.34, 1.56, .64, 1) calc(var(--i) * .07s); }

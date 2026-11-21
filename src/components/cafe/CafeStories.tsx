@@ -104,13 +104,18 @@ const STORIES: Story[] = [
     panel: { kind: 'gst', title: 'GST · October', rows: [['Bills matched to GSTR-2B', '96 of 97'], ['Input tax credit', '₹23,180'], ['Export to Tally', 'Sent']] },
   },
 ];
-// where each card lands (% of the panel), its tilt, the side it comes in from, and when it starts: umano's pattern, spread over four
+// where each card lands, its tilt, the side it comes in from, and when it starts: umano's pattern, spread over four so
+// they frame the headline (two high at the sides, two low and further in) instead of burying it. x is % of the panel's
+// width; y is % of the height left below the nav once a card is in (CARD_TOP), so a high card and the low one under it
+// don't cover each other's button on a laptop screen.
 const LAYOUT = [
-  { x: 10, y: 16, rot: -12, from: -1, at: 0 },
-  { x: 62, y: 12, rot: 9, from: 1, at: 0.22 },
-  { x: 26, y: 46, rot: 5, from: -1, at: 0.44 },
-  { x: 52, y: 42, rot: -7, from: 1, at: 0.66 },
+  { x: 6, y: 4, rot: -12, from: -1, at: 0 },
+  { x: 69, y: 3, rot: 9, from: 1, at: 0.22 },
+  { x: 15, y: 92, rot: 6, from: -1, at: 0.44 },
+  { x: 62, y: 89, rot: -7, from: 1, at: 0.66 },
 ];
+const NAV_H = 56, CARD_H = 370;
+const CARD_TOP = (ph: number, y: number) => NAV_H + (ph - NAV_H - CARD_H) * y / 100;   // = the CSS top of .cst-card
 const COUNT_TO = 120;   // MOCK
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -130,7 +135,8 @@ function StoryCard({ s, i, onOpen }: { s: Story; i: number; onOpen: (i: number, 
   const [hover, setHover] = useState(false);
   const L = LAYOUT[i];
   return (
-    <div className={`cst-card${hover ? ' is-hover' : ''}`} data-card={i} style={{ '--x': L.x, '--y': L.y, zIndex: 10 + i } as CSSProperties}>
+    // the cards on the right (those that fly in from the right) pop their chips out to the left, so they stay on screen
+    <div className={`cst-card${L.from > 0 ? ' is-right' : ''}${hover ? ' is-hover' : ''}`} data-card={i} style={{ '--x': L.x, '--y': L.y, zIndex: 10 + i } as CSSProperties}>
       <button type="button" className="cst-card-tilt" aria-label={`Read ${s.name}’s story: ${s.title}`}
         onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onFocus={() => setHover(true)} onBlur={() => setHover(false)}
         onClick={(e) => onOpen(i, e.currentTarget)}>
@@ -346,7 +352,8 @@ export function CafeStories() {
       cards.forEach((el, i) => {
         const L = LAYOUT[i], l = clamp((sP - L.at) / 0.18), u = easeOut3(l);
         const rot = 25 + (L.rot - 25) * u;
-        el.style.transform = `translate3d(${((1 - u) * 0.15 * pw * L.from).toFixed(1)}px, ${((1 - u) * (1.2 - L.y / 100) * ph).toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg)`;
+        // it starts 20% of the panel below the panel's bottom, as umano's do
+        el.style.transform = `translate3d(${((1 - u) * 0.15 * pw * L.from).toFixed(1)}px, ${((1 - u) * (1.2 * ph - CARD_TOP(ph, L.y))).toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg)`;
         el.style.setProperty('--rot', `${rot.toFixed(2)}deg`);
         el.style.opacity = Math.min(1, l * 3).toFixed(3);
         el.style.visibility = l > 0 ? 'visible' : 'hidden';
