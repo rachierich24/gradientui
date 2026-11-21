@@ -1,0 +1,173 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Section 04 · Stories of cafés (components/cafe/CafeStories.tsx) — umanodesign.studio's "Stories of our clients"
+   and use-case sheet, on a warm white. The page zooms in here from the bento's last card (cafe-bento.css). The cards'
+   paths are written per frame from the component, as transforms.
+───────────────────────────────────────────────────────────────────────── */
+.cst-stories, .cst-sheet-wrap { --cst-white: #FCFBFA; --cst-cream: #F6ECE6; --cst-ink: #140906; --cst-soft: #5F5956; --cst-muted: #A39C98; --cst-line: rgba(20, 9, 6, .08); }
+
+/* ═════════════ 2 · the stories (pinned, on the white) ═════════════ */
+.cst-stories { position: relative; height: 280vh; overflow: clip; border-radius: 0 0 42px 42px; background: var(--cst-white); }
+.cst-panel { position: sticky; top: 0; height: 100vh; overflow: hidden; transition: opacity .45s ease; }
+.cst-panel.is-zooming { transform: scale(12); transition: transform .7s cubic-bezier(.4, 0, .2, 1); }
+.cst-panel.is-done { transform: scale(12); opacity: 0; transition: opacity .3s ease; }
+.cst-head { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 24px; text-align: center; pointer-events: none; }
+.cst-head h2 { margin: 0; font-family: var(--cafe-display); font-weight: 900; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-size: clamp(56px, 8vw, 120px); line-height: .95; letter-spacing: -.03em; color: var(--cst-ink); }
+.cst-head p { max-width: 540px; margin: 24px 0 0; font: 400 18px/28px var(--cafe-sans); color: var(--cst-soft); }
+.cst-head p b { font-family: var(--cafe-display); font-weight: 900; color: var(--cst-ink); }
+.cst-cards { position: absolute; inset: 0; z-index: 6; }
+/* a card: placed by the layout, moved per frame (transform), straightened on hover by its inner layer */
+.cst-card { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: 280px; height: 370px; visibility: hidden; will-change: transform, opacity; }
+.cst-card.is-hover { z-index: 30 !important; }
+.cst-card-tilt { position: absolute; inset: 0; display: block; padding: 0; border: 0; background: none; color: #fff; font: inherit; text-align: left; cursor: pointer;
+  transition: transform .4s ease; }
+.cst-card.is-hover .cst-card-tilt { transform: rotate(calc(var(--rot, 0deg) * -1)) scale(1.06); transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.cst-card-tilt:focus-visible { outline: none; }
+.cst-card-tilt:focus-visible .cst-card-face { box-shadow: 0 0 0 3px var(--cafe-red), 0 24px 60px -20px rgba(60, 20, 10, .4); }
+.cst-card-face { position: absolute; inset: 0; display: block; overflow: hidden; border-radius: 16px; background: #2A1D19;
+  box-shadow: 0 26px 60px -22px rgba(60, 20, 10, .42), 0 6px 18px -8px rgba(60, 20, 10, .16); }
+.cst-card-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* the café's name and place, low on the photo (its own sign is at the top of the storefront) */
+.cst-card-foot { position: absolute; left: 0; right: 0; bottom: 0; padding: 72px 20px 70px;
+  background: linear-gradient(0deg, rgba(20, 9, 6, .82) 0%, rgba(20, 9, 6, .6) 45%, rgba(20, 9, 6, 0) 100%); }
+.cst-card-foot small { display: block; margin-top: 8px; font: 500 12px/1.3 var(--cafe-sans); color: rgba(255, 255, 255, .74); }
+/* hovered: darkened, with its headline (umano) */
+.cst-card-over { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; padding: 24px 24px 16px; background: rgba(20, 9, 6, .88); opacity: 0; transition: opacity .3s ease; }
+.cst-card.is-hover .cst-card-over { opacity: 1; }
+.cst-card-over > span { font-family: var(--cafe-display); font-weight: 800; font-variation-settings: "opsz" 144, "SOFT" 100; font-size: 21px; line-height: 1.15; letter-spacing: -.01em; }
+.cst-card-btn { position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 0; border-radius: 12px;
+  background: var(--cafe-red); font: 600 13px/1 var(--cafe-sans); color: #fff; }
+.cst-card-btn svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+/* the three chips umano pops out to the card's right */
+.cst-chips { position: absolute; left: calc(100% + 20px); top: 20px; width: 160px; pointer-events: none; }
+.cst-chip { position: absolute; left: 0; top: calc(var(--i) * 90px); width: 160px; padding: 14px 16px; border-radius: 14px; background: #fff; color: var(--cst-ink);
+  box-shadow: 0 0 0 1px var(--cst-line), 0 18px 36px -14px rgba(60, 20, 10, .32); opacity: 0; transform: translateY(calc(40px + var(--i) * 20px)) rotate(0deg) scale(.85);
+  transition: opacity .3s ease calc(var(--i) * .07s), transform .45s cubic-bezier(.34, 1.56, .64, 1) calc(var(--i) * .07s); }
+.cst-card.is-hover .cst-chip { opacity: 1; transform: translateY(0) rotate(var(--r)) scale(1); }
+.cst-chip b { display: block; font-family: var(--cafe-display); font-weight: 900; font-size: 26px; line-height: 1; }
+.cst-chip small { display: block; margin-top: 4px; font: 500 11px/1.2 var(--cafe-sans); letter-spacing: .05em; text-transform: uppercase; color: #6B6E73; }
+.cst-chip.is-impact i { display: block; width: 8px; height: 8px; margin-bottom: 8px; border-radius: 50%; background: var(--cafe-red); }
+.cst-chip.is-impact span { display: block; font: 600 12px/1.4 var(--cafe-sans); }
+
+/* each café's name, set after its own sign: Raydee's spaced serif caps, The Hims' bold lit letters, Cookie Pookie's
+   soft rounded stack, The Naked Bowl's stacked green caps */
+.cst-wordmark { display: block; color: #fff; line-height: 1; }
+.cst-wordmark.is-raydee { font-family: var(--cafe-display); font-weight: 600; font-variation-settings: "opsz" 144; font-size: 17px; line-height: 1.15; letter-spacing: .16em; text-transform: uppercase; }
+.cst-wordmark.is-the-hims-cafe { font: 800 27px/1 var(--cafe-sans); letter-spacing: -.01em; text-transform: uppercase; color: #FFE2B0; text-shadow: 0 0 14px rgba(255, 170, 70, .55); }
+.cst-wordmark.is-cookiepookie { width: min-content; font-family: var(--cafe-display); font-weight: 800; font-variation-settings: "opsz" 144, "SOFT" 100; font-size: 28px; line-height: .92; letter-spacing: -.02em; }
+.cst-wordmark.is-the-naked-bowl { width: min-content; font: 800 15px/1.04 var(--cafe-sans); letter-spacing: .02em; text-transform: uppercase; color: #BFF0CF; }
+
+/* while a story is open the nav steps aside (umano hides its nav) */
+.cst-story-open .cafe-nav { opacity: 0 !important; transform: translateY(-140%) !important; pointer-events: none; }
+
+/* ═════════════ 3 · a café's story: umano's use-case sheet ═════════════ */
+.cst-sheet-wrap { position: fixed; inset: 0; z-index: 9500; padding: 32px; background: rgba(243, 243, 243, .62);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); animation: cstFade .3s ease both; }
+.cst-sheet-wrap.is-closing { animation: cstFadeOut .32s ease both; }
+@keyframes cstFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cstFadeOut { from { opacity: 1; } to { opacity: 0; } }
+.cst-sheet { position: relative; height: 100%; overflow: hidden; border-radius: 32px; background: #F6F5F3; color: var(--cst-ink); font-family: var(--cafe-sans);
+  box-shadow: 0 0 0 1px var(--cst-line), 0 40px 90px -40px rgba(60, 20, 10, .45); animation: cstRise .55s cubic-bezier(.16, 1, .3, 1) both; }
+.cst-sheet-wrap.is-closing .cst-sheet { animation: cstSink .32s ease both; }
+@keyframes cstRise { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes cstSink { to { opacity: 0; transform: translateY(12px) scale(.99); } }
+.cst-sheet-scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+.cst-sheet-close { position: absolute; top: 20px; right: 20px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .92); color: var(--cst-ink); box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .35); cursor: pointer; transition: background-color .2s ease, color .2s ease;
+  animation: cstPop .4s cubic-bezier(.16, 1, .3, 1) .35s both; }
+@keyframes cstPop { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: none; } }
+.cst-sheet-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.cst-sheet-close:hover { background: var(--cafe-red); color: #fff; }
+.cst-sheet-close:focus-visible { outline: 2px solid var(--cafe-red); outline-offset: 3px; }
+.cst-sheet-side nav button:focus-visible, .cst-sheet-btn:focus-visible, .cst-sheet-end button:focus-visible { outline: 2px solid var(--cafe-red); outline-offset: 2px; }
+/* the banner: the café's photo under the title */
+.cst-sheet-hero { position: relative; height: clamp(300px, 52vh, 460px); overflow: hidden; background: #2A1D19; }
+.cst-sheet-hero picture { display: block; height: 100%; }
+.cst-sheet-hero img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); animation: cstHero 1.4s cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes cstHero { from { transform: scale(1.12); } to { transform: scale(1.04); } }
+.cst-sheet-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20, 9, 6, .82) 0%, rgba(20, 9, 6, .5) 55%, rgba(20, 9, 6, .25) 100%); }
+.cst-sheet-hero-tx { position: absolute; left: clamp(24px, 4vw, 48px); right: 30%; top: 50%; z-index: 1; transform: translateY(-50%); color: #fff; }
+.cst-sheet-hero-tx small { display: block; font: 600 12px/1 var(--cafe-sans); letter-spacing: .1em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+.cst-sheet-hero-tx h2 { margin: 16px 0 0; font-family: var(--cafe-display); font-weight: 900; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-size: clamp(34px, 4.4vw, 62px); line-height: 1; letter-spacing: -.03em; }
+/* the body: a sticky sidebar and the story */
+.cst-sheet-body { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(32px, 5vw, 64px); max-width: 1100px; margin: 0 auto; padding: 64px clamp(24px, 5vw, 64px) 0; }
+.cst-sheet-side { position: sticky; top: 32px; align-self: start; }
+.cst-sheet-label { display: block; font: 600 14px/1 var(--cafe-sans); color: var(--cafe-red); }
+.cst-sheet-side nav { display: grid; gap: 4px; margin-top: 14px; }
+.cst-sheet-side nav button { padding: 4px 0; border: 0; background: none; font: 400 15px/1.5 var(--cafe-sans); color: var(--cst-ink); text-align: left; cursor: pointer; transition: color .2s ease; }
+.cst-sheet-side nav button:hover, .cst-sheet-side nav button.is-on { color: var(--cafe-red); }
+.cst-sheet-side hr { margin: 24px 0; border: 0; border-top: 1px solid var(--cst-line); }
+.cst-sheet-cafe { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.cst-sheet-av { display: grid; place-items: center; flex: none; width: 40px; height: 40px; overflow: hidden; border-radius: 50%; background: var(--cst-ink); color: #fff; font-family: var(--cafe-display); font-weight: 800; font-size: 17px; }
+.cst-sheet-av.has-logo { background: #fff; box-shadow: 0 0 0 1px var(--cst-line); }
+.cst-sheet-av img { width: 100%; height: 100%; object-fit: cover; }
+.cst-sheet-av.is-the-hims-cafe { background: #E39A2D; }
+.cst-sheet-av.is-cookiepookie { background: #6B4430; }
+.cst-sheet-av.is-the-naked-bowl { background: #2F6B45; }
+.cst-sheet-cafe b { display: block; font-size: 15px; font-weight: 600; }
+.cst-sheet-cafe small { display: block; margin-top: 2px; font-size: 13px; color: var(--cst-soft); }
+.cst-sheet-btn { width: 100%; height: 46px; margin-top: 14px; border: 0; border-radius: 12px; background: var(--cafe-red); color: #fff; font: 600 15px/1 var(--cafe-sans); cursor: pointer; transition: background-color .2s ease; }
+.cst-sheet-btn:hover { background: var(--cafe-red-deep); }
+.cst-sheet-main section + section { margin-top: 56px; }
+.cst-sheet-main h3 { margin: 0; font-family: var(--cafe-display); font-weight: 900; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; font-size: 30px; line-height: 1.05; letter-spacing: -.02em; }
+.cst-sheet-main p { margin: 18px 0 0; font-size: 16px; line-height: 28px; color: var(--cst-soft); }
+/* the product, in a red panel (umano: its orange panels) */
+.cst-sheet-media { display: grid; place-items: center; margin-top: 32px; padding: clamp(32px, 6vw, 64px) 24px; border-radius: 24px; background: linear-gradient(160deg, #E8483D 0%, #C42D2D 100%); }
+.cst-mock { width: min(380px, 100%); padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 30px 60px -28px rgba(60, 10, 5, .6); transform: rotate(-2deg); }
+.cst-mock-head { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--cst-line); }
+.cst-mock-app { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--cafe-red); color: #fff; }
+.cst-mock-app svg { width: 17px; height: 17px; }
+.cst-mock-head b { font-size: 14px; font-weight: 650; }
+.cst-mock ul { display: grid; gap: 2px; margin: 8px 0 0; padding: 0; list-style: none; }
+.cst-mock li { display: flex; align-items: center; gap: 10px; padding: 9px 4px; border-radius: 10px; }
+.cst-mock li + li { border-top: 1px solid rgba(20, 9, 6, .05); }
+.cst-mock li img { flex: none; width: 36px; height: 36px; border-radius: 9px; object-fit: cover; }
+.cst-mock li > span { flex: 1; min-width: 0; }
+.cst-mock li b { display: block; font-size: 13px; font-weight: 600; color: var(--cst-ink); }
+.cst-mock li small { display: block; margin-top: 1px; font-size: 11.5px; color: var(--cst-muted); }
+.cst-mock li em { flex: none; padding: 4px 9px; border-radius: 999px; background: #FFF1F0; color: var(--cafe-red-deep); font-style: normal; font-size: 11px; font-weight: 650; }
+.cst-mock li > .cst-mock-tick { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--cafe-red); color: #fff; }
+.cst-mock-tick svg { width: 12px; height: 12px; }
+.cst-sheet-results { display: grid; margin: 18px 0 0; padding: 0; list-style: none; }
+.cst-sheet-results li { display: flex; align-items: baseline; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--cst-line); font-size: 16px; color: var(--cst-soft); }
+.cst-sheet-results b { min-width: 104px; font-family: var(--cafe-display); font-weight: 900; font-size: 26px; color: var(--cafe-red); }
+.cst-sheet-main blockquote { margin: 40px 0 0; font-family: var(--cafe-display); font-weight: 700; font-variation-settings: "opsz" 144, "SOFT" 100; font-size: 26px; line-height: 1.25; letter-spacing: -.01em; color: var(--cst-ink); }
+.cst-sheet-main cite { display: block; margin-top: 14px; font: 500 14px/1.4 var(--cafe-sans); font-style: normal; color: var(--cst-muted); }
+/* the numbers (umano: "8 months · 60 tasks · Impact") */
+.cst-sheet-stats { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 24px; margin-top: 56px; padding: 32px 0; border-top: 1px solid var(--cst-line); border-bottom: 1px solid var(--cst-line); }
+.cst-sheet-stats b { display: block; font-size: 24px; font-weight: 600; letter-spacing: -.01em; color: var(--cst-ink); }
+.cst-sheet-stats small { display: block; margin-top: 4px; font-size: 14px; line-height: 1.4; color: var(--cst-soft); }
+.cst-sheet-stats .is-impact b { color: var(--cafe-red); }
+.cst-sheet-mock { font-size: 12px !important; color: var(--cst-muted) !important; }
+/* the closing ask (umano: "Ready to start?") */
+.cst-sheet-end { margin: 80px 32px 32px; padding: 72px 24px; border-radius: 24px; background: #fff; text-align: center; }
+.cst-sheet-end small { display: block; font: 700 13px/1 var(--cafe-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--cafe-red); }
+.cst-sheet-end h3 { max-width: 640px; margin: 22px auto 0; font-family: var(--cafe-display); font-weight: 900; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-size: clamp(34px, 4.4vw, 58px); line-height: 1.02; letter-spacing: -.03em; }
+.cst-sheet-end p { max-width: 420px; margin: 20px auto 0; font-size: 17px; line-height: 1.55; color: var(--cst-soft); }
+.cst-sheet-end button { height: 52px; margin-top: 32px; padding: 0 30px; border: 0; border-radius: 999px; background: var(--cafe-red); color: #fff; font: 600 17px/1 var(--cafe-sans); cursor: pointer; transition: background-color .2s ease; }
+.cst-sheet-end button:hover { background: var(--cafe-red-deep); }
+
+/* ═════════════ phones, and reduced motion: still layouts ═════════════ */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .cst-stories { height: auto; padding: 72px 16px 80px; }
+  .cst-panel { position: relative; height: auto; overflow: visible; transform: none !important; opacity: 1 !important; }
+  .cst-head { position: static; padding: 0 0 36px; }
+  .cst-head h2 { font-size: 44px; }
+  .cst-head p { font-size: 16px; line-height: 25px; }
+  .cst-cards { position: static; display: grid; justify-items: center; gap: 20px; }
+  .cst-card { position: relative; left: auto; top: auto; width: min(340px, 100%); height: 420px; visibility: visible; opacity: 1 !important; transform: none !important; will-change: auto; }
+  .cst-chips { display: none; }
+  .cst-card.is-hover .cst-card-tilt { transform: none; }
+}
+@media (max-width: 860px) {
+  .cst-sheet-wrap { padding: 0; }
+  .cst-sheet { border-radius: 0; }
+  .cst-sheet-body { grid-template-columns: 1fr; padding-top: 40px; }
+  .cst-sheet-side { display: none; }
+  .cst-sheet-hero-tx { right: 24px; }
+  .cst-sheet-stats { grid-template-columns: 1fr 1fr; }
+  .cst-sheet-stats .is-impact { grid-column: 1 / -1; }
+  .cst-sheet-end { margin: 56px 16px 16px; padding: 48px 20px; }
+}

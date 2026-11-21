@@ -41,17 +41,57 @@ export function G365Hero() {
       </header>
 
       <section className="stage" id="stage" aria-label="Scattered café supply becoming organised orders on Gradient 365">
+        {/* isometric ground: dotted lanes, product tiles and order cards (hero-flow.js) */}
         <div className="rows" id="rows"></div>
-        <canvas id="riders" aria-hidden="true"></canvas>
-        {/* the core: each row lights its segment of the mark as a card passes through (energy.js) */}
+        {/* the hub: a raised puck with the mark lying on its top. Each product that lands connects its
+            side's arc of the mark; when all three are connected a ripple runs out across the ground
+            (hub-wave). hero-flow.js sizes it to the ground plan and drives both.
+            Built like an object lit from the upper left: a soft cast shadow (glow) and a tight contact
+            shadow (ao) on the ground, a graphite wall, a bevel (lip) and a white top with engraved rings. */}
         <div className="core" id="core" aria-hidden="true">
-          <svg className="core-mark" viewBox="0 0 28 28">
-            <path className="arc is-cafe" d="M 7.68 8.31 A 8.5 8.5 0 0 1 20.32 8.31" />
-            <path className="arc is-brand" d="M 22.08 11.37 A 8.5 8.5 0 0 1 15.77 22.31" />
-            <path className="arc is-supply" d="M 12.23 22.31 A 8.5 8.5 0 0 1 5.92 11.37" />
-            <circle cx="14" cy="14" r="2.6" />
-          </svg>
+          <i className="hub-glow" />
+          <i className="hub-ao" />
+          <i className="hub-wave"><i /></i>
+          <i className="hub-wall" />
+          <i className="hub-lip" />
+          <div className="hub-top">
+            <i className="hub-ring" />
+            <svg className="core-mark" viewBox="0 0 28 28">
+              <defs>
+                <radialGradient id="g365-hub-dot" cx="38%" cy="32%" r="72%">
+                  <stop offset="0" stopColor="#5f636b" />
+                  <stop offset="0.45" stopColor="#17191c" />
+                  <stop offset="1" stopColor="#000" />
+                </radialGradient>
+                <filter id="g365-hub-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="1.35" />
+                </filter>
+              </defs>
+              {/* a faint track; each arc draws itself over it as its side connects */}
+              <g className="track">
+                <path d="M 7.68 8.31 A 8.5 8.5 0 0 1 20.32 8.31" />
+                <path d="M 22.08 11.37 A 8.5 8.5 0 0 1 15.77 22.31" />
+                <path d="M 12.23 22.31 A 8.5 8.5 0 0 1 5.92 11.37" />
+              </g>
+              {/* light behind each arc, in its side's colour: it draws in with the arc, as if the line were lit from below */}
+              <g className="glow" filter="url(#g365-hub-glow)">
+                <path className="arc-glow is-cafe" pathLength={1} d="M 7.68 8.31 A 8.5 8.5 0 0 1 20.32 8.31" />
+                <path className="arc-glow is-brand" pathLength={1} d="M 22.08 11.37 A 8.5 8.5 0 0 1 15.77 22.31" />
+                <path className="arc-glow is-supply" pathLength={1} d="M 12.23 22.31 A 8.5 8.5 0 0 1 5.92 11.37" />
+              </g>
+              <path className="arc is-cafe" pathLength={1} d="M 7.68 8.31 A 8.5 8.5 0 0 1 20.32 8.31" />
+              <path className="arc is-brand" pathLength={1} d="M 22.08 11.37 A 8.5 8.5 0 0 1 15.77 22.31" />
+              <path className="arc is-supply" pathLength={1} d="M 12.23 22.31 A 8.5 8.5 0 0 1 5.92 11.37" />
+              {/* the centre: a glossy dome with a glint toward the light */}
+              <g className="dot">
+                <circle cx="14" cy="14" r="2.6" fill="url(#g365-hub-dot)" />
+                <circle className="spec" cx="13.15" cy="13.05" r="0.62" />
+              </g>
+            </svg>
+          </div>
         </div>
+        {/* live 3D products standing on the tiles, jumping into the hub (riders.js) */}
+        <canvas id="riders" aria-hidden="true"></canvas>
       </section>
 
     </div>

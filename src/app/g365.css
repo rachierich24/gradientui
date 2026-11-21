@@ -376,7 +376,7 @@
 .g365-hero.boot-ui .hero-sub { opacity: 0; transform: translateY(12px); }
 .g365-hero.boot-rows .rows { opacity: 0; transform: translateY(26px); }
 .g365-hero.boot-rows #riders { opacity: 0; }
-.g365-hero.boot-rows .core { opacity: 0; transform: translate(-50%, -50%) scale(.86); }
+.g365-hero.boot-rows .core { opacity: 0; transform: translateY(18px) scale(.94); }
 .g365-hero.boot-head h1:not(.split) { opacity: 0; }
 .g365-hero h1 .w { display: inline-block; transition: opacity .85s ease, transform 1s cubic-bezier(.2,.7,.2,1), filter 1s ease; }
 .g365-hero h1.settled .w { display: inline; }
@@ -384,57 +384,215 @@
 .g365-hero.boot-solid h1 { color: var(--navy); background-image: none; animation: none; }
 .g365-hero .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 
-/* ---------- flow stage ---------- */
-.g365-hero .stage { position: relative; height: calc(var(--cy, 220px) + 350px); margin-top: -28px; overflow-x: clip; overflow-y: visible; --cw: 270px; --ch: 56px; --ph: 38px; }
-.g365-hero .rows { position: absolute; inset: 0; z-index: 1; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%); }
-.g365-hero .card { position: absolute; left: 50%; top: 0; width: var(--cw); height: var(--ch); border-radius: 12px; will-change: transform; transform-origin: 50% 50%; }
-.g365-hero .full { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 10px 24px -16px rgba(0,0,0,.22); }
-/* once a card has passed through the core it takes its row's colour: red cafés, green suppliers, purple brands */
-.g365-hero .full.s-cafe { --rc: var(--e-cafe); } .g365-hero .full.s-supply { --rc: var(--e-supply); } .g365-hero .full.s-brand { --rc: var(--e-brand); }
-.g365-hero .face.full { border-color: color-mix(in srgb, var(--rc) 30%, transparent);
-  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 12px 26px -18px color-mix(in srgb, var(--rc) 55%, transparent); }
-.g365-hero .full::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; width: 3px; border-radius: 0 3px 3px 0; background: var(--rc); }
-.g365-hero .full .ph { background: color-mix(in srgb, var(--rc) 8%, #fff); }
-.g365-hero .full .metric em { color: var(--rc); }
-.g365-hero .face { position: absolute; inset: 0; display: flex; align-items: center; gap: 10px; padding: 0 12px 0 9px; border-radius: 12px; background: #fff; border: 1px solid rgba(0,0,0,.07); }
-.g365-hero .face.skel { display: flex; background: #fff; border-color: rgba(0,0,0,.05); box-shadow: 0 1px 2px rgba(0,0,0,.03); }
-.g365-hero .stage:not(.no-gl) .face.skel .ph { opacity: 0; }
-.g365-hero #riders { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 15%); mask-image: linear-gradient(90deg, transparent 0, #000 15%); }
-.g365-hero .ph { flex: none; width: var(--ph); height: var(--ph); border-radius: 9px; background: #F4F6F8; overflow: hidden; }
-.g365-hero .ph img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .6s; transform: scale(1.06); }
-.g365-hero .ph img.ready { opacity: 1; }
-.g365-hero .sep { flex: none; width: 1px; align-self: stretch; margin: 11px 0; background: rgba(0,0,0,.09); }
-.g365-hero .bars { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-.g365-hero .bars b { display: block; height: 9px; border-radius: 4px; background: #F0F2F5; }
-.g365-hero .bars b + b { height: 7px; width: 58%; }
-.g365-hero .bars.r { flex: .7; }
-.g365-hero .bars.r b + b { width: 100%; }
-.g365-hero .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.g365-hero .info strong { font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.g365-hero .info span { font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
-.g365-hero .metric { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
-.g365-hero .metric strong { font-size: 15px; font-weight: 600; letter-spacing: -.015em; font-variant-numeric: tabular-nums; color: var(--navy); }
-.g365-hero .metric span { font-size: 10px; color: var(--ink-soft); white-space: nowrap; }
-.g365-hero .metric em { font-style: normal; margin-left: 4px; font-family: var(--mono); font-size: 9px; color: var(--teal-ink); }
+/* ---------- flow stage: an isometric ground plane, seen from 30° above and turned 45° ----------
+   hero-flow.js lays every flat piece on the ground with a 2:1 matrix whose x runs away to the right and
+   y toward you to the right. In that space "straight down the screen" is (-1.22, 1.22) per unit of height,
+   so a stack of shadows offset that way gives tiles and sheets their thickness; a tile still tumbling in
+   gets its own offset every frame (--lx, --ly).
+   The layers reach --off above the stage so the sheets can rise beside the copy. Their mask fades the
+   edges and cuts a soft hole under the headline and subtitle (--hx0, --hx1, --hy, measured from the copy). */
+.g365-hero .stage { position: relative; height: 470px; margin-top: -28px; overflow-x: clip; overflow-y: visible; --off: 280px; }
+.g365-hero .rows { position: absolute; left: 0; right: 0; top: calc(-1 * var(--off)); bottom: 0; z-index: 1; --hx0: 0px; --hx1: 0px; --hy: 0px;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0, #000 4%, #000 91%, transparent 100%),
+    linear-gradient(180deg, transparent 20px, #000 100px, #000 calc(100% - 80px), transparent 100%),
+    linear-gradient(90deg, #000 calc(var(--hx0) - 60px), transparent var(--hx0), transparent var(--hx1), #000 calc(var(--hx1) + 60px)),
+    linear-gradient(180deg, transparent var(--hy), #000 calc(var(--hy) + 70px));
+  -webkit-mask-composite: source-in, source-in, source-over;
+  mask-image:
+    linear-gradient(90deg, transparent 0, #000 4%, #000 91%, transparent 100%),
+    linear-gradient(180deg, transparent 20px, #000 100px, #000 calc(100% - 80px), transparent 100%),
+    linear-gradient(90deg, #000 calc(var(--hx0) - 60px), transparent var(--hx0), transparent var(--hx1), #000 calc(var(--hx1) + 60px)),
+    linear-gradient(180deg, transparent var(--hy), #000 calc(var(--hy) + 70px));
+  mask-composite: intersect, intersect, add; }
+.g365-hero .flow { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.g365-hero .flow path { fill: none; stroke: rgba(10,10,10,.26); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 0 7; animation: g365Dash .95s linear infinite; transition: stroke .3s ease, stroke-width .3s ease; }
+.g365-hero .flow path.out { stroke: rgba(10,10,10,.13); }
+@keyframes g365Dash { to { stroke-dashoffset: -14; } }
+/* the junction: a small ring where the three lanes meet */
+.g365-hero .flow .node { fill: rgba(255,255,255,.8); stroke: rgba(10,10,10,.24); stroke-width: 1.2; }
+.g365-hero .flow .node-dot { fill: rgba(10,10,10,.42); }
+/* pointing at a product lights its whole supply line in its side's colour */
+.g365-hero .stage[data-hot="cafe"] .flow path.b-cafe { stroke: var(--e-cafe); stroke-width: 2.2; }
+.g365-hero .stage[data-hot="supply"] .flow path.b-supply { stroke: var(--e-supply); stroke-width: 2.2; }
+.g365-hero .stage[data-hot="brand"] .flow path.b-brand { stroke: var(--e-brand); stroke-width: 2.2; }
 
-/* the core: a frosted tile carrying the Gradient mark */
-.g365-hero .core { position: absolute; left: 50%; top: var(--cy, 220px); width: 88px; height: 88px; transform: translate(-50%, -50%); z-index: 4; border-radius: 25px;
-  display: grid; place-items: center;
-  background: linear-gradient(160deg, rgba(255,255,255,.78), rgba(255,255,255,.5));
-  -webkit-backdrop-filter: blur(12px) saturate(1.25); backdrop-filter: blur(12px) saturate(1.25);
-  border: 1px solid rgba(0,0,0,.1);
-  box-shadow: inset 0 1px 0 #fff, 0 18px 36px -22px rgba(0,0,0,.45); }
-.g365-hero .core::after { content: ""; position: absolute; inset: -4px; border-radius: 29px; border: 1px solid rgba(0,0,0,.25); opacity: 0; }
-.g365-hero .core.blip::after { animation: g365Blip .9s ease-out; }
+/* a faint dotted floor around the hub (its own layer, so the per-frame work above it never repaints it) */
+.g365-hero .floor { position: absolute; left: 0; top: 0; width: 2600px; height: 2600px; transform-origin: 0 0; pointer-events: none; will-change: transform;
+  background-image: radial-gradient(circle, rgba(10,10,10,.12) 1.2px, transparent 1.7px); background-size: 30px 30px; background-position: center;
+  -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgba(0,0,0,.5) 28%, transparent 56%);
+  mask-image: radial-gradient(closest-side, #000 0%, rgba(0,0,0,.5) 28%, transparent 56%); }
 
-/* each row lights its own segment of the mark as a card passes through the core */
-.g365-hero .core-mark { width: 40px; height: 40px; overflow: visible; }
-.g365-hero .core-mark .arc { fill: none; stroke: #0A0A0A; stroke-width: 2.4; stroke-linecap: round; transition: stroke .6s ease, filter .6s ease; }
-.g365-hero .core-mark circle { fill: #0A0A0A; }
-.g365-hero .stage:hover .core.lit-cafe .arc.is-cafe { stroke: #E5483B; filter: drop-shadow(0 0 3px rgba(229,72,59,.55)); transition-duration: .1s; }
-.g365-hero .stage:hover .core.lit-supply .arc.is-supply { stroke: #16A34A; filter: drop-shadow(0 0 3px rgba(22,163,74,.55)); transition-duration: .1s; }
-.g365-hero .stage:hover .core.lit-brand .arc.is-brand { stroke: #7C4DDB; filter: drop-shadow(0 0 3px rgba(124,77,219,.55)); transition-duration: .1s; }
+.g365-hero .tile, .g365-hero .tsh, .g365-hero .sheet { position: absolute; left: 0; top: 0; transform-origin: 0 0; visibility: hidden; }
+/* an input tile: a white slab, its product printed on it until the product pops up in 3D */
+.g365-hero .tile { --lx: -1.2247; --ly: 1.2247; width: 56px; height: 56px; border-radius: 15px; display: grid; place-items: center;
+  background: linear-gradient(135deg, #fff 0%, #fbfbfc 62%, #f2f3f5 100%); border: 1px solid rgba(0,0,0,.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.9),
+    calc(var(--lx) * 1.2px) calc(var(--ly) * 1.2px) 0 #eceef1, calc(var(--lx) * 2.4px) calc(var(--ly) * 2.4px) 0 #e6e9ec,
+    calc(var(--lx) * 3.6px) calc(var(--ly) * 3.6px) 0 #e0e3e7, calc(var(--lx) * 4.8px) calc(var(--ly) * 4.8px) 0 #d9dde1,
+    calc(var(--lx) * 6px) calc(var(--ly) * 6px) 0 #cdd1d7; }
+/* a faint placement guide where the product stands, and a pip in the back corner that takes the tile's
+   side colour while it's pointed at */
+.g365-hero .tile::before { content: ""; position: absolute; inset: 15%; border-radius: 9px; border: 1px dashed rgba(0,0,0,.08); pointer-events: none; }
+.g365-hero .tile .pip { position: absolute; left: 6px; top: 6px; width: 5px; height: 5px; border-radius: 50%; background: #C9CDD3; transition: background .25s ease, box-shadow .25s ease; }
+.g365-hero .tile.hot .pip { background: var(--c); box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--c) 22%, transparent); }
+/* a ring runs across the tile as its product pops up out of it */
+.g365-hero .tile::after { content: ""; position: absolute; inset: 12%; border-radius: 50%; border: 1.5px solid rgba(10,10,10,.26); opacity: 0; pointer-events: none; }
+.g365-hero .tile.pop::after { animation: g365Pop .75s cubic-bezier(.2,.6,.3,1); }
+@keyframes g365Pop { from { opacity: .7; transform: scale(.45); } to { opacity: 0; transform: scale(1.55); } }
+/* the printed product sits on a soft grey disc, so a white product still reads on a white tile */
+.g365-hero .tile .print { display: block; width: 88%; height: 88%; border-radius: 50%;
+  background: radial-gradient(closest-side, #e9ecf0 0%, #eef0f3 55%, rgba(238,240,243,0) 100%); }
+.g365-hero .tile img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .5s; }
+.g365-hero .tile img.ready { opacity: 1; }
+/* its soft shadow on the ground */
+.g365-hero .tsh { width: 84px; height: 84px; border-radius: 50%; background: radial-gradient(closest-side, rgba(15,20,30,.15), rgba(15,20,30,.06) 55%, rgba(15,20,30,0)); }
+/* pointed at (.hot, from hero-flow.js), a tile takes its side's colour: edge, rim and a pool of light under it */
+.g365-hero .tile.hot { border-color: color-mix(in srgb, var(--c) 55%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.9), 0 0 0 3px color-mix(in srgb, var(--c) 16%, transparent),
+    calc(var(--lx) * 1.2px) calc(var(--ly) * 1.2px) 0 color-mix(in srgb, var(--c) 22%, #fff), calc(var(--lx) * 2.4px) calc(var(--ly) * 2.4px) 0 color-mix(in srgb, var(--c) 28%, #fff),
+    calc(var(--lx) * 3.6px) calc(var(--ly) * 3.6px) 0 color-mix(in srgb, var(--c) 34%, #fff), calc(var(--lx) * 4.8px) calc(var(--ly) * 4.8px) 0 color-mix(in srgb, var(--c) 40%, #fff),
+    calc(var(--lx) * 6px) calc(var(--ly) * 6px) 0 color-mix(in srgb, var(--c) 52%, #fff); }
+.g365-hero .tile.hot::after { border-color: var(--c); }
+.g365-hero .tsh.hot { background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 34%, transparent), color-mix(in srgb, var(--c) 12%, transparent) 55%, transparent); }
+/* the pointed-at product's name, floating just over it (upright, in screen space; above the 3D canvas) */
+.g365-hero .ptag { position: absolute; left: 0; top: 0; z-index: 6; pointer-events: none; display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px 5px 8px; border-radius: 999px; background: rgba(255,255,255,.96); border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 8px 20px -10px rgba(15,20,30,.35); white-space: nowrap;
+  opacity: 0; translate: 0 4px; transition: opacity .2s ease, translate .25s cubic-bezier(.2,.7,.2,1); }
+.g365-hero .ptag.on { opacity: 1; translate: 0 0; }
+.g365-hero .ptag i { width: 6px; height: 6px; border-radius: 50%; background: var(--c, #0A0A0A); }
+.g365-hero .ptag b { font-size: 12px; font-weight: 600; letter-spacing: -.01em; color: #0A0A0A; }
+.g365-hero .ptag small { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: #9AA0A8; }
+
+/* an order sheet: order number and time, one line per side, and a floating "Synced" tag.
+   --lift is how high the sheet floats over its lane (hero-flow.js); its soft shadow is pushed back down by
+   as much, so the shadow stays on the ground (falling toward you on the right, away from the light) and
+   spreads the higher the sheet rides. */
+.g365-hero .sheet { --lift: 0; width: 236px; height: 140px; }
+.g365-hero .sheet .pp { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 3px 15px 6px 12px; border-radius: 16px;
+  background: linear-gradient(135deg, #fff 0%, #fff 58%, #fafbfc 100%); border: 1px solid rgba(0,0,0,.07);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), -1.2px 1.2px 0 #eef0f2, -2.4px 2.4px 0 #e5e8eb, -3.6px 3.6px 0 #d8dce1,
+    calc(-10px - var(--lift) * 1.22px) calc(28px + var(--lift) * 1.22px) calc(26px + var(--lift) * 2px) -10px rgba(15,20,30,.16);
+  transition: translate .35s cubic-bezier(.2,.7,.2,1), border-color .3s ease; }
+/* pointed at, a sheet lifts off the lane (straight up the screen is (+n, -n) in its own space) */
+.g365-hero .sheet:hover .pp { translate: 8px -8px; }
+.g365-hero .sheet .tag { transition: translate .35s cubic-bezier(.2,.7,.2,1); }
+.g365-hero .sheet:hover .tag { translate: 8px -8px; }
+.g365-hero .sheet .hd { flex: none; display: flex; align-items: center; justify-content: space-between; height: 28px; margin-bottom: 1px;
+  border-bottom: 1px solid rgba(0,0,0,.06); font-family: var(--mono); font-size: 10px; letter-spacing: .04em; }
+.g365-hero .sheet .hd .no { font-weight: 600; color: #0A0A0A; }
+.g365-hero .sheet .hd .tm { color: #9AA0A8; }
+.g365-hero .ln { --c: #A6ABB2; position: relative; display: flex; align-items: center; gap: 10px; height: 34px; }
+.g365-hero .ln.s-cafe { --sc: var(--e-cafe); } .g365-hero .ln.s-supply { --sc: var(--e-supply); } .g365-hero .ln.s-brand { --sc: var(--e-brand); }
+.g365-hero .ln + .ln { border-top: 1px solid rgba(0,0,0,.05); }
+/* pointed at, each line takes its side's colour: a bar slides in at its edge, its photo gets a ring, its label colours */
+.g365-hero .ln::before { content: ""; position: absolute; left: -12px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--sc);
+  transform: scaleY(0); transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+.g365-hero .th { flex: none; width: 26px; height: 26px; border-radius: 8px; background: #F4F6F8; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,.04); transition: box-shadow .3s ease, background .3s ease; }
+.g365-hero .th img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); opacity: 0; transition: opacity .5s; }
+.g365-hero .th img.ready { opacity: 1; }
+.g365-hero .ln b { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; color: #0A0A0A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g365-hero .ln small { flex: none; font-family: var(--mono); font-size: 8px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--c); transition: color .3s; }
+.g365-hero .sheet:hover .ln { --c: var(--sc); }
+.g365-hero .sheet:hover .ln::before { transform: scaleY(1); }
+.g365-hero .sheet:hover .th { background: color-mix(in srgb, var(--sc) 10%, #fff); box-shadow: inset 0 0 0 1.5px var(--sc); }
+.g365-hero .sheet:hover .ln:nth-of-type(3)::before { transition-delay: .05s; }
+.g365-hero .sheet:hover .ln:nth-of-type(4)::before { transition-delay: .1s; }
+/* the tag floats above the sheet's front edge (lifted straight up the screen), shadow falling on the sheet */
+.g365-hero .tag { position: absolute; right: 10px; bottom: -26px; display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 15px 0 10px; border-radius: 999px;
+  background: #0A0A0A; color: #fff; font-size: 12.5px; font-weight: 600; letter-spacing: -.005em; white-space: nowrap; opacity: 0; transform-origin: 50% 50%;
+  box-shadow: -1.3px 1.3px 0 #3a3c40, -2.6px 2.6px 0 #222326, -18px 18px 22px -6px rgba(0,0,0,.24); }
+.g365-hero .tag .ck { width: 15px; height: 15px; flex: none; }
+.g365-hero .tag .ck path { fill: none; stroke: #fff; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1.001; transition: stroke .3s ease; }
+.g365-hero .sheet:hover .tag .ck path { stroke: var(--e-supply); }
+
+.g365-hero #riders { position: absolute; left: 0; top: calc(-1 * var(--off)); width: 100%; height: calc(100% + var(--off)); z-index: 4; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%), linear-gradient(180deg, #000 calc(100% - 90px), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 13%), linear-gradient(180deg, #000 calc(100% - 90px), transparent 100%);
+  mask-composite: intersect; }
+@media (prefers-reduced-motion: reduce) {
+  .g365-hero .flow path { animation: none; }
+}
+
+/* the hub: a raised puck lit from the upper left — a white top carrying the Gradient mark, a bevel, and a
+   glossy graphite wall. The wall is the cylinder's silhouette: a box whose corners are quarter ellipses half
+   as tall as wide; across it, the shading of a lit cylinder (a soft sheen, a sharp highlight toward the
+   light, falling into shade on the right, with a faint rim of light at the far edge). */
+.g365-hero .core { position: absolute; z-index: 3; pointer-events: none; transform-origin: 50% 80%; }
+.g365-hero .hub-wall { position: absolute; inset: 0; border-radius: var(--hr) / calc(var(--hr) / 2);
+  background: linear-gradient(90deg, #2c2f34 0%, #17191c 6%, #2b2e33 14%, #4d5159 20%, #8a909a 23.5%, #3f434a 27%, #1a1c1f 38%, #0c0d0f 56%, #08090a 74%, #141619 90%, #2e3136 97%, #45494f 100%);
+  box-shadow: inset 0 -4px 7px -3px rgba(0,0,0,.75), inset 0 2px 0 rgba(255,255,255,.07); }
+.g365-hero .hub-top, .g365-hero .hub-glow, .g365-hero .hub-wave, .g365-hero .hub-lip, .g365-hero .hub-ao { position: absolute; left: 0; top: 0; transform-origin: 0 0; border-radius: 50%; }
+/* the soft cast shadow, falling toward you on the right */
+.g365-hero .hub-glow { background: radial-gradient(closest-side, rgba(10,12,16,.17), rgba(10,12,16,.07) 48%, rgba(10,12,16,0)); }
+/* the tight contact shadow where the wall stands on the ground (only its rim shows past the wall) */
+.g365-hero .hub-ao { background: radial-gradient(closest-side, rgba(8,10,14,.5) 86%, rgba(8,10,14,.18) 93%, rgba(8,10,14,0) 100%); }
+/* the bevel between top and wall: a light chamfer catching the light along the top's near edge */
+.g365-hero .hub-lip { background: linear-gradient(to bottom left, #fbfcfd 0%, #e2e5e9 52%, #b4bac2 100%); }
+/* when an order completes, a ring runs out across the ground from the hub's foot */
+.g365-hero .hub-wave i { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(10,10,10,.45); opacity: 0; }
+.g365-hero .core.wave .hub-wave i { animation: g365Wave 1.6s cubic-bezier(.2,.6,.3,1); }
+@keyframes g365Wave { from { opacity: .45; transform: scale(1); } to { opacity: 0; transform: scale(2.5); } }
+/* the top: a soft white finish, a sheen toward the light (the back left, which is up and to the right in
+   its own space), slightly shaded toward the rim; a bright edge where it turns down into the bevel */
+.g365-hero .hub-top { display: grid; place-items: center;
+  background:
+    radial-gradient(62% 48% at 58% 24%, rgba(255,255,255,1) 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,0) 100%),
+    radial-gradient(circle at 50% 50%, #f6f7f9 0%, #f0f2f4 58%, #e4e7eb 100%);
+  box-shadow: inset 0 0 0 1.5px #fff, inset 0 0 0 2.5px rgba(0,0,0,.06), inset 0 0 26px rgba(20,24,30,.08); }
+/* engraved rings: a fine dark cut with a lit edge beside it */
+.g365-hero .hub-top::before { content: ""; position: absolute; inset: 8%; border-radius: 50%; border: 1px solid rgba(0,0,0,.1);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.7); }
+.g365-hero .hub-ring { position: absolute; inset: 19%; border-radius: 50%; border: 2px dotted rgba(0,0,0,.13); }
+.g365-hero .hub-top::after { content: ""; position: absolute; inset: 6%; border-radius: 50%; border: 3px solid rgba(0,0,0,.28); opacity: 0; }
+.g365-hero .core.blip .hub-top::after { animation: g365Blip .9s ease-out; }
+/* each landing presses the top in a touch (screen-space, on top of its iso transform) */
+.g365-hero .core.blip .hub-top { animation: g365Press .5s cubic-bezier(.3,.7,.3,1); }
+@keyframes g365Press { 0% { translate: 0 0; } 28% { translate: 0 2px; } 100% { translate: 0 0; } }
+
+/* the mark lies flat on the top, turned so its café arc sits at the back. Over a faint track, each arc
+   draws itself as its side's product lands (café, supplier, brand; .on-* from hero-flow.js); with all three
+   the mark is whole, the centre pulses, and the arcs wind back for the next order.
+   Each arc is a line of light in its side's colour (a bright core over a soft halo), a little stronger
+   while the pointer is over the stage. */
+.g365-hero .core-mark { position: relative; width: 74%; height: 74%; transform: rotate(45deg); overflow: visible; }
+.g365-hero .core-mark .track path { fill: none; stroke: #E1E4E8; stroke-width: 2.4; stroke-linecap: round; transition: stroke .3s ease; }
+/* pointing at a product tints the arc it is on its way to (track order: café, brand, supplier) */
+.g365-hero .stage[data-hot="cafe"] .core-mark .track path:nth-child(1) { stroke: color-mix(in srgb, var(--e-cafe) 45%, #fff); }
+.g365-hero .stage[data-hot="brand"] .core-mark .track path:nth-child(2) { stroke: color-mix(in srgb, var(--e-brand) 45%, #fff); }
+.g365-hero .stage[data-hot="supply"] .core-mark .track path:nth-child(3) { stroke: color-mix(in srgb, var(--e-supply) 45%, #fff); }
+.g365-hero .core-mark .arc { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 1 2; stroke-dashoffset: 1.001;
+  transition: stroke-dashoffset .45s cubic-bezier(.4,0,.6,1), stroke .2s ease, filter .2s ease; }
+/* lit, not black: each line glows in its side's colour, a touch lighter at its core */
+.g365-hero .core-mark .arc.is-cafe { stroke: color-mix(in srgb, var(--e-cafe) 86%, #fff); }
+.g365-hero .core-mark .arc.is-supply { stroke: color-mix(in srgb, var(--e-supply) 86%, #fff); }
+.g365-hero .core-mark .arc.is-brand { stroke: color-mix(in srgb, var(--e-brand) 86%, #fff); }
+/* the arcs are backlit: a soft halo in each side's colour, drawn in and wound back with its arc, a little
+   stronger while the pointer is over the stage and brightening for a beat when an order completes */
+.g365-hero .core-mark .arc-glow { fill: none; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1 2; stroke-dashoffset: 1.001; opacity: .36;
+  transition: stroke-dashoffset .45s cubic-bezier(.4,0,.6,1), opacity .35s ease; }
+.g365-hero .core-mark .arc-glow.is-cafe { stroke: var(--e-cafe); }
+.g365-hero .core-mark .arc-glow.is-supply { stroke: var(--e-supply); }
+.g365-hero .core-mark .arc-glow.is-brand { stroke: var(--e-brand); }
+.g365-hero .core.on-cafe .arc-glow.is-cafe, .g365-hero .core.on-supply .arc-glow.is-supply, .g365-hero .core.on-brand .arc-glow.is-brand {
+  stroke-dashoffset: 0; transition: stroke-dashoffset .7s cubic-bezier(.2,.8,.25,1), opacity .35s ease; }
+.g365-hero .stage:hover .core-mark .arc-glow { opacity: .55; }
+.g365-hero .core.wave .core-mark .arc-glow { animation: g365GlowBeat 1.3s ease-out; }
+@keyframes g365GlowBeat { 0% { opacity: .36; } 22% { opacity: .7; } 100% { opacity: .36; } }
+@media (prefers-reduced-motion: reduce) { .g365-hero .core-mark .arc-glow { transition: none; } .g365-hero .core.wave .core-mark .arc-glow { animation: none; } }
+.g365-hero .core-mark .dot { transform-box: fill-box; transform-origin: center; }
+.g365-hero .core-mark .dot .spec { fill: rgba(255,255,255,.75); }
+.g365-hero .core.on-cafe .arc.is-cafe, .g365-hero .core.on-supply .arc.is-supply, .g365-hero .core.on-brand .arc.is-brand {
+  stroke-dashoffset: 0; transition: stroke-dashoffset .7s cubic-bezier(.2,.8,.25,1), stroke .2s ease, filter .2s ease; }
+.g365-hero .core.wave .core-mark .dot { animation: g365Dot .7s cubic-bezier(.3,1.6,.5,1); }
+@keyframes g365Dot { 0% { transform: scale(1); } 35% { transform: scale(1.45); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .g365-hero .core-mark .arc { transition: none; } }
+/* lit in colour, an arc glows like a light under the surface: a tight core and a soft spill onto the white */
+.g365-hero .stage:hover .core.on-cafe .arc.is-cafe { stroke: var(--e-cafe); filter: drop-shadow(0 0 1.5px rgba(255,45,45,.7)) drop-shadow(0 0 7px rgba(255,45,45,.35)); }
+.g365-hero .stage:hover .core.on-supply .arc.is-supply { stroke: var(--e-supply); filter: drop-shadow(0 0 1.5px rgba(34,197,94,.7)) drop-shadow(0 0 7px rgba(34,197,94,.35)); }
+.g365-hero .stage:hover .core.on-brand .arc.is-brand { stroke: var(--e-brand); filter: drop-shadow(0 0 1.5px rgba(138,43,255,.7)) drop-shadow(0 0 7px rgba(138,43,255,.35)); }
 
 /* one order, delivered to every side: chips that leave the core and land on the ecosystem's devices */
 .g365-deliveries { position: fixed; inset: 0; z-index: 40; pointer-events: none; }
@@ -504,11 +662,3 @@
 .g365-footer a:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
 @media (max-width: 640px) { .g365-footer .ft-side { align-items: flex-start; } }
 
-/* colour only on hover: the hero is black and white at rest; a card shows its colour while pointed at,
-   and the core's mark lights in colour only while the pointer is over the stage (grey blink otherwise) */
-/* only the accents go grey at rest (stripe, border, tint, growth figure); product images keep their colour */
-.g365-hero .card .face.full.s-cafe, .g365-hero .card .face.full.s-supply, .g365-hero .card .face.full.s-brand { --rc: #B4B8BE; }
-.g365-hero .card:hover .face.full.s-cafe { --rc: var(--e-cafe); }
-.g365-hero .card:hover .face.full.s-supply { --rc: var(--e-supply); }
-.g365-hero .card:hover .face.full.s-brand { --rc: var(--e-brand); }
-.g365-hero .core.lit-cafe .arc.is-cafe, .g365-hero .core.lit-supply .arc.is-supply, .g365-hero .core.lit-brand .arc.is-brand { stroke: #A3A7AE; transition-duration: .1s; }
