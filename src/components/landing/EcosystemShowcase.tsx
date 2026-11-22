@@ -26,8 +26,8 @@ import {
       · the words: a tinted chip, a two-line title, a line, a pill button, and a bordered card that
         follows the film playing ("Now showing"), whose segments seek it;
       · a tall colour panel on the right — red, then green, then purple — holding the product.
-      On a switch the old words go at once and the new ones fade up 10px; the panel's colour field
-      crossfades; the product is cleared and rebuilt — the phone drops out and a browser window rises in
+      On a switch the old words go at once and the new ones fade up 10px; the panel's colour fades to the
+      next portal's; the product is cleared and rebuilt — the phone drops out and a browser window rises in
       with the supplier film; from supplier to brand the window stays and its film, address and badge
       change. A floating card (a delivery, an order, a repeat order) pops in after each, like Mixpanel's
       insight cards.
@@ -79,6 +79,19 @@ const PORTALS: Portal[] = [
     ],
   },
 ];
+
+/* Each portal's colour field, in that portal's own colour only — the main colour of its site (/cafe #E03E3E,
+   /supplier #1FA952, /brand #6B33D3) with its lighter tints and deeper shades (the sites' own: #C42D2D;
+   #178A42, #0D5228; #3A1F70, #251448): the base gradient's three stops, then four soft blobs (alpha per slot).
+   A switch is a plain fade from one to the next, so no other colour shows on the way. */
+const FIELD: Record<PortalId, string[]> = {
+  cafe: ['#EC5F5C', '#E03E3E', '#C42D2D', '#F6B3B0', '#9E1F1F', '#EA716E', '#B42626'],
+  supplier: ['#3DBB6A', '#1FA952', '#178A42', '#A6DDBA', '#0D5228', '#62C386', '#11663A'],
+  brand: ['#8452DF', '#6B33D3', '#4E23A8', '#C7AEF2', '#251448', '#9A72E6', '#3A1F70'],
+};
+const FIELD_ALPHA = [1, 1, 1, 0.85, 0.6, 0.7, 0.5];
+const rgbA = (hex: string, a: number) => { const n = parseInt(hex.slice(1), 16); return `rgb(${(n >> 16) & 255} ${(n >> 8) & 255} ${n & 255} / ${a})`; };
+const fieldVars = (id: PortalId) => Object.fromEntries(FIELD[id].map((c, i) => [`--p${i}`, rgbA(c, FIELD_ALPHA[i])])) as CSSProperties;
 
 // Where things happen along the track (fractions of its 380vh of scroll)
 const REST = 0.07;      // chapter 1 holds still until here
@@ -458,7 +471,7 @@ export function EcosystemShowcase() {
         {desk && (
           <div className="pt-back" aria-hidden="true">
             <motion.div className="pt-panel" style={{ y: panelY, opacity: panelOpacity }}>
-              {PORTALS.map((p, k) => <span key={p.id} className={`pt-field is-${p.id}${k === tab ? ' is-on' : ''}`} />)}
+              {PORTALS.map((p, k) => <span key={p.id} className={`pt-field${k === tab ? ' is-on' : ''}`} style={fieldVars(p.id)} />)}
               <span className="pt-grain" />
               <div className="pt-area">
                 {/* the phone's place in the panel: it comes down into this box (measured, never drawn) */}
@@ -628,7 +641,7 @@ function StackCard({ p }: { p: Portal }) {
         <PortalCopy p={p} film={film} on={inView} onSeek={seek} />
       </div>
       <div className="pt-card-panel">
-        <span className={`pt-field is-${p.id} is-on`} />
+        <span className="pt-field is-on" style={fieldVars(p.id)} />
         <span className="pt-grain" />
         {p.id === 'cafe' ? (
           <div className="pt-mphone"><video ref={film} src={p.film} playsInline muted loop preload="none" /></div>

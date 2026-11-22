@@ -649,15 +649,16 @@
   padding: 2px 7px;
   border-radius: 4px;
 }
+/* the portals' own colours (/supplier #1FA952, /brand #6B33D3, with their pale tints and deep shades) */
 .badge-supplier {
-  background: #DCFCE7;
-  color: #166534;
-  border: 1px solid #BBF7D0;
+  background: #EBF8F0;
+  color: #0D5228;
+  border: 1px solid #B9E3C8;
 }
 .badge-brand {
-  background: #F3E8FF;
-  color: #6B21A8;
-  border: 1px solid #E9D5FF;
+  background: #F3EDFD;
+  color: #3A1F70;
+  border: 1px solid #D6C6F6;
 }
 
 .eco-badge-live,
@@ -2933,11 +2934,11 @@
 }
 
 .glow-supplier {
-  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.48) 0%, rgba(34, 197, 94, 0.16) 52%, transparent 75%);
+  background: radial-gradient(ellipse at center, rgba(31, 169, 82, 0.48) 0%, rgba(31, 169, 82, 0.16) 52%, transparent 75%);
 }
 
 .glow-brand {
-  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.48) 0%, rgba(139, 92, 246, 0.16) 52%, transparent 75%);
+  background: radial-gradient(ellipse at center, rgba(107, 51, 211, 0.48) 0%, rgba(107, 51, 211, 0.16) 52%, transparent 75%);
 }
 
 .eco-browser-window:not(.is-video-active):not(:hover) .eco-device-scaler {
@@ -3083,13 +3084,13 @@
   flex-shrink: 0;
 }
 .ping-supplier {
-  background: #22C55E;
-  box-shadow: 0 0 6px #22C55E;
+  background: #1FA952;
+  box-shadow: 0 0 6px #1FA952;
   animation: ecoDotPulse 1.8s infinite ease-in-out;
 }
 .ping-brand {
-  background: #8B5CF6;
-  box-shadow: 0 0 6px #8B5CF6;
+  background: #6B33D3;
+  box-shadow: 0 0 6px #6B33D3;
   animation: ecoDotPulse 1.8s infinite ease-in-out;
 }
 
