@@ -296,9 +296,8 @@
     rowsEl.querySelectorAll("img[data-k]").forEach((im) => { const src = imgs[im.dataset.k]; if (src && im.getAttribute("src") !== src) { im.src = src; im.classList.add("ready"); } });
   }
 
-  let boost = 0, lastY = scrollY, last = performance.now();
-  const onScroll = () => { boost = Math.min(4, boost + Math.abs(scrollY - lastY) * 0.03); lastY = scrollY; };
-  addEventListener("scroll", onScroll, { passive: true });
+  // the flow keeps its own steady pace: scrolling doesn't speed it up
+  let last = performance.now();
 
   // where the pointer is over the stage, in layer px (null when it's elsewhere), and the tile it's on
   let ptr = null, hot = null;
@@ -457,11 +456,9 @@
 
   function tick(now) {
     // the hero unmounted (client-side navigation): stop, rather than animate detached elements forever
-    if (!stage.isConnected) { removeEventListener("scroll", onScroll); removeEventListener("resize", onResize); return; }
+    if (!stage.isConnected) { removeEventListener("resize", onResize); return; }
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    boost *= Math.pow(0.08, dt);
-    const scrollP = clamp(scrollY / 460, 0, 1);
-    const k = (reduce ? 0.25 : 1) * (1 + boost) * (1 + 1.4 * scrollP);
+    const k = reduce ? 0.25 : 1;
     const before = pos;
     pos += RATE * k * dt;
     let landed = false, completed = false;
