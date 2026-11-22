@@ -13,7 +13,8 @@
     await G.loadProducts();
     let renderer;
     try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { return null; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    // drawn a little above the screen's resolution, so the small products' edges and labels come out clean
+    renderer.setPixelRatio(Math.min((window.devicePixelRatio || 1) * 1.25, 2));
     renderer.outputEncoding = THREE.sRGBEncoding;
     // a touch under full exposure, so white products keep their shading against the white page
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
@@ -22,9 +23,10 @@
     const scene = new THREE.Scene();
     scene.environment = G.studioEnv(renderer);
     G.studioLights(scene);
-    // brand gradient as light: navy key from the left, teal rim from the right
-    const navyKey = new THREE.DirectionalLight(0x4E86D8, 0.55); navyKey.position.set(-5, 2, 3); scene.add(navyKey);
-    const tealRim = new THREE.DirectionalLight(0x39D6CF, 0.85); tealRim.position.set(4, 1, -2); scene.add(tealRim);
+    // neutral light (a soft key from the left, a bright rim from the right): the products carry their sides' colours
+    // themselves — red cafés, green suppliers, purple brands — so the light mustn't tint them
+    const softKey = new THREE.DirectionalLight(0xffffff, 0.26); softKey.position.set(-5, 2, 3); scene.add(softKey);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.5); rim.position.set(4, 1, -2); scene.add(rim);
     // camera works in CSS pixels: x right, y down (negated), origin at the canvas's top-left
     const cam = new THREE.OrthographicCamera(0, 1, 0, -1, -4000, 4000);
     const makers = G.productMakers();
@@ -56,10 +58,13 @@
       const turn = new THREE.Group(); turn.add(obj);
       const tilt = new THREE.Group(); tilt.add(turn); tilt.rotation.x = ELEV;
       const shadow = new THREE.Mesh(shadowGeo, shadowMat.clone()); shadow.renderOrder = -1;
+      // grounding: a tight, dark contact shadow right at its base, and a long soft one cast away from the light
+      const ao = new THREE.Mesh(shadowGeo, shadowMat.clone()); ao.renderOrder = -1;
+      const cast = new THREE.Mesh(shadowGeo, shadowMat.clone()); cast.renderOrder = -1;
       const glow = new THREE.Mesh(shadowGeo, glowMat.clone()); glow.renderOrder = -2; glow.visible = false;
-      scene.add(tilt, shadow, glow);
+      scene.add(tilt, shadow, ao, cast, glow);
       // every product squared to the ground grid, its front toward you on the right (+q), like the café cards
-      return { tilt, turn, shadow, glow, hot: 0, foot: Math.max(s.x, s.z), tall: s.y, face: Math.PI / 4, dir: 1 };
+      return { tilt, turn, shadow, ao, cast, glow, hot: 0, foot: Math.max(s.x, s.z), tall: s.y, face: Math.PI / 4, dir: 1 };
     }
 
     let pool = new Map(), W = 1, H = 1;
@@ -73,24 +78,26 @@
 
     return {
       resize,
-      reset() { pool.forEach((r) => scene.remove(r.tilt, r.shadow, r.glow)); pool = new Map(); },
+      reset() { pool.forEach((r) => scene.remove(r.tilt, r.shadow, r.ao, r.cast, r.glow)); pool = new Map(); },
       // items: { id, key, x, y (the top of its tile, canvas px), size (tile size, px), pop 0..1 (rising out
       //          of the tile), hop 0..1, hx, hy (where the jump lands), flat (reduced motion: shrink in place),
-      //          hot (a colour while pointed at: the product lifts a little over a pool of that colour) }
+      //          tint (its side's colour: a faint pool of it always lies under the product),
+      //          hot (a colour while pointed at: the product lifts a little and the pool brightens) }
       // clipW: products never go right of this (canvas px), so only that much of the canvas is drawn
       render(items, t, still, clipW) {
         renderer.setScissorTest(!!clipW);
         if (clipW) renderer.setScissor(0, 0, Math.min(W, Math.ceil(clipW)), H);
-        pool.forEach((r) => { r.tilt.visible = false; r.shadow.visible = false; r.glow.visible = false; });
+        pool.forEach((r) => { r.tilt.visible = false; r.shadow.visible = false; r.ao.visible = false; r.cast.visible = false; r.glow.visible = false; });
         for (const it of items) {
           let r = pool.get(it.id);
           if (!r) { r = make(it.key); pool.set(it.id, r); }
           const g = it.pop, j = it.hop, e = j * j * (3 - 2 * j);
           // eases in and out of being pointed at
           r.hot += ((it.hot ? 1 : 0) - r.hot) * 0.18;
-          if (it.hot) r.glow.material.color.set(it.hot);
-          // grows up out of the tile with a little overshoot, then stands at icon size
-          const fit = Math.min(0.74 * it.size / r.foot, 1.02 * it.size / r.tall) * (g >= 1 ? 1 : Math.max(0, backOut(g))) * (1 + 0.06 * r.hot);
+          const col = it.hot || it.tint;
+          if (col && r.col !== col) { r.col = col; r.glow.material.color.set(col); }
+          // grows up out of the tile with a little overshoot, then stands a touch larger than icon size
+          const fit = Math.min(0.8 * it.size / r.foot, 1.1 * it.size / r.tall) * (g >= 1 ? 1 : Math.max(0, backOut(g))) * (1 + 0.06 * r.hot);
           // standing on its tile (a hair above it); lifted a little while pointed at
           const float = 0.6 * g + 7 * r.hot;
           let x = it.x, y = it.y - float, sc = fit;
@@ -114,12 +121,31 @@
           r.shadow.position.set(it.x + 1.5, -it.y - 0.8, depth - it.size * 2);
           r.shadow.scale.set(sw, sw * 0.5, 1);
           r.shadow.material.opacity = 0.9 * g * (1 - j) * (1 - 0.4 * r.hot);
-          if (r.hot > 0.02) {
-            const gw = it.size * 1.7 * (0.8 + 0.2 * r.hot);
+          // the contact shadow: small and dark, right under the base, where it meets the tile
+          const grounded = g * (1 - j) * (1 - 0.5 * r.hot);
+          if (grounded > 0.02) {
+            const aw = it.size * 0.46 * Math.min(1, r.foot * fit / (it.size * 0.6));
+            r.ao.visible = true;
+            r.ao.position.set(it.x + 0.6, -it.y - 0.4, depth - it.size * 1.95);
+            r.ao.scale.set(aw, aw * 0.5, 1);
+            r.ao.material.opacity = 1.0 * grounded;
+            // the cast shadow: light comes from the upper left, so it stretches down the ground toward you on the
+            // right (the 2:1 ground's +q, 26.6° below the horizontal), as long as the product is tall
+            const ang = Math.atan2(1, 2), len = Math.max(it.size * 0.55, r.tall * fit * 1.05), wid = it.size * 0.42;
+            r.cast.visible = true;
+            r.cast.position.set(it.x + Math.cos(ang) * len * 0.34, -(it.y + Math.sin(ang) * len * 0.34), depth - it.size * 2);
+            r.cast.rotation.z = -ang;
+            r.cast.scale.set(len, wid, 1);
+            r.cast.material.opacity = 0.5 * grounded;
+          }
+          // a faint pool of its side's colour under it, brighter and wider while it's pointed at
+          const rest = it.tint ? 0.3 : 0, gOp = (rest + (0.62 - rest) * r.hot) * g * (1 - j);
+          if (gOp > 0.01) {
+            const gw = it.size * (1.3 + 0.4 * r.hot);
             r.glow.visible = true;
             r.glow.position.set(it.x, -it.y, depth - it.size * 2.1);
             r.glow.scale.set(gw, gw * 0.5, 1);
-            r.glow.material.opacity = 0.62 * r.hot * g * (1 - j);
+            r.glow.material.opacity = gOp;
           }
         }
         renderer.render(scene, cam);

@@ -55,7 +55,7 @@
   const TRUNK = 80;                       // the junction sits this far in front of the hub's rim
   const TILE = 56, TILE_H = 6;            // input tile: size, thickness
   const STEP = 100;                       // ground between two products arriving, one after another (clear of each other at the junction)
-  const RATE = 0.43;                      // products per second: one lands about every 2.3 s, cycling the sides
+  const RATE = 0.62;                      // products per second: one lands about every 1.6 s, cycling the sides
   const HOP = 40;                         // a product jumps for the hub this far before the rim
   const PL = 236, PH = 3;                 // order sheet: length along its lane (140 across, under the hub's width), thickness
   const OUT_PITCH = PL + 44;              // one place in the queue of sheets
@@ -64,7 +64,9 @@
   const SHEETS = 7;
   const OFF = 280;                        // the layers reach this far above the stage, so sheets rise beside the copy
   const SIDES = ["cafe", "supply", "brand"];
-  const GLOW = ["#FF2D2D", "#22C55E", "#8A2BFF"];   // each side's colour for the light under a pointed-at product (CSS uses --e-*)
+  // each side's colour, as on its portal (/cafe, /supplier, /brand): a faint pool of it under every product, brighter
+  // while it's pointed at (CSS uses the same, as --e-*)
+  const GLOW = ["#E03E3E", "#1FA952", "#6B33D3"];
 
   const stage = document.getElementById("stage"), rowsEl = document.getElementById("rows");
   const core = document.getElementById("core"), canvas = document.getElementById("riders");
@@ -390,7 +392,7 @@
       else if (pop <= 0.02 && T.popped) { T.popped = false; T.el.classList.remove("pop"); }
       if (pop > 0 && d > 0) {
         const [x, y] = proj(p, q, TILE_H);
-        items.push({ id: T.id, key: T.key, x, y, size: TILE * geo.u, pop, hop: clamp((HOP - d) / HOP, 0, 1), hx: hub[0], hy: hub[1], flat: reduce });
+        items.push({ id: T.id, key: T.key, x, y, size: TILE * geo.u, pop, hop: clamp((HOP - d) / HOP, 0, 1), hx: hub[0], hy: hub[1], flat: reduce, tint: GLOW[T.j] });
       }
     }
     tiles.forEach((T) => { if (T.frame !== frame) show(T, false); });
