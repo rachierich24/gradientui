@@ -4,12 +4,15 @@
 // the little mark on the bento's last card (CafeBento.tsx), as umano arrives by zooming into its logo card; that
 // mark fades while these stories rise.
 //
-//  1. The stories (280vh, a pinned 100vh panel). "Stories of cafés." in the middle, fading to half as you scroll,
-//     and a line whose number counts up (1.2 s) when it comes into view. Four tilted cards (280 × 370) fly in from
-//     alternate sides at 0, 22, 44 and 66% of the scroll (umano spaces its three by 30%), each over 18% of it (cubic
-//     ease-out), rising from below the panel and untilting from 25°. At rest a card is the café's storefront, its name
+//  1. The stories (a pinned 100vh panel over 260vh of scroll, at least 2000px). "Stories of cafés." in the middle,
+//     fading to half as you scroll, and a line whose number counts up (1.2 s) when it comes into view. Four tilted
+//     cards (280 × 370, a little smaller on short screens) fly in from alternate sides at 0, 17, 34 and 51% of the
+//     scroll, each over 20% of it (cubic ease-out), rising from below the panel and untilting from 25°; the last 29% is
+//     a pause with all four in. At rest a card is the café's storefront, its name
 //     and place, and its button; hovering it straightens and lifts it (spring), darkens it to show the headline, and
-//     pops three chips out to its right. Clicking zooms the panel 12× into it (0.7 s) and opens the story.
+//     pops three chips out to its right. Clicking grows the card into its story (0.78 s): the card's frame straightens
+//     and sweeps out to the sheet's place, its photo pinned at the top and recropping into the banner, while the
+//     section settles back; the sheet takes over underneath and its words rise in. Closing runs it back into the card.
 //  2. The story: umano's use-case sheet — a rounded sheet with the storefront as a banner under the title, a sticky
 //     sidebar (contents, the café, the ask), the sections, a product panel, the numbers, and a closing ask.
 //  Motion is transforms only, driven from one frame loop that runs while the section is on screen, with the scroll
@@ -104,16 +107,18 @@ const STORIES: Story[] = [
     panel: { kind: 'gst', title: 'GST · October', rows: [['Bills matched to GSTR-2B', '96 of 97'], ['Input tax credit', '₹23,180'], ['Export to Tally', 'Sent']] },
   },
 ];
-// where each card lands, its tilt, the side it comes in from, and when it starts: umano's pattern, spread over four so
-// they frame the headline (two high at the sides, two low and further in) instead of burying it. x is % of the panel's
-// width; y is % of the height left below the nav once a card is in (CARD_TOP), so a high card and the low one under it
-// don't cover each other's button on a laptop screen.
+// where each card lands, its tilt, the side it comes in from, and when it starts: umano's pattern, spread over four and
+// gathered close around the headline (two high, two low and further in). x is % of the panel's width; y is % of the
+// height left below the nav once a card is in (CARD_TOP).
+// Each flies over FLY of the scroll; the last lands at 0.71, leaving the rest as a pause to look and hover before the
+// section lets go.
 const LAYOUT = [
-  { x: 6, y: 4, rot: -12, from: -1, at: 0 },
-  { x: 69, y: 3, rot: 9, from: 1, at: 0.22 },
-  { x: 15, y: 92, rot: 6, from: -1, at: 0.44 },
-  { x: 62, y: 89, rot: -7, from: 1, at: 0.66 },
+  { x: 10, y: 6, rot: -12, from: -1, at: 0 },
+  { x: 64, y: 4, rot: 9, from: 1, at: 0.17 },   // far enough in that its chips (to its right) fit from 1280px up
+  { x: 20, y: 87, rot: 6, from: -1, at: 0.34 },
+  { x: 56, y: 83, rot: -7, from: 1, at: 0.51 },
 ];
+const FLY = 0.2;
 const NAV_H = 56, CARD_H = 370;
 const CARD_TOP = (ph: number, y: number) => NAV_H + (ph - NAV_H - CARD_H) * y / 100;   // = the CSS top of .cst-card
 const COUNT_TO = 120;   // MOCK
@@ -131,14 +136,100 @@ const MARK = (
 );
 const ARROW = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
 
-function StoryCard({ s, i, onOpen }: { s: Story; i: number; onOpen: (i: number, el: HTMLElement) => void }) {
+/* ─── the card ⇄ story morph: a shared element, like the App Store's cards ───
+   A fixed copy of the card (the "ghost") is laid exactly over it and animated (Web Animations) to the story sheet's
+   place: its box straightens and grows into the sheet, the photo stays pinned at the top and recrops into the banner
+   (crossfading to the wide photo on wide screens), the card's words fade out and the banner's shade comes in, while
+   the section behind settles back. The real sheet then takes over underneath (same place, same pixels) and the ghost
+   goes. Closing runs it back into the card. */
+type Box = { x: number; y: number; w: number; h: number; r: number; rot: number };
+const OPEN_MS = 780, OPEN_EASE = 'cubic-bezier(.7, 0, .18, 1)';     // a slow start, then it sweeps in
+const CLOSE_MS = 640, CLOSE_EASE = 'cubic-bezier(.5, 0, .16, 1)';
+const CARD_SHADOW = '0 0 0 1px rgba(20, 9, 6, 0), 0 26px 60px -22px rgba(60, 20, 10, .42)';
+const SHEET_SHADOW = '0 0 0 1px rgba(20, 9, 6, .08), 0 40px 90px -40px rgba(60, 20, 10, .45)';
+// the sheet at rest (cafe-stories.css): 32px in from every side with 32px corners, or the whole screen up to 860px;
+// its banner is clamp(300px, 52vh, 460px) tall, and up to 860px it shows the card's own portrait photo
+const sheetBox = (): Box => {
+  const vw = window.innerWidth, vh = window.innerHeight, p = vw <= 860 ? 0 : 32;
+  return { x: p, y: p, w: vw - 2 * p, h: vh - 2 * p, r: p, rot: 0 };
+};
+const bannerH = () => Math.min(460, Math.max(300, window.innerHeight * 0.52));
+const wideBanner = () => window.innerWidth > 860;
+// an element's own rotation and scale, from its computed transform
+const turnOf = (el: Element) => {
+  const t = getComputedStyle(el).transform;
+  if (!t || t === 'none') return { a: 0, s: 1 };
+  const m = new DOMMatrixReadOnly(t);
+  return { a: Math.atan2(m.b, m.a) * 180 / Math.PI, s: Math.hypot(m.a, m.b) };
+};
+// where a card's face is drawn right now: its centre, its size at its current scale, and its net tilt (the card's
+// own, plus its inner layer's, which straightens it on hover)
+const faceBox = (card: HTMLElement): Box => {
+  const tilt = card.querySelector('.cst-card-tilt')!, face = card.querySelector<HTMLElement>('.cst-card-face')!;
+  const c = turnOf(card), t = turnOf(tilt), s = c.s * t.s, b = face.getBoundingClientRect();
+  const w = face.offsetWidth * s, h = face.offsetHeight * s;
+  return { x: b.left + b.width / 2 - w / 2, y: b.top + b.height / 2 - h / 2, w, h, r: 16 * s, rot: c.a + t.a };
+};
+const boxFrame = (b: Box): Keyframe => ({
+  left: `${b.x}px`, top: `${b.y}px`, width: `${b.w}px`, height: `${b.h}px`, borderRadius: `${b.r}px`, transform: `rotate(${b.rot}deg)`,
+});
+type Ghost = { root: HTMLElement; back: HTMLElement; media: HTMLElement; imgs: HTMLImageElement[]; wide: HTMLImageElement | null;
+  shade: HTMLElement; dark: HTMLElement; words: HTMLElement; remove: () => void };
+// the ghost: the photo (and the wide one), the banner's shade, the card's darkening and its words as drawn now
+function makeGhost(s: Story, card: HTMLElement, at: Box, cardAt: Box): Ghost {
+  const make = <T extends HTMLElement>(tag: string, cls: string) => { const e = document.createElement(tag) as T; e.className = cls; return e; };
+  const face = card.querySelector<HTMLElement>('.cst-card-face')!;
+  const back = make('div', 'cst-morph-back'), root = make('div', 'cst-morph'), media = make('div', 'cst-morph-media');
+  const photo = make<HTMLImageElement>('img', 'is-card');
+  photo.src = s.img; photo.alt = '';
+  const wide = wideBanner() ? make<HTMLImageElement>('img', 'is-wide') : null;
+  if (wide) { wide.src = s.banner; wide.alt = ''; }
+  const shade = make('span', 'cst-morph-shade'), dark = make('span', 'cst-morph-dark'), words = make('div', 'cst-morph-words');
+  media.append(photo, ...(wide ? [wide] : []), shade);
+  // the card's words, at the card's size and scale, anchored to the ghost's top left
+  words.style.width = `${face.offsetWidth}px`;
+  words.style.height = `${face.offsetHeight}px`;
+  words.style.transform = `scale(${cardAt.w / face.offsetWidth})`;
+  face.querySelectorAll<HTMLElement>('.cst-card-foot, .cst-card-over, .cst-card-btn').forEach((src) => {
+    const c = src.cloneNode(true) as HTMLElement, op = +getComputedStyle(src).opacity;
+    c.style.opacity = String(op);
+    c.style.transition = 'none';
+    // the darkening goes on its own layer, which spans the ghost however big it gets
+    if (src.classList.contains('cst-card-over')) { c.style.background = 'none'; dark.style.opacity = String(op * 0.88); }
+    words.append(c);
+  });
+  root.append(media, dark, words);
+  Object.assign(root.style, boxFrame(at));
+  media.style.height = `${at.h}px`;
+  const host = document.querySelector('.cafe-portal-root') ?? document.body;
+  host.append(back, root);
+  return { root, back, media, imgs: wide ? [photo, wide] : [photo], wide, shade, dark, words, remove: () => { root.remove(); back.remove(); } };
+}
+// once the real sheet (and its banner) is drawn underneath, take the ghost away
+function handOff(g: Ghost, then: () => void) {
+  let tries = 0;
+  const look = () => {
+    const img = document.querySelector<HTMLImageElement>('.cst-sheet-hero img');
+    if (!img && ++tries < 40) { requestAnimationFrame(look); return; }
+    const done = () => requestAnimationFrame(() => requestAnimationFrame(() => { g.remove(); then(); }));
+    if (img) img.decode().then(done, done); else done();
+  };
+  requestAnimationFrame(look);
+}
+// the wide photos are fetched as soon as a card is pointed at, so the morph can crossfade to them
+const fetched = new Set<string>();
+const prefetch = (src: string) => { if (fetched.has(src)) return; fetched.add(src); const im = new Image(); im.src = src; };
+
+function StoryCard({ s, i, away, onOpen }: { s: Story; i: number; away: boolean; onOpen: (i: number, el: HTMLElement) => void }) {
   const [hover, setHover] = useState(false);
   const L = LAYOUT[i];
+  // while its story is out the card is hidden (the ghost stands in for it), and it comes back unhovered
+  useEffect(() => { if (away) setHover(false); }, [away]);
   return (
-    // the cards on the right (those that fly in from the right) pop their chips out to the left, so they stay on screen
-    <div className={`cst-card${L.from > 0 ? ' is-right' : ''}${hover ? ' is-hover' : ''}`} data-card={i} style={{ '--x': L.x, '--y': L.y, zIndex: 10 + i } as CSSProperties}>
+    <div className={`cst-card${hover ? ' is-hover' : ''}${away ? ' is-away' : ''}`} data-card={i} style={{ '--x': L.x, '--y': L.y, zIndex: 10 + i } as CSSProperties}>
       <button type="button" className="cst-card-tilt" aria-label={`Read ${s.name}’s story: ${s.title}`}
-        onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onFocus={() => setHover(true)} onBlur={() => setHover(false)}
+        onMouseEnter={() => { setHover(true); prefetch(s.banner); }} onMouseLeave={() => setHover(false)}
+        onFocus={() => { setHover(true); prefetch(s.banner); }} onBlur={() => setHover(false)}
         onClick={(e) => onOpen(i, e.currentTarget)}>
         <span className="cst-card-face">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -183,21 +274,25 @@ function PanelCard({ p }: { p: Panel }) {
   );
 }
 
-// umano's use-case sheet
-function StorySheet({ s, closing, onClose }: { s: Story; closing: boolean; onClose: () => void }) {
+// umano's use-case sheet. `morphed`: it arrived by morphing out of its card, so it's already in place and only its
+// words rise in. `folding`: its words fade before it morphs back into the card.
+function StorySheet({ s, closing, morphed, folding, onClose }: { s: Story; closing: boolean; morphed: boolean; folding: boolean; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const toc = [...s.sections.map((x) => x.h), 'The result'];
   useEffect(() => {
+    // the page is held still under the sheet. On <html>, not <body>: Lenis clips <html> while it's stopped, so a
+    // body overflow would no longer pass up to the viewport and would make <body> its own scroll container, which
+    // unpins the stories panel (position: sticky) behind the sheet and moves the card the sheet closes back into.
     const lenis = (window as unknown as { lenis?: { stop: () => void; start: () => void } }).lenis;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const root = document.documentElement, prev = root.style.overflow;
+    root.style.overflow = 'hidden';
     lenis?.stop();
     closeRef.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     addEventListener('keydown', onKey);
-    return () => { document.body.style.overflow = prev; lenis?.start(); removeEventListener('keydown', onKey); };
+    return () => { root.style.overflow = prev; lenis?.start(); removeEventListener('keydown', onKey); };
   }, [onClose]);
   // the contents follow the reading position
   useEffect(() => {
@@ -223,7 +318,7 @@ function StorySheet({ s, closing, onClose }: { s: Story; closing: boolean; onClo
   };
   const start = () => { onClose(); openContactSalesModal(); };
   return (
-    <div className={`cst-sheet-wrap${closing ? ' is-closing' : ''}`} onClick={onClose}>
+    <div className={`cst-sheet-wrap${closing ? ' is-closing' : ''}${morphed ? ' is-morphed' : ''}${folding ? ' is-folding' : ''}`} onClick={onClose}>
       <div className="cst-sheet" role="dialog" aria-modal="true" aria-label={`${s.name}: ${s.title}`} onClick={(e) => e.stopPropagation()}>
         <button ref={closeRef} type="button" className="cst-sheet-close" onClick={onClose} aria-label="Close story">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
@@ -300,10 +395,14 @@ export function CafeStories() {
   const lineRef = useRef<HTMLParagraphElement>(null);
   const [count, setCount] = useState(0);
   const [open, setOpen] = useState<number | null>(null);
-  const [closing, setClosing] = useState(false);
-  const [phase, setPhase] = useState<'idle' | 'zooming' | 'done'>('idle');   // the panel's zoom into a card
-  const [origin, setOrigin] = useState('50% 50%');
+  const [closing, setClosing] = useState(false);   // the plain fade out (reduced motion, or the card's out of sight)
+  const [morphed, setMorphed] = useState(false);   // the open sheet arrived by morphing out of its card
+  const [folding, setFolding] = useState(false);   // the sheet's words are fading before it morphs back
+  const [away, setAway] = useState<number | null>(null);   // the card standing in for the open story (hidden)
   const [mounted, setMounted] = useState(false);
+  const busy = useRef(false);   // a morph is running
+  const openRef = useRef<number | null>(null);
+  openRef.current = open;
 
   // a story linked by its address (#raydee-cafe) opens on arrival, as umano's do
   useEffect(() => {
@@ -349,11 +448,13 @@ export function CafeStories() {
       sP = sP < 0 ? sT : sP + (sT - sP) * (1 - Math.pow(0.8, dt / 16.7));
       // then write
       if (headRef.current) headRef.current.style.opacity = Math.max(0.5, 1 - sP * 2).toFixed(3);
+      // on short screens the cards come down a little (to 80% at 720px tall) so the two rows don't bury each other
+      const k = clamp(ph / 900, 0.8, 1);
       cards.forEach((el, i) => {
-        const L = LAYOUT[i], l = clamp((sP - L.at) / 0.18), u = easeOut3(l);
+        const L = LAYOUT[i], l = clamp((sP - L.at) / FLY), u = easeOut3(l);
         const rot = 25 + (L.rot - 25) * u;
         // it starts 20% of the panel below the panel's bottom, as umano's do
-        el.style.transform = `translate3d(${((1 - u) * 0.15 * pw * L.from).toFixed(1)}px, ${((1 - u) * (1.2 * ph - CARD_TOP(ph, L.y))).toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg)`;
+        el.style.transform = `translate3d(${((1 - u) * 0.15 * pw * L.from).toFixed(1)}px, ${((1 - u) * (1.2 * ph - CARD_TOP(ph, L.y))).toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg) scale(${k.toFixed(3)})`;
         el.style.setProperty('--rot', `${rot.toFixed(2)}deg`);
         el.style.opacity = Math.min(1, l * 3).toFixed(3);
         el.style.visibility = l > 0 ? 'visible' : 'hidden';
@@ -367,42 +468,115 @@ export function CafeStories() {
     return () => { io.disconnect(); cancelAnimationFrame(raf); };
   }, []);
 
-  // umano: the panel zooms 12× into the card, then the story opens over it
+  // the card grows into its story (see makeGhost): the ghost takes the card's place, the card hides, and the section
+  // settles back while the ghost sweeps out to the sheet's place; then the sheet takes over underneath it
   const openStory = useCallback((i: number, el: HTMLElement) => {
-    const panel = panelRef.current;
+    if (busy.current || openRef.current !== null) return;
+    const s = STORIES[i], card = el.closest<HTMLElement>('.cst-card');
     document.documentElement.classList.add('cst-story-open');
-    const show = () => { setOpen(i); window.history.replaceState(null, '', `#${STORIES[i].slug}`); };
-    if (!panel || window.matchMedia('(max-width: 768px), (prefers-reduced-motion: reduce)').matches) { show(); return; }
-    const a = el.getBoundingClientRect(), b = panel.getBoundingClientRect();
-    setOrigin(`${(a.left + a.width / 2 - b.left).toFixed(1)}px ${(a.top + a.height / 2 - b.top).toFixed(1)}px`);
-    requestAnimationFrame(() => setPhase('zooming'));
-    window.setTimeout(() => { show(); setPhase('done'); }, 500);
+    const show = (viaMorph: boolean) => { setMorphed(viaMorph); setOpen(i); window.history.replaceState(null, '', `#${s.slug}`); };
+    if (!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { show(false); return; }
+    busy.current = true;
+    const from = faceBox(card), to = sheetBox(), g = makeGhost(s, card, from, from);
+    setAway(i);
+    const o: KeyframeAnimationOptions = { duration: OPEN_MS, easing: OPEN_EASE, fill: 'forwards' };
+    const run = g.root.animate([boxFrame(from), boxFrame(to)], o);
+    g.root.animate([{ boxShadow: CARD_SHADOW }, { boxShadow: SHEET_SHADOW }], o);
+    g.media.animate([{ height: `${from.h}px` }, { height: `${bannerH()}px` }], o);
+    g.imgs.forEach((im) => im.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }], o));   // the banner sits at 1.04
+    g.wide?.animate([{ opacity: 0 }, { opacity: 0, offset: 0.2 }, { opacity: 1, offset: 0.72 }, { opacity: 1 }], { ...o, easing: 'linear' });
+    // the card's darkening turns into the banner's shade, and its words go before it has grown much
+    g.dark.animate([{ opacity: g.dark.style.opacity || '0' }, { opacity: 0, offset: 0.6 }, { opacity: 0 }], { ...o, easing: 'linear' });
+    g.shade.animate([{ opacity: 0 }, { opacity: 1, offset: 0.6 }, { opacity: 1 }], { ...o, easing: 'linear' });
+    g.words.animate([{ opacity: 1 }, { opacity: 0, offset: 0.16 }, { opacity: 0 }], { ...o, easing: 'linear' });
+    g.back.animate([{ opacity: 0 }, { opacity: 1 }], { duration: OPEN_MS * 0.7, easing: 'ease', fill: 'forwards' });
+    requestAnimationFrame(() => panelRef.current?.classList.add('is-away'));
+    run.finished.then(() => {
+      show(true);
+      handOff(g, () => { busy.current = false; });
+    }, () => { g.remove(); busy.current = false; });
   }, []);
+
   const close = useCallback(() => {
-    setClosing(true);
-    window.setTimeout(() => {
-      setOpen(null); setClosing(false); setPhase('idle');
+    if (busy.current) return;
+    const i = openRef.current, panel = panelRef.current;
+    const finish = () => {
+      setOpen(null); setClosing(false); setFolding(false); setMorphed(false); setAway(null);
+      panel?.classList.remove('is-away');
       document.documentElement.classList.remove('cst-story-open');
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }, 320);
+    };
+    const sc = document.querySelector<HTMLElement>('.cst-sheet-scroll');
+    const card = i !== null ? panel?.querySelector<HTMLElement>(`.cst-card[data-card="${i}"]`) : null;
+    const r = card?.getBoundingClientRect();
+    const inSight = !!r && card!.style.visibility !== 'hidden' && r.bottom > 60 && r.top < window.innerHeight - 60 && r.right > 0 && r.left < window.innerWidth;    // it morphs back only with the banner still in view and the card on the page; otherwise it simply fades
+    if (i === null || !panel || !sc || !card || !inSight || sc.scrollTop > bannerH() * 0.6 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setClosing(true);
+      window.setTimeout(finish, 320);
+      return;
+    }
+    busy.current = true;
+    setAway(i);
+    setFolding(true);   // the sheet's words fade first
+    window.setTimeout(() => {
+      // where the card will be once the section has settled forward again (measured with it there, then put back)
+      panel.style.transition = 'none';
+      panel.classList.remove('is-away');
+      const to = faceBox(card), from = sheetBox(), top = sc.scrollTop;
+      panel.classList.add('is-away');
+      void panel.offsetWidth;
+      panel.style.transition = '';
+      const g = makeGhost(STORIES[i], card, from, to);
+      g.media.style.height = `${bannerH()}px`;
+      g.media.style.top = `${-top}px`;
+      g.imgs.forEach((im) => { im.style.transform = 'scale(1.04)'; });
+      if (g.wide) g.wide.style.opacity = '1';
+      g.shade.style.opacity = '1';
+      g.dark.style.opacity = '0';
+      g.words.style.opacity = '0';
+      g.back.style.opacity = '1';
+      g.root.style.boxShadow = SHEET_SHADOW;
+      // the ghost now covers the sheet exactly: take the sheet away and let the section come forward
+      setOpen(null); setFolding(false); setMorphed(false);
+      document.documentElement.classList.remove('cst-story-open');
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      panel.classList.remove('is-away');
+      const o: KeyframeAnimationOptions = { duration: CLOSE_MS, easing: CLOSE_EASE, fill: 'forwards' };
+      const run = g.root.animate([boxFrame(from), boxFrame(to)], o);
+      g.root.animate([{ boxShadow: SHEET_SHADOW }, { boxShadow: CARD_SHADOW }], o);
+      g.media.animate([{ height: `${bannerH()}px`, top: `${-top}px` }, { height: `${to.h}px`, top: '0px' }], o);
+      g.imgs.forEach((im) => im.animate([{ transform: 'scale(1.04)' }, { transform: 'scale(1)' }], o));
+      g.wide?.animate([{ opacity: 1 }, { opacity: 1, offset: 0.25 }, { opacity: 0, offset: 0.75 }, { opacity: 0 }], { ...o, easing: 'linear' });
+      g.shade.animate([{ opacity: 1 }, { opacity: 0, offset: 0.7 }, { opacity: 0 }], { ...o, easing: 'linear' });
+      g.words.animate([{ opacity: 0 }, { opacity: 0, offset: 0.6 }, { opacity: 1 }], { ...o, easing: 'linear' });
+      g.back.animate([{ opacity: 1 }, { opacity: 0 }], { duration: CLOSE_MS * 0.8, easing: 'ease', fill: 'forwards' });
+      run.finished.then(() => {
+        setAway(null);   // the card is back, exactly under the ghost
+        requestAnimationFrame(() => requestAnimationFrame(() => { g.remove(); busy.current = false; }));
+      }, () => { g.remove(); setAway(null); busy.current = false; });
+    }, 180);
   }, []);
 
   return (
     <>
       {/* the stories (the page zooms in here from the bento's last card) */}
       <section className="cst-stories" id="stories" ref={storiesRef} aria-labelledby="cst-h">
-        <div className={`cst-panel is-${phase}`} ref={panelRef} style={phase !== 'idle' ? { transformOrigin: origin } : undefined}>
+        {/* .is-away (set directly, so a morph can measure around it) while a story is out: the section settles back */}
+        <div className="cst-panel" ref={panelRef}>
           <div className="cst-head" ref={headRef}>
             <h2 id="cst-h">Stories of<br />cafés.</h2>
             <p ref={lineRef}>We’ve already helped <b>{count >= COUNT_TO ? `${COUNT_TO}+` : count}</b> cafés stop chasing suppliers, run out less, and keep their books straight.</p>
           </div>
           <div className="cst-cards">
-            {STORIES.map((s, i) => <StoryCard key={s.slug} s={s} i={i} onOpen={openStory} />)}
+            {STORIES.map((s, i) => <StoryCard key={s.slug} s={s} i={i} away={away === i} onOpen={openStory} />)}
           </div>
         </div>
       </section>
 
-      {mounted && open !== null && createPortal(<StorySheet s={STORIES[open]} closing={closing} onClose={close} />, document.querySelector('.cafe-portal-root') ?? document.body)}
+      {mounted && open !== null && createPortal(
+        <StorySheet s={STORIES[open]} closing={closing} morphed={morphed} folding={folding} onClose={close} />,
+        document.querySelector('.cafe-portal-root') ?? document.body,
+      )}
     </>
   );
 }

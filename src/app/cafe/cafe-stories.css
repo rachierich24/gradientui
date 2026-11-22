@@ -6,10 +6,11 @@
 .cst-stories, .cst-sheet-wrap { --cst-white: #FCFBFA; --cst-cream: #F6ECE6; --cst-ink: #140906; --cst-soft: #5F5956; --cst-muted: #A39C98; --cst-line: rgba(20, 9, 6, .08); }
 
 /* ═════════════ 2 · the stories (pinned, on the white) ═════════════ */
-.cst-stories { position: relative; height: 280vh; overflow: clip; border-radius: 0 0 42px 42px; background: var(--cst-white); }
-.cst-panel { position: sticky; top: 0; height: 100vh; overflow: hidden; transition: opacity .45s ease; }
-.cst-panel.is-zooming { transform: scale(12); transition: transform .7s cubic-bezier(.4, 0, .2, 1); }
-.cst-panel.is-done { transform: scale(12); opacity: 0; transition: opacity .3s ease; }
+/* the pinned panel plus the cards' scroll: 260vh, but never under 2000px, so a short laptop screen doesn't rush them */
+.cst-stories { position: relative; height: calc(100vh + max(260vh, 2000px)); overflow: clip; border-radius: 0 0 42px 42px; background: var(--cst-white); }
+.cst-panel { position: sticky; top: 0; height: 100vh; overflow: hidden; transition: transform .7s cubic-bezier(.2, .8, .2, 1), opacity .6s ease; }
+/* a story is out (its card has grown into it): the section settles back behind it */
+.cst-panel.is-away { transform: scale(.96); opacity: .5; transition: transform .8s cubic-bezier(.7, 0, .18, 1), opacity .7s ease; }
 .cst-head { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 24px; text-align: center; pointer-events: none; }
 .cst-head h2 { margin: 0; font-family: var(--cafe-display); font-weight: 900; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
   font-size: clamp(56px, 8vw, 120px); line-height: .95; letter-spacing: -.03em; color: var(--cst-ink); }
@@ -42,9 +43,7 @@
   background: var(--cafe-red); font: 600 13px/1 var(--cafe-sans); color: #fff; }
 .cst-card-btn svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 /* the three chips umano pops out to the card's right */
-.cst-chips { position: absolute; left: calc(100% + 20px); top: 20px; width: 160px; pointer-events: none; }
-.cst-card.is-right .cst-chips { left: auto; right: calc(100% + 20px); }
-.cst-chip { position: absolute; left: 0; top: calc(var(--i) * 90px); width: 160px; padding: 14px 16px; border-radius: 14px; background: #fff; color: var(--cst-ink);
+.cst-chips { position: absolute; left: calc(100% + 20px); top: 20px; width: 160px; pointer-events: none; }.cst-chip { position: absolute; left: 0; top: calc(var(--i) * 90px); width: 160px; padding: 14px 16px; border-radius: 14px; background: #fff; color: var(--cst-ink);
   box-shadow: 0 0 0 1px var(--cst-line), 0 18px 36px -14px rgba(60, 20, 10, .32); opacity: 0; transform: translateY(calc(40px + var(--i) * 20px)) rotate(0deg) scale(.85);
   transition: opacity .3s ease calc(var(--i) * .07s), transform .45s cubic-bezier(.34, 1.56, .64, 1) calc(var(--i) * .07s); }
 .cst-card.is-hover .cst-chip { opacity: 1; transform: translateY(0) rotate(var(--r)) scale(1); }
@@ -61,6 +60,20 @@
 .cst-wordmark.is-cookiepookie { width: min-content; font-family: var(--cafe-display); font-weight: 800; font-variation-settings: "opsz" 144, "SOFT" 100; font-size: 28px; line-height: .92; letter-spacing: -.02em; }
 .cst-wordmark.is-the-naked-bowl { width: min-content; font: 800 15px/1.04 var(--cafe-sans); letter-spacing: .02em; text-transform: uppercase; color: #BFF0CF; }
 
+/* ═════════════ the card ⇄ story morph (CafeStories.tsx: makeGhost) ═════════════
+   While its story is out, the card's face is hidden (its chips fade on their own as it unhovers); a fixed copy, the
+   ghost, flies between the card and the sheet. Its box, the photo's height, and the layers' opacities are animated
+   from the component; the backdrop is the sheet's own, so the hand-off is seamless. */
+.cst-card.is-away .cst-card-face { visibility: hidden; }
+.cst-morph-back { position: fixed; inset: 0; z-index: 9500; background: rgba(243, 243, 243, .62); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); pointer-events: none; }
+.cst-morph { position: fixed; z-index: 9501; overflow: hidden; background: #F6F5F3; transform-origin: 50% 50%; pointer-events: none; }
+.cst-morph-media { position: absolute; left: 0; right: 0; top: 0; overflow: hidden; background: #2A1D19; }
+.cst-morph-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cst-morph-media .is-wide { opacity: 0; }
+.cst-morph-shade { position: absolute; inset: 0; opacity: 0; background: linear-gradient(90deg, rgba(20, 9, 6, .82) 0%, rgba(20, 9, 6, .5) 55%, rgba(20, 9, 6, .25) 100%); }
+.cst-morph-dark { position: absolute; inset: 0; background: #140906; opacity: 0; }
+.cst-morph-words { position: absolute; left: 0; top: 0; transform-origin: 0 0; color: #fff; font-family: var(--cafe-sans); }
+
 /* while a story is open the nav steps aside (umano hides its nav) */
 .cst-story-open .cafe-nav { opacity: 0 !important; transform: translateY(-140%) !important; pointer-events: none; }
 
@@ -75,6 +88,15 @@
 .cst-sheet-wrap.is-closing .cst-sheet { animation: cstSink .32s ease both; }
 @keyframes cstRise { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
 @keyframes cstSink { to { opacity: 0; transform: translateY(12px) scale(.99); } }
+/* it arrived by morphing out of its card: the backdrop, sheet and banner are already in place, so only the words rise in */
+.cst-sheet-wrap.is-morphed:not(.is-closing), .cst-sheet-wrap.is-morphed:not(.is-closing) .cst-sheet, .cst-sheet-wrap.is-morphed .cst-sheet-hero img { animation: none; }
+.cst-sheet-wrap.is-morphed .cst-sheet-hero-tx { animation: cstTxUp .7s cubic-bezier(.16, 1, .3, 1) both; }
+.cst-sheet-wrap.is-morphed .cst-sheet-body, .cst-sheet-wrap.is-morphed .cst-sheet-end { animation: cstBodyUp .8s cubic-bezier(.16, 1, .3, 1) .06s both; }
+@keyframes cstTxUp { from { opacity: 0; transform: translateY(calc(-50% + 18px)); } to { opacity: 1; transform: translateY(-50%); } }
+@keyframes cstBodyUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+/* about to morph back into its card: the words go first */
+.cst-sheet-wrap.is-folding .cst-sheet-hero-tx, .cst-sheet-wrap.is-folding .cst-sheet-body, .cst-sheet-wrap.is-folding .cst-sheet-end,
+.cst-sheet-wrap.is-folding .cst-sheet-close { animation: cstFadeOut .18s ease both; }
 .cst-sheet-scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
 .cst-sheet-close { position: absolute; top: 20px; right: 20px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
   background: rgba(255, 255, 255, .92); color: var(--cst-ink); box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .35); cursor: pointer; transition: background-color .2s ease, color .2s ease;

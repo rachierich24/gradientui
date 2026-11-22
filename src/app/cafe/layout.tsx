@@ -3,6 +3,7 @@ import { Fraunces, Inter } from 'next/font/google';
 import './cafe.css';
 import './cafe-bento.css';
 import './cafe-stories.css';
+import './cafe-cta.css';
 
 // the hero's display face: a heavy, soft serif (Fraunces at full weight with its SOFT and WONK axes)
 const fraunces = Fraunces({ subsets: ['latin'], axes: ['SOFT', 'WONK', 'opsz'], variable: '--font-cafe-display', display: 'swap' });

@@ -27,7 +27,7 @@ export default function CafePortalPage() {
       {/* ─── 05. What it plugs into: POS, accounting, payments, compliance ─── */}
       <CafeIntegrations />
 
-      {/* ─── 06. The ask ─── */}
+      {/* ─── 06. The ask: download the app now, or use it right here (the hand and phone again, on a lock screen) ─── */}
       <CafeCta onStart={openContactSalesModal} />
 
       {/* ─── Footer: the same animated wordmark as the main site ─── */}
