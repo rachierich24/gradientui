@@ -2,7 +2,6 @@ import { LNav } from '@/components/landing/sections'
 import { SectionRail } from '@/components/landing/SectionRail'
 import { LandingUniverse } from '@/components/landing/LandingUniverse'
 import { EcosystemShowcase } from '@/components/landing/EcosystemShowcase'
-import { ProductSections } from '@/components/landing/ProductSections'
 import { SpotlightSection } from '@/components/landing/SpotlightSection'
 import { EcosystemCards } from '@/components/landing/EcosystemCards'
 import { G365Hero, G365Footer } from '@/components/landing/G365'
@@ -15,9 +14,9 @@ export default function HomePage() {
       <SectionRail />
       <LNav />
       <G365Hero />
+      {/* the ecosystem, then a tour of the café, supplier and brand portals (it replaces the old red/green/purple sections) */}
       <LandingUniverse>
         <EcosystemShowcase />
-        <ProductSections />
       </LandingUniverse>
       <SpotlightSection />
       <EcosystemCards />

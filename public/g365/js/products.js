@@ -21,12 +21,13 @@
       ctx.globalAlpha = 1; ctx.font = G.font(500, 24, true); ctx.fillText("1 KG \u00b7 WHOLE BEAN", w / 2, 640);
     });
   }
+  // café goods are printed in the café red (#E03E3E, deep #C42D2D); supplier goods in its green; brand bags in its purple
   function cartonArt() {
     return G.canvasTex(256, 512, (ctx, w, h) => {
       ctx.fillStyle = "#fbfcfd"; ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#142B63"; ctx.fillRect(0, h * 0.62, w, h * 0.38);
-      ctx.fillStyle = "#39D6CF"; ctx.fillRect(0, h * 0.6, w, 8);
-      ctx.fillStyle = "#142B63"; ctx.textAlign = "center";
+      ctx.fillStyle = "#E03E3E"; ctx.fillRect(0, h * 0.62, w, h * 0.38);
+      ctx.fillStyle = "#C42D2D"; ctx.fillRect(0, h * 0.6, w, 8);
+      ctx.fillStyle = "#C42D2D"; ctx.textAlign = "center";
       ctx.font = G.font(600, 34); ctx.fillText("Barista", w / 2, 170);
       ctx.font = G.font(400, 20, true); ctx.fillText("WHOLE MILK", w / 2, 206);
       ctx.fillStyle = "#fff"; ctx.font = G.font(500, 18, true); ctx.fillText("2 L \u00b7 3.6% FAT", w / 2, 400);
@@ -34,11 +35,12 @@
   }
   function boxLabel(line1, line2, teal) {
     return G.canvasTex(512, 320, (ctx, w, h) => {
+      // a supplier's shipping label: the supplier green mark, its ink (/supplier's #111813 and #526356)
       ctx.fillStyle = "#ffffff"; G.rr(ctx, 0, 0, w, h, 18); ctx.fill();
-      ctx.fillStyle = teal ? "#10B8B5" : "#142B63"; ctx.fillRect(28, 30, 10, 10);
-      ctx.fillStyle = "#0F214D"; ctx.font = G.font(500, 30, true); ctx.fillText(line1, 52, 42);
-      ctx.fillStyle = "#52607F"; ctx.font = G.font(400, 26, true); ctx.fillText(line2, 28, 92);
-      for (let i = 0, x = 28; x < w - 40; i++) { const bw = 2 + ((i * 7) % 5); ctx.fillStyle = "#0F214D"; ctx.fillRect(x, 150, bw, 120); x += bw + 3 + ((i * 3) % 4); }
+      ctx.fillStyle = teal ? "#1FA952" : "#0D5228"; ctx.fillRect(28, 30, 10, 10);
+      ctx.fillStyle = "#111813"; ctx.font = G.font(500, 30, true); ctx.fillText(line1, 52, 42);
+      ctx.fillStyle = "#526356"; ctx.font = G.font(400, 26, true); ctx.fillText(line2, 28, 92);
+      for (let i = 0, x = 28; x < w - 40; i++) { const bw = 2 + ((i * 7) % 5); ctx.fillStyle = "#111813"; ctx.fillRect(x, 150, bw, 120); x += bw + 3 + ((i * 3) % 4); }
     });
   }
   G.tagArt = function (a, b) {
@@ -52,10 +54,11 @@
   };
 
   /* ---- coffee bag: pillow-sided, crimped top, degassing valve ---- */
+  // the brands' bags, all in the brand purple (/brand: #6B33D3, deep #3A1F70, a lighter tint of it, pale #F3EDFD for ink)
   const bagVariants = [
-    ["#0F214D", "#FFFFFF", "#39D6CF", "Northfield", "Ethiopia Guji"],
-    ["#F4F1EC", "#142B63", "#10B8B5", "Halden & Co", "Colombia Huila"],
-    ["#C9A77C", "#1c1a17", "#0F214D", "Oro Verde", "Brazil Mogiana"],
+    ["#3A1F70", "#FFFFFF", "#BCA1EA", "Northfield", "Ethiopia Guji"],
+    ["#8A5CE0", "#FFFFFF", "#F3EDFD", "Halden & Co", "Colombia Huila"],
+    ["#6B33D3", "#FFFFFF", "#F3EDFD", "Oro Verde", "Brazil Mogiana"],
   ];
   const bagMats = bagVariants.map((v) => {
     const side = phys({ color: v[0], roughness: 0.62, clearcoat: 0.15 });
@@ -84,7 +87,7 @@
   /* ---- takeaway cup with sleeve + lid ---- */
   const cupMat = phys({ color: 0xfbfbfa, roughness: 0.45, clearcoat: 0.3 });
   const sleeveMat = phys({ map: G.grain("#b8946a", 18), roughness: 0.85 });
-  const lidMat = phys({ color: 0x142b63, roughness: 0.3, clearcoat: 0.7 });
+  const lidMat = phys({ color: C.cafeDeep, roughness: 0.28, clearcoat: 0.8 });
   P.cup = function (lidWhite) {
     const g = new THREE.Group();
     g.add(new THREE.Mesh(G.lathe([[0, 0], [0.155, 0], [0.165, 0.01], [0.22, 0.6], [0.228, 0.62], [0, 0.62]]), cupMat));
@@ -106,7 +109,7 @@
     const gable = new THREE.Mesh(new THREE.ExtrudeGeometry(tri, { depth: s, bevelEnabled: false }), cartonSide);
     gable.rotation.y = Math.PI / 2; gable.position.set(-s / 2, h, 0); g.add(gable);
     const fin = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.05, s), cartonSide); fin.position.y = h + 0.175; g.add(fin);
-    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.035, 24), phys({ color: C.teal, roughness: 0.35 }));
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.035, 24), G.mat.cafeGloss);
     cap.position.set(0, h + 0.1, 0.07); cap.rotation.x = 0.8; g.add(cap);
     return shadow(g);
   };
@@ -115,9 +118,9 @@
   const liquid = phys({ color: 0x9a4d12, roughness: 0.15, transmission: 0.45, thickness: 1, transparent: true });
   const bottleLabel = G.canvasTex(512, 160, (ctx, w, h) => {
     ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = "#0F214D"; ctx.font = G.font(600, 34); ctx.textAlign = "center"; ctx.fillText("Vanilla Bean", w / 4, 76);
+    ctx.fillStyle = "#C42D2D"; ctx.font = G.font(600, 34); ctx.textAlign = "center"; ctx.fillText("Vanilla Bean", w / 4, 76);
     ctx.font = G.font(400, 18, true); ctx.fillText("750 ML \u00b7 SYRUP", w / 4, 112);
-    ctx.fillStyle = "#10B8B5"; ctx.fillRect(w / 4 - 20, 128, 40, 3);
+    ctx.fillStyle = "#E03E3E"; ctx.fillRect(w / 4 - 20, 128, 40, 3);
   });
   P.bottle = function () {
     const g = new THREE.Group();
@@ -126,9 +129,9 @@
     g.add(new THREE.Mesh(G.lathe([[0, 0.02], [0.115, 0.02], [0.115, 0.5], [0, 0.5]]), liquid));
     const lab = new THREE.Mesh(new THREE.CylinderGeometry(0.133, 0.133, 0.22, 48, 1, true), phys({ map: bottleLabel, roughness: 0.6 }));
     lab.position.y = 0.3; lab.rotation.y = -Math.PI / 2; g.add(lab);
-    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.058, 0.06, 32), G.mat.navy); collar.position.y = 0.8; g.add(collar);
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.058, 0.06, 32), G.mat.cafeDeep); collar.position.y = 0.8; g.add(collar);
     const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.12, 16), G.mat.chrome); stem.position.y = 0.88; g.add(stem);
-    const head = new THREE.Mesh(G.roundedBox(0.18, 0.04, 0.05, 0.02, 0.012), G.mat.navy); head.position.set(0.05, 0.95, 0); g.add(head);
+    const head = new THREE.Mesh(G.roundedBox(0.18, 0.04, 0.05, 0.02, 0.012), G.mat.cafeDeep); head.position.set(0.05, 0.95, 0); g.add(head);
     return shadow(g);
   };
 
@@ -138,7 +141,7 @@
     const cup = G.lathe([[0.15, 0], [0.21, 0.5], [0.222, 0.51]], 40);
     const m = cupMat.clone(); m.side = THREE.DoubleSide;
     for (let i = 0; i < 6; i++) { const c = new THREE.Mesh(cup, m); c.position.y = i * 0.06; g.add(c); }
-    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.18, 0.06, 40, 1, true), phys({ color: C.teal, roughness: 0.4, side: THREE.DoubleSide }));
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.18, 0.06, 40, 1, true), phys({ color: C.cafe, roughness: 0.4, side: THREE.DoubleSide }));
     band.position.y = 0.24; g.add(band);
     return shadow(g);
   };
@@ -164,7 +167,7 @@
     const m = phys({ map: G.grain("#d8c2a0", 16), roughness: 0.9 });
     const b = new THREE.Mesh(G.roundedBox(w, h, d, 0.01, 0.008), m); b.position.y = h / 2; g.add(b);
     const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, w, 20), m); roll.rotation.z = Math.PI / 2; roll.position.y = h + 0.02; g.add(roll);
-    const stamp = new THREE.Mesh(new THREE.RingGeometry(0.05, 0.068, 40, 1, 0, Math.PI * 1.55), new THREE.MeshBasicMaterial({ color: C.navy, transparent: true, opacity: 0.8 }));
+    const stamp = new THREE.Mesh(new THREE.RingGeometry(0.05, 0.068, 40, 1, 0, Math.PI * 1.55), new THREE.MeshBasicMaterial({ color: C.cafe, transparent: true, opacity: 0.85 }));
     stamp.position.set(0, h * 0.55, d / 2 + 0.002); g.add(stamp);
     return shadow(g);
   };
@@ -172,7 +175,7 @@
   /* ---- open crate (organised order) ---- */
   P.crate = function (fill) {
     const g = new THREE.Group(), w = 1.25, h = 0.48, d = 0.9, tk = 0.045;
-    const frame = G.mat.navy, slat = G.mat.shell;
+    const frame = G.mat.supplyDeep, slat = G.mat.shell;
     const base = new THREE.Mesh(G.roundedBox(w, 0.05, d, 0.03, 0.02), frame); base.position.y = 0.025; g.add(base);
     [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
       const post = new THREE.Mesh(G.roundedBox(0.07, h, 0.07, 0.03, 0.02), frame);
@@ -183,10 +186,11 @@
       [1, -1].forEach((sz) => { const s = new THREE.Mesh(G.roundedBox(w - 0.1, 0.1, tk, 0.03, 0.015), slat); s.position.set(0, y, sz * (d / 2 - 0.03)); g.add(s); });
       [1, -1].forEach((sx) => { const s = new THREE.Mesh(G.roundedBox(tk, 0.1, d - 0.1, 0.015, 0.015), slat); s.position.set(sx * (w / 2 - 0.03), y, 0); g.add(s); });
     }
-    const accent = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.012, 0.004), G.mat.tealGlow); accent.position.set(-w / 2 + 0.3, 0.42, d / 2 + 0.001); g.add(accent);
+    const accent = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.012, 0.004), G.mat.supplyStrip); accent.position.set(-w / 2 + 0.3, 0.42, d / 2 + 0.001); g.add(accent);
     if (fill === 0) {
-      [-0.36, 0, 0.36].forEach((x, i) => { const b = P.bag(i); b.scale.setScalar(0.62); b.position.set(x, 0.05, -0.12); g.add(b); });
-      [-0.3, 0.3].forEach((x) => { const c = P.cup(true); c.scale.setScalar(0.62); c.position.set(x, 0.05, 0.22); g.add(c); });
+      // packed for a café: kraft parcels, so the crate reads as the supplier's (green), not as the goods inside
+      [[-0.34, -0.15, 0.3, 0.3, 0.3], [0.01, -0.15, 0.32, 0.36, 0.3], [0.36, -0.15, 0.28, 0.26, 0.3], [-0.2, 0.2, 0.38, 0.22, 0.26], [0.25, 0.2, 0.32, 0.28, 0.26]]
+        .forEach(([x, z, bw, bh, bd]) => { const b = P.box(bw, bh, bd); b.position.set(x, 0.05, z); g.add(b); });
     } else {
       [-0.4, -0.13, 0.14, 0.41].forEach((x, i) => { const c = i % 2 ? P.carton() : P.bottle(); c.scale.setScalar(0.72); c.position.set(x, 0.05, -0.05); g.add(c); });
     }
@@ -206,8 +210,8 @@
   P.tote = function () {
     const g = new THREE.Group(), w = 1.05, h = 0.52, d = 0.78;
     const body = new THREE.Mesh(G.roundedBox(w, h, d, 0.08, 0.05), G.mat.shell); body.position.y = h / 2; g.add(body);
-    const lid = new THREE.Mesh(G.roundedBox(w + 0.03, 0.06, d + 0.03, 0.08, 0.03), G.mat.navyGloss); lid.position.y = h + 0.02; g.add(lid);
-    const band = new THREE.Mesh(new THREE.BoxGeometry(w * 0.55, 0.014, 0.004), G.mat.tealGlow); band.position.set(0, h * 0.72, d / 2 + 0.002); g.add(band);
+    const lid = new THREE.Mesh(G.roundedBox(w + 0.03, 0.06, d + 0.03, 0.08, 0.03), G.mat.supplyGloss); lid.position.y = h + 0.02; g.add(lid);
+    const band = new THREE.Mesh(new THREE.BoxGeometry(w * 0.55, 0.014, 0.004), G.mat.supplyStrip); band.position.set(0, h * 0.72, d / 2 + 0.002); g.add(band);
     const lab = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.26), new THREE.MeshStandardMaterial({ map: boxLabel("CAF\u00c9 LUNE", "#24817 \u00b7 14 ITEMS"), roughness: 0.6, transparent: true }));
     lab.position.set(-0.16, h * 0.38, d / 2 + 0.003); g.add(lab);
     return shadow(g);
