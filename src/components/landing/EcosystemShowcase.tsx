@@ -15,8 +15,9 @@ import {
    THE ECOSYSTEM, THEN A TOUR OF THE THREE PORTALS
    One pinned stage over a tall track (.eco-track, 480vh; the stage is 100vh, so 380vh of scroll):
 
-   1. Chapter 1 — "Connecting cafés, suppliers & brands": the supplier portal, the café app on a phone and
-      the brand portal side by side. Pointing at a side portal brings it to the centre and plays its film.
+   1. Chapter 1 — "Connecting cafés, suppliers & brands": the supplier portal on a tablet, the café app on a phone
+      and the brand portal on a tablet, rising in side by side, each showing a picture made to explain its portal
+      (no films here: they play in the tour).
    2. The phone comes down into the tour: the side portals fall away and the heading lifts, a red panel
       rises from below on the right, and the phone comes down and across into it, growing as it lands.
       A rail and the café's words come in on the left.
@@ -94,12 +95,13 @@ const rgbA = (hex: string, a: number) => { const n = parseInt(hex.slice(1), 16);
 const fieldVars = (id: PortalId) => Object.fromEntries(FIELD[id].map((c, i) => [`--p${i}`, rgbA(c, FIELD_ALPHA[i])])) as CSSProperties;
 
 // Where things happen along the track (fractions of its 380vh of scroll)
-const REST = 0.07;      // chapter 1 holds still until here
-const LAND = 0.27;      // the phone has come down into the panel
-const TOUR_ON = 0.2;    // the tour's words and rail take over (pointer events, films)
-const SUP_AT = 0.52;    // the supplier portal takes the panel
-const BRAND_AT = 0.76;  // the brand portal takes the panel
-const RANGE_VH = 380;
+const RISE = 0.15;      // the devices have risen into the pinned stage (payop: phones rise in from below, behind the heading)
+const REST = 0.23;      // chapter 1 holds still until here, while one order arrives on each device in turn
+const LAND = 0.395;     // the phone has come down into the panel
+const TOUR_ON = 0.335;  // the tour's words and rail take over (pointer events, films)
+const SUP_AT = 0.6;     // the supplier portal takes the panel
+const BRAND_AT = 0.8;   // the brand portal takes the panel
+const RANGE_VH = 460;   // .eco-track is 560vh: one pinned screen plus this
 // a portal's anchor sits half a screen past its threshold, so the section rail lights it as the panel switches,
 // and jumping to it (nav, rail) lands inside that portal's stretch of scroll
 const anchorTop = (p: number) => `${(p * RANGE_VH + 50).toFixed(1)}vh`;
@@ -121,10 +123,59 @@ const ICONS: Record<PortalId, React.ReactNode> = {
 };
 const PortalIcon = ({ id }: { id: PortalId }) => <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{ICONS[id]}</svg>;
 const Chevron = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>;
+const Mark = () => (
+  <svg viewBox="0 0 28 28" aria-hidden="true">
+    <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M7.68 8.31A8.5 8.5 0 0 1 20.32 8.31" /><path d="M22.08 11.37A8.5 8.5 0 0 1 15.77 22.31" /><path d="M12.23 22.31A8.5 8.5 0 0 1 5.92 11.37" /></g>
+    <circle cx="14" cy="14" r="3" fill="currentColor" />
+  </svg>
+);
+/* One order arriving on every side, once chapter 1's devices have risen in: a push notification on the café's phone,
+   then a new order on the supplier's dashboard, then demand moving on the brand's (staggered in portal-tour.css). */
+const ORDER_TOASTS = {
+  phone: (
+    <div className="eco-toast is-phone" aria-hidden="true">
+      <span className="eco-toast-icon"><Mark /></span>
+      <span className="eco-toast-tx"><span className="eco-toast-top"><b>Gradient</b><time>now</time></span><strong>Order placed · Oat Milk 12 L</strong><small>3 suppliers, one bill · 7:30 AM</small></span>
+    </div>
+  ),
+  supplier: (
+    <div className="eco-toast is-supplier" aria-hidden="true">
+      <span className="eco-toast-icon"><PortalIcon id="supplier" /></span>
+      <span className="eco-toast-tx"><span className="eco-toast-top"><b>New order</b><time>just now</time></span><strong>PO #4821 · Oat Milk 12 L</strong><small>Tamarind Lane Cafe · Hauz Khas</small></span>
+      <em>₹2,520</em>
+    </div>
+  ),
+  brand: (
+    <div className="eco-toast is-brand" aria-hidden="true">
+      <span className="eco-toast-icon"><PortalIcon id="brand" /></span>
+      <span className="eco-toast-tx"><span className="eco-toast-top"><b>Demand</b><time>this week</time></span><strong>Oat Milk up 18%</strong><small>Reordered by 42 cafés</small></span>
+    </div>
+  ),
+};
 const Lock = () => (
   <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
   </svg>
+);
+/* Chapter 1's portals are tablets (portal-tour.css) open on the portal's own page, a picture made to explain it in
+   that page's own words and colours (public/landing/portals):
+   · supplier.webp, after /supplier: "Every café order. Settled in 24 hours." A WhatsApp order read into PO #4821,
+     a run signed for drop by drop, a T+1 payout, on the page's green cutting mat;
+   · brand.webp, after /brand: "Know where it'll sell. Tracked to the cup." The demand map, the Barista Oat Milk
+     trial (120 kits → 100 tried → 88 rated → 31 weekly POs) and a barista's review, on its dot grid;
+   · cafe.webp (the phone), after /cafe: "Stop chasing. Start brewing." Three verified suppliers' prices with the
+     best marked, a low-stock reorder, one order on one bill.
+   They tell one story, Tamarind Lane Cafe's oat milk order, which the notifications carry from device to device.
+   The browser bar is a tablet's: back and forward, the address, the portal's badge (no window buttons, no live dot) */
+const TabletBar = ({ p }: { p: Portal }) => (
+  <div className="eco-chrome is-tablet">
+    <span className="eco-nav" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" /></svg>
+      <svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" /></svg>
+    </span>
+    <div className="eco-url-bar"><Lock /><span>gradient365.com/{p.id}</span></div>
+    <div className={`eco-window-role-badge badge-${p.id}`}><span className="eco-role-dot" />{p.id === 'brand' ? 'BRAND' : 'SUPPLIER'}</div>
+  </div>
 );
 
 /* "Now showing": the chapter of the film playing, with a segment per chapter (past ones full, the current one
@@ -225,22 +276,18 @@ export function EcosystemShowcase() {
   // The tour (desktop with motion) or the stacked cards (narrow screens, reduced motion)
   const [desk, setDesk] = useState(true);
 
-  // Chapter 1 state
-  const [hoveredScreen, setHoveredScreen] = useState<'supplier' | 'mobile' | 'brand' | null>(null);
-  const [activeVideoScreen, setActiveVideoScreen] = useState<'mobile' | 'supplier' | 'brand'>('mobile');
-  const [isAtRest, setIsAtRest] = useState(true);
-  const [pointerOffset, setPointerOffset] = useState({ x: 0, y: 0 });
-  const [isScrolling, setIsScrolling] = useState(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // (chapter 1's devices don't react to the pointer: no hover, no focus, no parallax)
 
   // The tour's state
   const [tourOn, setTourOn] = useState(false);   // its words and rail have taken over
   const [landed, setLanded] = useState(false);   // the phone has come down into the panel
+  const [arrived, setArrived] = useState(false); // chapter 1's devices have risen in: the order arrives on each
   const [tab, setTab] = useState(0);             // 0 café · 1 supplier · 2 brand
+  // the phone's film is playing in the panel, so chapter 1's still on its screen has faded
+  const [phoneLive, setPhoneLive] = useState(false);
 
+  // the films (chapter 1 shows stills; these play only in the tour)
   const mobileVideoRef = useRef<HTMLVideoElement | null>(null);
-  const supplierVideoRef = useRef<HTMLVideoElement | null>(null);
-  const brandVideoRef = useRef<HTMLVideoElement | null>(null);
   const tourSupRef = useRef<HTMLVideoElement | null>(null);
   const tourBrandRef = useRef<HTMLVideoElement | null>(null);
 
@@ -287,27 +334,27 @@ export function EcosystemShowcase() {
     safePlay(v);
   }, [safePlay]);
 
-  // Which film plays: in the tour, the active portal's; in chapter 1, the phone's, or a side portal's while it
-  // has the centre. The window films start from the top each time their portal comes in.
+  // Which film plays: none in chapter 1 (its devices show stills). In the tour, only the active portal's, from the top
+  // each time its portal comes in: the café's once the phone has come down into the panel (its still fades as the film
+  // starts, onPlaying), a window's a beat after the window has risen. Hidden tabs and scrolling away only pause it.
+  const filmOn = useRef<string | null>(null);
   useEffect(() => {
-    const films = { phone: mobileVideoRef.current, sup: supplierVideoRef.current, brand: brandVideoRef.current, tSup: tourSupRef.current, tBrand: tourBrandRef.current };
-    const playing = !isVisible || !isTabVisible ? null
-      : desk && tourOn ? (['phone', 'tSup', 'tBrand'] as const)[tab]
-      : activeVideoScreen === 'mobile' ? 'phone' : activeVideoScreen === 'supplier' ? 'sup' : 'brand';
+    const films = { phone: mobileVideoRef.current, tSup: tourSupRef.current, tBrand: tourBrandRef.current };
+    const active = desk && landed ? (['phone', 'tSup', 'tBrand'] as const)[tab] : null;
+    const fresh = active !== filmOn.current;
+    filmOn.current = active;
+    if (!desk || !landed) setPhoneLive(false);
     let t: ReturnType<typeof setTimeout> | undefined;
     (Object.keys(films) as (keyof typeof films)[]).forEach((k) => {
       const v = films[k];
       if (!v) return;
-      if (k === playing) {
-        if (k === 'phone') safePlay(v);
-        else { try { v.currentTime = 0; } catch {} t = setTimeout(() => safePlay(v), k === 'sup' || k === 'brand' ? 250 : 320); }
-      } else {
-        safePause(v);
-        if (k !== 'phone') { try { v.currentTime = 0; } catch {} }
-      }
+      if (k !== active || !isVisible || !isTabVisible) { safePause(v); if (k === active && fresh) { try { v.currentTime = 0; } catch {} } return; }
+      if (fresh) { safePause(v); try { v.currentTime = 0; } catch {} }   // paused first, so 'playing' fires again
+      if (fresh && k !== 'phone') t = setTimeout(() => safePlay(v), 320);
+      else safePlay(v);
     });
     return () => { if (t) clearTimeout(t); };
-  }, [activeVideoScreen, isVisible, isTabVisible, tourOn, tab, desk, safePlay, safePause]);
+  }, [isVisible, isTabVisible, landed, tab, desk, safePlay, safePause]);
 
   useEffect(() => {
     const el = trackRef.current;
@@ -323,29 +370,49 @@ export function EcosystemShowcase() {
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 70, damping: 24, mass: 0.28, restDelta: 0.0001 });
 
   useMotionValueEvent(scrollYProgress, 'change', (p) => {
+    // risen and at rest: the order arrives on each device in turn (and leaves as chapter 1 moves on)
+    setArrived(p >= RISE * 0.97 && p < REST + 0.02);
     setTourOn(p >= TOUR_ON);
     setLanded(p >= LAND - 0.01);
     setTab(p < SUP_AT ? 0 : p < BRAND_AT ? 1 : 2);
   });
-  useMotionValueEvent(smoothProgress, 'change', (p) => {
-    if (p > REST * 0.9) { setHoveredScreen(null); setActiveVideoScreen('mobile'); }
-    setIsAtRest(p <= REST * 0.9);
-    // the pointer parallax steps aside while scrolling
-    setIsScrolling(true);
-    setPointerOffset({ x: 0, y: 0 });
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    scrollTimeoutRef.current = setTimeout(() => setIsScrolling(false), 180);
-  });
+
+  /* Chapter 1's arrival, after payop.com's phones: the stage pins with only its heading showing, then the devices
+     rise into it from below over the first stretch of the track (0 → RISE) — the phone first; the two portals a
+     beat later, fanning out from behind it and turning into their pose, facing the centre, the centre one facing
+     you. Nothing flies down from the hero any more; instead, once they're in, one order arrives on each device in
+     turn, as its own notification (.eco-toast). */
+  const vh = useMotionValue(900);
+  useEffect(() => {
+    const set = () => vh.set(window.innerHeight);
+    set();
+    window.addEventListener('resize', set);
+    return () => window.removeEventListener('resize', set);
+  }, [vh]);
+  const easeOut = (t: number) => 1 - (1 - t) ** 3;
+  const kPhoneIn = (p: number) => easeOut(clamp(p / (RISE * 0.8)));
+  const kSideIn = (p: number) => easeOut(clamp((p - RISE * 0.25) / (RISE * 0.75)));   // a beat behind the phone
+  const enter = smoothProgress;
 
   // Chapter 1's heading lifts away and its side portals fall back, outward and up
   const ecoTextOpacity = useTransform(smoothProgress, [0, REST, REST + 0.08], [1, 1, 0]);
   const ecoTextY = useTransform(smoothProgress, [0, REST, REST + 0.08], [0, 0, -60]);
   const sideOut = [0, REST, REST + 0.12];
-  const supplierX = useTransform(smoothProgress, sideOut, [0, 0, -90]);
-  const brandX = useTransform(smoothProgress, sideOut, [0, 0, 90]);
-  const sideY = useTransform(smoothProgress, sideOut, [0, 0, -50]);
+  const supplierOutX = useTransform(smoothProgress, sideOut, [0, 0, -90]);
+  const brandOutX = useTransform(smoothProgress, sideOut, [0, 0, 90]);
+  const sideOutY = useTransform(smoothProgress, sideOut, [0, 0, -50]);
   const sideScale = useTransform(smoothProgress, sideOut, [1, 1, 0.9]);
-  const sideOpacity = useTransform(smoothProgress, [0, REST, REST + 0.1], [1, 1, 0]);
+  const sideOutOpacity = useTransform(smoothProgress, [0, REST, REST + 0.1], [1, 1, 0]);
+  // in: tucked 200px toward the phone and 70% of a screen low (below the stage), out to their places
+  const supplierX = useTransform([supplierOutX, enter], ([o, e]: number[]) => (isReduced || !desk ? 0 : o + 200 * (1 - kSideIn(e))));
+  const brandX = useTransform([brandOutX, enter], ([o, e]: number[]) => (isReduced || !desk ? 0 : o - 200 * (1 - kSideIn(e))));
+  const sideY = useTransform([sideOutY, enter, vh], ([o, e, h]: number[]) => (isReduced || !desk ? 0 : o + 0.7 * h * (1 - kSideIn(e))));
+  const sideOpacity = useTransform([sideOutOpacity, enter], ([o, e]: number[]) => (desk ? o * clamp((e - RISE * 0.25) / (RISE * 0.35)) : 1));
+  // their pose, like payop's side phones: turned to face the centre and leaning back, so the edge turned toward you
+  // shows (portal-tour.css draws it, in the portal's colour); turned further while they come in
+  const supplierRotY = useTransform(enter, (e: number) => 24 + 14 * (1 - kSideIn(e)));
+  const brandRotY = useTransform(enter, (e: number) => -(24 + 14 * (1 - kSideIn(e))));
+  const sideRotX = useTransform(enter, (e: number) => 8 + 10 * (1 - kSideIn(e)));
 
   // The panel rises from below; the rail and words come in
   const panelY = useTransform(smoothProgress, [REST + 0.02, LAND - 0.03], ['104%', '0%'], { ease: (t) => 1 - (1 - t) ** 3 });
@@ -378,43 +445,16 @@ export function EcosystemShowcase() {
   const kDown = (p: number) => smooth(clamp((p - REST) / (LAND - REST - 0.03)));
   const kAcross = (p: number) => smooth(clamp((p - REST - 0.03) / (LAND - REST - 0.03)));
   const phoneX = useTransform([smoothProgress, dropX], ([p, dx]: number[]) => (desk ? dx * kAcross(p) : 0));
-  const phoneY = useTransform([smoothProgress, dropY], ([p, dy]: number[]) => (desk ? 24 + (dy - 24) * kDown(p) : 24));
-  const phoneScale = useTransform([smoothProgress, dropScale], ([p, s]: number[]) => (desk ? 1 + (s - 1) * kDown(p) : 1));
-
-  // ─── Chapter 1: pointing at a side portal brings it to the centre and plays its film ───
-  const supplierWinRef = useRef<HTMLDivElement>(null);
-  const brandWinRef = useRef<HTMLDivElement>(null);
-  const [focus, setFocus] = useState({ supplier: { x: 0, s: 1 }, brand: { x: 0, s: 1 } });
-  useEffect(() => {
-    const measure = () => {
-      const sup = supplierWinRef.current, brand = brandWinRef.current, group = sup?.parentElement;
-      if (!sup || !brand || !group || window.innerWidth <= 860) { setFocus({ supplier: { x: 0, s: 1 }, brand: { x: 0, s: 1 } }); return; }
-      const centre = group.clientWidth / 2, target = Math.min(group.clientWidth * 0.68, 820);
-      const of = (el: HTMLElement) => ({ x: Math.round(centre - (el.offsetLeft + el.offsetWidth / 2)), s: +Math.min(1.75, target / el.offsetWidth).toFixed(3) });
-      setFocus({ supplier: of(sup), brand: of(brand) });
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-  const sideFocused = isAtRest && (hoveredScreen === 'supplier' || hoveredScreen === 'brand') && focus.supplier.s > 1;
-  const focusVars = (side: 'supplier' | 'brand') => ({ ['--focus-x' as string]: `${focus[side].x}px`, ['--focus-scale' as string]: focus[side].s }) as CSSProperties;
-  const focusSide = useCallback((side: 'supplier' | 'brand') => {
-    if (!isAtRest) return;
-    setHoveredScreen(side);
-    setActiveVideoScreen(side);
-  }, [isAtRest]);
-  const unfocusSide = useCallback(() => {
-    setHoveredScreen(null);
-    setActiveVideoScreen('mobile');
-    setPointerOffset({ x: 0, y: 0 });
-  }, []);
-  const handlePointerMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isScrolling || !isAtRest) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width - 0.5) * 6, y = ((e.clientY - r.top) / r.height - 0.5) * 6;
-    setPointerOffset({ x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 });
-  };
+  // first it rises in from 55% of a screen below (and grows the last 8%), then comes down into the tour
+  const phoneY = useTransform([smoothProgress, dropY, enter, vh], ([p, dy, e, h]: number[]) =>
+    (desk ? 24 + (dy - 24) * kDown(p) + 0.55 * h * (1 - kPhoneIn(e)) : 24));
+  const phoneScale = useTransform([smoothProgress, dropScale, enter], ([p, s, e]: number[]) =>
+    (desk ? (1 + (s - 1) * kDown(p)) * (0.92 + 0.08 * kPhoneIn(e)) : 1));
+  // the phone in 3D too: it rises tipped well back, settles turned a little toward the left portal and leaning back
+  // (so its red frame shows on the right, --edge), and straightens as it comes down into the tour
+  const phoneRotY = useTransform([smoothProgress, enter], ([p, e]: number[]) => (desk ? -10 * (1 - kDown(p)) - 4 * (1 - kPhoneIn(e)) : 0));
+  const phoneRotX = useTransform([smoothProgress, enter], ([p, e]: number[]) => (desk ? (7 + 14 * (1 - kPhoneIn(e))) * (1 - kDown(p)) : 0));
+  const phoneEdge = useTransform(smoothProgress, (p: number) => (desk ? 1 - kDown(p) : 0));
 
   // ─── The tour's controls ───
   const films = [mobileVideoRef, tourSupRef, tourBrandRef];
@@ -455,7 +495,7 @@ export function EcosystemShowcase() {
         <div className="eco-container">
           <motion.div
             className="eco-text-wrap"
-            style={isReduced ? { opacity: 1, y: 0 } : { opacity: ecoTextOpacity, y: ecoTextY, pointerEvents: isAtRest ? 'auto' : 'none' }}
+            style={isReduced ? { opacity: 1, y: 0 } : { opacity: ecoTextOpacity, y: ecoTextY, pointerEvents: tourOn ? 'none' : 'auto' }}
           >
             <h2 className="eco-headline">
               <span className="eco-headline-main">Connecting cafés, suppliers &amp; brands.</span>
@@ -501,24 +541,19 @@ export function EcosystemShowcase() {
         )}
 
         {/* ─── THE DEVICES (chapter 1; the phone carries on into the tour) ─── */}
-        <div className="eco-stage-viewport" style={{ ['--px' as string]: `${pointerOffset.x}px`, ['--py' as string]: `${pointerOffset.y}px` } as CSSProperties}>
-          <div className={`eco-screens-group ${sideFocused ? 'has-side-focus' : ''}`}>
+        <div className="eco-stage-viewport">
+          <div className={`eco-screens-group${desk && arrived ? ' is-arrived' : ''}`}>
             {/* left: the supplier portal */}
             <motion.div
-              ref={supplierWinRef}
-              className={`eco-browser-window eco-screen-supplier ${activeVideoScreen === 'supplier' ? 'is-video-active' : ''} ${hoveredScreen === 'supplier' ? 'is-hovered' : hoveredScreen !== null ? 'is-dimmed' : ''}`}
-              onMouseEnter={() => focusSide('supplier')} onMouseMove={handlePointerMove} onMouseLeave={unfocusSide} onClick={() => focusSide('supplier')}
-              style={isReduced ? { transform: 'none', opacity: 0.95 } : { x: supplierX, y: sideY, scale: sideScale, opacity: sideOpacity, pointerEvents: isAtRest ? 'auto' : 'none', zIndex: hoveredScreen === 'supplier' ? 45 : 10 }}
+              className="eco-browser-window eco-screen-supplier"
+              style={isReduced ? { transform: 'none' } : { x: supplierX, y: sideY, scale: sideScale, opacity: sideOpacity, rotateY: supplierRotY, rotateX: sideRotX, transformPerspective: 1400, zIndex: 10 }}
             >
-              <div className="eco-device-scaler" style={{ position: 'relative', ...focusVars('supplier') }}>
-                <div className="eco-screen-ambient-glow glow-supplier" aria-hidden="true" />
-                <div className="eco-chrome">
-                  <div className="eco-chrome-dots"><span className="eco-dot eco-dot-red" /><span className="eco-dot eco-dot-yellow" /><span className="eco-dot eco-dot-green" /></div>
-                  <div className="eco-url-bar"><Lock /><span>app.gradient365.com/supplier</span><span className="eco-url-ping ping-supplier" /></div>
-                  <div className="eco-window-role-badge badge-supplier"><span className="eco-role-dot" />SUPPLIER</div>
-                </div>
+              <div className="eco-device-scaler" style={{ position: 'relative' }}>
+                <TabletBar p={PORTALS[1]} />
+                {ORDER_TOASTS.supplier}
                 <div className="eco-app-body eco-video-body">
-                  <video ref={supplierVideoRef} src="/suppliers.mp4" playsInline muted preload="metadata" className="eco-dashboard-video" onEnded={loop} />
+                  <img src="/landing/portals/supplier.webp" width={1824} height={900} className="eco-dashboard-video" loading="lazy" decoding="async" draggable={false}
+                    alt="For roasters and distributors: every café order, settled in 24 hours. A café’s WhatsApp message read into purchase order #4821, a delivery run signed for drop by drop, and ₹11,400 paid the next day." />
                 </div>
               </div>
             </motion.div>
@@ -526,10 +561,8 @@ export function EcosystemShowcase() {
             {/* centre: the café app on a phone — it comes down into the tour's panel */}
             <motion.div
               ref={phoneRef}
-              className={`eco-screen-mobile ${activeVideoScreen === 'mobile' ? 'is-video-active' : ''} ${hoveredScreen === 'mobile' ? 'is-hovered' : hoveredScreen !== null ? 'is-dimmed' : ''}${desk && tourOn && tab !== 0 ? ' is-tour-out' : ''}`}
-              onMouseEnter={() => isAtRest && setHoveredScreen('mobile')} onMouseMove={handlePointerMove} onMouseLeave={unfocusSide}
-              onClick={() => { setActiveVideoScreen('mobile'); setHoveredScreen(null); }}
-              style={isReduced ? { transform: 'none' } : { x: phoneX, y: phoneY, scale: phoneScale, zIndex: sideFocused ? 15 : 30 }}
+              className={`eco-screen-mobile${desk && tourOn && tab !== 0 ? ' is-tour-out' : ''}`}
+              style={isReduced ? { transform: 'none' } : { x: phoneX, y: phoneY, scale: phoneScale, rotateY: phoneRotY, rotateX: phoneRotX, transformPerspective: 1400, zIndex: 30, ['--edge' as string]: phoneEdge }}
             >
               <div className="eco-device-scaler">
                 <div className="eco-phone-back-shadow" aria-hidden="true" />
@@ -542,6 +575,7 @@ export function EcosystemShowcase() {
                   <div className="eco-phone-screen-container">
                     <div className="eco-phone-glass-glare" aria-hidden="true" />
                     <div className="eco-phone-island" aria-hidden="true"><div className="eco-island-pill"><span className="eco-island-dot" /><span className="eco-island-status-pulse" /></div></div>
+                    {ORDER_TOASTS.phone}
                     <div className="eco-phone-statusbar">
                       <span className="eco-phone-time">9:41</span>
                       <div className="eco-phone-icons">
@@ -550,8 +584,13 @@ export function EcosystemShowcase() {
                         <div className="eco-phone-batt"><div className="eco-phone-batt-fill" /></div>
                       </div>
                     </div>
-                    <div className="eco-phone-viewport eco-video-phone-viewport">
-                      <video ref={mobileVideoRef} src="/cafe.mp4" playsInline muted preload="metadata" className="eco-mobile-video" onEnded={loop} />
+                    {/* chapter 1 shows a picture of the café app ("One basket. Every supplier."); the film under it
+                        plays once the phone has come down into the tour's panel, and the picture fades */}
+                    <div className={`eco-phone-viewport eco-video-phone-viewport${phoneLive ? ' is-live' : ''}`}>
+                      <video ref={mobileVideoRef} src="/cafe.mp4" playsInline muted preload={desk ? (tourOn ? 'auto' : 'metadata') : 'none'} className="eco-mobile-video"
+                        onEnded={loop} onPlaying={() => { if (desk && landed) setPhoneLive(true); }} />
+                      <img className="eco-phone-still" src="/landing/portals/cafe.webp" width={1080} height={2240} loading="lazy" decoding="async" draggable={false}
+                        alt="For cafés: stop chasing, start brewing. Three verified suppliers’ prices for oat milk side by side with the best one marked, a low-stock alert, and one order across three suppliers on one bill." />
                     </div>
                     <div className="eco-phone-home-indicator" aria-hidden="true" />
                   </div>
@@ -561,20 +600,15 @@ export function EcosystemShowcase() {
 
             {/* right: the brand portal */}
             <motion.div
-              ref={brandWinRef}
-              className={`eco-browser-window eco-screen-brand ${activeVideoScreen === 'brand' ? 'is-video-active' : ''} ${hoveredScreen === 'brand' ? 'is-hovered' : hoveredScreen !== null ? 'is-dimmed' : ''}`}
-              onMouseEnter={() => focusSide('brand')} onMouseMove={handlePointerMove} onMouseLeave={unfocusSide} onClick={() => focusSide('brand')}
-              style={isReduced ? { transform: 'none', opacity: 0.95 } : { x: brandX, y: sideY, scale: sideScale, opacity: sideOpacity, pointerEvents: isAtRest ? 'auto' : 'none', zIndex: hoveredScreen === 'brand' ? 45 : 10 }}
+              className="eco-browser-window eco-screen-brand"
+              style={isReduced ? { transform: 'none' } : { x: brandX, y: sideY, scale: sideScale, opacity: sideOpacity, rotateY: brandRotY, rotateX: sideRotX, transformPerspective: 1400, zIndex: 10 }}
             >
-              <div className="eco-device-scaler" style={{ position: 'relative', ...focusVars('brand') }}>
-                <div className="eco-screen-ambient-glow glow-brand" aria-hidden="true" />
-                <div className="eco-chrome">
-                  <div className="eco-chrome-dots"><span className="eco-dot eco-dot-red" /><span className="eco-dot eco-dot-yellow" /><span className="eco-dot eco-dot-green" /></div>
-                  <div className="eco-url-bar"><Lock /><span>app.gradient365.com/brand</span><span className="eco-url-ping ping-brand" /></div>
-                  <div className="eco-window-role-badge badge-brand"><span className="eco-role-dot" />BRAND</div>
-                </div>
+              <div className="eco-device-scaler" style={{ position: 'relative' }}>
+                <TabletBar p={PORTALS[2]} />
+                {ORDER_TOASTS.brand}
                 <div className="eco-app-body eco-video-body">
-                  <video ref={brandVideoRef} src="/brands.mp4" playsInline muted preload="metadata" className="eco-dashboard-video" onEnded={loop} />
+                  <img src="/landing/portals/brand.webp" width={1824} height={900} className="eco-dashboard-video" loading="lazy" decoding="async" draggable={false}
+                    alt="For brands: know where it’ll sell, tracked to the cup. A demand map of South Delhi for Barista Oat Milk, a trial of 120 kits that 100 baristas tried and 31 cafés now order weekly, and a barista’s review." />
                 </div>
               </div>
             </motion.div>

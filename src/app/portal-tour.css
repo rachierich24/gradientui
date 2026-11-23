@@ -7,8 +7,126 @@
    cleared and rebuilt.
 ───────────────────────────────────────────────────────────────────────── */
 
-/* the track: one pinned screen plus 380vh of scroll (EcosystemShowcase: RANGE_VH) */
-.eco-track.is-tour { height: 480vh; }
+/* the track: one pinned screen plus 460vh of scroll (EcosystemShowcase: RANGE_VH) */
+.eco-track.is-tour { height: 560vh; }
+
+/* ═══ chapter 1, after payop.com: the stage pins with its heading at the top, and the devices rise into the space
+   below it (EcosystemShowcase moves them; this only places them) ═══ */
+@media (min-width: 861px) {
+  .eco-track.is-tour .eco-sticky-stage > .eco-container { top: clamp(92px, 12vh, 118px); bottom: auto; }
+  .eco-track.is-tour .eco-stage-viewport { align-items: center; padding-top: clamp(196px, 27vh, 290px); padding-bottom: clamp(28px, 5vh, 48px); }
+}
+
+/* the devices don't react to the pointer (no dimming until hovered, no hand cursor) */
+.eco-track .eco-screens-group .eco-browser-window .eco-device-scaler,
+.eco-track .eco-screens-group .eco-screen-mobile .eco-phone-chassis { opacity: 1; filter: none; }
+.eco-track .eco-browser-window, .eco-track .eco-screen-mobile { cursor: default; }
+
+/* ═══ the devices, built like real ones: a body of matte aluminium in its portal's colour, faded the way anodised
+   colour is (each one solid colour: no gradient, no sheen, no glow), a black glass border, then the screen. In
+   chapter 1 each is a slab, like payop's phones, its side showing where it's turned toward you, in the same colour ═══ */
+.eco-track .eco-screen-supplier { --frame: #64B381; }
+.eco-track .eco-screen-brand { --frame: #9070CB; }
+.eco-track .eco-screen-mobile { --frame: #D27676; }
+
+/* the portals are tablets: a 3px band of the body round a thin 4px black border, the camera in the top border */
+.eco-track .eco-screens-group .eco-browser-window .eco-device-scaler { padding: 4px; border: 0; border-radius: 18px; background: #0C0D10 !important;
+  box-shadow: 0 0 0 3px var(--frame), 0 26px 46px -22px rgba(16, 18, 24, .3), 0 6px 14px rgba(16, 18, 24, .06); }
+.eco-track .eco-screens-group .eco-browser-window .eco-device-scaler::after { content: ""; position: absolute; top: .9px; left: 50%;
+  width: 2.2px; height: 2.2px; margin-left: -1.1px; border-radius: 50%; background: #2A2C33; }
+.eco-track .eco-screens-group .eco-browser-window .eco-chrome { border-radius: 14px 14px 0 0; }
+.eco-track .eco-screens-group .eco-browser-window .eco-video-body { border-radius: 0 0 14px 14px; background: #F7F7F8; }
+.eco-track .eco-screens-group .eco-browser-window .eco-dashboard-video { background: #F7F7F8; user-select: none; }
+/* in 3D: the left one's side shows on its left and bottom, the right one's on its right and bottom, as they lean back */
+.eco-track.is-tour .eco-screens-group .eco-screen-supplier .eco-device-scaler {
+  box-shadow: 0 0 0 3px var(--frame), -1px .7px 0 3px var(--frame), -2px 1.4px 0 3px var(--frame), -3px 2.1px 0 3px var(--frame),
+    -4px 2.8px 0 3px var(--frame), -5px 3.5px 0 3px var(--frame), -6px 4.2px 0 3px var(--frame), -7px 4.9px 0 3px var(--frame),
+    -18px 30px 50px -22px rgba(16, 18, 24, .3), -4px 10px 18px -8px rgba(16, 18, 24, .14); }
+.eco-track.is-tour .eco-screens-group .eco-screen-brand .eco-device-scaler {
+  box-shadow: 0 0 0 3px var(--frame), 1px .7px 0 3px var(--frame), 2px 1.4px 0 3px var(--frame), 3px 2.1px 0 3px var(--frame),
+    4px 2.8px 0 3px var(--frame), 5px 3.5px 0 3px var(--frame), 6px 4.2px 0 3px var(--frame), 7px 4.9px 0 3px var(--frame),
+    18px 30px 50px -22px rgba(16, 18, 24, .3), 4px 10px 18px -8px rgba(16, 18, 24, .14); }
+/* a tablet's browser bar: back and forward, the address, the portal's badge */
+.eco-chrome.is-tablet { gap: 10px; padding: 0 10px 0 9px; background: #F6F6F7 !important; border-bottom-color: #E8E8EA; }
+.eco-chrome.is-tablet .eco-url-bar { background: #EBEBED !important; border-color: transparent; border-radius: 6px; color: #3F4249; }
+.eco-nav { display: flex; flex: none; gap: 3px; color: #5C6068; }
+.eco-nav svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.eco-nav svg + svg { color: #B9BCC2; }
+
+/* the phone: a 2.5px band of the body round a 4.5px black border (an iPhone's proportions). Its side shows on the
+   right and bottom as it turns and leans (--edge: 1 in chapter 1, easing to 0 as it straightens into the tour) */
+.eco-track .eco-screen-mobile .eco-phone-chassis { padding: 4.5px; background: #0A0B0D;
+  box-shadow: 0 0 0 2.5px var(--frame),
+    calc(var(--edge, 0) * 1.3px) calc(var(--edge, 0) * .9px) 0 2.5px var(--frame), calc(var(--edge, 0) * 2.6px) calc(var(--edge, 0) * 1.8px) 0 2.5px var(--frame),
+    calc(var(--edge, 0) * 3.9px) calc(var(--edge, 0) * 2.7px) 0 2.5px var(--frame), calc(var(--edge, 0) * 5.2px) calc(var(--edge, 0) * 3.6px) 0 2.5px var(--frame),
+    calc(var(--edge, 0) * 10px) calc(var(--edge, 0) * 22px) 40px -14px rgba(16, 18, 24, .26), 0 4px 12px rgba(16, 18, 24, .1), 0 14px 30px -6px rgba(16, 18, 24, .16); }
+.eco-track .eco-screen-mobile .eco-phone-screen-container,
+.eco-track .eco-screen-mobile .eco-video-phone-viewport { border-radius: 33.5px; }
+/* its buttons, in the body's colour and standing proud of the band: the action button and volume on the left, the
+   side button on the right (out past the side while the side shows) */
+.eco-track .eco-screen-mobile .eco-phone-btn { border: 0; background: var(--frame); }
+.eco-track .eco-screen-mobile .eco-btn-action,
+.eco-track .eco-screen-mobile .eco-btn-vol-up,
+.eco-track .eco-screen-mobile .eco-btn-vol-down { left: -4.2px; width: 4.2px; border-radius: 1.5px 0 0 1.5px; }
+.eco-track .eco-screen-mobile .eco-btn-power { right: calc(-4.2px - var(--edge, 0) * 5.2px); top: calc(135px + var(--edge, 0) * 3.6px); width: 4.2px; border-radius: 0 1.5px 1.5px 0; }
+/* the earpiece is a slit at the top of the border; the Dynamic Island is black and flush with the glass (no
+   shadow, no pulse); no glare on the glass */
+.eco-track .eco-screen-mobile .eco-phone-speaker { top: 1.4px; width: 34px; height: 1.6px; background: #1E1F24; }
+/* the status bar is see-through, over the app, as on the real thing */
+.eco-track .eco-screen-mobile .eco-phone-statusbar { background: transparent; }
+.eco-track .eco-screen-mobile .eco-phone-island { box-shadow: none; }
+.eco-track .eco-screen-mobile .eco-island-status-pulse { display: none; }
+.eco-track .eco-screen-mobile .eco-phone-glass-glare { display: none; }
+/* chapter 1's still of the café app, over the film; it fades once the film is playing in the panel (.is-live) */
+.eco-phone-still { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; background: #fff;
+  user-select: none; pointer-events: none; transition: opacity .45s ease; }
+.eco-video-phone-viewport.is-live .eco-phone-still { opacity: 0; }
+
+/* no glowing or pulsing dots anywhere on the devices */
+.eco-track .eco-url-ping { box-shadow: none; animation: none; }
+.eco-track .eco-role-dot { animation: none; }
+
+/* one order arriving on every side: a notification on each device in turn, café → supplier → brand, once they've
+   risen in (.is-arrived); they go again as chapter 1 moves on */
+.eco-toast { --tc: #E03E3E; --d: 0s;
+  position: absolute; z-index: 30; display: flex; align-items: center; gap: 8px; padding: 7px 9px 7px 7px; border-radius: 12px;
+  background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .07), 0 12px 26px -12px rgba(15, 20, 30, .38);
+  font-family: var(--font-sans, inherit); color: #0B0C0E; pointer-events: none;
+  opacity: 0; transform: translateY(-12px) scale(.96); transition: opacity .25s ease, transform .3s ease; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast { opacity: 1; transform: none;
+  transition: opacity .4s ease var(--d), transform .75s cubic-bezier(.34, 1.4, .64, 1) var(--d); }
+/* on the phone the order arrives as a Live Activity: the Dynamic Island opens out into a black alert across the top
+   of the screen (clipped from the island's own shape: 64 × 16.5 at 6px down), over the status bar, and closes back
+   into the island as chapter 1 moves on */
+.eco-toast.is-phone { --tc: #E03E3E; --d: .1s; left: 6px; right: 6px; top: 5px; height: 54px; padding: 0 14px 0 10px; gap: 9px;
+  border-radius: 24px; background: #000; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; color: #fff;
+  transform: none; clip-path: inset(1px calc(50% - 32px) 36.5px calc(50% - 32px) round 8.25px);
+  transition: clip-path .42s cubic-bezier(.4, 0, .2, 1), opacity .1s linear .38s; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast.is-phone { transform: none; clip-path: inset(0 round 24px);
+  transition: opacity .06s linear var(--d), clip-path .62s cubic-bezier(.2, .9, .25, 1) var(--d); }
+.eco-toast.is-phone > * { opacity: 0; transition: opacity .12s ease; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast.is-phone > * { opacity: 1; transition: opacity .3s ease calc(var(--d) + .26s); }
+.eco-toast.is-phone .eco-toast-icon { width: 28px; height: 28px; border-radius: 8px; }
+.eco-toast.is-phone .eco-toast-top { color: #8E8E93; }
+.eco-toast.is-phone .eco-toast-top b { color: #EE9393; }
+.eco-toast.is-phone small { color: #A1A1A6; }
+/* the status bar gives way to the open island */
+.eco-track.is-tour .eco-screen-mobile .eco-phone-statusbar { transition: opacity .2s ease .25s; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-screen-mobile .eco-phone-statusbar { opacity: 0; transition: opacity .12s ease .1s; }
+/* on the tablets: inside the 4px border, just under the browser bar */
+.eco-toast.is-supplier { --tc: #1FA952; --d: .8s; right: 14px; top: 44px; width: 214px; }
+.eco-toast.is-brand { --tc: #6B33D3; --d: 1.5s; right: 14px; top: 44px; width: 186px; }
+.eco-toast-icon { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 7px; background: var(--tc); color: #fff; }
+.eco-toast-icon svg { width: 62%; height: 62%; }
+.eco-toast-tx { display: flex; flex: 1; flex-direction: column; gap: 1px; min-width: 0; }
+.eco-toast-top { display: flex; justify-content: space-between; gap: 6px; font-size: 8.5px; line-height: 1.2; color: #8A8E95; }
+.eco-toast-top b { font-weight: 650; letter-spacing: .02em; color: var(--tc); }
+.eco-toast strong { overflow: hidden; font-size: 10.5px; font-weight: 650; line-height: 1.25; white-space: nowrap; text-overflow: ellipsis; }
+.eco-toast small { overflow: hidden; font-size: 9px; line-height: 1.25; color: #6B6F76; white-space: nowrap; text-overflow: ellipsis; }
+.eco-toast em { flex: none; align-self: flex-start; font-style: normal; font-size: 10px; font-weight: 700; }
+.eco-track:not(.is-tour) .eco-toast { display: none; }
+@media (prefers-reduced-motion: reduce) { .eco-toast { transition: none !important; } }
 /* narrow screens and reduced motion: nothing pins, the portals follow as cards */
 .eco-track:not(.is-tour) { height: auto; }
 .eco-track:not(.is-tour) .eco-sticky-stage { position: relative; }

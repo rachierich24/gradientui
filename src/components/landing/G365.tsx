@@ -19,7 +19,9 @@ export function G365Hero() {
     // The scripts build their DOM once per element; guard against StrictMode's double effect.
     if (!root || root.dataset.g365Init) return;
     root.dataset.g365Init = '1';
-    loadG365([...G365_LIBS, 'thumbs.js', 'riders.js'], ['hero-flow.js', 'energy.js']).catch(() => {});
+    // (energy.js, which flew order cards from the hub down into the ecosystem's devices, is no longer loaded: the
+    //  devices now rise into their own pinned stage and the order arrives on each as a notification — EcosystemShowcase)
+    loadG365([...G365_LIBS, 'thumbs.js', 'riders.js'], ['hero-flow.js']).catch(() => {});
   }, []);
 
   return (
