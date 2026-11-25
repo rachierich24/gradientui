@@ -1,0 +1,173 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   06 · The ask (components/cafe/CafeCta.tsx): "Download the app now. Or use it right here." — zomato's download card,
+   with the hero's hand and phone rising out of its bottom edge, a lock screen getting the morning's notifications,
+   and the QR on a sticker taped over the card's right edge.
+   The phone is sized like the hero's: --hw is the photograph's side, --u an iPhone point on its screen.
+   --tx / --ty (−1…1) follow the pointer, written from the component.
+───────────────────────────────────────────────────────────────────────── */
+.cct-sec { padding-bottom: 56px; }
+.cct-card { --hw: 640px; --u: calc(var(--hw) * .3569 / 375); --px: 250px; --tx: 0; --ty: 0;
+  position: relative; display: flex; align-items: center; min-height: 600px; overflow: hidden; isolation: isolate; border-radius: 36px;
+  background: linear-gradient(160deg, #FFFFFF 0%, #FFF7F6 42%, #FDE8E6 100%);
+  box-shadow: inset 0 0 0 1px rgba(224, 62, 62, .13), 0 50px 100px -60px rgba(196, 45, 45, .5), 0 2px 8px rgba(60, 10, 5, .04); }
+/* --px: how far the phone's centre sits from the card's right edge */
+
+/* the card and the QR sticker taped over its right edge (outside the card, since the card clips the phone) */
+.cct-shell { position: relative; }
+
+/* ── behind the phone: a warm glow ── */
+.cct-back { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.cct-glow { position: absolute; left: calc(100% - var(--px) - 26px); top: calc(100% - var(--hw) * .38); width: 760px; height: 760px; margin: -380px 0 0 -380px;
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(224, 62, 62, .2), rgba(224, 62, 62, .07) 55%, rgba(224, 62, 62, 0)); }
+@keyframes cctSpin { to { transform: rotate(360deg); } }
+
+/* ── the words ── */
+.cct-copy { position: relative; z-index: 3; width: min(620px, 56%); padding: 76px 0 76px 72px; }
+.cct-eyebrow { display: flex; align-items: center; gap: 10px; margin: 0; font: 600 13px/1 var(--cafe-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--cafe-red); }
+.cct-eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--cafe-red); animation: cctDot 2.4s ease-out infinite; }
+@keyframes cctDot { 0% { box-shadow: 0 0 0 0 rgba(224, 62, 62, .45); } 70%, 100% { box-shadow: 0 0 0 9px rgba(224, 62, 62, 0); } }
+.cct-h { margin: 20px 0 0; font-family: var(--cafe-display); font-weight: 800; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-size: clamp(40px, 3.7vw, 54px); line-height: 1.04; letter-spacing: -.03em; color: var(--cafe-ink); }
+/* each line rises out of its own mask, like the goods section's headline */
+.cct-mask { display: block; overflow: hidden; padding-bottom: .13em; margin-bottom: -.13em; }
+.cct-mask > span { display: inline-block; transform: translateY(calc(100% + .2em)); transition: transform .95s cubic-bezier(.76, 0, .24, 1); }
+.cct-mask + .cct-mask > span { transition-delay: .1s; }
+.cct-mask .is-red { color: var(--cafe-red); }
+.is-in .cct-mask > span { transform: none; }
+.cct-lead { max-width: 470px; margin: 20px 0 0; font: 400 17px/1.6 var(--cafe-sans); color: var(--cafe-muted); }
+.cct-lead, .cct-stores, .cct-or, .cct-web { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .9s cubic-bezier(.2, .8, .2, 1); }
+.is-in .cct-lead { opacity: 1; transform: none; transition-delay: .3s; }
+.is-in .cct-stores { opacity: 1; transform: none; transition-delay: .42s; }
+.is-in .cct-or { opacity: 1; transform: none; transition-delay: .5s; }
+.is-in .cct-web { opacity: 1; transform: none; transition-delay: .56s; }
+
+/* the store badges */
+.cct-stores { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.cct-store { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 20px 0 15px; border-radius: 14px; background: #0D0D0E; color: #fff; text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 12px 24px -16px rgba(20, 9, 6, .7);
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease, background-color .2s ease; }
+.cct-store:hover { transform: translateY(-2px); background: #000; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 18px 30px -16px rgba(20, 9, 6, .75); }
+.cct-store:focus-visible, .cct-web-btn:focus-visible, .cct-web button:focus-visible { outline: 2px solid var(--cafe-red); outline-offset: 3px; }
+.cct-store svg { flex: none; width: 24px; height: 24px; }
+.cct-store span { display: flex; flex-direction: column; gap: 1px; text-align: left; }
+.cct-store small { font: 500 10.5px/1.1 var(--cafe-sans); letter-spacing: .02em; color: rgba(255, 255, 255, .82); }
+.cct-store b { font: 600 19px/1.1 var(--cafe-sans); letter-spacing: -.02em; }
+/* "or", and the web app */
+.cct-or { display: flex; align-items: center; gap: 14px; max-width: 352px; margin: 22px 0; font: 500 13px/1 var(--cafe-sans); color: #A39C98; }
+.cct-or::before, .cct-or::after { content: ""; flex: 1; height: 1px; background: rgba(20, 9, 6, .1); }
+.cct-web-btn { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 26px; border-radius: 999px; background: var(--cafe-red); color: #fff;
+  font: 600 16px/1 var(--cafe-sans); letter-spacing: -.01em; text-decoration: none; box-shadow: 0 16px 30px -16px rgba(224, 62, 62, .85);
+  transition: background-color .2s ease, transform .25s cubic-bezier(.2, .8, .2, 1); }
+.cct-web-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s ease; }
+.cct-web-btn:hover { background: var(--cafe-red-deep); transform: translateY(-2px); }
+.cct-web-btn:hover svg { transform: translateX(3px); }
+.cct-web p { margin: 14px 0 0; font: 400 14px/1.5 var(--cafe-sans); color: var(--cafe-muted); }
+.cct-web p button { padding: 0; border: 0; background: none; font: inherit; font-weight: 600; color: var(--cafe-red); cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* ── the hand and phone: rises out of the card's bottom edge, leaning in towards the words ── */
+.cct-stage { position: absolute; z-index: 1; left: calc(100% - var(--px) - var(--hw) * .51); bottom: calc(var(--hw) * -.15); width: var(--hw); height: var(--hw);
+  transform-origin: 50% 100%; transform: translateY(24%) rotate(-12deg); opacity: 0;
+  transition: transform 1.6s cubic-bezier(.16, 1, .3, 1), opacity .6s ease; pointer-events: none; }
+.is-in .cct-stage { transform: rotate(-5deg); opacity: 1; }
+/* the pointer's tilt is 3D only while it's moving (.is-tilting, from the component): at rest the phone is plain 2D,
+   so its screen is drawn crisp rather than resampled */
+.cct-tilt { position: absolute; inset: 0; transform-origin: 51% 47%; }
+.cct-card.is-tilting .cct-tilt { transform: perspective(1400px) rotateY(calc(var(--tx) * 7deg)) rotateX(calc(var(--ty) * -5deg)); }
+.cct-phone { position: absolute; inset: 0; transform-origin: 51% 55%; }
+/* a notification arriving: the phone buzzes */
+.cct-phone.is-buzz { animation: cctBuzz .5s linear; }
+@keyframes cctBuzz {
+  0%, 100% { transform: none; }
+  12% { transform: translateX(1.6px) rotate(.8deg); } 25% { transform: translateX(-1.6px) rotate(-.8deg); }
+  38% { transform: translateX(1.2px) rotate(.6deg); } 50% { transform: translateX(-1px) rotate(-.45deg); }
+  63% { transform: translateX(.6px) rotate(.3deg); } 76% { transform: translateX(-.3px) rotate(-.15deg); }
+}
+.cct-hand { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none;
+  filter: drop-shadow(0 34px 40px rgba(90, 20, 10, .2)) drop-shadow(0 6px 10px rgba(90, 20, 10, .08)); }
+
+/* the lock screen, over the photograph's own screen (.ch-glass, as in the hero): a blush wallpaper with the mark */
+.cct-lock { position: absolute; inset: 0; overflow: hidden; border-radius: calc(var(--u) * 40); color: var(--cafe-ink); font-family: var(--cafe-sans);
+  background: radial-gradient(125% 62% at 50% 106%, rgba(224, 62, 62, .3), rgba(224, 62, 62, .1) 50%, rgba(224, 62, 62, 0) 74%); }
+.cct-wall { position: absolute; left: 50%; top: 44%; width: calc(var(--u) * 330); height: calc(var(--u) * 330); margin: calc(var(--u) * -165) 0 0 calc(var(--u) * -165);
+  color: rgba(224, 62, 62, .09); animation: cctSpin 90s linear infinite; }
+.cct-padlock { position: absolute; left: 50%; top: calc(var(--u) * 40); width: calc(var(--u) * 15); height: calc(var(--u) * 15); margin-left: calc(var(--u) * -7.5); color: rgba(20, 9, 6, .78); }
+.cct-date { position: absolute; left: 0; right: 0; top: calc(var(--u) * 66); margin: 0; text-align: center; font: 600 calc(var(--u) * 17)/1 var(--cafe-sans); color: rgba(20, 9, 6, .6); }
+.cct-clock { position: absolute; left: 0; right: 0; top: calc(var(--u) * 84); margin: 0; text-align: center; font-family: var(--cafe-display); font-weight: 700;
+  font-variation-settings: "opsz" 144, "SOFT" 100; font-size: calc(var(--u) * 98); line-height: 1; letter-spacing: -.03em; color: var(--cafe-ink); }
+/* the notifications: a stack of three, newest on top; each slides down a slot as the next arrives, and the fourth fades */
+.cct-pings { position: absolute; left: calc(var(--u) * 12); right: calc(var(--u) * 12); top: calc(var(--u) * 392); height: calc(var(--u) * 260); }
+.cct-ping { --h: calc(var(--u) * 78); --gap: calc(var(--u) * 8);
+  position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: flex-start; gap: calc(var(--u) * 11); height: var(--h);
+  padding: calc(var(--u) * 12) calc(var(--u) * 14) 0 calc(var(--u) * 12); border-radius: calc(var(--u) * 22);
+  background: rgba(255, 255, 255, .8); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 calc(var(--u) * 8) calc(var(--u) * 22) rgba(90, 20, 10, .1), 0 0 0 1px rgba(20, 9, 6, .04);
+  transform: translateY(calc(var(--pos) * (var(--h) + var(--gap))));
+  transition: transform .75s cubic-bezier(.2, 1.15, .32, 1), opacity .45s ease; }
+.cct-ping[data-pos="3"] { opacity: 0; transform: translateY(calc(2 * (var(--h) + var(--gap)) + var(--u) * 24)) scale(.9); }
+@starting-style { .cct-ping { opacity: 0; transform: translateY(calc(var(--u) * -26)) scale(.92); } }
+.cct-ping-icon { display: grid; place-items: center; flex: none; width: calc(var(--u) * 38); height: calc(var(--u) * 38); border-radius: calc(var(--u) * 10); background: var(--cafe-red); color: #fff; }
+.cct-ping-icon svg { width: 62%; height: 62%; }
+.cct-ping-tx { flex: 1; min-width: 0; }
+.cct-ping-top { display: flex; align-items: baseline; justify-content: space-between; gap: calc(var(--u) * 8); }
+.cct-ping-top b { overflow: hidden; font-size: calc(var(--u) * 14.5); font-weight: 650; line-height: 1.3; white-space: nowrap; text-overflow: ellipsis; }
+.cct-ping-top time { flex: none; font-size: calc(var(--u) * 12); color: #8A8E95; }
+.cct-ping-body { display: -webkit-box; margin-top: calc(var(--u) * 1); overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  font-size: calc(var(--u) * 13.5); line-height: 1.3; color: #33363C; }
+/* the torch and camera buttons at the foot of the lock screen */
+.cct-lockbtn { position: absolute; bottom: calc(var(--u) * 50); display: grid; place-items: center; width: calc(var(--u) * 50); height: calc(var(--u) * 50); border-radius: 50%;
+  background: rgba(20, 9, 6, .1); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--cafe-ink); }
+.cct-lockbtn.is-torch { left: calc(var(--u) * 46); }
+.cct-lockbtn.is-cam { right: calc(var(--u) * 46); }
+.cct-lockbtn svg { width: 46%; height: 46%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── the QR, on a sticker taped over the card's right edge: fixed in place, hanging out past it by up to 44px (less
+   when the page's side margin is narrower, so it never runs off the screen) ── */
+.cct-qr { position: absolute; z-index: 4; right: calc(-1 * clamp(12px, (100vw - 1112px) / 2 - 16px, 44px)); top: 72px; width: 156px; padding: 14px 14px 13px;
+  border-radius: 18px; background: #fff; text-align: center;
+  box-shadow: 0 1px 2px rgba(60, 10, 5, .06), 0 20px 40px -18px rgba(90, 20, 10, .38);
+  rotate: 5deg; opacity: 0; scale: .72;
+  transition: opacity .5s ease .8s, scale .9s cubic-bezier(.34, 1.56, .64, 1) .8s; }
+.is-in .cct-qr { opacity: 1; scale: 1; }
+.cct-qr img { display: block; width: 124px; height: 124px; margin: 0 auto; }
+.cct-qr b { display: block; margin-top: 9px; font: 650 13.5px/1.2 var(--cafe-sans); color: var(--cafe-ink); }
+.cct-qr small { display: block; margin-top: 3px; font: 400 11px/1.3 var(--cafe-sans); color: var(--cafe-muted); }
+/* a strip of red-striped washi tape holding it on */
+.cct-tape { position: absolute; left: 50%; top: -11px; width: 76px; height: 22px; margin-left: -38px; rotate: -5deg;
+  background: repeating-linear-gradient(135deg, rgba(224, 62, 62, .34) 0 6px, rgba(224, 62, 62, .2) 6px 12px);
+  clip-path: polygon(3% 0, 97% 0, 100% 20%, 97% 40%, 100% 60%, 97% 80%, 100% 100%, 0 100%, 3% 80%, 0 60%, 3% 40%, 0 20%); }
+
+/* ── narrower screens ── */
+@media (max-width: 1199px) {
+  .cct-card { --hw: 560px; --px: 210px; min-height: 560px; }
+  .cct-copy { width: min(560px, 58%); padding-left: 56px; }
+  .cct-h { font-size: clamp(36px, 3.9vw, 44px); }
+  .cct-qr { top: 56px; width: 128px; padding: 11px 11px 10px; }
+  .cct-qr img { width: 106px; height: 106px; }
+  .cct-qr b { font-size: 12px; }
+  .cct-qr small { display: none; }
+}
+/* stacked: the words, then the phone rising out of the bottom (no sticker: no one scans their own screen) */
+@media (max-width: 960px) {
+  .cct-card { --hw: 480px; display: block; min-height: 0; padding-bottom: calc(var(--hw) * .8); border-radius: 30px; }
+  .cct-copy { width: auto; padding: 52px 32px 0; }
+  .cct-stage { left: calc(50% - var(--hw) * .51); }
+  .is-in .cct-stage { transform: rotate(-3deg); }
+  .cct-glow { left: 50%; }
+  .cct-qr { display: none; }
+}
+@media (max-width: 600px) {
+  .cct-sec { padding-bottom: 32px; }
+  .cct-card { --hw: 420px; border-radius: 26px; }
+  .cct-copy { padding: 40px 22px 0; }
+  .cct-h { font-size: 34px; }
+  .cct-lead { font-size: 16px; }
+  .cct-store { height: 50px; padding: 0 16px 0 13px; }
+  .cct-store b { font-size: 17px; }
+  .cct-or { margin: 18px 0; }
+  .cct-web-btn { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cct-stage, .cct-qr, .cct-mask > span, .cct-lead, .cct-stores, .cct-or, .cct-web { transition: none !important; }
+  .cct-wall, .cct-eyebrow i { animation: none; }
+}

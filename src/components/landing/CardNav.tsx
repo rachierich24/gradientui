@@ -98,7 +98,7 @@ export const defaultGrabbitNavItems: CardNavItem[] = [
       {
         label: 'For Cafés',
         description: 'Source smarter. Order faster. Single-click multi-vendor ordering.',
-        href: '#for-cafes',
+        href: '/cafe',
         accent: '#E03E3E',
         badge: 'Live',
         icon: 'cafe',
