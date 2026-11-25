@@ -1,26 +1,15 @@
-/* Gradient 365 — the hero's core, and one order delivered to every side.
-   - Each card that crosses the core lights the matching segment of the Gradient mark inside it.
-   - Scrolling down, one order (Oat Milk, 12 L) leaves the core three times over: it drops out of the core,
-     then sweeps into the café phone, the supplier dashboard and the brand dashboard in the ecosystem
-     section below, landing as each device rises to meet it — the same order, seen by every side.
-     It is fully scroll-scrubbed, so it flies back into the core on the way up.
-   API used by hero-flow.js: G365.energy.fire(side), G365.energy.layout() */
+/* Gradient 365 — one order delivered to every side.
+   Scrolling down, one order (Oat Milk, 12 L) leaves the hero's hub (#core) three times over: it drops out
+   of the hub, then sweeps into the café phone, the supplier dashboard and the brand dashboard in the
+   ecosystem section below, landing as each device rises to meet it — the same order, seen by every side.
+   It is fully scroll-scrubbed, so it flies back into the hub on the way up.
+   (The mark on the hub is driven by hero-flow.js.) API used by hero-flow.js: G365.energy.layout() */
 (function () {
   const G = (window.G365 = window.G365 || {});
   const core = document.getElementById("core");
   if (!core) return;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-
-  /* ---------- the core lights the row that just passed through it ---------- */
-  const timers = {};
-  function fire(side) {
-    if (reduce) return;
-    const k = side === "supply" || side === "brand" ? side : "cafe";
-    core.classList.add("lit-" + k);
-    clearTimeout(timers[k]);
-    timers[k] = setTimeout(() => core.classList.remove("lit-" + k), 700);
-  }
 
   /* ---------- deliveries ---------- */
   // `ax`/`ay` place the landing point on the device; `from`/`to` are each order's share of the scroll,
@@ -113,5 +102,5 @@
   }
   requestAnimationFrame(frame);
 
-  G.energy = { fire, layout() {} };
+  G.energy = { layout() {} };
 })();

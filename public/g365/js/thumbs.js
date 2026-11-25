@@ -27,9 +27,10 @@
   };
 
   G.studioLights = function (scene) {
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xc9d3de, 0.55));
-    const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(-3, 5, 4); scene.add(key);
-    const rim = new THREE.DirectionalLight(0xe6fbfa, 0.6); rim.position.set(3, 2, -4); scene.add(rim);
+    // neutral light, so each product shows its side's colour truly (red cafés, green suppliers, purple brands)
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xd2d2d6, 0.55));
+    const key = new THREE.DirectionalLight(0xffffff, 1.15); key.position.set(-3, 5, 4); scene.add(key);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.7); rim.position.set(3, 2, -4); scene.add(rim);
   };
 
   G.renderThumbs = async function (keys, size) {
@@ -40,7 +41,8 @@
     try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true }); } catch (e) { return {}; }
     renderer.setPixelRatio(1); renderer.setSize(size, size, false);
     renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+    // matches the live products (riders.js): a touch under full exposure, so white products keep their shading
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
     renderer.setClearColor(0x000000, 0);
 
     const makers = G.productMakers();

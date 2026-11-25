@@ -4,6 +4,10 @@
   const C = (G.colors = {
     navy: 0x142b63, navyDeep: 0x0f214d, teal: 0x10b8b5, tealLight: 0x39d6cf,
     ground: 0xf8fbfc, white: 0xffffff, shell: 0xf3f5f7, kraft: 0xc9a77c,
+    // the three sides, in their portals' own colours (/cafe, /supplier, /brand): main, deep, pale
+    cafe: 0xe03e3e, cafeDeep: 0xc42d2d, cafePale: 0xfdedec,
+    supply: 0x1fa952, supplyDeep: 0x178a42, supplyForest: 0x0d5228, supplyPale: 0xebf8f0,
+    brand: 0x6b33d3, brandDeep: 0x3a1f70, brandPale: 0xf3edfd,
   });
 
   /* ---------- geometry ---------- */
@@ -85,16 +89,24 @@
     });
     M.tealGlow = new THREE.MeshBasicMaterial({ color: C.tealLight, transparent: true, opacity: 0.9, toneMapped: false });
     M.tealLine = new THREE.MeshBasicMaterial({ color: C.teal, transparent: true, opacity: 0.55, toneMapped: false });
+    // each side's lacquered parts (lids, caps, frames) and its printed accent strips
+    M.cafeGloss = new THREE.MeshPhysicalMaterial({ color: C.cafe, roughness: 0.26, clearcoat: 1, clearcoatRoughness: 0.12 });
+    M.cafeDeep = new THREE.MeshPhysicalMaterial({ color: C.cafeDeep, roughness: 0.3, metalness: 0.1, clearcoat: 0.9, clearcoatRoughness: 0.15 });
+    M.supplyGloss = new THREE.MeshPhysicalMaterial({ color: C.supply, roughness: 0.24, clearcoat: 1, clearcoatRoughness: 0.12 });
+    M.supplyDeep = new THREE.MeshPhysicalMaterial({ color: C.supplyDeep, roughness: 0.32, metalness: 0.1, clearcoat: 0.85, clearcoatRoughness: 0.18 });
+    M.supplyStrip = new THREE.MeshBasicMaterial({ color: C.supply, transparent: true, opacity: 0.95, toneMapped: false });
+    M.brandGloss = new THREE.MeshPhysicalMaterial({ color: C.brand, roughness: 0.26, clearcoat: 1, clearcoatRoughness: 0.12 });
     return M;
   };
 
   /* ---------- studio environment (soft boxes for reflections) ---------- */
   G.studioEnv = function (renderer) {
     const env = new THREE.Scene();
-    const room = new THREE.Mesh(new THREE.BoxGeometry(40, 20, 40), new THREE.MeshBasicMaterial({ color: 0xb9c3cd, side: THREE.BackSide }));
+    // a neutral grey room (no colour of its own in the reflections: the products carry their sides' colours)
+    const room = new THREE.Mesh(new THREE.BoxGeometry(40, 20, 40), new THREE.MeshBasicMaterial({ color: 0xc0c0c3, side: THREE.BackSide }));
     room.position.y = 6;
     env.add(room);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshBasicMaterial({ color: 0x98a4b1 }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshBasicMaterial({ color: 0xa0a0a4 }));
     floor.rotation.x = -Math.PI / 2; floor.position.y = -3.9;
     env.add(floor);
     const panel = (w, h, x, y, z, ry, rx, k) => {
@@ -105,8 +117,9 @@
     panel(8, 8, -15, 6, 6, Math.PI / 2.4, 0, 3.2);    // key softbox
     panel(10, 5, 16, 5, -4, -Math.PI / 2.2, 0, 2.2);  // fill
     panel(14, 2.5, 0, 6, -19, 0, 0, 1.8);             // back rim strip
-    const tealCard = new THREE.Mesh(new THREE.PlaneGeometry(6, 1.2), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 1.1, 1.05) }));
-    tealCard.position.set(8, 1, 18); tealCard.rotation.y = Math.PI; env.add(tealCard);
+    // a bright card low in front, for a crisp edge highlight (it was teal; white keeps the products' own colours)
+    const edgeCard = new THREE.Mesh(new THREE.PlaneGeometry(6, 1.2), new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 1.6, 1.6) }));
+    edgeCard.position.set(8, 1, 18); edgeCard.rotation.y = Math.PI; env.add(edgeCard);
     const pm = new THREE.PMREMGenerator(renderer);
     const rt = pm.fromScene(env, 0.035);
     pm.dispose();

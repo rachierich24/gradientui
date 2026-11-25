@@ -2,8 +2,11 @@
 // Shared libraries (three.js, kit…) load once per page no matter how many sections ask for them;
 // `fresh` scripts run again on every call because they build DOM for the section that mounted.
 const JS = '/g365/js/';
-// Bump when public/g365/js changes so browsers refetch; otherwise the files cache normally.
-const BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID ?? '3';
+// Bump when public/g365/js changes so browsers refetch; otherwise the files cache for a day (next.config.ts).
+// In development every page load gets its own version, so edits to those files show on a plain reload
+// instead of a day-old copy running against new markup and CSS.
+const BUILD_ID =
+  process.env.NEXT_PUBLIC_BUILD_ID ?? (process.env.NODE_ENV === 'development' ? `dev-${Date.now()}` : '5');
 const cache: Record<string, Promise<void>> = {};
 
 function inject(file: string) {

@@ -1,0 +1,307 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   The portal tour (components/landing/EcosystemShowcase.tsx), after mixpanel.com's product tour: a rail,
+   the words, and a tall colour panel holding the product, on the ecosystem's pinned stage. Measured from
+   Mixpanel's page: rail items 88 × 69 between hairlines (the active one filled, its icon in colour); a 32px
+   tinted chip; a two-line title; a 40px pill button; a 1px gradient-bordered card; words replaced at once
+   and faded up 10px over ~0.2 s on a switch; the panel's colours crossfading under a product that is
+   cleared and rebuilt.
+───────────────────────────────────────────────────────────────────────── */
+
+/* the track: one pinned screen plus 460vh of scroll (EcosystemShowcase: RANGE_VH) */
+.eco-track.is-tour { height: 560vh; }
+
+/* ═══ chapter 1, after payop.com: the stage pins with its heading at the top, and the devices rise into the space
+   below it (EcosystemShowcase moves them; this only places them) ═══ */
+@media (min-width: 861px) {
+  .eco-track.is-tour .eco-sticky-stage > .eco-container { top: clamp(92px, 12vh, 118px); bottom: auto; }
+  .eco-track.is-tour .eco-stage-viewport { align-items: center; padding-top: clamp(196px, 27vh, 290px); padding-bottom: clamp(28px, 5vh, 48px); }
+}
+
+/* the devices don't react to the pointer (no dimming until hovered, no hand cursor) */
+.eco-track .eco-screens-group .eco-browser-window .eco-device-scaler,
+.eco-track .eco-screens-group .eco-screen-mobile .eco-phone-chassis { opacity: 1; filter: none; }
+.eco-track .eco-browser-window, .eco-track .eco-screen-mobile { cursor: default; }
+
+/* ═══ the devices, built like real ones: a body of matte aluminium in its portal's colour, faded the way anodised
+   colour is (each one solid colour: no gradient, no sheen, no glow), a black glass border, then the screen. In
+   chapter 1 each is a slab, like payop's phones, its side showing where it's turned toward you, in the same colour ═══ */
+.eco-track .eco-screen-supplier { --frame: #64B381; }
+.eco-track .eco-screen-brand { --frame: #9070CB; }
+.eco-track .eco-screen-mobile { --frame: #D27676; }
+
+/* the portals are tablets: a 3px band of the body round a thin 4px black border, the camera in the top border */
+.eco-track .eco-screens-group .eco-browser-window .eco-device-scaler { padding: 4px; border: 0; border-radius: 18px; background: #0C0D10 !important;
+  box-shadow: 0 0 0 3px var(--frame), 0 26px 46px -22px rgba(16, 18, 24, .3), 0 6px 14px rgba(16, 18, 24, .06); }
+.eco-track .eco-screens-group .eco-browser-window .eco-device-scaler::after { content: ""; position: absolute; top: .9px; left: 50%;
+  width: 2.2px; height: 2.2px; margin-left: -1.1px; border-radius: 50%; background: #2A2C33; }
+.eco-track .eco-screens-group .eco-browser-window .eco-chrome { border-radius: 14px 14px 0 0; }
+.eco-track .eco-screens-group .eco-browser-window .eco-video-body { border-radius: 0 0 14px 14px; background: #F7F7F8; }
+.eco-track .eco-screens-group .eco-browser-window .eco-dashboard-video { background: #F7F7F8; user-select: none; }
+/* in 3D: the left one's side shows on its left and bottom, the right one's on its right and bottom, as they lean back */
+.eco-track.is-tour .eco-screens-group .eco-screen-supplier .eco-device-scaler {
+  box-shadow: 0 0 0 3px var(--frame), -1px .7px 0 3px var(--frame), -2px 1.4px 0 3px var(--frame), -3px 2.1px 0 3px var(--frame),
+    -4px 2.8px 0 3px var(--frame), -5px 3.5px 0 3px var(--frame), -6px 4.2px 0 3px var(--frame), -7px 4.9px 0 3px var(--frame),
+    -18px 30px 50px -22px rgba(16, 18, 24, .3), -4px 10px 18px -8px rgba(16, 18, 24, .14); }
+.eco-track.is-tour .eco-screens-group .eco-screen-brand .eco-device-scaler {
+  box-shadow: 0 0 0 3px var(--frame), 1px .7px 0 3px var(--frame), 2px 1.4px 0 3px var(--frame), 3px 2.1px 0 3px var(--frame),
+    4px 2.8px 0 3px var(--frame), 5px 3.5px 0 3px var(--frame), 6px 4.2px 0 3px var(--frame), 7px 4.9px 0 3px var(--frame),
+    18px 30px 50px -22px rgba(16, 18, 24, .3), 4px 10px 18px -8px rgba(16, 18, 24, .14); }
+/* a tablet's browser bar: back and forward, the address, the portal's badge */
+.eco-chrome.is-tablet { gap: 10px; padding: 0 10px 0 9px; background: #F6F6F7 !important; border-bottom-color: #E8E8EA; }
+.eco-chrome.is-tablet .eco-url-bar { background: #EBEBED !important; border-color: transparent; border-radius: 6px; color: #3F4249; }
+.eco-nav { display: flex; flex: none; gap: 3px; color: #5C6068; }
+.eco-nav svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.eco-nav svg + svg { color: #B9BCC2; }
+
+/* the phone: a 2.5px band of the body round a 4.5px black border (an iPhone's proportions). Its side shows on the
+   right and bottom as it turns and leans (--edge: 1 in chapter 1, easing to 0 as it straightens into the tour) */
+.eco-track .eco-screen-mobile .eco-phone-chassis { padding: 4.5px; background: #0A0B0D;
+  box-shadow: 0 0 0 2.5px var(--frame),
+    calc(var(--edge, 0) * 1.3px) calc(var(--edge, 0) * .9px) 0 2.5px var(--frame), calc(var(--edge, 0) * 2.6px) calc(var(--edge, 0) * 1.8px) 0 2.5px var(--frame),
+    calc(var(--edge, 0) * 3.9px) calc(var(--edge, 0) * 2.7px) 0 2.5px var(--frame), calc(var(--edge, 0) * 5.2px) calc(var(--edge, 0) * 3.6px) 0 2.5px var(--frame),
+    calc(var(--edge, 0) * 10px) calc(var(--edge, 0) * 22px) 40px -14px rgba(16, 18, 24, .26), 0 4px 12px rgba(16, 18, 24, .1), 0 14px 30px -6px rgba(16, 18, 24, .16); }
+.eco-track .eco-screen-mobile .eco-phone-screen-container,
+.eco-track .eco-screen-mobile .eco-video-phone-viewport { border-radius: 33.5px; }
+/* its buttons, in the body's colour and standing proud of the band: the action button and volume on the left, the
+   side button on the right (out past the side while the side shows) */
+.eco-track .eco-screen-mobile .eco-phone-btn { border: 0; background: var(--frame); }
+.eco-track .eco-screen-mobile .eco-btn-action,
+.eco-track .eco-screen-mobile .eco-btn-vol-up,
+.eco-track .eco-screen-mobile .eco-btn-vol-down { left: -4.2px; width: 4.2px; border-radius: 1.5px 0 0 1.5px; }
+.eco-track .eco-screen-mobile .eco-btn-power { right: calc(-4.2px - var(--edge, 0) * 5.2px); top: calc(135px + var(--edge, 0) * 3.6px); width: 4.2px; border-radius: 0 1.5px 1.5px 0; }
+/* the earpiece is a slit at the top of the border; the Dynamic Island is black and flush with the glass (no
+   shadow, no pulse); no glare on the glass */
+.eco-track .eco-screen-mobile .eco-phone-speaker { top: 1.4px; width: 34px; height: 1.6px; background: #1E1F24; }
+/* the status bar is see-through, over the app, as on the real thing */
+.eco-track .eco-screen-mobile .eco-phone-statusbar { background: transparent; }
+.eco-track .eco-screen-mobile .eco-phone-island { box-shadow: none; }
+.eco-track .eco-screen-mobile .eco-island-status-pulse { display: none; }
+.eco-track .eco-screen-mobile .eco-phone-glass-glare { display: none; }
+/* chapter 1's still of the café app, over the film; it fades once the film is playing in the panel (.is-live) */
+.eco-phone-still { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; background: #fff;
+  user-select: none; pointer-events: none; transition: opacity .45s ease; }
+.eco-video-phone-viewport.is-live .eco-phone-still { opacity: 0; }
+
+/* no glowing or pulsing dots anywhere on the devices */
+.eco-track .eco-url-ping { box-shadow: none; animation: none; }
+.eco-track .eco-role-dot { animation: none; }
+
+/* one order arriving on every side: a notification on each device in turn, café → supplier → brand, once they've
+   risen in (.is-arrived); they go again as chapter 1 moves on */
+.eco-toast { --tc: #E03E3E; --d: 0s;
+  position: absolute; z-index: 30; display: flex; align-items: center; gap: 8px; padding: 7px 9px 7px 7px; border-radius: 12px;
+  background: rgba(255, 255, 255, .9); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .07), 0 12px 26px -12px rgba(15, 20, 30, .38);
+  font-family: var(--font-sans, inherit); color: #0B0C0E; pointer-events: none;
+  opacity: 0; transform: translateY(-12px) scale(.96); transition: opacity .25s ease, transform .3s ease; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast { opacity: 1; transform: none;
+  transition: opacity .4s ease var(--d), transform .75s cubic-bezier(.34, 1.4, .64, 1) var(--d); }
+/* on the phone the order arrives as a Live Activity: the Dynamic Island opens out into a black alert across the top
+   of the screen (clipped from the island's own shape: 64 × 16.5 at 6px down), over the status bar, and closes back
+   into the island as chapter 1 moves on */
+.eco-toast.is-phone { --tc: #E03E3E; --d: .1s; left: 6px; right: 6px; top: 5px; height: 54px; padding: 0 14px 0 10px; gap: 9px;
+  border-radius: 24px; background: #000; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; color: #fff;
+  transform: none; clip-path: inset(1px calc(50% - 32px) 36.5px calc(50% - 32px) round 8.25px);
+  transition: clip-path .42s cubic-bezier(.4, 0, .2, 1), opacity .1s linear .38s; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast.is-phone { transform: none; clip-path: inset(0 round 24px);
+  transition: opacity .06s linear var(--d), clip-path .62s cubic-bezier(.2, .9, .25, 1) var(--d); }
+.eco-toast.is-phone > * { opacity: 0; transition: opacity .12s ease; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast.is-phone > * { opacity: 1; transition: opacity .3s ease calc(var(--d) + .26s); }
+.eco-toast.is-phone .eco-toast-icon { width: 28px; height: 28px; border-radius: 8px; }
+.eco-toast.is-phone .eco-toast-top { color: #8E8E93; }
+.eco-toast.is-phone .eco-toast-top b { color: #EE9393; }
+.eco-toast.is-phone small { color: #A1A1A6; }
+/* the status bar gives way to the open island */
+.eco-track.is-tour .eco-screen-mobile .eco-phone-statusbar { transition: opacity .2s ease .25s; }
+.eco-track.is-tour .eco-screens-group.is-arrived .eco-screen-mobile .eco-phone-statusbar { opacity: 0; transition: opacity .12s ease .1s; }
+/* on the tablets: inside the 4px border, just under the browser bar */
+.eco-toast.is-supplier { --tc: #1FA952; --d: .8s; right: 14px; top: 44px; width: 214px; }
+.eco-toast.is-brand { --tc: #6B33D3; --d: 1.5s; right: 14px; top: 44px; width: 186px; }
+.eco-toast-icon { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 7px; background: var(--tc); color: #fff; }
+.eco-toast-icon svg { width: 62%; height: 62%; }
+.eco-toast-tx { display: flex; flex: 1; flex-direction: column; gap: 1px; min-width: 0; }
+.eco-toast-top { display: flex; justify-content: space-between; gap: 6px; font-size: 8.5px; line-height: 1.2; color: #8A8E95; }
+.eco-toast-top b { font-weight: 650; letter-spacing: .02em; color: var(--tc); }
+.eco-toast strong { overflow: hidden; font-size: 10.5px; font-weight: 650; line-height: 1.25; white-space: nowrap; text-overflow: ellipsis; }
+.eco-toast small { overflow: hidden; font-size: 9px; line-height: 1.25; color: #6B6F76; white-space: nowrap; text-overflow: ellipsis; }
+.eco-toast em { flex: none; align-self: flex-start; font-style: normal; font-size: 10px; font-weight: 700; }
+.eco-track:not(.is-tour) .eco-toast { display: none; }
+@media (prefers-reduced-motion: reduce) { .eco-toast { transition: none !important; } }
+/* narrow screens and reduced motion: nothing pins, the portals follow as cards */
+.eco-track:not(.is-tour) { height: auto; }
+.eco-track:not(.is-tour) .eco-sticky-stage { position: relative; }
+.pt-anchor { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
+
+/* each portal's colours: only its own site's (/cafe, /supplier, /brand) — its main colour, a deeper shade and its pale tint */
+.eco-track [data-portal="cafe"] { --c: #E03E3E; --c-deep: #C42D2D; --chip-bg: #FDEDEC; --chip-b: #F4BDBC; --chip-c: #C42D2D; --g1: #F1A6A6; --g2: #E03E3E; --tint1: #FFF8F8; --tint2: #FDEDEC; --tint3: #FBE1E0; }
+.eco-track [data-portal="supplier"] { --c: #1FA952; --c-deep: #198C43; --chip-bg: #EBF8F0; --chip-b: #B9E3C8; --chip-c: #0D5228; --g1: #9AD6B0; --g2: #1FA952; --tint1: #F7FCF9; --tint2: #EBF8F0; --tint3: #DDF2E5; }
+.eco-track [data-portal="brand"] { --c: #6B33D3; --c-deep: #3A1F70; --chip-bg: #F3EDFD; --chip-b: #D6C6F6; --chip-c: #3A1F70; --g1: #BCA1EA; --g2: #6B33D3; --tint1: #FBF9FE; --tint2: #F3EDFD; --tint3: #E8DDFB; }
+
+/* ═══ the two layers: behind the devices (the panel) and in front (rail, words, floating cards); same grid ═══ */
+.pt-back, .pt-front {
+  position: absolute; top: 88px; bottom: 16px;
+  /* clear of the page's section rail on the right (fixed, 27px in and 48px wide; hidden below 1100px) */
+  left: max(24px, calc((100% - 1480px) / 2)); right: max(92px, calc((100% - 1480px) / 2 + 68px));
+  display: grid; grid-template-columns: 88px minmax(0, .9fr) minmax(0, 1.1fr); column-gap: clamp(28px, 3.6vw, 60px);
+  pointer-events: none;
+}
+@media (max-width: 1100px) { .pt-back, .pt-front { right: 24px; } }
+.pt-back { z-index: 4; }
+.pt-front { z-index: 7; }
+.pt-front.is-on .pt-rail, .pt-front.is-on .pt-copy { pointer-events: auto; }
+
+/* ═══ the colour panel ═══ */
+.pt-panel { grid-column: 3; position: relative; overflow: hidden; border-radius: 28px; background: #E9E9EB; isolation: isolate;
+  box-shadow: 0 50px 90px -60px rgba(20, 16, 30, .45); }
+/* the living colour fields (a stand-in for Mixpanel's shader), one per portal, each in its portal's colour only
+   (EcosystemShowcase: FIELD, as --p0…--p6): a base gradient and two layers of soft blobs drifting slowly against
+   each other. A switch is a plain fade: the old colour goes, then the new one comes in, so they never mix */
+.pt-field { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity .3s ease-in;
+  background: linear-gradient(155deg, var(--p0) 0%, var(--p1) 46%, var(--p2) 100%); }
+.pt-field.is-on { opacity: 1; transition: opacity .55s ease-out .22s; }
+.pt-field::before, .pt-field::after { content: ""; position: absolute; inset: -22%; animation: ptDrift 24s ease-in-out infinite alternate; animation-play-state: paused; }
+.pt-field.is-on::before, .pt-field.is-on::after { animation-play-state: running; }
+.pt-field::before { background: radial-gradient(40% 36% at 22% 20%, var(--p3), transparent 70%), radial-gradient(40% 40% at 80% 78%, var(--p4), transparent 72%); }
+.pt-field::after { background: radial-gradient(36% 34% at 78% 22%, var(--p5), transparent 70%), radial-gradient(44% 40% at 24% 82%, var(--p6), transparent 72%);
+  animation-duration: 31s; animation-direction: alternate-reverse; }
+@keyframes ptDrift {
+  from { transform: translate3d(-4%, -3%, 0) rotate(-6deg) scale(1); }
+  to { transform: translate3d(4%, 3%, 0) rotate(6deg) scale(1.08); }
+}
+.pt-grain { position: absolute; inset: 0; z-index: 1; background-image: url(/cafe/noise.png); opacity: .07; mix-blend-mode: overlay; pointer-events: none; }
+
+/* where the product sits: the phone's box (measured; the phone itself flies in from chapter 1), and the window */
+.pt-area { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; }
+.pt-slot { flex: none; height: min(calc(100% - 120px), 640px); aspect-ratio: 224 / 460; visibility: hidden; }
+/* the supplier/brand window: drops out (ease-in) when the phone comes back, rises in (ease-out) after the phone
+   has gone; between supplier and brand it stays, and its film, address and badge change. (Both states are whole
+   transforms: the CSS build folds a `translate` that shares a rule with `transform` into it.) */
+.pt-window { position: absolute; left: 50%; top: 50%; width: min(calc(100% - 64px), 760px);
+  overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08), 0 34px 64px -26px rgba(10, 20, 30, .5);
+  opacity: 0; transform: translate(-50%, calc(-54% + 56px)); transition: opacity .3s ease, transform .45s cubic-bezier(.55, 0, .75, .25); }
+.pt-window.is-on { opacity: 1; transform: translate(-50%, -54%); transition: opacity .5s ease .2s, transform .8s cubic-bezier(.16, 1, .3, 1) .2s; }
+.pt-window .eco-url-bar, .pt-window .eco-window-role-badge { animation: ptFade .5s ease .2s both; }
+/* cleared at once to an empty white window (Mixpanel's empty card), rebuilt after a beat */
+.pt-films { position: relative; background: #fff; }
+.pt-film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #fff; opacity: 0; transition: opacity .12s ease; }
+.pt-film.is-on { opacity: 1; transition: opacity .55s ease .25s; }
+
+/* the phone in the tour: away (down and out, ease-in) while another portal has the panel; back (ease-out) after
+   the window has gone */
+.eco-track.is-tour .eco-screen-mobile { transition: translate .8s cubic-bezier(.16, 1, .3, 1) .2s, opacity .5s ease .2s; }
+.eco-track.is-tour .eco-screen-mobile.is-tour-out { translate: 0 96px; opacity: 0; pointer-events: none;
+  transition: translate .45s cubic-bezier(.55, 0, .75, .25), opacity .3s ease .08s; }
+
+/* ═══ the rail ═══ */
+.pt-rail { grid-column: 1; display: flex; align-items: center; border-left: 1px solid #EEEEF0; border-right: 1px solid #EEEEF0; }
+.pt-rail-items { width: 100%; border-top: 1px solid #EEEEF0; }
+.pt-rail button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 74px; padding: 0;
+  border: 0; border-bottom: 1px solid #EEEEF0; background: transparent; color: rgba(11, 12, 14, .62); font: 500 11px/1 var(--font-sans, inherit);
+  cursor: pointer; transition: background-color .35s ease, color .35s ease; }
+.pt-rail button svg { width: 20px; height: 20px; color: #A2A6AD; transition: color .35s ease; }
+.pt-rail button:hover { color: #0B0C0E; }
+.pt-rail button.is-on { background: #F4F4F6; color: #0B0C0E; }
+.pt-rail button.is-on svg { color: var(--c); }
+.pt-rail button:focus-visible { outline: 2px solid var(--c); outline-offset: -2px; }
+
+/* ═══ the words ═══ */
+.pt-copy { grid-column: 2; align-self: center; max-width: 520px; font-family: var(--font-sans, inherit); }
+/* a switch: the old words are gone at once, the new ones fade up 10px, a touch staggered */
+.pt-copy > * { animation: ptUp .5s cubic-bezier(.2, .8, .2, 1) both; }
+.pt-copy > :nth-child(2) { animation-delay: .03s; }
+.pt-copy > :nth-child(3) { animation-delay: .06s; }
+.pt-copy > :nth-child(4) { animation-delay: .09s; }
+.pt-copy > :nth-child(5) { animation-delay: .14s; }
+@keyframes ptUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes ptFade { from { opacity: 0; } to { opacity: 1; } }
+.pt-chip { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px 0 10px; border-radius: 8px;
+  border: 1px solid var(--chip-b); background: var(--chip-bg); color: var(--chip-c); font-size: 14px; font-weight: 500; }
+.pt-chip svg { width: 16px; height: 16px; }
+.pt-title { margin: 18px 0 0; font-size: clamp(28px, 2.55vw, 40px); font-weight: 650; line-height: 1.1; letter-spacing: -.035em; color: #0B0C0E; }
+.pt-body { max-width: 470px; margin: 14px 0 0; font-size: 16px; line-height: 1.55; color: #5F636A; }
+.pt-cta { display: inline-flex; align-items: center; gap: 6px; height: 42px; margin-top: 24px; padding: 0 16px 0 18px; border-radius: 999px;
+  background: rgba(11, 12, 14, .065); color: #0B0C0E; font-size: 15px; font-weight: 600; letter-spacing: -.01em; text-decoration: none; transition: background-color .2s ease; }
+.pt-cta svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+.pt-cta:hover { background: rgba(11, 12, 14, .1); }
+.pt-cta:hover svg { transform: translateX(2px); }
+.pt-cta:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; }
+/* "Now showing": Mixpanel's gradient-bordered card, following the film */
+.pt-now { margin-top: 40px; padding: 1px; border-radius: 12px; background: linear-gradient(101deg, var(--g1), var(--g2)); }
+.pt-now-in { padding: 15px 18px 12px; border-radius: 11px; background: linear-gradient(101deg, var(--tint1), var(--tint2)); }
+.pt-now-head { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--chip-c); }
+.pt-now-title { display: block; margin-top: 10px; font-size: 16px; font-weight: 650; color: #0B0C0E; animation: ptFade .45s ease both; }
+.pt-now-text { margin: 4px 0 0; font-size: 14px; line-height: 1.45; color: #5F636A; animation: ptFade .45s ease .05s both; }
+.pt-now-segs { display: flex; gap: 6px; margin-top: 10px; }
+.pt-now-segs button { flex: 1; padding: 6px 0; border: 0; background: none; cursor: pointer; }
+.pt-now-segs button:focus-visible { outline: 2px solid var(--c); outline-offset: 1px; border-radius: 4px; }
+.pt-now-segs span { position: relative; display: block; height: 4px; overflow: hidden; border-radius: 4px; background: rgba(11, 12, 14, .1); }
+.pt-now-segs span::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--c); transform: scaleX(var(--f, 0)); transform-origin: 0 50%; }
+
+/* ═══ the floating cards (Mixpanel's insight cards): in once the product is in ═══ */
+.pt-over { grid-column: 3; position: relative; }
+.pt-float { position: absolute; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+  background: rgba(255, 255, 255, .95); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: #0B0C0E; font-family: var(--font-sans, inherit);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6), 0 26px 50px -22px rgba(20, 10, 30, .5); animation: ptPop .65s cubic-bezier(.34, 1.4, .64, 1) .6s both; }
+@keyframes ptPop { from { opacity: 0; transform: translateY(12px) scale(.94); } to { opacity: 1; transform: none; } }
+.pt-float small { display: block; font-size: 11.5px; line-height: 1.3; color: #6B6F76; }
+.pt-float b { display: block; font-size: 14px; font-weight: 650; line-height: 1.3; }
+.pt-float-icon { display: grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 11px; background: var(--c); color: #fff; }
+.pt-float-icon svg { width: 20px; height: 20px; }
+.pt-float-tx { flex: 1; min-width: 0; }
+/* the café: a delivery on its way, beside the phone */
+.pt-float.is-cafe { left: 3%; top: 56%; width: 286px; flex-wrap: wrap; }
+.pt-float-eta { text-align: right; }
+.pt-float-eta b { font-size: 18px; letter-spacing: -.02em; }
+.pt-float-track { display: flex; gap: 4px; flex-basis: 100%; }
+.pt-float-track i { flex: 1; height: 4px; border-radius: 4px; background: var(--tint3); }
+.pt-float-track i:nth-child(-n+3) { background: var(--c); }
+.pt-float-track i:nth-child(3) { animation: ptPulse 1.4s ease-in-out infinite; }
+@keyframes ptPulse { 50% { opacity: .45; } }
+/* the supplier: a WhatsApp message turned into an order */
+.pt-float.is-supplier { left: 3%; bottom: 6%; width: 316px; flex-direction: column; align-items: stretch; gap: 8px; }
+.pt-float-from { font-size: 11.5px; color: #6B6F76; }
+.pt-float-from b { display: inline; font-size: 11.5px; color: #0B0C0E; }
+.pt-float-bubble { align-self: flex-start; max-width: 92%; padding: 8px 10px; border-radius: 4px 12px 12px 12px; background: var(--tint3); font-size: 12.5px; line-height: 1.4; color: #111813; }
+.pt-float-po { display: flex; align-items: center; gap: 10px; padding-top: 8px; border-top: 1px solid #EEF0F2; }
+.pt-float-po > span { flex: 1; min-width: 0; }
+.pt-float-po b { font-size: 13px; }
+.pt-float-po em { font-style: normal; font-size: 13px; font-weight: 700; }
+.pt-float-po i { padding: 4px 9px; border-radius: 999px; background: var(--tint2); color: var(--c-deep); font-style: normal; font-size: 11px; font-weight: 700; }
+/* the brand: a repeat order, as it comes in */
+.pt-float.is-brand { right: 3%; bottom: 7%; width: 290px; }
+.pt-float-amt { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+
+/* ═══ narrower desktops, and shorter ones ═══ */
+@media (max-width: 1180px) {
+  .pt-back, .pt-front { grid-template-columns: 72px minmax(0, 1fr) minmax(0, 1.1fr); column-gap: 28px; }
+  .pt-rail button { height: 66px; font-size: 10px; }
+  .pt-title { font-size: clamp(26px, 2.7vw, 32px); }
+  .pt-body { font-size: 15px; }
+  .pt-float.is-supplier { width: 280px; }
+}
+@media (max-height: 760px) {
+  .pt-back, .pt-front { top: 84px; bottom: 12px; }
+  .pt-title { font-size: clamp(26px, 2.3vw, 32px); }
+  .pt-now { margin-top: 28px; }
+  .pt-cta { margin-top: 20px; }
+}
+
+/* ═══ the stacked cards: narrow screens, and reduced motion ═══ */
+.pt-stack { position: relative; z-index: 2; display: grid; gap: 18px; width: min(100%, 1180px); margin: 0 auto; padding: 8px 16px 72px; background: #fff; }
+.pt-card { position: relative; display: grid; gap: 22px; padding: 28px 20px 20px; border-radius: 28px; background: #F7F7F8; scroll-margin-top: 84px; }
+.pt-copy.is-static { max-width: none; }
+.pt-copy.is-static > * { animation: none; }
+.pt-copy.is-static .pt-now { margin-top: 28px; }
+.pt-card-panel { position: relative; display: grid; place-items: center; min-height: 340px; padding: 32px 16px; overflow: hidden; border-radius: 20px; isolation: isolate; }
+.pt-card-panel .pt-field::before, .pt-card-panel .pt-field::after { animation: none; }
+.pt-card .pt-window { position: relative; z-index: 2; left: auto; top: auto; transform: none; translate: none; opacity: 1; width: 100%; max-width: 640px; }
+.pt-mphone { position: relative; z-index: 2; width: min(240px, 68%); aspect-ratio: 1080 / 2240; overflow: hidden; border: 7px solid #0B0C0E; border-radius: 36px; background: #fff;
+  box-shadow: 0 30px 50px -24px rgba(0, 0, 0, .5); }
+.pt-mphone video { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 861px) {
+  .pt-card { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 40px; padding: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-copy > *, .pt-float, .pt-now-title, .pt-now-text { animation: none !important; }
+  .pt-field::before, .pt-field::after { animation: none !important; }
+}
