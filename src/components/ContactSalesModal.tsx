@@ -5,6 +5,12 @@ export const OPEN_CONTACT_SALES_EVENT = 'gradient:open-contact-sales';
 export function openContactSalesModal() {
   if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent(OPEN_CONTACT_SALES_EVENT));
 }
+// The same, with what a page already knows about the visitor (e.g. the supplier page's CTA): the modal skips the
+// role question and has these filled in.
+export type ContactPrefill = { role?: 'cafe' | 'supplier' | 'brand'; company?: string; roleDetail?: string };
+export function openContactSalesModalWith(prefill: ContactPrefill) {
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent(OPEN_CONTACT_SALES_EVENT, { detail: prefill }));
+}
 
 type Role = 'cafe' | 'supplier' | 'brand';
 const ROLES: { value: Role; label: string }[] = [
@@ -30,9 +36,10 @@ const ROLE_EMAIL: Record<Role, { label: string; placeholder: string }> = {
 type FormState = {
   role: Role | '';
   first: string; last: string; email: string; phone: string;
-  city: string; roleDetail: string; details: string;
+  city: string; company: string; roleDetail: string; details: string;
 };
-const EMPTY_FORM: FormState = { role: '', first: '', last: '', email: '', phone: '', city: '', roleDetail: '', details: '' };
+const EMPTY_FORM: FormState = { role: '', first: '', last: '', email: '', phone: '', city: '', company: '', roleDetail: '', details: '' };
+const COMPANY_LABEL: Record<Role, string> = { cafe: 'Café name', supplier: 'Business name', brand: 'Brand name' };
 
 const TOTAL_STEPS = 5;
 
@@ -46,7 +53,14 @@ export function ContactSalesModal() {
   const firstFieldRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const onOpen = () => { setOpen(true); setStep(0); setSubmitted(false); setError(null); setForm(EMPTY_FORM); };
+    const onOpen = (e: Event) => {
+      const p = (e as CustomEvent<ContactPrefill | undefined>).detail;
+      const role = p && ROLES.some((r) => r.value === p.role) ? p.role! : '';
+      const text = (v: unknown) => (typeof v === 'string' ? v.trim().slice(0, 120) : '');
+      setOpen(true); setSubmitted(false); setError(null);
+      setForm({ ...EMPTY_FORM, role, company: text(p?.company), roleDetail: text(p?.roleDetail) });
+      setStep(role ? 1 : 0);   // the role is known: straight on to the name
+    };
     window.addEventListener(OPEN_CONTACT_SALES_EVENT, onOpen);
     return () => window.removeEventListener(OPEN_CONTACT_SALES_EVENT, onOpen);
   }, []);
@@ -97,6 +111,7 @@ export function ContactSalesModal() {
     const details = [
       form.details.trim(),
       roleLabel && `Role: ${roleLabel}`,
+      form.company.trim() && form.role && `${COMPANY_LABEL[form.role]}: ${form.company.trim()}`,
       form.city && `City: ${form.city}`,
       roleField && form.roleDetail && `${roleField.label}: ${form.roleDetail}`,
       form.phone && `Phone: ${form.phone}`,
@@ -207,6 +222,12 @@ export function ContactSalesModal() {
                   {form.role === 'brand' && 'Tell us about your brand'}
                 </h2>
                 <p className="csm-sub">This information will only be used to reach out to you.</p>
+                {form.role && (
+                  <div className="csm-field">
+                    <label>{COMPANY_LABEL[form.role]}</label>
+                    <input value={form.company} onChange={set('company')} placeholder={form.role === 'supplier' ? 'e.g. Sundial Specialty Roasters' : ''} />
+                  </div>
+                )}
                 <div className="csm-field">
                   <label>City</label>
                   <input ref={firstFieldRef} value={form.city} onChange={set('city')} placeholder="e.g. Bengaluru" />

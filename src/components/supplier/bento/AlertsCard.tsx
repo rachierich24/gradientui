@@ -46,23 +46,26 @@ export function AlertsCard({ run }: { run: boolean }) {
           return (
             <li key={s.name} className={`is-${state}`}>
               <img src={s.img} alt="" />
-              <span className="sbx-sku-txt"><b>{s.name}</b><small>{days} days left</small></span>
+              <span className="sbx-sku-txt"><b>{s.name}</b><small>{days} {days === 1 ? 'day' : 'days'} left</small></span>
               <span className="sbx-bar"><i style={{ width: `${lv[i] * 100}%` }} /></span>
             </li>
           );
         })}
       </ul>
       <AnimatePresence>
-        {alert !== null && (
-          <motion.div className="sbx-alert" initial={{ opacity: 0, y: 24, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 16 }} transition={{ type: 'spring', stiffness: 380, damping: 30 }}>
-            <span className="sbx-warn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01" /></svg></span>
-            <div>
-              <b>{SKUS[alert].name} runs out in {Math.max(1, Math.round(lv[alert] * 16))} days</b>
-              <small>Demand up {SKUS[alert].up}% across {SKUS[alert].cafes} cafés. Suggested reorder: {SKUS[alert].reorder}.</small>
-            </div>
-            <button type="button" className={po ? 'is-done' : ''} onClick={draft} disabled={po}>{po ? 'PO drafted ✓' : 'Draft PO'}</button>
-          </motion.div>
-        )}
+        {alert !== null && (() => {
+          const alertDays = Math.max(1, Math.round(lv[alert] * 16));
+          return (
+            <motion.div className="sbx-alert" initial={{ opacity: 0, y: 20, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 14, scale: 0.97 }} transition={{ type: 'spring', stiffness: 360, damping: 28 }}>
+              <span className="sbx-warn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01" /></svg></span>
+              <div>
+                <b>{SKUS[alert].name} runs out in {alertDays} {alertDays === 1 ? 'day' : 'days'}</b>
+                <small>Demand up {SKUS[alert].up}% across {SKUS[alert].cafes} cafés. Suggested reorder: {SKUS[alert].reorder}.</small>
+              </div>
+              <button type="button" className={po ? 'is-done' : ''} onClick={draft} disabled={po}>{po ? 'PO drafted ✓' : 'Draft PO'}</button>
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
     </Window>
   );

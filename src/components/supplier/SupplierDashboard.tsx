@@ -943,7 +943,7 @@ export function SupplierDashboard({ live }: { live: boolean }) {
         ) : (
           <>
             <span className="sdb-tour-dot" />
-            <span className="sdb-tour-t"><b>You’re in control.</b>Everything works: try ⌘K, an order or the route.</span>
+            <span className="sdb-tour-t"><b>You’re in control.</b><span className="sdb-tour-extra">Everything works: try ⌘K, an order or the route.</span></span>
             <button type="button" className="sdb-tour-b is-text" onClick={replay}><Ico d={I.replay} s={13} />Replay tour</button>
           </>
         )}

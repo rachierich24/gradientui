@@ -1,24 +1,9 @@
+// The supplier portal's sections, in page order (app/supplier/page.tsx)
 export { SupplierNavbar } from './SupplierNavbar';
 export { SupplierHeroScene } from './SupplierHeroScene';
 export { SupplierChaosFlow } from './SupplierChaosFlow';
-export { SupplierHero } from './SupplierHero';
-export { PackagingScene } from './PackagingScene';
-export { SupplierWorkspace } from './SupplierWorkspace';
-export { OrderWorkflowDemo } from './OrderWorkflowDemo';
 export { SupplierBentoFeatures } from './SupplierBentoFeatures';
-export { SupplierOperationPath } from './SupplierOperationPath';
-export { SupplierBenefits } from './SupplierBenefits';
-export { SupplierWorkflowSteps } from './SupplierWorkflowSteps';
-export { SupplierInventory } from './SupplierInventory';
-export { SupplierLogistics } from './SupplierLogistics';
-export { SupplierAnalytics } from './SupplierAnalytics';
-export { SupplierIntegrations } from './SupplierIntegrations';
-export { SupplierTrust } from './SupplierTrust';
+export { SupplierGrowth } from './SupplierGrowth';
+export { SupplierBillSyncAudit } from './SupplierBillSyncAudit';
 export { SupplierFaq } from './SupplierFaq';
 export { SupplierCta } from './SupplierCta';
-export { SupplierBillSyncAudit } from './SupplierBillSyncAudit';
-export { SupplierGrowth } from './SupplierGrowth';
-export { FutureSection, SupplierCtaSection } from './FutureSection';
-export { SupplierFooter } from './SupplierFooter';
-
-

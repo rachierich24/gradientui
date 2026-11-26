@@ -50,17 +50,32 @@ function formatINR(v: number): string {
 
 export function GrowthCard({ run, still }: GrowthCardProps) {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [hasEntered, setHasEntered] = useState(still);
   const [revenue, setRevenue] = useState<number>(still ? TARGET_REVENUE : 0);
 
-  // Animated count-up effect
+  // Trigger bar, meter, and count-up playback when card enters the viewport
   useEffect(() => {
-    if (still || !run) {
+    if (still) {
+      setHasEntered(true);
       setRevenue(TARGET_REVENUE);
       return;
     }
+    if (run && !hasEntered) {
+      setHasEntered(true);
+    }
+  }, [run, still, hasEntered]);
+
+  // Animated count-up synchronized with entrance
+  useEffect(() => {
+    if (still) {
+      setRevenue(TARGET_REVENUE);
+      return;
+    }
+    if (!hasEntered) return;
+
     let raf = 0;
     const startTime = performance.now();
-    const duration = 1500;
+    const duration = 1400;
 
     const tick = (now: number) => {
       const elapsed = now - startTime;
@@ -74,18 +89,21 @@ export function GrowthCard({ run, still }: GrowthCardProps) {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [run, still]);
+  }, [hasEntered, still]);
 
   const activeBar = hoverIdx !== null ? BARS_DATA[hoverIdx] : null;
+  const tooltipLeftPct = hoverIdx !== null
+    ? Math.max(14, Math.min(86, (hoverIdx / (BARS_DATA.length - 1)) * 100))
+    : 50;
 
   return (
     <div className="sup-growth-stage">
       {/* ─── Top Floating Card: Roastery Tier & Capacity Meter ─── */}
       <motion.div
         className="sup-tier-card"
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        initial={still ? false : { opacity: 0, y: 12 }}
+        animate={hasEntered || still ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+        transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="sup-tier-top">
           <div className="sup-tier-icon" aria-hidden="true">
@@ -126,10 +144,10 @@ export function GrowthCard({ run, still }: GrowthCardProps) {
           </div>
           <div className="sup-meter-track" role="progressbar" aria-valuenow={84} aria-valuemin={0} aria-valuemax={100}>
             <motion.div
-              className="sup-meter-bar"
-              initial={{ width: 0 }}
-              animate={{ width: '84%' }}
-              transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className={`sup-meter-bar${run && !still ? ' is-live' : ''}`}
+              initial={{ width: still ? '84%' : 0 }}
+              animate={{ width: hasEntered || still ? '84%' : 0 }}
+              transition={{ duration: still ? 0 : 1.05, delay: still ? 0 : 0.14, ease: [0.16, 1, 0.3, 1] }}
             />
           </div>
         </div>
@@ -138,9 +156,9 @@ export function GrowthCard({ run, still }: GrowthCardProps) {
       {/* ─── Bottom Floating Card: 30-Day Growth & Green Bar Chart ─── */}
       <motion.div
         className="sup-graph-card"
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        initial={still ? false : { opacity: 0, y: 16 }}
+        animate={hasEntered || still ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+        transition={{ duration: 0.52, delay: still ? 0 : 0.08, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="sup-graph-header">
           <div className="sup-graph-sub">Supplier&apos;s growth in the past 30 days</div>
@@ -172,11 +190,11 @@ export function GrowthCard({ run, still }: GrowthCardProps) {
                 >
                   <motion.div
                     className="sup-bar-fill"
-                    initial={{ height: 0 }}
-                    animate={{ height: `${bar.pct}%` }}
+                    initial={{ height: still ? `${bar.pct}%` : 0 }}
+                    animate={{ height: hasEntered || still ? `${bar.pct}%` : 0 }}
                     transition={{
-                      duration: still ? 0 : 0.65,
-                      delay: still ? 0 : 0.06 + i * 0.015,
+                      duration: still ? 0 : 0.62,
+                      delay: still ? 0 : 0.08 + i * 0.016,
                       ease: [0.34, 1.35, 0.64, 1],
                     }}
                   />
@@ -189,9 +207,7 @@ export function GrowthCard({ run, still }: GrowthCardProps) {
           {activeBar && hoverIdx !== null && (
             <div
               className="sup-tooltip"
-              style={{
-                left: `${(hoverIdx / (BARS_DATA.length - 1)) * 100}%`,
-              }}
+              style={{ left: `${tooltipLeftPct}%` }}
               role="tooltip"
             >
               <span className="sup-tt-date">{activeBar.label}</span>

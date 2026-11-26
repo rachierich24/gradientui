@@ -14,13 +14,56 @@ import { SupplierDashboard } from './SupplierDashboard';
 
 const hand = Caveat({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-hand', display: 'swap' });
 
-const CW = 1200, CH = 640;
-// The truck at rest (canvas units). SLOT is the screen opening on the cargo box, relative to the truck.
-// The cargo box rises above the cab (as real box trucks do): it spans y = BOX_TOP…300 in truck units,
+// The truck is drawn in truck units (980 × 380). SLOT is the screen opening on the cargo box, relative to the
+// truck. The cargo box rises above the cab (as real box trucks do): it spans y = BOX_TOP…300 in truck units,
 // so its side panel matches the portal's proportions. The screen fills that panel edge to edge.
-const TRUCK = { left: 110, top: 120, w: 980, h: 380, boxW: 700 };
+const TRUCK_W = 980, TRUCK_H = 380, BOX_W = 700;
 const BOX_TOP = -86, LIFT = 90; // the svg extends LIFT units above the truck box for the taller cargo box
-const SLOT = { x: 18, y: -73, w: 674, h: 354 };
+const SLOT = { x: 18, y: -73, w: 674, h: 348 };
+// Two layouts on the same engine: the desktop's wide canvas, and a portrait one for phones (760px and under) with
+// six of the pieces in a collage and the truck at 40% across the bottom. `k` is the truck's scale on the canvas.
+type Geo = { cw: number; ch: number; left: number; top: number; k: number };
+const DESK: Geo = { cw: 1200, ch: 640, left: 110, top: 120, k: 1 };
+const PHONE: Geo = { cw: 400, ch: 530, left: 4, top: 374, k: 0.4 };
+// each piece: [left, top, width] on the desktop canvas, and on the phone's (null: not on a phone)
+type Pos = [number, number, number];
+const POS: Record<string, { d: Pos; m: Pos | null }> = {
+  wa: { d: [30, 40, 284], m: [8, 2, 224] },
+  book: { d: [346, 22, 232], m: [236, 10, 158] },
+  sheet: { d: [40, 330, 334], m: [4, 246, 230] },
+  calls: { d: [404, 290, 200], m: null },
+  pay: { d: [618, 36, 234], m: [238, 174, 156] },
+  tally: { d: [880, 40, 290], m: null },
+  challan: { d: [872, 330, 262], m: null },
+  sticky: { d: [642, 300, 172], m: [262, 332, 128] },
+  chat: { d: [600, 470, 262], m: [14, 434, 244] },
+  file: { d: [420, 498, 112], m: null },
+  mail: { d: [820, 250, 64], m: [194, 160, 50] },
+  folder: { d: [596, 196, 96], m: null },
+};
+
+const DESK_LINKS = [
+  'M314 118C336 118 330 96 346 96',
+  'M462 238C462 262 484 266 488 290',
+  'M404 340C388 344 384 344 376 350',
+  'M578 118C598 118 600 96 616 96',
+  'M852 104C866 104 868 112 880 112',
+  'M1022 236C1022 282 1000 292 1000 330',
+  'M872 432C842 432 832 392 816 386',
+  'M726 436C726 452 730 456 732 470',
+  'M598 512C570 516 548 530 524 540',
+  'M374 482C396 492 402 528 418 542',
+  'M734 176C742 230 800 268 818 280',
+  'M640 270C650 288 690 286 700 300',
+  'M172 302C172 314 174 318 174 330',
+];
+const PHONE_LINKS = [
+  'M230 74C234 74 234 76 238 76',
+  'M314 152C314 162 314 166 314 174',
+  'M118 226C118 236 120 240 120 248',
+  'M240 318C248 340 254 352 262 362',
+  'M264 396C236 420 220 426 206 434',
+];
 
 // Scroll timeline (0 → 1 across the pinned section)
 const T = {
@@ -48,39 +91,58 @@ export function SupplierChaosFlow() {
   const dashRef = useRef<HTMLDivElement>(null);
   const [s, setS] = useState(1);
   const [live, setLive] = useState(false);
+  const [phone, setPhone] = useState(false);
+  const G = phone ? PHONE : DESK;
+  const truck = { left: G.left, top: G.top, w: TRUCK_W * G.k, h: TRUCK_H * G.k, boxW: BOX_W * G.k };
+  const at = (id: string) => {
+    const p = phone ? POS[id].m : POS[id].d;
+    return p ? { left: p[0], top: p[1], width: p[2] } : { display: 'none' as const };
+  };
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 760px)');
+    const set = () => setPhone(mq.matches);
+    set();
+    mq.addEventListener('change', set);
+    return () => mq.removeEventListener('change', set);
+  }, []);
 
   // scale the canvas to the room left under the heading
   useLayoutEffect(() => {
     const fit = () => {
       const st = stageRef.current;
       if (!st) return;
-      // stage padding (92 top, 24 bottom) + the gap under the heading (24)
-      const w = st.clientWidth - 32, h = st.clientHeight - 140 - (headRef.current?.offsetHeight ?? 160);
-      setS(Math.max(0.3, Math.min(1.12, w / CW, h / CH)));
+      const cs = getComputedStyle(st);
+      const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+      const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      // the stage's padding and the gap under the heading
+      const w = st.clientWidth - padX, h = st.clientHeight - padY - (phone ? 14 : 24) - (headRef.current?.offsetHeight ?? 160);
+      setS(Math.max(0.3, Math.min(1.12, w / G.cw, h / G.ch)));
     };
     fit();
     const ro = new ResizeObserver(fit);
     if (stageRef.current) ro.observe(stageRef.current);
     if (headRef.current) ro.observe(headRef.current);
     return () => ro.disconnect();
-  }, []);
+  }, [phone, G.cw, G.ch]);
 
   // scroll drives everything
   useEffect(() => {
-    const sec = secRef.current, stage = stageRef.current, canvas = canvasRef.current, truck = truckRef.current;
+    const sec = secRef.current, stage = stageRef.current, canvas = canvasRef.current, truckEl = truckRef.current;
     const slot = slotRef.current, dash = dashRef.current;
-    if (!sec || !stage || !canvas || !truck || !slot || !dash) return;
+    if (!sec || !stage || !canvas || !truckEl || !slot || !dash) return;
+    const geo = { left: G.left, top: G.top, w: TRUCK_W * G.k, boxW: BOX_W * G.k };
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const cards = Array.from(canvas.querySelectorAll<HTMLElement>('[data-card]')).map((el) => ({
+    const cards = Array.from(canvas.querySelectorAll<HTMLElement>('[data-card]')).filter((el) => el.offsetWidth > 0).map((el) => ({
       el,
       cx: el.offsetLeft + el.offsetWidth / 2,
       cy: el.offsetTop + el.offsetHeight / 2,
       rot: parseFloat(el.dataset.rot || '0'),
       at: parseFloat(el.dataset.fly || '0.25'),
-      jx: parseFloat(el.dataset.jx || '0'),
+      jx: parseFloat(el.dataset.jx || '0') * G.k,   // where in the box it lands, across the box's width
     }));
     const fades = Array.from(sec.querySelectorAll<HTMLElement>('[data-in],[data-out]'));
-    const wheels = Array.from(truck.querySelectorAll<SVGGElement>('[data-wheel]'));
+    const wheels = Array.from(truckEl.querySelectorAll<SVGGElement>('[data-wheel]'));
 
     // Where the dashboard sits on the truck (the slot, measured at rest) and where it ends (its own
     // layout box). Both are re-measured on resize; neither moves while the stage is pinned.
@@ -96,16 +158,17 @@ export function SupplierChaosFlow() {
 
     let isLive = false;
     const apply = (p: number) => {
-      const margin = (stage.clientWidth - CW * s) / 2 / s;
+      const margin = (stage.clientWidth - G.cw * s) / 2 / s;
       const inK = reduce ? 1 : ease(span(p, T.driveIn)), outK = reduce ? 0 : ease(span(p, T.leave));
-      const tx = (1 - inK) * -(TRUCK.left + TRUCK.w + margin + 40) + outK * (CW - TRUCK.left + margin + 60);
-      truck.style.transform = `translate3d(${tx}px, 0, 0)`;
-      truck.style.opacity = reduce ? String(clamp01((p - 0.3) / 0.08) * (1 - clamp01((p - T.leave[0]) / 0.08))) : '1';
-      const turn = `rotate(${(tx / 38) * (180 / Math.PI)}deg)`;
+      const tx = (1 - inK) * -(geo.left + geo.w + margin + 40) + outK * (G.cw - geo.left + margin + 60);
+      truckEl.style.transform = `translate3d(${tx}px, 0, 0)`;
+      truckEl.style.opacity = reduce ? String(clamp01((p - 0.3) / 0.08) * (1 - clamp01((p - T.leave[0]) / 0.08))) : '1';
+      // the wheels roll the distance travelled (their radius is 38 truck units, scaled with the truck)
+      const turn = `rotate(${(tx / (38 * G.k)) * (180 / Math.PI)}deg)`;
       for (const w of wheels) w.style.transform = turn;
 
       // every piece of the chaos is tossed into the box
-      const bx = TRUCK.left + TRUCK.boxW * 0.5 + tx, by = TRUCK.top + (BOX_TOP + 300) / 2;
+      const bx = geo.left + geo.boxW * 0.5 + tx, by = geo.top + ((BOX_TOP + 300) / 2) * G.k;
       for (const c of cards) {
         const f = ease(clamp01((p - c.at) / T.flyLen));
         if (reduce) {
@@ -113,7 +176,7 @@ export function SupplierChaosFlow() {
           c.el.style.opacity = String(1 - clamp01((p - 0.2) / 0.08));
           continue;
         }
-        const dx = (bx + c.jx - c.cx) * f, dy = (by - c.cy) * f - 110 * Math.sin(Math.PI * f);
+        const dx = (bx + c.jx - c.cx) * f, dy = (by - c.cy) * f - 110 * G.k ** 0.5 * Math.sin(Math.PI * f);
         c.el.style.transform = `translate3d(${dx}px, ${dy}px, 0) rotate(${c.rot * (1 - f) + 14 * f}deg) scale(${1 - 0.88 * f})`;
         c.el.style.opacity = String(1 - clamp01((f - 0.62) / 0.38));
       }
@@ -159,10 +222,11 @@ export function SupplierChaosFlow() {
     io.observe(sec);
     apply(0);
     return () => { io.disconnect(); ro.disconnect(); cancelAnimationFrame(raf); };
-  }, [s]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s, phone]);
 
   return (
-    <section className={`sfl ${hand.variable}`} ref={secRef} aria-labelledby="sfl-title">
+    <section className={`sfl ${hand.variable}`} ref={secRef} id="how-it-works" aria-labelledby="sfl-title">
       <div className="sfl-stage" ref={stageRef}>
         <div className="sfl-head" ref={headRef}>
           <div className="sfl-copy" data-out={String(T.headOut)} data-rise>
@@ -177,34 +241,20 @@ export function SupplierChaosFlow() {
           </div>
         </div>
 
-        <div className="sfl-diagram" style={{ width: CW * s, height: CH * s }}>
-          <div className="sfl-canvas" ref={canvasRef} style={{ transform: `scale(${s})` }}>
+        <div className="sfl-diagram" style={{ width: G.cw * s, height: G.ch * s }}>
+          <div className="sfl-canvas" ref={canvasRef} style={{ width: G.cw, height: G.ch, transform: `scale(${s})` }}>
             {/* dotted hand-offs between the pieces */}
-            <svg className="sfl-links" viewBox={`0 0 ${CW} ${CH}`} aria-hidden="true" data-out="0.15">
+            <svg className="sfl-links" viewBox={`0 0 ${G.cw} ${G.ch}`} aria-hidden="true" data-out="0.15">
               <defs>
                 <marker id="sfl-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                   <path d="M1 1.5L7 5L1 8.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                 </marker>
               </defs>
-              {[
-                'M314 118C336 118 330 96 346 96',
-                'M462 238C462 262 484 266 488 290',
-                'M404 340C388 344 384 344 376 350',
-                'M578 118C598 118 600 96 616 96',
-                'M852 104C866 104 868 112 880 112',
-                'M1022 236C1022 282 1000 292 1000 330',
-                'M872 432C842 432 832 392 816 386',
-                'M726 436C726 452 730 456 732 470',
-                'M598 512C570 516 548 530 524 540',
-                'M374 482C396 492 402 528 418 542',
-                'M734 176C742 230 800 268 818 280',
-                'M640 270C650 288 690 286 700 300',
-                'M172 302C172 314 174 318 174 330',
-              ].map((d, i) => <path key={i} d={d} markerEnd="url(#sfl-arrow)" />)}
+              {(phone ? PHONE_LINKS : DESK_LINKS).map((d, i) => <path key={i} d={d} markerEnd="url(#sfl-arrow)" />)}
             </svg>
 
             {/* ── the pieces ── */}
-            <div className="sfl-card sfl-wa" data-card data-rot="-1.5" data-fly="0.22" data-jx="-200" style={{ left: 30, top: 40, width: 284 }}>
+            <div className="sfl-card sfl-wa" data-card data-rot="-1.5" data-fly="0.22" data-jx="-200" style={at('wa')}>
               <div className="sfl-in">
                 <div className="sfl-wa-top"><i>BT</i><div><b>Hillfold · Koramangala</b><small>online</small></div><em>23</em></div>
                 <div className="sfl-wa-body">
@@ -216,7 +266,7 @@ export function SupplierChaosFlow() {
               </div>
             </div>
 
-            <div className="sfl-card sfl-book" data-card data-rot="-3" data-fly="0.235" data-jx="-120" style={{ left: 346, top: 22, width: 232 }}>
+            <div className="sfl-card sfl-book" data-card data-rot="-3" data-fly="0.235" data-jx="-120" style={at('book')}>
               <div className="sfl-in">
                 <b>ORDER BOOK · OCT</b>
                 <ol>
@@ -230,7 +280,7 @@ export function SupplierChaosFlow() {
               </div>
             </div>
 
-            <div className="sfl-card sfl-sheet" data-card data-rot="0" data-fly="0.25" data-jx="-160" style={{ left: 40, top: 330, width: 334 }}>
+            <div className="sfl-card sfl-sheet" data-card data-rot="0" data-fly="0.25" data-jx="-160" style={at('sheet')}>
               <div className="sfl-in">
                 <div className="sfl-win"><i /><i /><i /><span>stock_FINAL_v3 (2).xlsx</span></div>
                 <table>
@@ -247,14 +297,14 @@ export function SupplierChaosFlow() {
               </div>
             </div>
 
-            <div className="sfl-card sfl-calls" data-card data-rot="1.5" data-fly="0.265" data-jx="-40" style={{ left: 404, top: 290, width: 200 }}>
+            <div className="sfl-card sfl-calls" data-card data-rot="1.5" data-fly="0.265" data-jx="-40" style={at('calls')}>
               <div className="sfl-in">
                 <p><i className="ph" /><span><b>Copper &amp; Kiln</b><small>4 missed calls</small></span></p>
                 <p><i className="ph" /><span><b>Unknown number</b><small>2 missed calls</small></span></p>
               </div>
             </div>
 
-            <div className="sfl-card sfl-pay" data-card data-rot="2" data-fly="0.28" data-jx="40" style={{ left: 618, top: 36, width: 234 }}>
+            <div className="sfl-card sfl-pay" data-card data-rot="2" data-fly="0.28" data-jx="40" style={at('pay')}>
               <div className="sfl-in">
                 <span className="tag">Payment reminder #3</span>
                 <b>₹18,400 due</b>
@@ -263,7 +313,7 @@ export function SupplierChaosFlow() {
               </div>
             </div>
 
-            <div className="sfl-card sfl-tally" data-card data-rot="0" data-fly="0.31" data-jx="160" style={{ left: 880, top: 40, width: 290 }}>
+            <div className="sfl-card sfl-tally" data-card data-rot="0" data-fly="0.31" data-jx="160" style={at('tally')}>
               <div className="sfl-in">
                 <div className="sfl-win"><i /><i /><i /><span>Sales Voucher · GST</span></div>
                 <dl>
@@ -275,7 +325,7 @@ export function SupplierChaosFlow() {
               </div>
             </div>
 
-            <div className="sfl-card sfl-challan" data-card data-rot="2.5" data-fly="0.33" data-jx="170" style={{ left: 872, top: 330, width: 262 }}>
+            <div className="sfl-card sfl-challan" data-card data-rot="2.5" data-fly="0.33" data-jx="170" style={at('challan')}>
               <div className="sfl-in">
                 <b>DELIVERY CHALLAN <span>No. 2207</span></b>
                 <ul><li><span>Arabica AA 10kg</span><span>1</span></li><li><span>Oat milk 1L</span><span>12</span></li><li><span>Crates</span><span>3</span></li></ul>
@@ -284,39 +334,41 @@ export function SupplierChaosFlow() {
               </div>
             </div>
 
-            <div className="sfl-card sfl-sticky" data-card data-rot="-4" data-fly="0.3" data-jx="60" style={{ left: 642, top: 300, width: 172 }}>
+            <div className="sfl-card sfl-sticky" data-card data-rot="-4" data-fly="0.3" data-jx="60" style={at('sticky')}>
               <div className="sfl-in">
                 <span className="tape" />
                 <p>Crates out: 42<br />back: 31 ??<br />Ramesh to check</p>
               </div>
             </div>
 
-            <div className="sfl-card sfl-chat" data-card data-rot="0" data-fly="0.32" data-jx="20" style={{ left: 600, top: 470, width: 262 }}>
+            <div className="sfl-card sfl-chat" data-card data-rot="0" data-fly={phone ? '0.28' : '0.32'} data-jx="20" style={at('chat')}>
               <div className="sfl-in">
                 <i>R</i>
                 <span><small>Ramesh · Driver</small><b>Sir café band hai. Address galat hai kya?</b></span>
               </div>
             </div>
 
-            <div className="sfl-card sfl-file" data-card data-rot="0" data-fly="0.27" data-jx="-60" style={{ left: 420, top: 498, width: 112 }}>
+            <div className="sfl-card sfl-file" data-card data-rot="0" data-fly="0.27" data-jx="-60" style={at('file')}>
               <div className="sfl-in"><span className="doc"><b>PDF</b></span><small>rate_list_OLD_v2.pdf</small></div>
             </div>
 
-            <div className="sfl-card sfl-mail" data-card data-rot="0" data-fly="0.29" data-jx="100" style={{ left: 820, top: 250, width: 64 }}>
+            <div className="sfl-card sfl-mail" data-card data-rot="0" data-fly="0.29" data-jx="100" style={at('mail')}>
               <div className="sfl-in"><span className="env" /><em>1,284</em></div>
             </div>
 
-            <div className="sfl-card sfl-folder" data-card data-rot="0" data-fly="0.26" data-jx="0" style={{ left: 596, top: 196, width: 96 }}>
+            <div className="sfl-card sfl-folder" data-card data-rot="0" data-fly="0.26" data-jx="0" style={at('folder')}>
               <div className="sfl-in"><span className="fd" /><small>[PENDING] POs</small></div>
             </div>
 
             {/* ── the truck ── */}
-            <div className="sfl-road" style={{ top: TRUCK.top + 360 }} data-in="0.17" data-out="0.62" aria-hidden="true" />
+            <div className="sfl-road" style={{ top: truck.top + 360 * G.k }} data-in="0.17" data-out="0.62" aria-hidden="true" />
             {/* where the screen sits when the truck is parked (measured, never drawn) */}
-            <div className="sfl-slot" ref={slotRef} style={{ left: TRUCK.left + SLOT.x, top: TRUCK.top + SLOT.y, width: SLOT.w, height: SLOT.h }} aria-hidden="true" />
-            <div className="sfl-truck" ref={truckRef} style={{ left: TRUCK.left, top: TRUCK.top, width: TRUCK.w, height: TRUCK.h }} aria-hidden="true">
+            <div className="sfl-slot" ref={slotRef} style={{ left: truck.left + SLOT.x * G.k, top: truck.top + SLOT.y * G.k, width: SLOT.w * G.k, height: SLOT.h * G.k }} aria-hidden="true" />
+            <div className="sfl-truck" ref={truckRef} style={{ left: truck.left, top: truck.top, width: truck.w, height: truck.h }} aria-hidden="true">
+              {/* drawn in truck units, scaled onto the canvas (1 on the desktop, 0.4 on a phone) */}
+              <div className="sfl-truck-art" style={G.k === 1 ? undefined : { transform: `scale(${G.k})` }}>
               <div className="sfl-shadow" />
-              <svg viewBox={`0 ${-LIFT} ${TRUCK.w} ${TRUCK.h + LIFT}`} width={TRUCK.w} height={TRUCK.h + LIFT} style={{ marginTop: -LIFT }}>
+              <svg viewBox={`0 ${-LIFT} ${TRUCK_W} ${TRUCK_H + LIFT}`} width={TRUCK_W} height={TRUCK_H + LIFT} style={{ marginTop: -LIFT }}>
                 <defs>
                   <linearGradient id="sfl-alu" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0" stopColor="#FCFDFC" /><stop offset="0.55" stopColor="#F0F3F1" /><stop offset="1" stopColor="#E2E8E4" />
@@ -336,10 +388,10 @@ export function SupplierChaosFlow() {
                 </defs>
 
                 {/* cargo box: ribbed aluminium, rear door with hinges, marker lights, the mounted screen */}
-                <rect x="0" y={BOX_TOP} width={TRUCK.boxW} height={300 - BOX_TOP} rx="6" fill="url(#sfl-alu)" stroke="#C9D3CC" />
+                <rect x="0" y={BOX_TOP} width={BOX_W} height={300 - BOX_TOP} rx="6" fill="url(#sfl-alu)" stroke="#C9D3CC" />
                 {Array.from({ length: 13 }, (_, i) => 25 + i * 54).map((x) => <path key={x} d={`M${x} ${BOX_TOP + 12}V282`} stroke="rgba(30,50,40,0.06)" strokeWidth="2" />)}
-                <rect x="0" y={BOX_TOP} width={TRUCK.boxW} height="11" rx="5" fill="#DDE4DF" />
-                <rect x="0" y="282" width={TRUCK.boxW} height="18" fill="#D2DAD4" />
+                <rect x="0" y={BOX_TOP} width={BOX_W} height="11" rx="5" fill="#DDE4DF" />
+                <rect x="0" y="282" width={BOX_W} height="18" fill="#D2DAD4" />
                 <text x="26" y="295" className="sfl-livery">GRADIENT SUPPLIER FLEET · VAN 04</text>
                 <rect x="0" y={BOX_TOP} width="16" height={300 - BOX_TOP} fill="#E6ECE8" stroke="#C9D3CC" />
                 {[-40, 100, 240].map((y) => <rect key={y} x="3" y={y} width="9" height="16" rx="2" fill="#B5C0B8" />)}
@@ -381,13 +433,14 @@ export function SupplierChaosFlow() {
                       <circle r="22" fill="url(#sfl-rim)" />
                       <circle r="15" fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="1" />
                       {[0, 60, 120, 180, 240, 300].map((deg) => (
-                        <circle key={deg} r="1.9" cx={Math.cos((deg * Math.PI) / 180) * 10} cy={Math.sin((deg * Math.PI) / 180) * 10} fill="#39433D" />
+                        <circle key={deg} r="1.9" cx={+(Math.cos((deg * Math.PI) / 180) * 10).toFixed(3)} cy={+(Math.sin((deg * Math.PI) / 180) * 10).toFixed(3)} fill="#39433D" />
                       ))}
                       <circle r="5.5" fill="#46514A" />
                     </g>
                   </g>
                 ))}
               </svg>
+              </div>
             </div>
           </div>
         </div>

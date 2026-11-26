@@ -17,9 +17,21 @@ export function Particles({ className = '', density = 200, staticity = 46, ease 
     const ctx = cv?.getContext('2d');
     if (!wrap || !cv || !ctx) return;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    // touch screens: the dots are soft and tiny, so 1× is enough, at about 30fps
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const dpr = coarse ? 1 : Math.min(2, window.devicePixelRatio || 1);
     const mouse = { x: 0, y: 0 };
     let W = 0, H = 0, raf = 0, dots: Dot[] = [];
+    // The field spans the whole section (4,000px+ tall on a phone) but only a screen of it shows: each frame
+    // clears and draws just that band. It's re-measured after a scroll or resize, never in the frame loop itself.
+    let bandTop = 0, bandBot = 0, bandDirty = true, last = 0;
+    const markBand = () => { bandDirty = true; };
+    const measureBand = () => {
+      const r = wrap.getBoundingClientRect();
+      bandTop = Math.max(0, -r.top - 120);
+      bandBot = Math.min(H, -r.top + window.innerHeight + 120);
+      bandDirty = false;
+    };
 
     const make = (): Dot => ({
       x: Math.random() * W, y: Math.random() * H, tx: 0, ty: 0,
@@ -43,8 +55,14 @@ export function Particles({ className = '', density = 200, staticity = 46, ease 
       dots = Array.from({ length: n }, make);
       if (reduce) { ctx.clearRect(0, 0, W, H); dots.forEach((d) => { d.a = d.ta; draw(d); }); }
     };
-    const frame = () => {
-      ctx.clearRect(0, 0, W, H);
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      if (coarse && now - last < 30) return;
+      last = now;
+      if (bandDirty) measureBand();
+      const y0 = bandTop, y1 = bandBot;
+      if (y1 <= y0) return;
+      ctx.clearRect(0, y0, W, y1 - y0);
       for (let i = 0; i < dots.length; i++) {
         const d = dots[i];
         const px = d.x + d.tx, py = d.y + d.ty;
@@ -55,9 +73,8 @@ export function Particles({ className = '', density = 200, staticity = 46, ease 
         d.tx += (mouse.x / (staticity / d.mg) - d.tx) / ease;
         d.ty += (mouse.y / (staticity / d.mg) - d.ty) / ease;
         if (d.x < -d.r || d.x > W + d.r || d.y < -d.r || d.y > H + d.r) { dots[i] = make(); continue; }
-        draw(d);
+        if (py > y0 - 4 && py < y1 + 4) draw(d);
       }
-      raf = requestAnimationFrame(frame);
     };
     const onMove = (e: PointerEvent) => {
       const r = cv.getBoundingClientRect();
@@ -68,18 +85,23 @@ export function Particles({ className = '', density = 200, staticity = 46, ease 
     size();
     const io = new IntersectionObserver(([e]) => {
       cancelAnimationFrame(raf);
+      bandDirty = true;
       if (e.isIntersecting && !reduce) raf = requestAnimationFrame(frame);
     });
     io.observe(wrap);
     let rt: ReturnType<typeof setTimeout> | undefined;
-    const ro = new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(size, 200); });
+    const ro = new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { size(); bandDirty = true; }, 200); });
     ro.observe(wrap);
+    addEventListener('scroll', markBand, { passive: true });
+    addEventListener('resize', markBand, { passive: true });
     if (!reduce) addEventListener('pointermove', onMove, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(rt);
       io.disconnect();
       ro.disconnect();
+      removeEventListener('scroll', markBand);
+      removeEventListener('resize', markBand);
       removeEventListener('pointermove', onMove);
     };
   }, [density, staticity, ease]);

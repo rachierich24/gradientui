@@ -256,6 +256,9 @@ function plan(notes: Note[]): Seg[] {
   return segs;
 }
 function storyAt(segs: Seg[], e: number) {
+  // a frame's timestamp can be a few ms older than the moment the intro started (t0); without this the line
+  // would start at a hair below month 0, and month -1 has no data (it crashed the chart on slower phones)
+  e = Math.max(0, e);
   for (const g of segs) {
     if (e < g.ms) return g.x0 + (g.x1 - g.x0) * ease(e / g.ms);
     e -= g.ms;
@@ -361,7 +364,7 @@ function GrowthChart({ s, metric, without, setWithout, seen, onMonth }: {
   const a = A.current, d = a.d, { w, h } = size;
   const story = !!a.story;
   const live = !story && (hover || peek !== null || lock !== null);
-  const month = live ? a.tx : Math.floor(a.rv + 1e-6);
+  const month = Math.max(0, Math.min(LAST, (live ? a.tx : Math.floor(a.rv + 1e-6)) || 0));
   useEffect(() => { onMonth(month); }, [month, onMonth]);
 
   const aim = (i: number, jump: boolean) => {
@@ -376,8 +379,9 @@ function GrowthChart({ s, metric, without, setWithout, seen, onMonth }: {
   // a measurement); on touch, dragging scrubs and the cursor stays where the finger lifts
   const drag = useRef<{ i: number; touch: boolean; moved: boolean } | null>(null);
   const monthAt = (clientX: number) => {
-    const r = box.current!.getBoundingClientRect();
-    return Math.max(0, Math.min(LAST, Math.round(((clientX - r.left - P.l) / (r.width - P.l - P.r)) * LAST)));
+    const r = box.current!.getBoundingClientRect(), inner = r.width - P.l - P.r;
+    if (inner <= 0) return LAST;   // not laid out yet
+    return Math.max(0, Math.min(LAST, Math.round(((clientX - r.left - P.l) / inner) * LAST)));
   };
   const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const g = drag.current;

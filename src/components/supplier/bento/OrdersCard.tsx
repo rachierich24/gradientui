@@ -338,7 +338,7 @@ export function OrdersCard({ run }: { run: boolean }) {
           </ul>
           <Dock
             mouseX={mouseX} counts={counts} bumps={bumps} at={at} tip={tip}
-            base={compact ? 32 : 40} mag={compact ? 44 : 58} dockRef={dockRef} iconRefs={iconRefs}
+            base={compact ? 30 : 40} mag={compact ? 42 : 58} dockRef={dockRef} iconRefs={iconRefs}
           />
           {cur.press > 0 && (
             <motion.span key={cur.press} className="sbx-ripple" style={{ left: cur.px, top: cur.py }} initial={{ scale: 0.3, opacity: 0.45 }} animate={{ scale: 1.7, opacity: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }} />

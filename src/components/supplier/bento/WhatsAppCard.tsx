@@ -68,11 +68,11 @@ export function WhatsAppCard({ run, still }: { run: boolean; still: boolean }) {
             <motion.li
               key={`${flow}-${it.kind}`}
               layout
-              initial={still ? false : { scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, originY: 0 }}
-              exit={{ scale: 0, opacity: 0 }}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 40 }}
+              initial={still ? false : { scale: 0.92, opacity: 0, y: -12 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, transition: { duration: 0.22 } }}
+              whileHover={{ scale: 1.02, y: -1 }}
+              transition={{ type: 'spring', stiffness: 330, damping: 28 }}
               className="sbx-wa-item"
             >
               <span className="sbx-wa-ic" style={{ background: COLOR[it.kind] }}>

@@ -68,7 +68,7 @@ const CARDS: CardDef[] = [
 
 const ARROW = <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>;
 
-function Card({ def, reduce, paused, onExpand }: { def: CardDef; reduce: boolean; paused: boolean; onExpand: () => void }) {
+function Card({ def, index, reduce, paused, onExpand }: { def: CardDef; index: number; reduce: boolean; paused: boolean; onExpand: () => void }) {
   const [ref, onScreen] = useOnScreen<HTMLElement>();
   const glow = def.glow !== false;
   // Magic Card: a soft light and a green edge follow the cursor across the card
@@ -86,6 +86,10 @@ function Card({ def, reduce, paused, onExpand }: { def: CardDef; reduce: boolean
       className={`sbx-card sbx-${def.area}${glow ? ' has-glow' : ''}`}
       aria-label={def.label}
       style={{ borderRadius: 20 }}
+      initial={reduce ? false : { opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.55, delay: reduce ? 0 : Math.min(index % 3, 2) * 0.08, ease: [0.22, 1, 0.36, 1] }}
       onPointerMove={glow ? onMove : undefined}
     >
       {glow && <span className="sbx-glow" aria-hidden="true" />}
@@ -162,11 +166,11 @@ export function SupplierBentoGrid() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="sbx-grid">
-        {CARDS.map((c) =>
+        {CARDS.map((c, idx) =>
           c.area === open ? (
             <div key={c.area} className={`sbx-card sbx-${c.area} sbx-placeholder`} aria-hidden="true" />
           ) : (
-            <Card key={c.area} def={c} reduce={reduce} paused={open !== null} onExpand={() => setOpen(c.area)} />
+            <Card key={c.area} def={c} index={idx} reduce={reduce} paused={open !== null} onExpand={() => setOpen(c.area)} />
           ),
         )}
         {mounted && createPortal(

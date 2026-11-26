@@ -8,13 +8,6 @@ import {
   SupplierBentoFeatures,
   SupplierBillSyncAudit,
   SupplierGrowth,
-  SupplierBenefits,
-  SupplierWorkflowSteps,
-  SupplierInventory,
-  SupplierLogistics,
-  SupplierAnalytics,
-  SupplierIntegrations,
-  SupplierTrust,
   SupplierFaq,
   SupplierCta,
 } from '@/components/supplier';
@@ -24,17 +17,6 @@ import { G365Footer } from '@/components/landing/G365';
 export default function SupplierPortalPage() {
   const handleJoinClick = () => {
     openContactSalesModal();
-  };
-
-  const handleExploreClick = () => {
-    const el = document.getElementById('order-workspace');
-    if (el) {
-      if (typeof window !== 'undefined' && (window as unknown as { lenis?: { scrollTo: (target: string | HTMLElement, opts?: { immediate?: boolean }) => void } }).lenis) {
-        (window as unknown as { lenis: { scrollTo: (target: string | HTMLElement, opts?: { immediate?: boolean }) => void } }).lenis.scrollTo(el, { immediate: false });
-      } else {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
   };
 
   return (
@@ -57,32 +39,11 @@ export default function SupplierPortalPage() {
       {/* ─── 04b. AI Bill Sync, Automated GST & CA Audit Vault ─── */}
       <SupplierBillSyncAudit />
 
-      {/* ─── 06. Operational Benefits (Interactive Bento Grid) ─── */}
-      <SupplierBenefits />
-
-      {/* ─── 07. Ordering Lifecycle (Synchronized 3-Step Journey) ─── */}
-      <SupplierWorkflowSteps />
-
-      {/* ─── 08. Inventory & Catalogue Controls (Private Pricing Wall) ─── */}
-      <SupplierInventory />
-
-      {/* ─── 09. Dispatch, Logistics & Crate Tracking (Crate #C-88) ─── */}
-      <SupplierLogistics />
-
-      {/* ─── 10. Supplier Performance & Telemetry (Predictive Forecast) ─── */}
-      <SupplierAnalytics />
-
-      {/* ─── 11. Integrations Hub (Tally, Zoho & Live Webhook Simulator) ─── */}
-      <SupplierIntegrations />
-
-      {/* ─── 12. Trust, Verification & Reliability (FSSAI & Uptime Heartbeat) ─── */}
-      <SupplierTrust />
-
       {/* ─── 13. Frequently Asked Questions (Filtered Accordion) ─── */}
       <SupplierFaq />
 
       {/* ─── 14. High-Impact Conversion CTA (Quick Onboarding Card) ─── */}
-      <SupplierCta onJoinClick={handleJoinClick} />
+      <SupplierCta />
 
       {/* ─── 15. Footer: the same animated gradient wordmark as the main site ─── */}
       <G365Footer />

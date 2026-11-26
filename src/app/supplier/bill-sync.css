@@ -1,7 +1,6 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Supplier Bill Sync, Automated GST & CA Audit Vault
-   Minimal HUD Scanner inspired by Magic Receipt AI (magic-receipt.ai).
-   Exact 5-Stage Storyboard · White Editorial Canvas + Grabbit Primary Green (#1FA952)
+   Minimal HUD Scanner · White Editorial Canvas + Primary Green (#1FA952)
    ───────────────────────────────────────────────────────────────────────── */
 
 .sup-billsync-section {
@@ -1211,22 +1210,6 @@
   text-align: left;
 }
 
-.sup-pillar-card {
-  position: relative;
-  background: #FFFFFF;
-  border: 1px solid var(--sup-border, #E5EFE7);
-  border-radius: 18px;
-  padding: 32px 28px;
-  box-shadow: 0 10px 30px -10px rgba(13, 82, 40, 0.06), 0 2px 4px rgba(0, 0, 0, 0.02);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.sup-pillar-card:hover {
-  border-color: rgba(31, 169, 82, 0.35);
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px -15px rgba(31, 169, 82, 0.12);
-}
-
 .sup-pillar-num {
   font-family: ui-monospace, monospace;
   font-size: 11.5px;
@@ -1251,6 +1234,11 @@
   margin: 0;
 }
 
+/* Mobile vertical reconciliation bridge hidden on desktop */
+.sup-recon-mobile-bridge {
+  display: none;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Responsive Media Queries
    ───────────────────────────────────────────────────────────────────────── */
@@ -1261,31 +1249,280 @@
   }
   .sup-recon-split-stage {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 16px;
   }
   .sup-docked-receipts-column {
-    flex-direction: row;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    overflow: visible;
+  }
+  .sup-docked-receipts-column.is-matched .sup-micro-receipt-card {
+    border-color: rgba(31, 169, 82, 0.45);
+    background: linear-gradient(180deg, #FFFFFF 0%, #F4FBF6 100%);
+    box-shadow: 0 6px 16px -6px rgba(31, 169, 82, 0.22);
+  }
+  .sup-micro-receipt-node-anchor {
+    right: 8px;
+    top: 8px;
+    transform: none;
+    width: 7px;
+    height: 7px;
+  }
+  .sup-recon-svg-lines-layer {
+    display: none;
+  }
+  .sup-recon-mobile-bridge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: -2px 0;
+  }
+  .sup-recon-bridge-line {
+    flex: 1;
+    height: 1px;
+    border-top: 1.5px dashed rgba(31, 169, 82, 0.45);
+  }
+  .sup-recon-bridge-pill {
+    font-family: ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sup-forest, #0D5228);
+    background: var(--sup-pale, #EBF8F0);
+    border: 1px solid rgba(31, 169, 82, 0.35);
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
   }
   .sup-report-share-stage {
     flex-direction: column;
-    gap: 28px;
+    gap: 34px;
+  }
+  .sup-report-document-card {
+    width: min(300px, 100%);
+  }
+  .sup-report-doc-anchor {
+    right: auto;
+    top: auto;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+  }
+  .sup-report-recipients-column {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+  .sup-recipient-avatar-node {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .sup-recipient-anchor-dot {
+    left: 50%;
+    top: -4px;
+    transform: translateX(-50%);
+  }
+  .sup-recipient-details {
+    align-items: center;
   }
 }
 
-@media (max-width: 600px) {
-  .sup-billsync-terminal {
-    min-height: 520px;
+@media (max-width: 640px) {
+  .sup-billsync-section {
+    padding: 64px 0 72px;
   }
-  .sup-receipt-wrapper {
-    width: 250px;
+  .sup-billsync-container {
+    padding: 0 18px;
+  }
+  .sup-billsync-header {
+    margin-bottom: 28px;
+  }
+  .sup-billsync-heading {
+    font-size: clamp(28px, 7.6vw, 36px);
+    margin-bottom: 12px;
+  }
+  .sup-billsync-desc {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .sup-billsync-terminal {
+    min-height: 492px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .sup-hud-brackets {
+    top: 84px;
+    bottom: 14px;
+    left: 12px;
+    right: 12px;
+  }
+  .sup-hud-corner {
+    width: 12px;
+    height: 12px;
+  }
+  .sup-hud-tick-left,
+  .sup-hud-tick-right {
+    display: none;
   }
   .sup-terminal-top {
-    padding: 16px 18px 12px;
+    padding: 14px 16px 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 12px;
+  }
+  .sup-loading-bar-container {
+    order: 1;
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0;
+    height: 8px;
   }
   .sup-terminal-top-right {
-    right: 18px;
-    top: 16px;
+    order: 2;
+    position: static;
+    flex: none;
+    gap: 8px;
   }
-
+  .sup-battery-indicator {
+    padding: 3px 5px;
+    gap: 2.5px;
+  }
+  .sup-battery-bar {
+    width: 3.5px;
+    height: 11px;
+  }
+  .sup-terminal-playpause {
+    padding: 5px 7px;
+  }
+  .sup-loading-ticker-text-wrapper {
+    order: 3;
+    flex-basis: 100%;
+    height: auto;
+    min-height: 24px;
+    overflow: visible;
+  }
+  .sup-loading-ticker-text {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    white-space: normal;
+    text-wrap: balance;
+  }
+  .sup-terminal-stage {
+    padding: 18px 16px 24px;
+    min-height: 410px;
+  }
+  .sup-receipt-wrapper {
+    width: min(286px, 100%);
+  }
+  .sup-thermal-receipt {
+    padding: 24px 16px 20px;
+  }
+  .sup-receipt-table-header,
+  .sup-receipt-table-row {
+    grid-template-columns: 22px 1fr 62px;
+    font-size: 9px;
+  }
+  .sup-stacked-receipts-stage {
+    max-width: 100%;
+    gap: 10px;
+  }
+  .sup-stacked-thermal-card {
+    padding: 12px 14px 10px;
+  }
+  .sup-micro-receipt-card {
+    padding: 8px 10px;
+  }
+  .sup-micro-receipt-title {
+    text-align: left;
+  }
+  .sup-bank-statement-panel {
+    padding: 14px 12px;
+  }
+  .sup-statement-header {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .sup-statement-title {
+    font-size: 13.5px;
+  }
+  .sup-statement-balance-bar {
+    font-size: 10px;
+    padding: 6px 0;
+    margin-bottom: 8px;
+  }
+  .sup-statement-table {
+    font-size: 8px;
+  }
+  .sup-statement-table th,
+  .sup-statement-table td {
+    padding: 5px 2px;
+  }
+  .sup-table-amt-neg {
+    padding-right: 7px;
+  }
+  .sup-statement-row-node-anchor {
+    width: 6px;
+    height: 6px;
+    margin-right: 4px;
+  }
+  .sup-report-share-stage {
+    gap: 32px;
+  }
+  .sup-report-document-card {
+    width: min(276px, 100%);
+    padding: 20px 18px;
+  }
+  .sup-recipient-avatar-circle {
+    width: 44px;
+    height: 44px;
+  }
+  .sup-recipient-role {
+    font-size: 10.5px;
+    line-height: 1.25;
+  }
+  .sup-recipient-name {
+    font-size: 9px;
+    line-height: 1.25;
+  }
+  .sup-phase-pills-bar {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin: 0 -18px 34px;
+    padding: 2px 18px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+  }
+  .sup-phase-pills-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .sup-phase-pill-btn {
+    flex: none;
+    padding: 7px 13px;
+    font-size: 12px;
+  }
+  .sup-pillar-card-pixel.pixel-card {
+    min-height: 0;
+  }
+  .sup-pillar-card-pixel .pixel-card-canvas {
+    -webkit-mask-image: radial-gradient(90% 75% at 100% 100%, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 80%);
+    mask-image: radial-gradient(90% 75% at 100% 100%, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 80%);
+  }
+  .sup-pillar-content {
+    padding: 22px 20px;
+  }
+  .sup-pillar-num {
+    margin-bottom: 10px;
+  }
 }
