@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 interface SpotlightCardItem {
   id: string
@@ -460,6 +460,17 @@ export function SpotlightSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const row1Ref = useRef<HTMLDivElement>(null)
   const row2Ref = useRef<HTMLDivElement>(null)
+  // The rows clip their cards, so the browser's lazy loading only fetches a card's photo once it has slid into
+  // view (an empty card first). Once the section is a little over a screen away, every photo loads at once.
+  const [near, setNear] = useState(false)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect() } }, { rootMargin: '120% 0px 120% 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => {
     // Respect user's reduced motion preference
@@ -468,22 +479,31 @@ export function SpotlightSection() {
       return
     }
 
-    let isSectionVisible = true
+    // The marquee runs only while the section is on (or near) the screen: the frame loop stops entirely when it
+    // leaves, rather than ticking every frame for the whole page.
+    let isSectionVisible = false
+    let animId = 0
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           isSectionVisible = entry.isIntersecting
         })
+        if (isSectionVisible && !animId) {
+          lastTime = performance.now()
+          animId = requestAnimationFrame(animate)
+        }
       },
       { rootMargin: '400px 0px 400px 0px' }
     )
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
+    // Scroll speed comes from a passive scroll listener. (Reading window.scrollY inside the frame loop forced a
+    // layout of the whole page every frame, right after the hero had written its styles.)
+    let scrollY = window.scrollY
+    let lastScrollY = scrollY
+    const onScroll = () => { scrollY = window.scrollY }
+    window.addEventListener('scroll', onScroll, { passive: true })
 
     // Velocity model variables
-    let lastScrollY = window.scrollY
     let targetVelocity = 0
     let currentVelocity = 0
 
@@ -511,17 +531,17 @@ export function SpotlightSection() {
     // Base continuous marquee velocity (px/frame at 60fps)
     const BASE_SPEED = 0.85
     let lastTime = performance.now()
-    let animId: number
 
     const animate = (now: number) => {
+      // off screen: stop the loop (the observer starts it again)
+      if (!isSectionVisible) { animId = 0; return }
       const dt = Math.min((now - lastTime) / 16.667, 2.5) // normalized frame delta
       lastTime = now
 
-      const currentScrollY = window.scrollY
-      const deltaY = currentScrollY - lastScrollY
-      lastScrollY = currentScrollY
+      const deltaY = scrollY - lastScrollY
+      lastScrollY = scrollY
 
-      if (isSectionVisible) {
+      {
         if (Math.abs(deltaY) > 0.05) {
           // Smooth scroll velocity impulse (fastens up significantly when scrolling)
           const cappedDelta = Math.sign(deltaY) * Math.min(Math.abs(deltaY), 65)
@@ -579,7 +599,9 @@ export function SpotlightSection() {
       animId = requestAnimationFrame(animate)
     }
 
-    animId = requestAnimationFrame(animate)
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
 
     // Apply initial positions immediately
     if (row1Ref.current) {
@@ -592,6 +614,7 @@ export function SpotlightSection() {
     return () => {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', updateSetWidths)
+      window.removeEventListener('scroll', onScroll)
       observer.disconnect()
     }
   }, [])
@@ -634,7 +657,7 @@ export function SpotlightSection() {
                           width={352}
                           height={244}
                           sizes="180px"
-                          loading="lazy"
+                          loading={near ? 'eager' : 'lazy'}
                           className="spotlight-image"
                           draggable={false}
                         />
@@ -666,7 +689,7 @@ export function SpotlightSection() {
                           width={352}
                           height={244}
                           sizes="180px"
-                          loading="lazy"
+                          loading={near ? 'eager' : 'lazy'}
                           className="spotlight-image"
                           draggable={false}
                         />

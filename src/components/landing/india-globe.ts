@@ -326,8 +326,12 @@ export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive, onExplor
   // capTop: where the globe's curve may start, just below any headline laid over the stage
   let capTop = 28;
   const header = root.querySelector<HTMLElement>('.ig-header');
+  // touch screens draw the (full-width, very tall) canvas at up to 1.5×: the night Earth is soft anyway, and
+  // it saves a phone close to half the pixels of 2×
+  const halfRate = matchMedia('(pointer: coarse)').matches;
+  const dprCap = halfRate ? 1.5 : 2;
   const size = () => {
-    DPR = Math.min(2, window.devicePixelRatio || 1);
+    DPR = Math.min(dprCap, window.devicePixelRatio || 1);
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
     capTop = header ? header.offsetTop + header.offsetHeight + Math.max(16, H * 0.03) : 28;
@@ -411,6 +415,11 @@ export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive, onExplor
     if (e.key === 'ArrowUp') goal.lat = clampLat(goal.lat + s);
     if (e.key === 'ArrowDown') goal.lat = clampLat(goal.lat - s);
   };
+  // where the stage sits in the viewport, re-measured lazily (frame) after the page scrolls or resizes
+  let boxTop = 0, boxH = 1, boxDirty = true;
+  const markBox = () => { boxDirty = true; };
+  window.addEventListener('scroll', markBox, { passive: true });
+  window.addEventListener('resize', markBox);
   root.addEventListener('pointermove', onMove);
   root.addEventListener('pointerleave', onLeave);
   root.addEventListener('pointerdown', onDown);
@@ -498,6 +507,9 @@ export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive, onExplor
   let last = performance.now();
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
+    // touch screens: while nobody is exploring it, the slowly drifting globe draws every other frame (~30 fps),
+    // which halves its cost on a phone; it runs at full rate while dragged or explored
+    if (halfRate && !live && !drag && now - last < 30) return;
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     if (!onScreen || !W) return;
     const t = reduce ? 8 : now / 1000;
@@ -505,15 +517,18 @@ export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive, onExplor
     const fade = (1 - (1 - intro) ** 3) * (earth ? earth.reveal(now) : 1);
     // Scroll progress through the stage: 0 as its top enters the viewport, 1 once its base reaches
     // the bottom of the viewport. The rim fills by this; eased so it glides with smooth scrolling.
-    const box = root.getBoundingClientRect();
-    const target = Math.max(0, Math.min(1, (window.innerHeight - box.top) / Math.max(1, box.height)));
+    // (the stage is measured only after a scroll or resize: measuring every frame forced a layout each frame)
+    if (boxDirty) { const b = root.getBoundingClientRect(); boxTop = b.top; boxH = b.height; boxDirty = false; }
+    const target = Math.max(0, Math.min(1, (window.innerHeight - boxTop) / Math.max(1, boxH)));
     scrollP = reduce ? target : scrollP + (target - scrollP) * Math.min(1, dt * 6);
 
     // Geometry: a sphere whose cap fills the stage below the headline. Its centre sits below the
     // bottom edge, so the limb meets the footer line near both page edges. India is tilted up to sit
     // a little below the middle of the visible cap.
+    // (on a phone the sphere is wider than the screen, a horizon rising right under the headline; sized to the
+    // width it sat low in the stage under a band of empty sky)
     const wide = W > 860;
-    base = Math.max(120, Math.min((H - capTop) / 0.7, W * (wide ? 0.56 : 0.98)));
+    base = Math.max(120, Math.min((H - capTop) / 0.7, W * (wide ? 0.56 : W < 600 ? 1.22 : 0.98)));
     const cx = W / 2, cy = H + base * 0.3, capY = cy - base;
     homeLat = INDIA_AT[0] - Math.asin(Math.min(0.98, (cy - (capY + (H - capY) * 0.55)) / base)) / D;
 
@@ -754,6 +769,8 @@ export function createIndiaGlobe({ root, canvas, mask, onFocus, onLive, onExplor
     recenter,
     destroy() {
       cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); earth?.destroy();
+      window.removeEventListener('scroll', markBox);
+      window.removeEventListener('resize', markBox);
       root.removeAttribute('data-lenis-prevent');
       root.removeEventListener('pointermove', onMove);
       root.removeEventListener('pointerleave', onLeave);

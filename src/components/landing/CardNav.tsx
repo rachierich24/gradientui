@@ -708,27 +708,32 @@ export function CardNav({
     }
   };
 
-  // Mobile menu toggle animation
-  const toggleMobileMenu = () => {
-    const willOpen = !isMobileOpen;
-    setIsMobileOpen(willOpen);
-    if (mobileMenuRef.current) {
-      if (willOpen) {
-        gsap.fromTo(
-          mobileMenuRef.current,
-          { height: 0, opacity: 0 },
-          { height: 'auto', opacity: 1, duration: 0.3, ease: 'power3.out' }
-        );
-      } else {
-        gsap.to(mobileMenuRef.current, {
-          height: 0,
-          opacity: 0,
-          duration: 0.22,
-          ease: 'power3.in',
-        });
-      }
-    }
-  };
+  // Mobile menu: it drops in with a CSS animation (landing.css: navMenuIn). (A GSAP tween here never ran: the menu
+  // isn't mounted yet when it opens, and is gone at once when it closes.)
+  const toggleMobileMenu = () => setIsMobileOpen((open) => !open);
+
+  // While it's open the page behind it stays put, Escape closes it, and it closes itself if the window grows
+  // past the phone layout. (The lock is on <html>: overflow on <body> makes the body a scroll container, which
+  // would unpin the sticky stages.)
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const root = document.documentElement;
+    const lenis = (window as unknown as { lenis?: { stop: () => void; start: () => void } }).lenis;
+    const prev = root.style.overflow;
+    root.style.overflow = 'hidden';
+    lenis?.stop();
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsMobileOpen(false); };
+    const mq = window.matchMedia('(min-width: 861px)');
+    const onWide = () => { if (mq.matches) setIsMobileOpen(false); };
+    window.addEventListener('keydown', onKey);
+    mq.addEventListener('change', onWide);
+    return () => {
+      root.style.overflow = prev;
+      lenis?.start();
+      window.removeEventListener('keydown', onKey);
+      mq.removeEventListener('change', onWide);
+    };
+  }, [isMobileOpen]);
 
   const handleCta = (e: React.MouseEvent) => {
     e.preventDefault();

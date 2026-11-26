@@ -2676,3 +2676,25 @@ section.l-sec.stats-sec {
   .sec-head-row { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
   .sec-head-row .sec-lead { max-width: none; }
 }
+
+/* ═══ phones: touch targets, the ☰ menu, and the floating layers (cookie banner, support button) ═══ */
+@media (max-width: 860px) {
+  /* a finger-sized menu button (it was 38 × 32) */
+  .nav-mobile-toggle { display: inline-grid; place-items: center; min-width: 44px; min-height: 44px; margin-right: -8px; font-size: 22px; }
+  /* the menu drops in, and its Log in / Get Started stay pinned at its foot while the list scrolls under them */
+  .nav-mobile-menu { animation: navMenuIn .26s cubic-bezier(.2, .8, .2, 1) both; }
+  .nav-mobile-menu .mobile-link-item { min-height: 48px; }
+  .nav-mobile-menu .mobile-drawer-footer { position: sticky; bottom: -16px; z-index: 1; margin: 4px -16px -16px; padding: 12px 16px 16px;
+    background: rgba(255, 255, 255, .98); border-top: 1px solid #EEF1F5; }
+  .nav-mobile-menu .mobile-login-btn, .nav-mobile-menu .mobile-cta-btn { min-height: 46px; display: grid; place-items: center; font-size: 15px; border-radius: 12px; }
+}
+@keyframes navMenuIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+/* the support button steps aside while the ☰ menu is open (it sat on top of the menu's last items) */
+html:has(.nav-mobile-menu) .sw-fab { visibility: hidden; animation: none; pointer-events: none; }
+@media (max-width: 480px) {
+  /* the cookie banner ends short of the support button instead of running under it */
+  .cc-banner { left: 12px; right: 78px; bottom: 12px; width: auto; max-width: none; padding: 18px 18px 16px; }
+  .cc-text { font-size: 13.5px; }
+  .cc-btn { min-height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) { .nav-mobile-menu { animation: none; } }

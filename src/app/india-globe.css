@@ -476,3 +476,14 @@ section.l-sec.ig {
 @media (prefers-reduced-motion: reduce) {
   .igm, .igm-dialog, .igm-card { animation: none; }
 }
+
+/* phones: a shorter stage, so the globe (sized wider than the screen by the engine) rises right under the
+   headline instead of under a band of empty sky; and a finger-sized Explore button */
+@media (max-width: 600px) {
+  .ig-stage,
+  .ig-panel {
+    height: min(84svh, 640px);
+    min-height: 540px;
+  }
+  .ig-start { min-height: 44px; }
+}

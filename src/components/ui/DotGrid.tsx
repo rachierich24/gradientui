@@ -426,9 +426,12 @@ export function DotGrid({
       bounds.height = rect.height;
     };
 
+    // touch screens: a 1.5× canvas is as crisp for 1px dots and draws far fewer pixels; the idle twinkle runs at
+    // about 30fps there (a ripple or a finger still gets every frame)
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
     const resize = () => {
       const p = propsRef.current;
-      pixelRatio = Math.min(p.dpr ?? window.devicePixelRatio ?? 1, 2);
+      pixelRatio = Math.min(p.dpr ?? window.devicePixelRatio ?? 1, coarse ? 1.5 : 2);
       const rect = container.getBoundingClientRect();
       viewW = rect.width;
       viewH = rect.height;
@@ -523,8 +526,13 @@ export function DotGrid({
       }, 8500);
     }
 
+    // the canvas only moves when the page scrolls or resizes: re-measure then (lazily), not every frame
+    let boundsDirty = false;
+    const markBounds = () => { boundsDirty = true; };
+    const freshBounds = () => { if (boundsDirty) { boundsDirty = false; updateBounds(); } };
     const onPointerMove = (e: PointerEvent) => {
       if (reducedMotion || !propsRef.current.mouseInteraction) return;
+      freshBounds();
       if (e.clientY < bounds.top - 150 || e.clientY > bounds.top + bounds.height + 150) {
         if (mouseInside) {
           mouseRaw.x = -9999;
@@ -572,6 +580,7 @@ export function DotGrid({
 
     const onPointerDown = (e: PointerEvent) => {
       if (!e.isPrimary || reducedMotion || mouseOverInteractiveUI || !propsRef.current.clickShock) return;
+      freshBounds();
       const x = e.clientX - bounds.left;
       const y = e.clientY - bounds.top;
       if (x < 0 || y < 0 || x > bounds.width || y > bounds.height) return;
@@ -586,6 +595,9 @@ export function DotGrid({
         mouseActiveTimer = -10;
       }
     };
+
+    window.addEventListener('scroll', markBounds, { passive: true });
+    window.addEventListener('resize', markBounds, { passive: true });
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerleave', onPointerLeave);
@@ -609,14 +621,15 @@ export function DotGrid({
       rafId = requestAnimationFrame(tick);
       if (!isVisible || !fbos || propsRef.current.paused) return;
 
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
-      lastTime = now;
-      elapsedTime += dt;
-      updateBounds();
-
       // Check if ripples or mouse are actively driving the physics simulation
       const hasActiveRipples = ripples.some(r => elapsedTime - r.born < 2.0);
       const isSimActive = mouseInside || hasActiveRipples || elapsedTime - rippleActivityTimer < 2.5;
+      if (coarse && !isSimActive && now - lastTime < 30) return;
+
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+      elapsedTime += dt;
+      if (boundsDirty) { boundsDirty = false; updateBounds(); }
 
       if (isSimActive) {
         if (mouseInside) {
@@ -702,6 +715,8 @@ export function DotGrid({
       if (ambientInterval) clearInterval(ambientInterval);
       resizeObserver.disconnect();
       observer.disconnect();
+      window.removeEventListener('scroll', markBounds);
+      window.removeEventListener('resize', markBounds);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerleave', onPointerLeave);
       window.removeEventListener('pointerdown', onPointerDown);
