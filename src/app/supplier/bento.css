@@ -100,7 +100,7 @@
 }
 .sbx-card.has-glow:hover .sbx-glow, .sbx-card.has-glow:hover::after { opacity: 1; }
 
-.sbx-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 36px 36px 0; }
+.sbx-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 34px 34px 0; }
 .sbx-head h3 {
   margin: 0;
   max-width: 440px;
@@ -112,6 +112,10 @@
   color: var(--sbx-ink);
   text-wrap: balance;
 }
+.sbx-catalogue .sbx-head, .sbx-alerts .sbx-head, .sbx-integrations .sbx-head { min-height: 118px; }
+.sbx-catalogue .sbx-head h3, .sbx-alerts .sbx-head h3, .sbx-integrations .sbx-head h3 { font-size: clamp(21px, 1.78vw, 25.5px); }
+.sbx-whatsapp .sbx-head, .sbx-history .sbx-head { min-height: 102px; }
+.sbx-whatsapp .sbx-head h3 { font-size: clamp(22px, 1.88vw, 27px); }
 .sbx-head h3 span { color: var(--sbx-muted); }
 .sbx-arrow {
   flex: none;
@@ -345,18 +349,22 @@
 
 /* ═════════════ 2. supplier growth in the past 30 days ═════════════ */
 .sbx-growth .sbx-stage {
-  padding: 14px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 28px 28px;
   overflow: visible;
 }
 
 /* Stage & Dual Floating Cards Container */
 .sup-growth-stage {
   width: 100%;
-  max-width: 440px;
+  max-width: 100%;
+  height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 14px;
 }
 
 /* Top Floating Card: Roastery Tier & Capacity Meter */
@@ -478,18 +486,37 @@
   margin-top: 6px;
 }
 .sup-meter-bar {
+  position: relative;
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #13843D 0%, #1FA952 50%, #34D399 100%);
   box-shadow: 0 1px 3px rgba(31, 169, 82, 0.35);
+  overflow: hidden;
+}
+.sup-meter-bar.is-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.42) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: supMeterSheen 3.2s cubic-bezier(0.4, 0, 0.2, 1) 1.1s infinite;
+}
+@keyframes supMeterSheen {
+  0%, 55% { transform: translateX(-100%); }
+  100% { transform: translateX(180%); }
 }
 
 /* Bottom Floating Card: 30-Day Growth & Green Bar Chart */
 .sup-graph-card {
   position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background: #FFFFFF;
   border-radius: 14px;
-  padding: 18px 18px 14px;
+  padding: 20px 20px 16px;
   border: 1px solid #ECEBE7;
   box-shadow: 
     0 1px 3px rgba(0, 0, 0, 0.03),
@@ -547,7 +574,10 @@
 }
 .sup-chart-wrap {
   position: relative;
-  height: 140px;
+  flex: 1;
+  height: 168px;
+  min-height: 144px;
+  max-height: 204px;
   margin-top: 14px;
   display: flex;
   align-items: flex-end;
@@ -657,8 +687,8 @@
 
 /* ═════════════ 3. catalogue folder ═════════════ */
 .sbx-catalogue .sbx-stage { padding: 0; }
-.sbx-fd-wrap { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 26px; box-sizing: border-box; }
-.sbx-fd { position: relative; width: 252px; height: 212px; perspective: 900px; cursor: pointer; outline: none; }
+.sbx-fd-wrap { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 22px; box-sizing: border-box; }
+.sbx-fd { position: relative; width: 244px; height: 196px; perspective: 900px; cursor: pointer; outline: none; }
 .sbx-fd:focus-visible { outline: 2px solid var(--sbx-green); outline-offset: 8px; border-radius: 16px; }
 .sbx-fd-back {
   position: absolute;
@@ -724,7 +754,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 142px;
+  height: 132px;
   z-index: 30;
   display: flex;
   flex-direction: column;
@@ -742,23 +772,23 @@
 .sbx-fd-label small { display: block; margin-top: 2px; font-size: 11.5px; color: rgba(255, 255, 255, 0.78); }
 .sbx-fd-ok { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; color: var(--sbx-green-deep); }
 .sbx-fd-ok svg { width: 10px; height: 10px; }
-.sbx-fd-cats { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 22px; padding: 0 18px; }
-.sbx-fd-cats span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: #FFFFFF; border: 1px solid #ECEBE7; font-size: 11.5px; color: var(--sbx-soft); transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease; }
+.sbx-fd-cats { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 16px; padding: 0 16px; }
+.sbx-fd-cats span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: #FFFFFF; border: 1px solid #ECEBE7; font-size: 11.5px; color: var(--sbx-soft); transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease, transform 0.25s ease; }
 .sbx-fd-cats b { display: inline-block; font-family: "Geist Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 600; color: var(--sbx-ink); }
-.sbx-fd-cats span.is-hot { border-color: rgba(31, 169, 82, 0.45); background: #F1FAF4; color: var(--sbx-green-deep); }
-.sbx-fd-hint { margin: 10px 0 0; font-size: 11px; color: var(--sbx-muted); }
+.sbx-fd-cats span.is-hot { border-color: rgba(31, 169, 82, 0.45); background: #F1FAF4; color: var(--sbx-green-deep); transform: translateY(-1px); }
+.sbx-fd-hint { margin: 8px 0 0; font-size: 11px; color: var(--sbx-muted); }
 .sbx-modal .sbx-fd-wrap { justify-content: center; padding-bottom: 0; }
 .sbx-modal .sbx-fd { transform: scale(1.22); margin-bottom: 44px; }
 
 /* ═════════════ 4. early alerts ═════════════ */
-.sbx-skus { list-style: none; margin: 0; padding: 14px 18px 0 14px; }
-.sbx-skus li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #F4F3F0; }
+.sbx-skus { list-style: none; margin: 0; padding: 10px 18px 0 16px; }
+.sbx-skus li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #F4F3F0; }
 .sbx-skus img { flex: none; width: 34px; height: 34px; border-radius: 9px; border: 1px solid #ECEBE7; object-fit: contain; padding: 2px; background: #FFFFFF; }
 .sbx-sku-txt { width: 118px; flex: none; }
 .sbx-sku-txt b { display: block; font-size: 12.5px; font-weight: 600; color: var(--sbx-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sbx-sku-txt small { display: block; margin-top: 1px; font-size: 11px; color: var(--sbx-muted); font-variant-numeric: tabular-nums; transition: color 0.3s ease; }
 .sbx-bar { flex: 1; height: 7px; border-radius: 999px; background: #F0EFEC; overflow: hidden; }
-.sbx-bar i { display: block; height: 100%; border-radius: inherit; background: var(--sbx-green); transition: width 0.42s linear, background 0.4s ease; }
+.sbx-bar i { display: block; height: 100%; border-radius: inherit; background: var(--sbx-green); transition: width 0.52s cubic-bezier(0.22, 1, 0.36, 1), background 0.4s ease; }
 .sbx-skus li.is-warn .sbx-bar i { background: var(--sbx-amber); }
 .sbx-skus li.is-warn small { color: var(--sbx-amber); }
 .sbx-skus li.is-crit .sbx-bar i { background: var(--sbx-red); }
@@ -767,12 +797,12 @@
   position: absolute;
   left: 12px;
   right: 18px;
-  top: 228px;
+  bottom: 38px;
   z-index: 2;
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 13px;
+  padding: 12px 13px;
   border-radius: 14px;
   background: #FFFFFF;
   border: 1px solid #F3D6D2;
@@ -783,11 +813,13 @@
 .sbx-alert div { flex: 1; min-width: 0; }
 .sbx-alert b { display: block; font-size: 13px; font-weight: 600; color: var(--sbx-ink); }
 .sbx-alert small { display: block; margin-top: 3px; font-size: 11.5px; line-height: 1.4; color: var(--sbx-soft); }
-.sbx-alert button { flex: none; align-self: center; padding: 8px 11px; border-radius: 9px; border: 0; background: var(--sbx-ink); color: #FFFFFF; font: 600 11.5px/1 "Geist", sans-serif; cursor: pointer; transition: background 0.3s ease; }
+.sbx-alert button { flex: none; align-self: center; padding: 8px 11px; border-radius: 9px; border: 0; background: var(--sbx-ink); color: #FFFFFF; font: 600 11.5px/1 "Geist", sans-serif; cursor: pointer; transition: background 0.3s ease, transform 0.15s ease; }
+.sbx-alert button:hover:not(:disabled) { transform: translateY(-1px); background: #000000; }
+.sbx-alert button:active:not(:disabled) { transform: scale(0.96); }
 .sbx-alert button.is-done { background: var(--sbx-green); cursor: default; }
 
 /* ═════════════ 5. integrations ═════════════ */
-.sbx-integrations .sbx-stage { padding: 8px 0 0; }
+.sbx-integrations .sbx-stage { padding: 4px 12px 0; }
 .sbx-int {
   position: relative;
   height: 100%;
@@ -795,21 +827,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-bottom: 28px;
+  padding-bottom: 62px;
+  box-sizing: border-box;
   overflow: hidden;
 }
 .sbx-cloud-wrap {
   position: relative;
   width: 100%;
   height: 100%;
-  max-height: 400px;
+  max-height: 356px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .sbx-cloud-wrap canvas {
-  width: 100% !important;
-  max-width: 390px !important;
+  width: min(100%, 348px) !important;
+  max-width: 348px !important;
   height: auto !important;
   aspect-ratio: 1 / 1;
   cursor: grab;
@@ -817,12 +850,17 @@
 .sbx-cloud-wrap canvas:active {
   cursor: grabbing;
 }
+/* centred with margins, not translateX(-50%): its fade-in animates `transform` inline, which wiped the centring
+   out and left the pill half off the card */
 .sbx-sync {
   position: absolute;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%);
-  display: inline-flex;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  margin: 0 auto;
+  display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
@@ -837,6 +875,7 @@
   z-index: 5;
 }
 .sbx-sync i { width: 7px; height: 7px; border-radius: 50%; }
+.sbx-sync i.is-live { animation: sbxPulse 1.8s ease-in-out infinite; }
 .sbx-sync b { font-weight: 600; color: var(--sbx-ink); }
 
 /* ═════════════ 6. WhatsApp automation (animated list) ═════════════ */
@@ -866,6 +905,10 @@
   background: #FFFFFF;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 24px rgba(0, 0, 0, 0.05);
   cursor: default;
+  transition: box-shadow 0.25s ease;
+}
+.sbx-wa-item:hover {
+  box-shadow: 0 0 0 1px rgba(31, 169, 82, 0.25), 0 8px 20px -6px rgba(18, 20, 19, 0.12);
 }
 .sbx-wa-ic { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: #FFFFFF; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25); }
 .sbx-wa-ic svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
@@ -1011,29 +1054,82 @@
 .sbx-modal-cta:hover span { transform: translateX(3px); }
 .sbx-modal-stage { padding: 34px 0 0 0; }
 .sbx-modal .sbx-window { transform: none !important; }
+.sbx-modal.sbx-growth .sbx-modal-stage,
+.sbx-modal.sbx-catalogue .sbx-modal-stage,
+.sbx-modal.sbx-integrations .sbx-modal-stage,
+.sbx-modal.sbx-whatsapp .sbx-modal-stage {
+  padding: 28px 36px 36px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.sbx-modal.sbx-growth .sup-growth-stage { height: auto; max-width: 490px; }
+.sbx-modal.sbx-growth .sup-chart-wrap { min-height: 155px; max-height: 200px; }
+.sbx-modal.sbx-integrations .sbx-int { padding-bottom: 58px; }
+.sbx-modal.sbx-integrations .sbx-cloud-wrap { max-height: 410px; }
+.sbx-modal.sbx-integrations .sbx-cloud-wrap canvas { width: min(100%, 400px) !important; max-width: 400px !important; }
+.sbx-modal.sbx-orders .sbx-dock { bottom: 24px; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1180px) {
   .sbx-orders, .sbx-growth, .sbx-whatsapp, .sbx-history { grid-column: span 12; }
-  .sbx-catalogue, .sbx-alerts { grid-column: span 6; }
-  .sbx-integrations { grid-column: span 12; }
+  .sbx-orders { height: 560px; }
+  .sbx-growth { height: auto; min-height: 360px; }
+  .sbx-catalogue, .sbx-alerts { grid-column: span 6; height: 540px; }
+  .sbx-integrations { grid-column: span 12; height: 470px; }
+  .sbx-whatsapp { height: 500px; }
+  .sbx-history { height: 550px; }
+  .sbx-catalogue .sbx-head, .sbx-alerts .sbx-head, .sbx-integrations .sbx-head,
+  .sbx-whatsapp .sbx-head, .sbx-history .sbx-head { min-height: 0; }
+}
+@media (max-width: 1180px) and (min-width: 721px) {
+  .sbx-growth .sup-growth-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.32fr);
+    gap: 18px;
+    align-items: stretch;
+  }
+  .sbx-growth .sup-tier-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .sbx-growth .sup-chart-wrap { min-height: 148px; }
+  .sbx-modal.sbx-growth .sup-growth-stage { display: flex; flex-direction: column; }
 }
 @media (max-width: 720px) {
   .sbx-grid { gap: 16px; }
   .sbx-catalogue, .sbx-alerts, .sbx-integrations { grid-column: span 12; }
-  .sbx-card, .sbx-catalogue, .sbx-alerts, .sbx-integrations, .sbx-whatsapp, .sbx-history { height: 520px; }
-  .sbx-head { padding: 26px 24px 0; }
-  .sbx-stage { padding: 24px 0 0 24px; }
+  .sbx-card, .sbx-alerts, .sbx-history { height: 520px; }
+  .sbx-orders { height: 560px; }
+  .sbx-growth { height: auto; }
+  .sbx-catalogue { height: 510px; }
+  .sbx-integrations { height: 460px; }
+  .sbx-whatsapp { height: 500px; }
+  .sbx-head { padding: 24px 22px 0; min-height: 0 !important; }
+  .sbx-head h3 { font-size: clamp(22px, 6vw, 26px) !important; }
+  .sbx-stage { padding: 20px 0 0 20px; }
   .sbx-notif { width: auto; left: 10px; right: 10px; }
   .sbx-ord-amt, .sbx-spark { display: none; }
-  .sbx-cam { padding-left: 12px; }
-  .sbx-ord-more { padding-left: 12px; }
-  .sbx-dock { bottom: 36px; gap: 6px; padding: 0 8px 7px; height: 48px; }
-  .sbx-gr-top { flex-direction: column; }
-  .sbx-gr-plot { height: 130px; margin-top: 32px; }
-  .sbx-gr-tiles { display: none; }
+  .sbx-cam { padding: 14px 0 0 12px; }
+  .sbx-ord-row { padding: 8px 14px 8px 10px; }
+  .sbx-ord-more { padding-left: 12px; padding-right: 14px; }
+  .sbx-lines { padding: 6px 0 8px; }
+  .sbx-act { height: 58px; }
+  .sbx-eta { margin-bottom: 8px; padding: 6px 9px; }
+  .sbx-dock { bottom: 26px; gap: 6px; padding: 0 8px 6px; height: 44px; }
+  .sbx-growth .sbx-stage { padding: 14px 16px 20px; }
+  .sbx-catalogue .sbx-fd { width: 226px; height: 186px; }
+  .sbx-catalogue .sbx-fd-front { height: 126px; }
+  .sbx-alerts .sbx-skus { padding: 10px 14px 0 12px; }
+  .sbx-alerts .sbx-skus li { padding: 7px 0; }
+  .sbx-alerts .sbx-alert { bottom: 32px; padding: 11px; }
   .sbx-sku-txt { width: 104px; }
-  .sbx-whatsapp .sbx-stage { padding: 20px 20px 0; }
+  .sbx-integrations .sbx-int { padding-bottom: 56px; }
+  .sbx-integrations .sbx-cloud-wrap canvas { width: min(100%, 296px) !important; max-width: 296px !important; }
+  .sbx-whatsapp .sbx-stage { padding: 18px 18px 0; }
+  .sbx-wa-list { gap: 8px; }
+  .sbx-wa-item { padding: 10px 12px; }
   .sbx-wa-src small { display: none; }
   .sbx-hi { grid-template-columns: minmax(0, 1fr); }
   .sbx-hi-date { display: none; }
@@ -1044,8 +1140,18 @@
   .sbx-modal-copy { padding: 20px 24px 8px; }
   .sbx-modal-cta { margin-top: 22px; }
   .sbx-modal-stage { height: 460px; padding: 20px 0 0 24px; }
+  .sbx-modal.sbx-growth .sbx-modal-stage,
+  .sbx-modal.sbx-catalogue .sbx-modal-stage,
+  .sbx-modal.sbx-integrations .sbx-modal-stage,
+  .sbx-modal.sbx-whatsapp .sbx-modal-stage { height: auto; min-height: 360px; padding: 16px 20px 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sbx-card::before, .sbx-window, .sbx-arrow svg, .sbx-bar i, .sbx-glow, .sbx-card.has-glow::after, .sbx-dk-tip { transition: none; }
-  .sbx-eta i, .sbx-mk.is-rest::after, .sbx-spin, .sbx-rc-scan { animation: none; }
+  .sbx-card::before, .sbx-window, .sbx-arrow svg, .sbx-bar i, .sbx-glow, .sbx-card.has-glow::after, .sbx-dk-tip, .sbx-wa-item { transition: none; }
+  .sbx-eta i, .sbx-mk.is-rest::after, .sbx-spin, .sbx-rc-scan, .sup-meter-bar.is-live::after, .sbx-sync i.is-live { animation: none; }
+}
+/* the folder's hint: "Tap" on touch screens, "Click" with a mouse */
+.sbx-on-touch { display: none; }
+@media (pointer: coarse) {
+  .sbx-on-fine { display: none; }
+  .sbx-on-touch { display: inline; }
 }

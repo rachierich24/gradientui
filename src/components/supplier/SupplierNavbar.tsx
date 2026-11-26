@@ -11,9 +11,10 @@ interface SupplierNavbarProps {
 export function SupplierNavbar({ onJoinClick }: SupplierNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // transparent over the top of the hero, frosted glass once the page has scrolled (as on the brand portal)
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 24);
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -23,30 +24,26 @@ export function SupplierNavbar({ onJoinClick }: SupplierNavbarProps) {
   return (
     <header className={`sup-navbar ${isScrolled ? 'is-scrolled' : ''}`}>
       <div className="sup-container sup-nav-inner">
-        {/* Left: Gradient Logo + Supplier Portal Tag */}
-        <Link href="/" className="sup-logo-group" aria-label="Gradient home">
-          <div className="sup-logo-mark" aria-hidden="true">G</div>
-          <div className="sup-logo-text">
-            <span>Gradient</span>
-            <span className="sup-badge-portal">Supplier Portal</span>
-          </div>
+        {/* Left: the wordmark, as on the brand portal, in the supplier's green */}
+        <Link href="/supplier" className="sup-logo-group" aria-label="Gradient Supplier Portal">
+          <span className="sup-logo-text">gradient</span>
         </Link>
 
         {/* Center: Clean Marketing Links */}
         <nav aria-label="Supplier Portal Navigation">
           <ul className="sup-nav-links">
             <li>
-              <a href="#benefits" className="sup-nav-link">
+              <a href="#order-workspace" className="sup-nav-link">
                 Platform
               </a>
             </li>
             <li>
-              <a href="#workflow" className="sup-nav-link">
+              <a href="#how-it-works" className="sup-nav-link">
                 How it works
               </a>
             </li>
             <li>
-              <a href="#order-workspace" className="sup-nav-link">
+              <a href="#features" className="sup-nav-link">
                 Features
               </a>
             </li>
@@ -77,8 +74,8 @@ export function SupplierNavbar({ onJoinClick }: SupplierNavbarProps) {
               size={42}
               duration={4}
               borderWidth={1.5}
-              colorFrom="#86efac"
-              colorTo="#ffffff"
+              colorFrom="#C2ECD4"
+              colorTo="#1FA952"
             />
             <span>Join as a Supplier</span>
             <svg

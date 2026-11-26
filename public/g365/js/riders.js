@@ -13,8 +13,20 @@
     await G.loadProducts();
     let renderer;
     try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { return null; }
-    // drawn a little above the screen's resolution, so the small products' edges and labels come out clean
-    renderer.setPixelRatio(Math.min((window.devicePixelRatio || 1) * 1.25, 2));
+    // drawn a little above the screen's resolution, so the small products' edges and labels come out clean.
+    // Adaptive: if frames keep running long (a phone that can't keep up), the canvas steps its resolution down
+    // a notch at a time, never below 1×; fast devices never notice. Pauses (a hidden tab) don't count.
+    let ratio = Math.min((window.devicePixelRatio || 1) * 1.25, 2), lastAt = 0, slow = 0;
+    renderer.setPixelRatio(ratio);
+    function pace(now) {
+      const dt = lastAt ? now - lastAt : 0; lastAt = now;
+      if (!dt || dt > 120) return;
+      slow = Math.max(0, slow + (dt > 26 ? 1 : -0.5));
+      if (slow > 40 && ratio > 1) {
+        slow = 0; ratio = Math.max(1, Math.round((ratio - 0.25) * 100) / 100);
+        renderer.setPixelRatio(ratio); renderer.setSize(W, H, false);
+      }
+    }
     renderer.outputEncoding = THREE.sRGBEncoding;
     // a touch under full exposure, so white products keep their shading against the white page
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
@@ -85,6 +97,7 @@
       //          hot (a colour while pointed at: the product lifts a little and the pool brightens) }
       // clipW: products never go right of this (canvas px), so only that much of the canvas is drawn
       render(items, t, still, clipW) {
+        pace(performance.now());
         renderer.setScissorTest(!!clipW);
         if (clipW) renderer.setScissor(0, 0, Math.min(W, Math.ceil(clipW)), H);
         pool.forEach((r) => { r.tilt.visible = false; r.shadow.visible = false; r.ao.visible = false; r.cast.visible = false; r.glow.visible = false; });

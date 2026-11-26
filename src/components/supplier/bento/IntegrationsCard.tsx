@@ -23,9 +23,10 @@ export function IntegrationsCard({ run }: { run: boolean }) {
       <div className="sbx-cloud-wrap">
         <IconCloud
           images={INTEGRATION_IMAGES}
-          radius={142}
-          iconSize={58}
+          radius={128}
+          iconSize={52}
           showControl={false}
+          paused={!run}
         />
       </div>
 
@@ -36,9 +37,9 @@ export function IntegrationsCard({ run }: { run: boolean }) {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.22 }}
+          transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         >
-          <i style={{ background: '#1FA952' }} />
+          <i className={run ? 'is-live' : undefined} style={{ background: '#1FA952' }} />
           <span>Live sync with <b>{TOOL_NAMES[activeIdx]}</b></span>
         </motion.div>
       </AnimatePresence>

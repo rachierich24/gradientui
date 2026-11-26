@@ -1036,3 +1036,9 @@
   .eco-mini-stage .bd-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .eco-mini-stage .bd-kpi:nth-child(n + 3) { display: none; }
 }
+
+/* touch: the portal links (19px tall) get a finger-sized target without moving anything */
+@media (pointer: coarse) {
+  #ecosystem-cards .eco-bento-link { position: relative; }
+  #ecosystem-cards .eco-bento-link::after { content: ""; position: absolute; inset: -12px -6px; }
+}

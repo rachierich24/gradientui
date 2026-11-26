@@ -318,21 +318,71 @@
 .isx[data-hover="core"] .isx-arc.is-supply, .isx[data-hover="supply"] .isx-arc.is-supply { stroke: var(--supply); }
 .isx[data-hover="core"] .isx-arc.is-brand, .isx[data-hover="brand"] .isx-arc.is-brand { stroke: var(--brand); }
 
-/* ---------- small screens: the same story, stacked ---------- */
-.isx-stack { display: none; }
+/* the comets and the core's pulse run only while the section is on screen (Intersystem sets data-run); coming back
+   restarts them together, so the story starts from the top */
+.isx:not([data-run]) .isx-comet,
+.isx:not([data-run]) .isx-core-pulse { animation: none; }
+
+/* ---------- phones: the same diagram drawn upright (Intersystem.tsx, M_*) ---------- */
+.isx-mdiagram { display: none; }
 @media (max-width: 860px) {
   .isx-head { flex-direction: column; align-items: flex-start; gap: 14px; }
 }
 @media (max-width: 819px) {
   .isx-diagram { display: none; }
-  .isx-stack { position: relative; z-index: 1; display: grid; gap: 12px; max-width: 440px; margin: 8px auto 0; }
-  .isx-stack-core { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 16px; background: linear-gradient(150deg, #202125, #0C0D0F 60%); border: 1px solid rgba(255, 255, 255, 0.14); }
-  .isx-stack-core strong { font-family: "Instrument Sans", "Geist", sans-serif; font-size: 20px; font-weight: 600; letter-spacing: -0.03em; }
-  .isx-stack-group { padding: 16px; border-radius: 14px; background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.07); }
-  .isx-stack-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-  .isx-stack-pills .isx-pill { display: inline-grid; height: 34px; font-size: 14px; }
-  .isx-stack-group p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .isx-mdiagram { position: relative; z-index: 1; display: block; margin: 6px auto 0; }
+  .isx-head { margin-bottom: 30px; }
+  .isx-head h2 { font-size: clamp(28px, 7.6vw, 34px); }
+  .isx-head p { font-size: 15px; color: #C9CDD2; }
 }
+.isx-canvas.is-m { width: 360px; height: 724px; -webkit-tap-highlight-color: transparent; }
+.is-m .isx-tray { flex-wrap: wrap; justify-content: center; gap: 6px; }
+.is-m .isx-slot { height: 34px; padding: 0 11px; border-radius: 8px; font-size: 13px; }
+.is-m .isx-slot.is-end { padding: 0; }
+.is-m .isx-pill { height: 36px; padding: 0 12px; font-size: 14px; }
+.is-m .isx-block { grid-template-columns: repeat(3, 40px); gap: 8px; padding: 10px; border-radius: 14px; }
+.is-m .isx-tile { width: 40px; height: 40px; border-radius: 10px; }
+.is-m .isx-tile svg { width: 20px; height: 20px; }
+.is-m .isx-core { left: 124px; top: 232px; width: 112px; height: 112px; border-radius: 20px; transform: none; }
+.is-m .isx-die { inset: 8px; border-radius: 12px; gap: 3px; }
+.is-m .isx-die strong { font-size: 16px; }
+.is-m .isx-die small { font-size: 7px; }
+.is-m .isx-pads.is-h { inset: 3px 17px; }
+.is-m .isx-pads.is-v { inset: 17px 3px; }
+.is-m .isx-glow.is-core { left: 30px; top: 138px; width: 300px; height: 300px; }
+.is-m .isx-glow.is-cafe { left: -40px; top: -70px; width: 440px; height: 270px; }
+.is-m .isx-glow.is-supply { left: -150px; top: 330px; width: 420px; height: 420px; }
+.is-m .isx-glow.is-brand { left: 90px; top: 330px; width: 420px; height: 300px; }
+
+/* phones: the colour follows the order round (data-auto, from the core's pulse) — the same colours a hover brings on
+   the desktop, but nothing steps back; a tap (data-hover) takes over from it */
+.isx:not([data-hover])[data-auto~="cafe"] [data-side="cafe"],
+.isx:not([data-hover])[data-auto~="supply"] [data-side="supply"],
+.isx:not([data-hover])[data-auto~="brand"] [data-side="brand"],
+.isx:not([data-hover])[data-auto~="core"] [data-side] {
+  --lit-bg: var(--sc-fill);
+  --lit-ink: #FFFFFF;
+  --lit-stroke: var(--sc);
+  --lit-glow: color-mix(in srgb, var(--sc) 70%, transparent);
+  --lit-border: color-mix(in srgb, var(--sc) 55%, transparent);
+  --lit-icon: var(--sc);
+}
+.isx:not([data-hover])[data-auto~="cafe"] .isx-glow.is-cafe,
+.isx:not([data-hover])[data-auto~="supply"] .isx-glow.is-supply,
+.isx:not([data-hover])[data-auto~="brand"] .isx-glow.is-brand,
+.isx:not([data-hover])[data-auto~="core"] .isx-glow { opacity: 1; }
+.isx:not([data-hover])[data-auto~="cafe"] .isx-eyebrow i:nth-child(1), .isx:not([data-hover])[data-auto~="core"] .isx-eyebrow i:nth-child(1),
+.isx:not([data-hover])[data-auto~="cafe"] .isx-arc.is-cafe, .isx:not([data-hover])[data-auto~="core"] .isx-arc.is-cafe { background: var(--cafe); stroke: var(--cafe); }
+.isx:not([data-hover])[data-auto~="supply"] .isx-eyebrow i:nth-child(2), .isx:not([data-hover])[data-auto~="core"] .isx-eyebrow i:nth-child(2),
+.isx:not([data-hover])[data-auto~="supply"] .isx-arc.is-supply, .isx:not([data-hover])[data-auto~="core"] .isx-arc.is-supply { background: var(--supply); stroke: var(--supply); }
+.isx:not([data-hover])[data-auto~="brand"] .isx-eyebrow i:nth-child(3), .isx:not([data-hover])[data-auto~="core"] .isx-eyebrow i:nth-child(3),
+.isx:not([data-hover])[data-auto~="brand"] .isx-arc.is-brand, .isx:not([data-hover])[data-auto~="core"] .isx-arc.is-brand { background: var(--brand); stroke: var(--brand); }
+/* the core answers when the order reaches it */
+.isx:not([data-hover])[data-auto~="core"] .is-m .isx-core { border-color: rgba(255, 255, 255, 0.26);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.95), 0 0 46px -12px color-mix(in srgb, var(--cafe) 45%, transparent),
+    0 0 52px -10px color-mix(in srgb, var(--brand) 40%, transparent), 0 0 40px -14px color-mix(in srgb, var(--supply) 40%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16); }
+.isx:not([data-hover])[data-auto~="core"] .is-m .isx-pads { --isx-pad: rgba(226, 190, 118, 0.9); }
 
 @media (prefers-reduced-motion: reduce) {
   .isx-comet, .isx-core-pulse { display: none; }

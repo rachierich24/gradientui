@@ -108,6 +108,9 @@ const anchorTop = (p: number) => `${(p * RANGE_VH + 50).toFixed(1)}vh`;
 const STARTS = [LAND, SUP_AT, BRAND_AT];
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+// without the pinned tour (phones, tablets, reduced motion) the side portals take no scroll-driven motion: CSS
+// places and tilts them (portal-tour.css). Opacity is set too, so none is left over from the first render.
+const STILL_SIDE: CSSProperties = { transform: 'none', opacity: 1 };
 const smooth = (t: number) => t * t * (3 - 2 * t);
 // an element's offset inside an ancestor, ignoring transforms
 const offsetIn = (el: HTMLElement, root: HTMLElement) => {
@@ -292,7 +295,9 @@ export function EcosystemShowcase() {
   const tourBrandRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 861px) and (prefers-reduced-motion: no-preference)');
+    // the pinned tour needs a desktop-sized screen: wide, and tall enough to hold its stage (a phone on its side
+    // is wider than 861px but only ~400px tall, so it gets the stacked cards)
+    const mq = window.matchMedia('(min-width: 861px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)');
     const set = () => setDesk(mq.matches);
     set();
     mq.addEventListener('change', set);
@@ -363,6 +368,29 @@ export function EcosystemShowcase() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  // Without the pinned tour (phones, tablets) chapter 1's arrival is scrubbed by the scroll, as the desktop's is: the
+  // heading rises in line by line as it comes up the screen; the phone rises and the two portals fan out from behind
+  // it while the devices come into view, settling as they reach the bottom of the screen. There one order arrives on
+  // each device in turn, and goes again if you scroll back. The progress goes to CSS as variables (portal-tour.css,
+  // .is-play). Reduced motion shows it all at rest.
+  const play = !desk && !isReduced;
+  const textRef = useRef<HTMLDivElement>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: textP } = useScroll({ target: textRef, offset: ['start 98%', 'start 55%'] });
+  const { scrollYProgress: groupP } = useScroll({ target: groupRef, offset: ['start end', 'end end'] });
+  const settle = { stiffness: 140, damping: 30, mass: 0.35, restDelta: 0.0005 };
+  const textK = useSpring(textP, settle);
+  const groupK = useSpring(groupP, settle);
+  // eased in and out over the stretch where each piece is actually on screen: the phone while it comes up past the
+  // bottom edge, the portals a beat behind it, settling as the devices reach the bottom of the screen
+  const kLine1 = useTransform(textK, (t: number) => smooth(clamp(t / 0.6)));
+  const kLine2 = useTransform(textK, (t: number) => smooth(clamp((t - 0.15) / 0.6)));
+  const kLine3 = useTransform(textK, (t: number) => smooth(clamp((t - 0.3) / 0.6)));
+  const kPhone = useTransform(groupK, (k: number) => smooth(clamp((k - 0.05) / 0.7)));
+  const kSides = useTransform(groupK, (k: number) => smooth(clamp((k - 0.25) / 0.7)));
+  const [devArrived, setDevArrived] = useState(false);
+  useMotionValueEvent(groupP, 'change', (k) => { if (k > 0.97) setDevArrived(true); else if (k < 0.85) setDevArrived(false); });
 
   // ─── Scroll ───
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
@@ -478,7 +506,7 @@ export function EcosystemShowcase() {
   const stageBg = '#FFFFFF';
 
   return (
-    <section className={`eco-track${desk ? ' is-tour' : ''}`} ref={trackRef} id="ecosystem" aria-label="The Gradient ecosystem: cafés, suppliers and brands">
+    <section className={`eco-track${desk ? ' is-tour' : ''}${play ? ' is-play' : ''}`} ref={trackRef} id="ecosystem" aria-label="The Gradient ecosystem: cafés, suppliers and brands">
       {/* each portal's anchor, half a screen past where it takes the panel (see anchorTop) */}
       {desk && PORTALS.map((p, k) => <span key={p.id} id={p.anchor} className="pt-anchor" style={{ top: anchorTop(STARTS[k]) }} aria-hidden="true" />)}
 
@@ -494,8 +522,10 @@ export function EcosystemShowcase() {
         {/* ─── CHAPTER 1: the heading ─── */}
         <div className="eco-container">
           <motion.div
+            ref={textRef}
             className="eco-text-wrap"
-            style={isReduced ? { opacity: 1, y: 0 } : { opacity: ecoTextOpacity, y: ecoTextY, pointerEvents: tourOn ? 'none' : 'auto' }}
+            style={play ? { opacity: 1, y: 0, ['--kt1' as string]: kLine1, ['--kt2' as string]: kLine2, ['--kt3' as string]: kLine3 }
+              : isReduced || !desk ? { opacity: 1, y: 0 } : { opacity: ecoTextOpacity, y: ecoTextY, pointerEvents: tourOn ? 'none' : 'auto' }}
           >
             <h2 className="eco-headline">
               <span className="eco-headline-main">Connecting cafés, suppliers &amp; brands.</span>
@@ -542,11 +572,12 @@ export function EcosystemShowcase() {
 
         {/* ─── THE DEVICES (chapter 1; the phone carries on into the tour) ─── */}
         <div className="eco-stage-viewport">
-          <div className={`eco-screens-group${desk && arrived ? ' is-arrived' : ''}`}>
+          <motion.div ref={groupRef} className={`eco-screens-group${(desk ? arrived : play && devArrived) ? ' is-arrived' : ''}`}
+            style={play ? { ['--kp' as string]: kPhone, ['--ks' as string]: kSides } : {}}>
             {/* left: the supplier portal */}
             <motion.div
               className="eco-browser-window eco-screen-supplier"
-              style={isReduced ? { transform: 'none' } : { x: supplierX, y: sideY, scale: sideScale, opacity: sideOpacity, rotateY: supplierRotY, rotateX: sideRotX, transformPerspective: 1400, zIndex: 10 }}
+              style={isReduced || !desk ? STILL_SIDE : { x: supplierX, y: sideY, scale: sideScale, opacity: sideOpacity, rotateY: supplierRotY, rotateX: sideRotX, transformPerspective: 1400, zIndex: 10 }}
             >
               <div className="eco-device-scaler" style={{ position: 'relative' }}>
                 <TabletBar p={PORTALS[1]} />
@@ -601,7 +632,7 @@ export function EcosystemShowcase() {
             {/* right: the brand portal */}
             <motion.div
               className="eco-browser-window eco-screen-brand"
-              style={isReduced ? { transform: 'none' } : { x: brandX, y: sideY, scale: sideScale, opacity: sideOpacity, rotateY: brandRotY, rotateX: sideRotX, transformPerspective: 1400, zIndex: 10 }}
+              style={isReduced || !desk ? STILL_SIDE : { x: brandX, y: sideY, scale: sideScale, opacity: sideOpacity, rotateY: brandRotY, rotateX: sideRotX, transformPerspective: 1400, zIndex: 10 }}
             >
               <div className="eco-device-scaler" style={{ position: 'relative' }}>
                 <TabletBar p={PORTALS[2]} />
@@ -612,7 +643,7 @@ export function EcosystemShowcase() {
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
 
         {/* ─── THE TOUR, IN FRONT: the rail, the words, and the floating cards ─── */}
@@ -671,12 +702,13 @@ function StackCard({ p }: { p: Portal }) {
   const seek = (at: number) => { const v = film.current; if (!v) return; try { v.currentTime = at; } catch {} v.play().catch(() => {}); };
   return (
     <article className="pt-card" id={p.anchor} ref={ref} data-portal={p.id}>
+      {/* the portal's colour fills the whole card; the words and the product sit on it */}
+      <span className="pt-field is-on" style={fieldVars(p.id)} aria-hidden="true" />
+      <span className="pt-grain" aria-hidden="true" />
       <div className="pt-copy is-static" data-portal={p.id}>
         <PortalCopy p={p} film={film} on={inView} onSeek={seek} />
       </div>
       <div className="pt-card-panel">
-        <span className="pt-field is-on" style={fieldVars(p.id)} />
-        <span className="pt-grain" />
         {p.id === 'cafe' ? (
           <div className="pt-mphone"><video ref={film} src={p.film} playsInline muted loop preload="none" /></div>
         ) : (

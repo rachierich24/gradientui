@@ -28,9 +28,31 @@ export function SupplierBillSyncAudit() {
     });
   }, []);
 
+  // The section's loops (the five steps, the pillar cards) only run while it's on screen; off screen they
+  // re-rendered this whole section every couple of seconds for nobody
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: '100px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // on a phone the five steps sit on a strip that scrolls sideways: keep the current one in view (the strip
+  // scrolls, never the page)
+  const pillsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const track = pillsRef.current;
+    const pill = track?.children[activeStep - 1] as HTMLElement | undefined;
+    if (!track || !pill || track.scrollWidth <= track.clientWidth + 1) return;
+    track.scrollTo({ left: pill.offsetLeft - (track.clientWidth - pill.offsetWidth) / 2, behavior: prefersReduced ? 'auto' : 'smooth' });
+  }, [activeStep, prefersReduced]);
+
   // Auto-cycle through the 5 steps sequentially every 2.2 seconds (faster, brisk pace)
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || !inView) return;
     const timer = setInterval(() => {
       setStepState(([prev]) => {
         const next = (prev === 5 ? 1 : prev + 1) as 1 | 2 | 3 | 4 | 5;
@@ -38,7 +60,7 @@ export function SupplierBillSyncAudit() {
       });
     }, 2200);
     return () => clearInterval(timer);
-  }, [isPlaying]);
+  }, [isPlaying, inView]);
 
   // Beam progress percentage (0% to 100%) moving briskly till the end across the 5-step loop
   const [beamProgress, setBeamProgress] = useState<number>(20);
@@ -64,7 +86,7 @@ export function SupplierBillSyncAudit() {
   const [isPillarHoveredByUser, setIsPillarHoveredByUser] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isPillarHoveredByUser) return;
+    if (isPillarHoveredByUser || !inView) return;
     const timer = setInterval(() => {
       setRandomPillarIndex(prev => {
         const candidates = [0, 1, 2].filter(idx => idx !== prev);
@@ -72,7 +94,7 @@ export function SupplierBillSyncAudit() {
       });
     }, 2800);
     return () => clearInterval(timer);
-  }, [isPillarHoveredByUser]);
+  }, [isPillarHoveredByUser, inView]);
 
   // Recalculate dynamic connector line coordinates directly relative to the active SVG (1:1 CSS pixels, no viewBox scaling)
   const updateCoordinates = useCallback(() => {
@@ -184,6 +206,7 @@ export function SupplierBillSyncAudit() {
 
   return (
     <section
+      ref={sectionRef}
       className="sup-billsync-section"
       id="bill-sync-audit"
       aria-label="Smart Bill Sync, Automated GST Reconciliation and CA Audit Vault"
@@ -211,7 +234,7 @@ export function SupplierBillSyncAudit() {
           </p>
         </div>
 
-        {/* ─── HUD Terminal Shell (Magic Receipt AI Inspired · Pure White Canvas) ─── */}
+        {/* ─── HUD Terminal Shell · Pure White Canvas ─── */}
         <div className="sup-billsync-terminal">
           {/* Internal HUD Grid & Soft Radial Glow */}
           <div className="sup-billsync-terminal-grid" />
@@ -231,7 +254,7 @@ export function SupplierBillSyncAudit() {
           <div className="sup-terminal-top">
             <div className="sup-terminal-top-right">
               {/* Green Battery Status Indicator */}
-              <div className="sup-battery-indicator" title="AI OCR Engine // 100% Online">
+              <div className="sup-battery-indicator" title="Bill Sync Engine // 100% Online">
                 <span className="sup-battery-bar" />
                 <span className="sup-battery-bar" />
                 <span className="sup-battery-bar" />
@@ -283,9 +306,9 @@ export function SupplierBillSyncAudit() {
                   exit={{ opacity: 0, y: -direction * 6 }}
                   transition={{ duration: 0.12 }}
                 >
-                  {activeStep === 1 && 'GRADIENT AI IS ANALYZING YOUR RECEIPTS...'}
+                  {activeStep === 1 && 'GRADIENT IS ANALYZING YOUR RECEIPTS...'}
                   {activeStep === 2 && 'ALL PAID BILLS SCANNED & ARRANGED IN ONE PLACE...'}
-                  {activeStep === 3 && 'GRADIENT AI IS ANALYZING YOUR BANK STATEMENT & GSTR-2B...'}
+                  {activeStep === 3 && 'GRADIENT IS ANALYZING YOUR BANK STATEMENT & GSTR-2B...'}
                   {activeStep === 4 && 'RECONCILIATION IN PROGRESS...'}
                   {activeStep === 5 && 'REPORT AND SHARE WITH YOUR CA'}
                 </motion.div>
@@ -326,7 +349,7 @@ export function SupplierBillSyncAudit() {
 
                       <div className="sup-receipt-content">
                         <div className="sup-receipt-brand-row">
-                          <span className="sup-receipt-header">Gradient AI</span>
+                          <span className="sup-receipt-header">Gradient</span>
                           <span className="sup-receipt-tag">OCR ACTIVE</span>
                         </div>
                         <div className="sup-receipt-meta-line">
@@ -515,11 +538,11 @@ export function SupplierBillSyncAudit() {
                 >
                   <div className="sup-recon-split-stage">
                     {/* Left: 4 Docked Micro Receipts */}
-                    <div className="sup-docked-receipts-column">
+                    <div className={`sup-docked-receipts-column ${activeStep === 4 ? 'is-matched' : ''}`}>
                       {/* Item 0 */}
                       <div className="sup-micro-receipt-wrapper">
                         <div className="sup-micro-receipt-card">
-                          <div className="sup-micro-receipt-title">Gradient AI</div>
+                          <div className="sup-micro-receipt-title">Gradient</div>
                           <div className="sup-micro-receipt-vendor">Hillfold #8824</div>
                           <div className="sup-micro-receipt-price">₹38,000.00</div>
                         </div>
@@ -532,7 +555,7 @@ export function SupplierBillSyncAudit() {
                       {/* Item 1 */}
                       <div className="sup-micro-receipt-wrapper">
                         <div className="sup-micro-receipt-card">
-                          <div className="sup-micro-receipt-title">Gradient AI</div>
+                          <div className="sup-micro-receipt-title">Gradient</div>
                           <div className="sup-micro-receipt-vendor">Oat Co. #4120</div>
                           <div className="sup-micro-receipt-price">₹14,400.00</div>
                         </div>
@@ -545,7 +568,7 @@ export function SupplierBillSyncAudit() {
                       {/* Item 2 */}
                       <div className="sup-micro-receipt-wrapper">
                         <div className="sup-micro-receipt-card">
-                          <div className="sup-micro-receipt-title">Gradient AI</div>
+                          <div className="sup-micro-receipt-title">Gradient</div>
                           <div className="sup-micro-receipt-vendor">PackCraft #6419</div>
                           <div className="sup-micro-receipt-price">₹9,500.00</div>
                         </div>
@@ -558,7 +581,7 @@ export function SupplierBillSyncAudit() {
                       {/* Item 3 */}
                       <div className="sup-micro-receipt-wrapper">
                         <div className="sup-micro-receipt-card">
-                          <div className="sup-micro-receipt-title">Gradient AI</div>
+                          <div className="sup-micro-receipt-title">Gradient</div>
                           <div className="sup-micro-receipt-vendor">AMC Care #9910</div>
                           <div className="sup-micro-receipt-price">₹6,500.00</div>
                         </div>
@@ -568,6 +591,15 @@ export function SupplierBillSyncAudit() {
                         />
                       </div>
                     </div>
+
+                    {/* Mobile vertical reconciliation bridge (shown only on compact viewports in Step 4) */}
+                    {activeStep === 4 && (
+                      <div className="sup-recon-mobile-bridge" aria-hidden="true">
+                        <span className="sup-recon-bridge-line" />
+                        <span className="sup-recon-bridge-pill">4 bills matched to bank debits</span>
+                        <span className="sup-recon-bridge-line" />
+                      </div>
+                    )}
 
                     {/* Right: Bank Statement & GSTR-2B Ledger Panel */}
                     <div className="sup-bank-statement-panel">
@@ -826,7 +858,7 @@ export function SupplierBillSyncAudit() {
         </div>
 
         {/* ─── 5-Step Selector Controller (Minimal Pill Bar Below Terminal) ─── */}
-        <div className="sup-phase-pills-bar">
+        <div className="sup-phase-pills-bar" ref={pillsRef}>
           <button
             type="button"
             className={`sup-phase-pill-btn ${activeStep === 1 ? 'is-active' : ''}`}
@@ -908,7 +940,7 @@ export function SupplierBillSyncAudit() {
               <h3 className="sup-pillar-title">All Bills Arranged In One Place</h3>
               <p className="sup-pillar-desc">
                 Snap crumpled paper slips with your phone or auto-forward email PDFs.
-                Gradient AI extracts line items, HSN classifications, and vendor GSTINs into one searchable vault.
+                Gradient extracts line items, HSN classifications, and vendor GSTINs into one searchable vault.
               </p>
             </div>
           </PixelCard>

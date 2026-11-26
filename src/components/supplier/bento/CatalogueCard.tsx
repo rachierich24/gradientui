@@ -25,14 +25,19 @@ const INCOMING: P[] = [
 const CAT_SCRIPT = [['rest', 1300], ['arrive', 1150], ['receive', 900], ['close', 700], ['live', 1900]] as const;
 
 // where each sheet sits, by rank (0 = newest, in front): resting in the folder, and fanned out when open
-const REST = [{ x: 0, y: 0, r: -1.5 }, { x: -46, y: 12, r: -7 }, { x: 46, y: 8, r: 6 }];
-const OPEN = [{ x: 0, y: -86, r: 0 }, { x: -114, y: -66, r: -8 }, { x: 114, y: -70, r: 7 }];
+const REST = [{ x: 0, y: 0, r: -1.5 }, { x: -42, y: 11, r: -6.5 }, { x: 42, y: 8, r: 5.5 }];
+const OPEN_WIDE = [{ x: 0, y: -74, r: 0 }, { x: -102, y: -56, r: -7.5 }, { x: 102, y: -60, r: 6.5 }];
+const OPEN_NARROW = [{ x: 0, y: -66, r: 0 }, { x: -84, y: -48, r: -7 }, { x: 84, y: -52, r: 6 }];
 type Mode = 'rest' | 'peek' | 'open';
-function pose(rank: number, mode: Mode, floating: boolean) {
-  if (floating) return { x: 0, y: -122, rotate: -3, scale: 1, opacity: 1 };
+function pose(rank: number, mode: Mode, floating: boolean, compact: boolean) {
+  if (floating) return { x: 0, y: compact ? -92 : -104, rotate: -2.5, scale: 1, opacity: 1 };
   const r = REST[rank] ?? REST[2];
-  if (mode === 'open') { const o = OPEN[rank] ?? OPEN[2]; return { x: o.x, y: o.y, rotate: o.r, scale: 1, opacity: 1 }; }
-  if (mode === 'peek') return { x: r.x * 1.22, y: r.y - 16, rotate: r.r * 1.45, scale: 1, opacity: 1 };
+  if (mode === 'open') {
+    const openPos = compact ? OPEN_NARROW : OPEN_WIDE;
+    const o = openPos[rank] ?? openPos[2];
+    return { x: o.x, y: o.y, rotate: o.r, scale: 1, opacity: 1 };
+  }
+  if (mode === 'peek') return { x: r.x * 1.18, y: r.y - 14, rotate: r.r * 1.4, scale: 1, opacity: 1 };
   return { x: r.x, y: r.y, rotate: r.r, scale: 1, opacity: 1 };
 }
 
@@ -41,6 +46,7 @@ type Sheet = { k: string; p: P };
 export function CatalogueCard({ run }: { run: boolean }) {
   const [hover, setHover] = useState(false);
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
   const { phase } = useScript(CAT_SCRIPT, run && !hover && !open);
   const [sheets, setSheets] = useState<Sheet[]>(SEED.map((p) => ({ k: `${p.id}-seed`, p })));
   const [incoming, setIncoming] = useState<Sheet | null>(null);
@@ -50,6 +56,14 @@ export function CatalogueCard({ run }: { run: boolean }) {
   const n = useRef(0);
   const incRef = useRef<Sheet | null>(null);
   const frontRef = useRef<P>(SEED[0]);
+
+  useEffect(() => {
+    const mq = matchMedia('(max-width: 720px)');
+    const sync = () => setCompact(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     switch (phase) {
@@ -106,16 +120,17 @@ export function CatalogueCard({ run }: { run: boolean }) {
           {list.map((s, i) => {
             const isIncoming = incoming?.k === s.k;
             const rank = incoming ? i - 1 : i;
+            const openPos = compact ? OPEN_NARROW : OPEN_WIDE;
             return (
               <motion.div
                 key={s.k}
                 className="sbx-fd-paper"
                 style={{ zIndex: isIncoming ? 20 : 10 - rank }}
-                initial={{ x: 150, y: -190, rotate: 16, opacity: 0, scale: 0.9 }}
-                animate={pose(rank, mode, isIncoming)}
+                initial={{ x: 118, y: -146, rotate: 14, opacity: 0, scale: 0.9 }}
+                animate={pose(rank, mode, isIncoming, compact)}
                 exit={{ y: 46, opacity: 0, scale: 0.94, transition: { duration: 0.45 } }}
                 transition={{ type: 'spring', stiffness: 250, damping: 25 }}
-                whileHover={open ? { y: (OPEN[rank] ?? OPEN[2]).y - 10, scale: 1.05, rotate: 0 } : undefined}
+                whileHover={open ? { y: (openPos[rank] ?? openPos[2]).y - 10, scale: 1.05, rotate: 0 } : undefined}
               >
                 <span className="sbx-fd-ph"><img src={s.p.img} alt="" loading="lazy" /></span>
                 <b>{s.p.name}</b>
@@ -150,7 +165,11 @@ export function CatalogueCard({ run }: { run: boolean }) {
           </span>
         ))}
       </div>
-      <p className="sbx-fd-hint" aria-hidden="true">{open ? 'Click to close' : 'Click the folder to open it'}</p>
+      {/* "Tap" on a touch screen, "Click" with a mouse (bento.css shows one) */}
+      <p className="sbx-fd-hint" aria-hidden="true">
+        <span className="sbx-on-fine">{open ? 'Click to close' : 'Click the folder to open it'}</span>
+        <span className="sbx-on-touch">{open ? 'Tap to close' : 'Tap the folder to open it'}</span>
+      </p>
     </div>
   );
 }

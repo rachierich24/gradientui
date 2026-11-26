@@ -94,7 +94,7 @@
   box-shadow: 0 0 0 .5px rgba(0, 0, 0, .07), 0 12px 26px -12px rgba(15, 20, 30, .38);
   font-family: var(--font-sans, inherit); color: #0B0C0E; pointer-events: none;
   opacity: 0; transform: translateY(-12px) scale(.96); transition: opacity .25s ease, transform .3s ease; }
-.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast { opacity: 1; transform: none;
+.eco-track:is(.is-tour, .is-play) .eco-screens-group.is-arrived .eco-toast { opacity: 1; transform: none;
   transition: opacity .4s ease var(--d), transform .75s cubic-bezier(.34, 1.4, .64, 1) var(--d); }
 /* on the phone the order arrives as a Live Activity: the Dynamic Island opens out into a black alert across the top
    of the screen (clipped from the island's own shape: 64 × 16.5 at 6px down), over the status bar, and closes back
@@ -103,17 +103,17 @@
   border-radius: 24px; background: #000; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; color: #fff;
   transform: none; clip-path: inset(1px calc(50% - 32px) 36.5px calc(50% - 32px) round 8.25px);
   transition: clip-path .42s cubic-bezier(.4, 0, .2, 1), opacity .1s linear .38s; }
-.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast.is-phone { transform: none; clip-path: inset(0 round 24px);
+.eco-track:is(.is-tour, .is-play) .eco-screens-group.is-arrived .eco-toast.is-phone { transform: none; clip-path: inset(0 round 24px);
   transition: opacity .06s linear var(--d), clip-path .62s cubic-bezier(.2, .9, .25, 1) var(--d); }
 .eco-toast.is-phone > * { opacity: 0; transition: opacity .12s ease; }
-.eco-track.is-tour .eco-screens-group.is-arrived .eco-toast.is-phone > * { opacity: 1; transition: opacity .3s ease calc(var(--d) + .26s); }
+.eco-track:is(.is-tour, .is-play) .eco-screens-group.is-arrived .eco-toast.is-phone > * { opacity: 1; transition: opacity .3s ease calc(var(--d) + .26s); }
 .eco-toast.is-phone .eco-toast-icon { width: 28px; height: 28px; border-radius: 8px; }
 .eco-toast.is-phone .eco-toast-top { color: #8E8E93; }
 .eco-toast.is-phone .eco-toast-top b { color: #EE9393; }
 .eco-toast.is-phone small { color: #A1A1A6; }
 /* the status bar gives way to the open island */
-.eco-track.is-tour .eco-screen-mobile .eco-phone-statusbar { transition: opacity .2s ease .25s; }
-.eco-track.is-tour .eco-screens-group.is-arrived .eco-screen-mobile .eco-phone-statusbar { opacity: 0; transition: opacity .12s ease .1s; }
+.eco-track:is(.is-tour, .is-play) .eco-screen-mobile .eco-phone-statusbar { transition: opacity .2s ease .25s; }
+.eco-track:is(.is-tour, .is-play) .eco-screens-group.is-arrived .eco-screen-mobile .eco-phone-statusbar { opacity: 0; transition: opacity .12s ease .1s; }
 /* on the tablets: inside the 4px border, just under the browser bar */
 .eco-toast.is-supplier { --tc: #1FA952; --d: .8s; right: 14px; top: 44px; width: 214px; }
 .eco-toast.is-brand { --tc: #6B33D3; --d: 1.5s; right: 14px; top: 44px; width: 186px; }
@@ -125,7 +125,7 @@
 .eco-toast strong { overflow: hidden; font-size: 10.5px; font-weight: 650; line-height: 1.25; white-space: nowrap; text-overflow: ellipsis; }
 .eco-toast small { overflow: hidden; font-size: 9px; line-height: 1.25; color: #6B6F76; white-space: nowrap; text-overflow: ellipsis; }
 .eco-toast em { flex: none; align-self: flex-start; font-style: normal; font-size: 10px; font-weight: 700; }
-.eco-track:not(.is-tour) .eco-toast { display: none; }
+.eco-track:not(.is-tour):not(.is-play) .eco-toast { display: none; }
 @media (prefers-reduced-motion: reduce) { .eco-toast { transition: none !important; } }
 /* narrow screens and reduced motion: nothing pins, the portals follow as cards */
 .eco-track:not(.is-tour) { height: auto; }
@@ -286,9 +286,12 @@
   .pt-cta { margin-top: 20px; }
 }
 
-/* ═══ the stacked cards: narrow screens, and reduced motion ═══ */
+/* ═══ the stacked cards: narrow screens, short (landscape phone) screens, and reduced motion ═══ */
 .pt-stack { position: relative; z-index: 2; display: grid; gap: 18px; width: min(100%, 1180px); margin: 0 auto; padding: 8px 16px 72px; background: #fff; }
 .pt-card { position: relative; display: grid; gap: 22px; padding: 28px 20px 20px; border-radius: 28px; background: #F7F7F8; scroll-margin-top: 84px; }
+/* (the tour puts its words in grid column 2; inside a card that made an implicit second column, pushing the words
+   right and squeezing the colour panel into a sliver on the left) */
+.pt-card .pt-copy { grid-column: auto; }
 .pt-copy.is-static { max-width: none; }
 .pt-copy.is-static > * { animation: none; }
 .pt-copy.is-static .pt-now { margin-top: 28px; }
@@ -301,7 +304,127 @@
 @media (min-width: 861px) {
   .pt-card { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 40px; padding: 32px; }
 }
+/* phones: the words, then the product on its colour panel, full width; the panel hugs the product */
+@media (max-width: 860px) {
+  .pt-stack { gap: 14px; padding: 4px 12px 56px; }
+  .pt-card { gap: 20px; padding: 26px 18px 18px; border-radius: 26px; }
+  .pt-card .pt-title { font-size: clamp(26px, 7.4vw, 34px); }
+  .pt-card .pt-body { font-size: 15.5px; }
+  .pt-card .pt-cta { margin-top: 20px; }
+  .pt-card-panel { min-height: 0; padding: 28px 14px; border-radius: 20px; }
+  .pt-card-panel .pt-window { border-radius: 12px; }
+  .pt-mphone { width: min(220px, 60%); border-width: 6px; border-radius: 32px; }
+}
+/* touch: the "Now showing" segments are 4px bars; give each a finger-sized target without moving the bars */
+@media (pointer: coarse) {
+  .pt-now-segs { margin: 2px 0 -10px; }
+  .pt-now-segs button { padding: 14px 0; }
+}
+
+/* ═══ chapter 1 without the pinned stage (phones, tablets in portrait, landscape phones, reduced motion) ═══ */
+/* without the tour the side portals take no scroll-driven motion: framer-motion keeps the inline transform from
+   the first (desktop) render, so the CSS placement below has to win over it */
+.eco-track:not(.is-tour) .eco-screens-group .eco-screen-supplier,
+.eco-track:not(.is-tour) .eco-screens-group .eco-screen-brand { transform: none !important; opacity: 1 !important; }
+/* phones: one screen of its own (the hero fills the first) — the heading, then the three portals together: the café
+   phone in front, at its real proportions (224 × 460, the picture's own shape), and the supplier and brand tablets
+   fanned out behind it to the left and right, turned toward it, the way the desktop shows them */
+@media (max-width: 768px) {
+  /* clear of the 71px nav, and centred in the rest of the screen */
+  .eco-track:not(.is-tour) .eco-sticky-stage { min-height: 100svh; justify-content: center; padding: 84px 0 28px; }
+  .eco-track:not(.is-tour) .eco-sticky-stage > .eco-container { padding-top: 0; }
+  /* the heading: two balanced lines (no lone "brands."), the second phrase on its own line, the body without an orphan */
+  .eco-track:not(.is-tour) .eco-headline { font-size: clamp(25px, 7.4vw, 32px); line-height: 1.12; margin-bottom: 12px; }
+  .eco-track:not(.is-tour) .eco-body { max-width: 340px; font-size: 14.5px; line-height: 1.55; }
+  .eco-track:not(.is-tour) .eco-stage-viewport { height: auto; margin-top: 22px; padding: 0; perspective: none; }
+  /* the devices as a cascade: the supplier tablet up on the left, the café phone in front, the brand tablet down on
+     the right. Each tablet stays whole on screen; the phone covers only its inner edge (the tablets turn toward it,
+     so that edge is the far one) */
+  .eco-track:not(.is-tour) .eco-screens-group { position: relative; display: block; width: 100%; height: auto; margin: 0;
+    padding: var(--g-top) 0 var(--g-bot); --g-top: 96px; --g-bot: 80px; --ph-z: .84; --tab-w: min(240px, 60vw); --tab-edge: max(18px, calc(50% - 196px)); }
+  .eco-track:not(.is-tour) .eco-screen-mobile,
+  .eco-track:not(.is-tour) .eco-screen-mobile .eco-phone-chassis { width: 224px; max-width: none; height: 460px; }
+  .eco-track:not(.is-tour) .eco-screen-mobile .eco-phone-chassis { border-radius: 38px; }
+  .eco-track:not(.is-tour) .eco-screen-mobile { zoom: var(--ph-z); margin: 0 auto; }
+  .eco-track:not(.is-tour) .eco-screens-group .eco-screen-supplier,
+  .eco-track:not(.is-tour) .eco-screens-group .eco-screen-brand { display: flex !important; position: absolute; width: var(--tab-w); max-width: none; height: auto; }
+  .eco-track:not(.is-tour) .eco-screens-group .eco-screen-supplier { left: var(--tab-edge); right: auto; top: 0; bottom: auto; }
+  .eco-track:not(.is-tour) .eco-screens-group .eco-screen-brand { right: var(--tab-edge); left: auto; top: auto; bottom: 0; }
+  .eco-track:not(.is-tour) .eco-screen-supplier .eco-device-scaler { transform: perspective(900px) rotateY(18deg) rotateX(6deg); transform-origin: 100% 50%; }
+  .eco-track:not(.is-tour) .eco-screen-brand .eco-device-scaler { transform: perspective(900px) rotateY(-18deg) rotateX(6deg); transform-origin: 0 50%; }
+}
+/* every layout without the tour: the heading in balanced lines (no lone "brands."), its second phrase centred on a line
+   of its own, the body without an orphan; and the orders' notifications on the tablets smaller and on the parts the
+   phone doesn't cover — the supplier's top right (its headline on the left stays clear), the brand's foot (clear of the
+   support button) */
+.eco-track:not(.is-tour) .eco-headline-main { text-wrap: balance; }
+.eco-track:not(.is-tour) .eco-headline-highlight { display: block; margin: 3px 0 0; }
+.eco-track:not(.is-tour) .eco-body { text-wrap: pretty; }
+.eco-track.is-play .eco-toast.is-supplier { top: 34px; right: 8px; scale: .74; transform-origin: 100% 0; }
+.eco-track.is-play .eco-toast.is-brand { left: 8px; right: auto; top: auto; bottom: 8px; scale: .74; transform-origin: 0 100%; }
+/* shorter or narrower phones: a smaller cascade, so more of it fits the screen */
+@media (max-width: 768px) and (max-height: 800px), (max-width: 340px) {
+  .eco-track:not(.is-tour) .eco-sticky-stage { padding-top: 78px; }
+  .eco-track:not(.is-tour) .eco-stage-viewport { margin-top: 16px; }
+  .eco-track:not(.is-tour) .eco-screens-group { --ph-z: .76; --g-top: 84px; --g-bot: 70px; --tab-w: min(220px, 58vw); }
+}
+
+/* phones and tablets: chapter 1's arrival is scrubbed by the scroll. EcosystemShowcase writes the eased progress, 0 → 1:
+   --kt1 / --kt2 / --kt3 for the heading's two parts and the body (a beat apart), --kp for the phone, --ks for the two
+   portals (a beat behind it). The heading rises in as it comes up the screen; the phone rises and the supplier and
+   brand portals fan out from behind it as the devices come into view, settling as they reach the bottom of the screen,
+   where one order arrives on each device in turn (.is-arrived). Without the variables everything sits at rest.
+   The motion is on the separate translate / scale properties, so it adds to the tablets' tilt and never fights the
+   transforms framer-motion writes inline; no transitions, the scroll (sprung) is the clock. */
+.eco-track.is-play .eco-text-wrap .eco-headline-main { opacity: var(--kt1, 1); translate: 0 calc((1 - var(--kt1, 1)) * 28px); }
+.eco-track.is-play .eco-text-wrap .eco-headline-highlight { opacity: var(--kt2, 1); translate: 0 calc((1 - var(--kt2, 1)) * 28px); }
+.eco-track.is-play .eco-text-wrap .eco-body { opacity: var(--kt3, 1); translate: 0 calc((1 - var(--kt3, 1)) * 28px); }
+.eco-track.is-play .eco-screens-group .eco-device-scaler { transition: none !important; }
+.eco-track.is-play .eco-screen-mobile .eco-device-scaler {
+  opacity: clamp(0, calc(var(--kp, 1) * 1.8), 1); translate: 0 calc((1 - var(--kp, 1)) * 130px); scale: calc(.9 + .1 * var(--kp, 1)); }
+.eco-track.is-play .eco-screen-supplier .eco-device-scaler {
+  opacity: clamp(0, calc(var(--ks, 1) * 2), 1); translate: calc((1 - var(--ks, 1)) * 46%) calc((1 - var(--ks, 1)) * 70px); scale: calc(.86 + .14 * var(--ks, 1)); }
+.eco-track.is-play .eco-screen-brand .eco-device-scaler {
+  opacity: clamp(0, calc(var(--ks, 1) * 2), 1); translate: calc((1 - var(--ks, 1)) * -46%) calc((1 - var(--ks, 1)) * -40px); scale: calc(.86 + .14 * var(--ks, 1)); }
+/* wider screens without the tour: the heading, then the three devices under it, as plain page content (the
+   desktop rules park the heading at the bottom of a 100vh stage, which a 430px-tall landscape phone can't hold);
+   the tablets turned toward the phone, as on the desktop */
+@media (min-width: 769px) {
+  .eco-track:not(.is-tour) .eco-sticky-stage { height: auto; min-height: 0; padding-bottom: 40px; }
+  .eco-track:not(.is-tour) .eco-sticky-stage > .eco-container { position: relative; inset: auto; padding-top: clamp(32px, 6vh, 64px); }
+  .eco-track:not(.is-tour) .eco-stage-viewport { position: relative; inset: auto; height: auto; padding: 36px 0 24px; }
+  .eco-track:not(.is-tour) .eco-screen-supplier .eco-device-scaler { transform: perspective(1400px) rotateY(20deg) rotateX(5deg); transform-origin: 100% 50%; }
+  .eco-track:not(.is-tour) .eco-screen-brand .eco-device-scaler { transform: perspective(1400px) rotateY(-20deg) rotateX(5deg); transform-origin: 0 50%; }
+}
 @media (prefers-reduced-motion: reduce) {
   .pt-copy > *, .pt-float, .pt-now-title, .pt-now-text { animation: none !important; }
   .pt-field::before, .pt-field::after { animation: none !important; }
 }
+
+/* ═══ the stacked cards in colour: each card is its portal's colour edge to edge (not just a panel behind the
+   product), deepening toward the bottom, with white words on it. Only the portal's own colour and its shades;
+   just the deep soft blobs drift, so the words stay readable ═══ */
+.pt-card { overflow: hidden; isolation: isolate; background: var(--c-deep); color: #fff; }
+.pt-card > .pt-field, .pt-card > .pt-grain { z-index: 0; border-radius: inherit; }
+.pt-card > .pt-copy, .pt-card > .pt-card-panel { position: relative; z-index: 1; }
+.pt-card[data-portal="cafe"] > .pt-field { background: linear-gradient(170deg, #E64B4A 0%, #E03E3E 34%, #C42D2D 76%, #A82424 100%); }
+.pt-card[data-portal="supplier"] > .pt-field { background: linear-gradient(170deg, #1FA952 0%, #1B9A4B 34%, #178A42 70%, #11663A 100%); }
+.pt-card[data-portal="brand"] > .pt-field { background: linear-gradient(170deg, #7640DA 0%, #6B33D3 34%, #4E23A8 76%, #3A1F70 100%); }
+.pt-card > .pt-field::before { background: radial-gradient(54% 30% at 90% 98%, var(--p4), transparent 72%); }
+.pt-card > .pt-field::after { background: radial-gradient(50% 26% at 8% 100%, var(--p6), transparent 72%); }
+.pt-card-panel { overflow: visible; border-radius: 0; isolation: auto; }
+.pt-card .pt-chip { border-color: rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .16); color: #fff; }
+.pt-card .pt-title { color: #fff; }
+.pt-card .pt-body { color: rgba(255, 255, 255, .88); }
+.pt-card .pt-cta { background: #fff; color: var(--c-deep); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, .35); }
+.pt-card .pt-cta:hover { background: rgba(255, 255, 255, .9); }
+.pt-card .pt-now { padding: 0; border: 1px solid rgba(255, 255, 255, .26); background: rgba(255, 255, 255, .12); }
+.pt-card .pt-now-in { background: none; }
+.pt-card .pt-now-head { color: rgba(255, 255, 255, .78); }
+.pt-card .pt-now-title { color: #fff; }
+.pt-card .pt-now-text { color: rgba(255, 255, 255, .84); }
+.pt-card .pt-now-segs span { background: rgba(255, 255, 255, .26); }
+.pt-card .pt-now-segs span::after { background: #fff; }
+.pt-card .pt-now-segs button:focus-visible, .pt-card .pt-cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* the product sits on the colour with a soft shadow of its own */
+.pt-card .pt-window { box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 26px 48px -22px rgba(0, 0, 0, .5); }

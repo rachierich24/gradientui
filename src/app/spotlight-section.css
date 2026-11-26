@@ -268,3 +268,9 @@
     transition: none !important;
   }
 }
+/* phones: a heading with the weight of the other sections' (it was 18px), and less empty space around the rows */
+@media (max-width: 640px) {
+  .spotlight-section { padding: 56px 0 64px; }
+  .spotlight-header { margin-bottom: 28px; }
+  .spotlight-title { font-size: 22px; line-height: 1.3; letter-spacing: -0.025em; }
+}

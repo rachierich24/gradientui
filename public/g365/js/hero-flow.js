@@ -164,12 +164,13 @@
 
   function build() {
     const W = stage.clientWidth, narrow = W < 640;
-    const u = narrow ? clamp(W / 680, 0.5, 0.62) : clamp(W / 1300, 0.7, 1.2);
+    // phones: the hub centred (the whole scene is laid out around it), a touch larger than before
+    const u = narrow ? clamp(W / 540, 0.55, 0.78) : clamp(W / 1300, 0.7, 1.2);
     const A = SQ * u, Ru = R * u, hh = Math.round(20 * u);
     const cyS = Math.round((narrow ? 84 : 140) + hh + Ru / 2);    // the hub's footprint centre, stage px
     const yJ = cyS + (R + TRUNK) * u / (2 * Math.SQRT2);           // the junction, stage px
     const H = Math.round(yJ + (narrow ? 120 : 150) * u + 40);
-    geo = { W, H, u, A, Ru, hh, cx: Math.round(W * (narrow ? 0.56 : 0.5)), cy: cyS + OFF,
+    geo = { W, H, u, A, Ru, hh, cx: Math.round(W * 0.5), cy: cyS + OFF,
       mat: `matrix(${A.toFixed(5)},${(-A / 2).toFixed(5)},${A.toFixed(5)},${(A / 2).toFixed(5)},` };
     stage.style.height = H + "px";
     stage.style.setProperty("--off", OFF + "px");
@@ -465,15 +466,19 @@
     for (let n = Math.floor(before) + 1; n <= Math.floor(pos); n++) { landed = true; if (mod(n, 3) === 2) completed = true; }
     connect();
     if (stageVisible) draw(now / 1000);
-    if (!reduce) {
+    // (restart forces a layout to replay its animation; off screen there's nothing to see)
+    if (!reduce && stageVisible) {
       if (landed) restart("blip");
       if (completed) restart("wave");   // the mark is whole: a ripple runs out across the ground
     }
     requestAnimationFrame(tick);
   }
 
+  // Draw only while the stage is on screen. Its layers reach OFF px above it (beside the copy), so it counts as
+  // visible from OFF px before its top scrolls in; once it has scrolled past it stops at once. (The margin used to
+  // be on the top, which kept a phone drawing the hero for another 280px of the next section.)
   let stageVisible = true;
-  if ("IntersectionObserver" in window) new IntersectionObserver((es) => { stageVisible = es[0].isIntersecting; }, { rootMargin: `${OFF}px 0px 0px 0px` }).observe(stage);
+  if ("IntersectionObserver" in window) new IntersectionObserver((es) => { stageVisible = es[0].isIntersecting; stage.classList.toggle("is-off", !stageVisible); }, { rootMargin: `0px 0px ${OFF}px 0px` }).observe(stage);
   build();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureHole).catch(() => {});
   let rt, lastW = stage.clientWidth;

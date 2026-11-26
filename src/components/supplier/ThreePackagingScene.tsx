@@ -3,15 +3,18 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
+import type { MotionValue } from 'framer-motion';
 
 interface ThreePackagingSceneProps {
-  scrollProgress?: number; // 0 (hero resting) to 1 (dashboard centered/released)
+  // the hero's (sprung) scroll progress: 0 hero resting → 1 dashboard centred and released. Read each frame from
+  // the motion value itself, so scrolling never re-renders React
+  progress?: MotionValue<number>;
 }
 
-export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneProps) {
+export function ThreePackagingScene({ progress }: ThreePackagingSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef(scrollProgress);
-  scrollRef.current = scrollProgress;
+  const progressRef = useRef(progress);
+  progressRef.current = progress;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -235,24 +238,18 @@ export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneP
     window.addEventListener('resize', handleResize);
 
     // ─── 7. 60fps Micro-Animation Loop (Idle Drift + Scroll Recession) ───
-    let animationFrameId: number;
+    // It runs only while the hero is on screen; scrolled past, the canvas would be drawing for nobody.
+    let animationFrameId = 0;
+    let onScreen = true;
     const clock = new THREE.Clock();
 
     const animate = () => {
+      if (!onScreen) { animationFrameId = 0; return; }
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Compute scroll progress directly from hero-scene element
-      let p = 0;
-      const heroSection = document.getElementById('hero-scene');
-      if (heroSection) {
-        const totalTravel = heroSection.offsetHeight - window.innerHeight;
-        if (totalTravel > 0) {
-          p = Math.max(0, Math.min(1, window.scrollY / totalTravel));
-        }
-      } else if (scrollRef.current !== undefined) {
-        p = scrollRef.current;
-      }
+      // scroll progress, read from the motion value (no layout reads in the frame loop)
+      const p = Math.max(0, Math.min(1, progressRef.current?.get() ?? 0));
 
       // Phase 5.2 / Section 8: Subtle breathing drift (8-11s cycle, different timing)
       const idleFloatLeft = prefersReducedMotion ? 0 : Math.sin(elapsedTime * 0.55) * 0.026;
@@ -293,8 +290,15 @@ export function ThreePackagingScene({ scrollProgress = 0 }: ThreePackagingSceneP
 
     animate();
 
+    const io = new IntersectionObserver(([e]) => {
+      onScreen = e.isIntersecting;
+      if (onScreen && !animationFrameId) animate();
+    });
+    io.observe(container);
+
     // ─── 8. Cleanup on Unmount ───
     return () => {
+      io.disconnect();
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);

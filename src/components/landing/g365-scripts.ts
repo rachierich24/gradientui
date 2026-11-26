@@ -6,7 +6,7 @@ const JS = '/g365/js/';
 // In development every page load gets its own version, so edits to those files show on a plain reload
 // instead of a day-old copy running against new markup and CSS.
 const BUILD_ID =
-  process.env.NEXT_PUBLIC_BUILD_ID ?? (process.env.NODE_ENV === 'development' ? `dev-${Date.now()}` : '5');
+  process.env.NEXT_PUBLIC_BUILD_ID ?? (process.env.NODE_ENV === 'development' ? `dev-${Date.now()}` : '6');
 const cache: Record<string, Promise<void>> = {};
 
 function inject(file: string) {

@@ -16,10 +16,13 @@ interface IconCloudProps {
   icons?: React.ReactNode[]
   images?: string[]
   showControl?: boolean
+  paused?: boolean
   className?: string
   radius?: number
   iconSize?: number
 }
+
+const LOGICAL_SIZE = 420
 
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3)
@@ -46,6 +49,7 @@ export function IconCloud({
   icons,
   images,
   showControl = false,
+  paused = false,
   className = "",
   radius = 138,
   iconSize = 58,
@@ -54,8 +58,10 @@ export function IconCloud({
   const [iconPositions, setIconPositions] = useState<Icon[]>([])
   const [isDragging, setIsDragging] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [dpr, setDpr] = useState(1)
   const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 })
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [mousePos, setMousePos] = useState({ x: LOGICAL_SIZE / 2 + 80, y: LOGICAL_SIZE / 2 + 24 })
+  const pointerActiveRef = useRef(false)
   const [targetRotation, setTargetRotation] = useState<{
     x: number
     y: number
@@ -69,6 +75,11 @@ export function IconCloud({
   const rotationRef = useRef({ x: 0, y: 0 })
   const iconCanvasesRef = useRef<HTMLCanvasElement[]>([])
   const imagesLoadedRef = useRef<boolean[]>([])
+
+  // Set HiDPI DPR after mount for crisp retina rendering
+  useEffect(() => {
+    setDpr(Math.min(2, window.devicePixelRatio || 1))
+  }, [])
 
   // Pause animation if user prefers reduced motion
   useEffect(() => {
@@ -198,15 +209,20 @@ export function IconCloud({
   }, [icons, images, radius])
 
   // Handle mouse events for interactive drag and click-to-center
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const getLogicalPos = (clientX: number, clientY: number) => {
     const rect = canvasRef.current?.getBoundingClientRect()
-    if (!rect || !canvasRef.current) return
+    if (!rect || !rect.width || !rect.height) return null
+    return {
+      x: ((clientX - rect.left) / rect.width) * LOGICAL_SIZE,
+      y: ((clientY - rect.top) / rect.height) * LOGICAL_SIZE,
+    }
+  }
 
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const pos = getLogicalPos(e.clientX, e.clientY)
+    if (!pos || !canvasRef.current) return
 
-    const ctx = canvasRef.current.getContext("2d")
-    if (!ctx) return
+    const { x, y } = pos
 
     iconPositions.forEach((icon) => {
       const cosX = Math.cos(rotationRef.current.x)
@@ -218,8 +234,8 @@ export function IconCloud({
       const rotatedZ = icon.x * sinY + icon.z * cosY
       const rotatedY = icon.y * cosX + rotatedZ * sinX
 
-      const screenX = canvasRef.current!.width / 2 + rotatedX
-      const screenY = canvasRef.current!.height / 2 + rotatedY
+      const screenX = LOGICAL_SIZE / 2 + rotatedX
+      const screenY = LOGICAL_SIZE / 2 + rotatedY
 
       const scale = (rotatedZ + 240) / 360
       const hitRadius = (iconSize / 2) * scale
@@ -259,11 +275,10 @@ export function IconCloud({
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current?.getBoundingClientRect()
-    if (rect) {
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-      setMousePos({ x, y })
+    const pos = getLogicalPos(e.clientX, e.clientY)
+    if (pos) {
+      pointerActiveRef.current = true
+      setMousePos(pos)
     }
 
     if (isDragging) {
@@ -279,6 +294,11 @@ export function IconCloud({
     }
   }
 
+  const handleMouseLeave = () => {
+    setIsDragging(false)
+    pointerActiveRef.current = false
+  }
+
   const handleMouseUp = () => {
     setIsDragging(false)
   }
@@ -287,17 +307,19 @@ export function IconCloud({
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas?.getContext("2d")
+    const effectivePaused = isPaused || paused
     if (canvas && ctx) {
       const animate = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+        ctx.clearRect(0, 0, LOGICAL_SIZE, LOGICAL_SIZE)
 
-        const centerX = canvas.width / 2
-        const centerY = canvas.height / 2
+        const centerX = LOGICAL_SIZE / 2
+        const centerY = LOGICAL_SIZE / 2
         const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY)
-        const dx = mousePos.x - centerX
-        const dy = mousePos.y - centerY
+        const dx = pointerActiveRef.current ? mousePos.x - centerX : 82
+        const dy = pointerActiveRef.current ? mousePos.y - centerY : 24
         const distance = Math.sqrt(dx * dx + dy * dy)
-        const speed = 0.0025 + (distance / maxDistance) * 0.008
+        const speed = 0.0022 + (distance / maxDistance) * 0.0075
 
         if (targetRotation) {
           const elapsed = performance.now() - targetRotation.startTime
@@ -316,10 +338,10 @@ export function IconCloud({
           if (progress >= 1) {
             setTargetRotation(null)
           }
-        } else if (!isDragging && !isPaused) {
+        } else if (!isDragging && !effectivePaused) {
           rotationRef.current = {
-            x: rotationRef.current.x + (dy / canvas.height) * speed,
-            y: rotationRef.current.y + (dx / canvas.width) * speed,
+            x: rotationRef.current.x + (dy / LOGICAL_SIZE) * speed,
+            y: rotationRef.current.y + (dx / LOGICAL_SIZE) * speed,
           }
         }
 
@@ -354,8 +376,8 @@ export function IconCloud({
         renderedList.forEach((item) => {
           ctx.save()
           ctx.translate(
-            canvas.width / 2 + item.rotatedX,
-            canvas.height / 2 + item.rotatedY
+            LOGICAL_SIZE / 2 + item.rotatedX,
+            LOGICAL_SIZE / 2 + item.rotatedY
           )
           ctx.scale(item.scale, item.scale)
           ctx.globalAlpha = item.opacity
@@ -392,7 +414,7 @@ export function IconCloud({
           Boolean(icons || images) &&
           !imagesLoadedRef.current.every((loaded) => loaded)
         const shouldContinue =
-          !isPaused || isDragging || targetRotation !== null || hasPendingAssets
+          !effectivePaused || isDragging || targetRotation !== null || hasPendingAssets
 
         if (shouldContinue) {
           animationFrameRef.current = requestAnimationFrame(animate)
@@ -413,6 +435,8 @@ export function IconCloud({
     iconPositions,
     isDragging,
     isPaused,
+    paused,
+    dpr,
     mousePos,
     targetRotation,
     iconSize,
@@ -422,12 +446,13 @@ export function IconCloud({
     <div className={`relative inline-block ${className}`}>
       <canvas
         ref={canvasRef}
-        width={420}
-        height={420}
+        width={LOGICAL_SIZE * dpr}
+        height={LOGICAL_SIZE * dpr}
+        style={{ width: LOGICAL_SIZE, height: LOGICAL_SIZE }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
         className="rounded-lg cursor-grab active:cursor-grabbing max-w-full h-auto select-none"
         aria-label="Interactive 3D Icon Cloud"
         role="img"

@@ -39,6 +39,19 @@ export function SectionRail() {
   const [start, setStart] = useState(0);
 
   useEffect(() => {
+    // the rail is hidden at 1100px and below (section-rail.css): there it doesn't measure anything on scroll
+    const mq = matchMedia('(min-width: 1101px)');
+    let stop: (() => void) | null = null;
+    const sync = () => {
+      if (mq.matches && !stop) stop = track();
+      else if (!mq.matches && stop) { stop(); stop = null; setActive(-1); }
+    };
+    sync();
+    mq.addEventListener('change', sync);
+    return () => { mq.removeEventListener('change', sync); stop?.(); };
+  }, []);
+
+  function track() {
     let raf = 0;
     const read = () => {
       raf = 0;
@@ -65,7 +78,7 @@ export function SectionRail() {
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll);
     return () => { removeEventListener('scroll', onScroll); removeEventListener('resize', onScroll); cancelAnimationFrame(raf); };
-  }, []);
+  }
 
   const go = (sel: string) => {
     const el = document.querySelector(sel);

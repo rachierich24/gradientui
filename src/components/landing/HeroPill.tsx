@@ -78,17 +78,28 @@ export function HeroHeadline() {
   const [index, setIndex] = useState(0);
   const [inlineSize, setInlineSize] = useState<number | undefined>(undefined);
   const [isPaused, setIsPaused] = useState(false);
+  const [onScreen, setOnScreen] = useState(true);
   const measureRef = useRef<HTMLSpanElement>(null);
+  const pillRef = useRef<HTMLSpanElement>(null);
 
   const current = ECOSYSTEM_SIDES[index] ?? ECOSYSTEM_SIDES[0];
 
+  // the word only cycles while the headline is on screen (scrolled away, it would re-render for nobody)
   useEffect(() => {
-    if (isPaused) return;
+    const el = pillRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (isPaused || !onScreen) return;
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % ECOSYSTEM_SIDES.length);
     }, 2500); // 2.5s Notion cadence
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, onScreen]);
 
   useIsomorphicLayoutEffect(() => {
     const el = measureRef.current;
@@ -109,10 +120,13 @@ export function HeroHeadline() {
 
   return (
     <>
-      <span className="hero-h1-line1">The operating system where</span>
+      {/* "where" ends line 1 on wide screens; phones move it in front of "all" (g365.css), so the headline can
+          run larger in three lines: The operating system / where all [pill] / are connected. */}
+      <span className="hero-h1-line1">The operating system<span className="hero-where-wide"> where</span></span>
       <span className="hero-h1-line2">
-        <span className="hero-word-lead">all</span>
+        <span className="hero-word-lead"><span className="hero-where-narrow">where </span>all</span>
         <span
+          ref={pillRef}
           className="homepageHeroTeamsAndAgents-module-scss-module__KlQGRG__productPillAnimation notion-pill-animation"
           style={{
             '--color-background': current.bg,

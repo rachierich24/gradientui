@@ -149,7 +149,11 @@ export function SupplierFaq() {
                     </svg>
                   </div>
                 </button>
-                {isOpen && <div className="sup-faq-answer">{faq.a}</div>}
+                {/* the answer slides open and shut (its row grows from 0fr to 1fr); closed, it's inert, so
+                    screen readers and the keyboard skip it as before */}
+                <div className="sup-faq-answer-wrap" inert={!isOpen}>
+                  <div className="sup-faq-answer-inner"><div className="sup-faq-answer">{faq.a}</div></div>
+                </div>
               </div>
             );
           })}
